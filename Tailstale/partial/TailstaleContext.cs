@@ -20,5 +20,7 @@ partial class TailstaleContext : DbContext
 
     public DbSet<Tailstale.Models.keeper> keeper { get; set; } = default!;
     public DbSet<Tailstale.Models.business> business { get; set; } = default!;
+
+    
 }
 

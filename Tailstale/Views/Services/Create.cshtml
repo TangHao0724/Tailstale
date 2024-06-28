@@ -1,0 +1,95 @@
+﻿@model Tailstale.Models.Service
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Service</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="business_ID" class="control-label"></label>
+                <select asp-for="business_ID" class ="form-control" asp-items="ViewBag.business_ID"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="category" class="control-label"></label>
+                <input asp-for="category" class="form-control" />
+                <span asp-validation-for="category" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="service_name" class="control-label"></label>
+                <input asp-for="service_name" class="form-control" />
+                <span asp-validation-for="service_name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="service_content" class="control-label"></label>
+                <input asp-for="service_content" class="form-control" />
+                <span asp-validation-for="service_content" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                
+                @* <span asp-validation-for="service_img" class="text-danger"></span> *@
+
+                <label asp-for="service_img" class="control-label"></label>
+                <partial name="_SalonImgPartial" />@* 顯示幕前內容 *@
+                <input asp-for="service_img" type="file" accept="image/*" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="price" class="control-label"></label>
+                <input asp-for="price" class="form-control" />
+                <span asp-validation-for="price" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+  
+
+    <script src="~/js/myjs.js"></script>
+    <script>
+        function previewImage(file) {
+            // alert("change");
+            var allowType = "image/*";//代表所有圖片都可ˇ以
+            var file = file.files[0];//檔案上傳元素
+            if (file.type.match(allowType)) {//user上傳檔案,有沒有合乎allowType
+
+                var reader = new FileReader();//讀取user上傳的檔案做預覽
+                reader.onload = function (e) {//onload是處理load事件,如果發生就是檔案"讀取"完成觸發的事件就是load
+
+                    $("#Picture").prev().attr("src", e.target.result)//改掉Pictre前一個標籤他的src
+                    $("#Picture").prev().attr("title", file.name)//改掉Pictre前一個標籤他的src
+                };
+                reader.readAsDataURL(file);//
+                $(".btn").prop('disabled', false)
+            }
+            else {
+                alert("不支援的檔案上傳類型");
+                $(".btn").prop('disabled', true)//限制副檔名,錯誤副檔名時,不讓你按submit按鈕
+                //上傳後端來接(edit post?),
+            }
+        }
+
+        
+
+        // 使用者選不同的檔案,叫用這個函式
+        $("#Picture").on("change", function () {
+            previewImage(this);
+        })
+    </script>
+
+}

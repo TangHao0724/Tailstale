@@ -17,7 +17,7 @@ public partial class Service
 
     public string service_content { get; set; }
 
-    public string service_img { get; set; }
+    public string? service_img { get; set; }
 
     public string price { get; set; }
 

@@ -1,0 +1,18 @@
+﻿@model Service
+
+
+@* 可以對Category右鍵瞄核定義打開看是哪個檔 *@
+
+@* //局部檢視用 *@
+@* razor文件用server語法用@ *@
+@if (Model.service_img == null) @* Mdoel是頁面的屬性,如果有Picture欄位, *@
+{
+    <img src="~/Salon_img/111.jpg" title="尚無答案" alt="Alternate Text" style="width:320px;height:240px" />
+    //@* picture欄位允許沒有值,所以要準備替代圖案 *@
+}
+else{
+    <img src="~/Categories/GetPicture/@Html.DisplayFor(model => model.service_img)" title=" @Html.DisplayFor(model => model.service_img)" alt="Alternate Text" style="width:320px;height:240px" />
+    //用模型的屬性,CategoryName和CategoryId
+//@* 就是讓二進為數字,顯示為二進位圖片 *@
+
+}

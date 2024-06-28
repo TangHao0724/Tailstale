@@ -53,6 +53,8 @@ public partial class TailstaleContext : DbContext
 
     public virtual DbSet<business_type> business_types { get; set; }
 
+    public virtual DbSet<Tailstale.Models.Business_hour> Business_hour { get; set; }
+
     public virtual DbSet<department> departments { get; set; }
 
     public virtual DbSet<hosp_history> hosp_histories { get; set; }

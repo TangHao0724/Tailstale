@@ -1,0 +1,84 @@
+﻿@model Tailstale.Models.Consumption_Record
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Consumption_Record</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.pet_name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.pet_name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.time)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.time)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.service_name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.service_name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.pet_weight)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.pet_weight)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.price)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.price)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.end_time)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.end_time)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.before_photo)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.before_photo)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.after_photo)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.after_photo)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.beautician)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.beautician.gender)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.business)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.business.name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.keeper)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.keeper.address)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
