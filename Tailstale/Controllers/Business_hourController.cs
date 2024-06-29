@@ -27,22 +27,19 @@ namespace Tailstale.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(DateOnly? selectedDate)
+        public async Task<IActionResult> Index(string business_day)
         {
             //var tailstaleContext = _context.Business_hours.Include(b => b.business);
             //return View(await tailstaleContext.ToListAsync());
-            var query = _context.Business_hour.AsQueryable();
+            DateOnly selectedDate = DateOnly.Parse(business_day);
 
+            // 查詢符合條件的 Business_hour 記錄
+            var businessHours = _context.Business_hour
+                .Where(bh => bh.business_day == selectedDate)
+                .ToList();
 
-            if (selectedDate.HasValue)
-            {
-                // 篩選選定日期的資料
-                query = query.Where(bh => bh.business_day == selectedDate.Value);
-            }
-
-            var businessHours = await query.ToListAsync();
-
-            return View(businessHours);
+            // 返回到前端，假設你的 View 期望接收一段 HTML 作為結果
+            return PartialView("_hourPartial", businessHours);
         }
 
 
@@ -73,7 +70,7 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var business_hour = await _context.Business_hours
+            var business_hour = await _context.Business_hour
                 .Include(b => b.business)
                 .FirstOrDefaultAsync(m => m.id == id);
             if (business_hour == null)
@@ -116,7 +113,7 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var business_hour = await _context.Business_hours.FindAsync(id);
+            var business_hour = await _context.Business_hour.FindAsync(id);
             if (business_hour == null)
             {
                 return NotFound();
@@ -169,7 +166,7 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var business_hour = await _context.Business_hours
+            var business_hour = await _context.Business_hour
                 .Include(b => b.business)
                 .FirstOrDefaultAsync(m => m.id == id);
             if (business_hour == null)
@@ -185,10 +182,10 @@ namespace Tailstale.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var business_hour = await _context.Business_hours.FindAsync(id);
+            var business_hour = await _context.Business_hour.FindAsync(id);
             if (business_hour != null)
             {
-                _context.Business_hours.Remove(business_hour);
+                _context.Business_hour.Remove(business_hour);
             }
 
             await _context.SaveChangesAsync();
@@ -197,7 +194,7 @@ namespace Tailstale.Controllers
 
         private bool Business_hourExists(int id)
         {
-            return _context.Business_hours.Any(e => e.id == id);
+            return _context.Business_hour.Any(e => e.id == id);
         }
     }
 }

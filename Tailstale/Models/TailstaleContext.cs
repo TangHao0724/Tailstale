@@ -21,7 +21,7 @@ public partial class TailstaleContext : DbContext
 
     public virtual DbSet<BookingDetail> BookingDetails { get; set; }
 
-    public virtual DbSet<Business_hour> Business_hours { get; set; }
+    public virtual DbSet<Business_hour> Business_hour { get; set; }
 
     public virtual DbSet<CheckinDetail> CheckinDetails { get; set; }
 
@@ -53,7 +53,7 @@ public partial class TailstaleContext : DbContext
 
     public virtual DbSet<business_type> business_types { get; set; }
 
-    public virtual DbSet<Tailstale.Models.Business_hour> Business_hour { get; set; }
+    //public virtual DbSet<Tailstale.Models.Business_hour> Business_hour { get; set; }
 
     public virtual DbSet<department> departments { get; set; }
 
