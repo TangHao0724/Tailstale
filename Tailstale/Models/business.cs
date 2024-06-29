@@ -43,7 +43,7 @@ public partial class business
 
     public virtual ICollection<PaymentInfo> PaymentInfos { get; set; } = new List<PaymentInfo>();
 
-    public virtual ICollection<Reserve> Reserves { get; set; } = new List<Reserve>();
+    public virtual ICollection<Reserve> Reserve { get; set; } = new List<Reserve>();
 
     public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();
 

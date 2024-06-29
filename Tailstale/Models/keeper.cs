@@ -35,7 +35,7 @@ public partial class keeper
 
     public virtual ICollection<PaymentInfo> PaymentInfos { get; set; } = new List<PaymentInfo>();
 
-    public virtual ICollection<Reserve> Reserves { get; set; } = new List<Reserve>();
+    public virtual ICollection<Reserve> Reserve { get; set; } = new List<Reserve>();
 
     public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
 

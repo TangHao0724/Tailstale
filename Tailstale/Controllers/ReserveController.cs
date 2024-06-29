@@ -9,11 +9,11 @@ using Tailstale.Models;
 
 namespace Tailstale.Controllers
 {
-    public class ReservesController : Controller
+    public class ReserveController : Controller
     {
         private readonly TailstaleContext _context;
 
-        public ReservesController(TailstaleContext context)
+        public ReserveController(TailstaleContext context)
         {
             _context = context;
         }
@@ -21,9 +21,41 @@ namespace Tailstale.Controllers
         // GET: Reserves
         public async Task<IActionResult> Index()
         {
-            var tailstaleContext = _context.Reserves.Include(r => r.business).Include(r => r.keeper);
-            return View(await tailstaleContext.ToListAsync());
+            //var tailstaleContext = _context.Reserve.Include(r => r.business).Include(r => r.keeper);
+            //return View(await tailstaleContext.ToListAsync());
+            return View();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Index(string time)
+        {
+            //var tailstaleContext = _context.Business_hours.Include(b => b.business);
+            //return View(await tailstaleContext.ToListAsync());
+            if (string.IsNullOrEmpty(time))
+            {
+                return PartialView("_ReservehourPartial", new List<Reserve>());
+            }
+
+            DateTime selectedDate;
+            if (!DateTime.TryParse(time, out selectedDate))
+            {
+                // 如果转换失败，则返回空的 PartialView
+                return PartialView("_ReservehourPartial", new List<Reserve>());
+            }
+
+            //DateTime selectedDate = DateTime.Parse(time);
+
+            // 查詢符合條件的 Business_hour 記錄
+            var businessHours = _context.Reserve
+                .Where(bh => bh.time.Date == selectedDate)
+                .ToList();
+
+            // 返回到前端，假設你的 View 期望接收一段 HTML 作為結果
+            return PartialView("_ReservehourPartial", businessHours);
+        }
+
+
+
 
         // GET: Reserves/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -33,7 +65,7 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var reserve = await _context.Reserves
+            var reserve = await _context.Reserve
                 .Include(r => r.business)
                 .Include(r => r.keeper)
                 .FirstOrDefaultAsync(m => m.id == id);
@@ -79,7 +111,7 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var reserve = await _context.Reserves.FindAsync(id);
+            var reserve = await _context.Reserve.FindAsync(id);
             if (reserve == null)
             {
                 return NotFound();
@@ -134,7 +166,7 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var reserve = await _context.Reserves
+            var reserve = await _context.Reserve
                 .Include(r => r.business)
                 .Include(r => r.keeper)
                 .FirstOrDefaultAsync(m => m.id == id);
@@ -151,10 +183,10 @@ namespace Tailstale.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var reserve = await _context.Reserves.FindAsync(id);
+            var reserve = await _context.Reserve.FindAsync(id);
             if (reserve != null)
             {
-                _context.Reserves.Remove(reserve);
+                _context.Reserve.Remove(reserve);
             }
 
             await _context.SaveChangesAsync();
@@ -163,7 +195,7 @@ namespace Tailstale.Controllers
 
         private bool ReserveExists(int id)
         {
-            return _context.Reserves.Any(e => e.id == id);
+            return _context.Reserve.Any(e => e.id == id);
         }
     }
 }

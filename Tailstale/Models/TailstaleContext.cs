@@ -31,7 +31,7 @@ public partial class TailstaleContext : DbContext
 
     public virtual DbSet<PaymentInfo> PaymentInfos { get; set; }
 
-    public virtual DbSet<Reserve> Reserves { get; set; }
+    public virtual DbSet<Reserve> Reserve { get; set; }
 
     public virtual DbSet<Review> Reviews { get; set; }
 
@@ -325,12 +325,12 @@ public partial class TailstaleContext : DbContext
                 .HasMaxLength(100);
             entity.Property(e => e.time).HasColumnType("datetime");
 
-            entity.HasOne(d => d.business).WithMany(p => p.Reserves)
+            entity.HasOne(d => d.business).WithMany(p => p.Reserve)
                 .HasForeignKey(d => d.business_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Reserve__busines__3864608B");
 
-            entity.HasOne(d => d.keeper).WithMany(p => p.Reserves)
+            entity.HasOne(d => d.keeper).WithMany(p => p.Reserve)
                 .HasForeignKey(d => d.keeper_id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Reserve__keeper___3A4CA8FD");
