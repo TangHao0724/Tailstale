@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35004.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tailstale", "Tailstale\Tailstale.csproj", "{383A377D-4D02-4A79-9036-818A75349067}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tailstale", "Tailstale\Tailstale.csproj", "{383A377D-4D02-4A79-9036-818A75349067}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "方案項目", "方案項目", "{A2C5D932-E450-48BC-BCD6-001EBA7C7554}"
 	ProjectSection(SolutionItems) = preProject
