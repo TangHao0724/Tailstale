@@ -12,10 +12,12 @@ namespace Tailstale.Controllers
     public class BeauticianController : Controller
     {
         private readonly TailstaleContext _context;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public BeauticianController(TailstaleContext context)
+        public BeauticianController(TailstaleContext context, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         // GET: Beautician
@@ -60,13 +62,102 @@ namespace Tailstale.Controllers
         {
             if (ModelState.IsValid)
             {
+                // 处理第一个上传的文件（Photo）
+                if (HttpContext.Request.Form.Files.Count > 0)
+                {
+                    var photoFile = HttpContext.Request.Form.Files[0]; // 获取第一个上传的文件
+
+                    if (photoFile != null && photoFile.Length > 0) // 检查文件是否有效
+                    {
+                        // 检查文件类型是否为图片
+                        if (!IsImageFile(photoFile))
+                        {
+                            ModelState.AddModelError("photo", "Only image files are allowed for Photo.");
+                            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
+                            return View(beautician);
+                        }
+
+                        // 生成唯一的文件名，避免重复
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(photoFile.FileName);
+
+                        // 指定文件的完整路径，将文件保存到 wwwroot/images 文件夹下
+                        string filePath = Path.Combine(_hostingEnvironment.WebRootPath, "Salon_img", uniqueFileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await photoFile.CopyToAsync(stream); // 将文件复制到指定路径
+                        }
+
+                        // 将文件名（包含扩展名）保存到 beautician 对象的 photo 属性
+                        beautician.photo = uniqueFileName;
+                    }
+                }
+
+                // 处理第二个上传的文件（Highest_license）
+                if (HttpContext.Request.Form.Files.Count > 1)
+                {
+                    var licenseFile = HttpContext.Request.Form.Files[1]; // 获取第二个上传的文件
+
+                    if (licenseFile != null && licenseFile.Length > 0) // 检查文件是否有效
+                    {
+                        // 检查文件类型是否为图片
+                        if (!IsImageFile(licenseFile))
+                        {
+                            ModelState.AddModelError("Highest_license", "Only image files are allowed for Highest License.");
+                            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
+                            return View(beautician);
+                        }
+
+                        // 生成唯一的文件名，避免重复
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(licenseFile.FileName);
+
+                        // 指定文件的完整路径，将文件保存到 wwwroot/images 文件夹下
+                        string filePath = Path.Combine(_hostingEnvironment.WebRootPath, "Salon_img", uniqueFileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await licenseFile.CopyToAsync(stream); // 将文件复制到指定路径
+                        }
+
+                        // 将文件名（包含扩展名）保存到 beautician 对象的 Highest_license 属性
+                        beautician.Highest_license = uniqueFileName;
+                    }
+                }
+
+                // 将 beautician 对象添加到数据库上下文并保存更改
                 _context.Add(beautician);
                 await _context.SaveChangesAsync();
+                ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
+                // 成功保存后重定向到 Index 页面
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
             return View(beautician);
+
+
+
+            //if (ModelState.IsValid)
+            //{
+            //    _context.Add(beautician);
+            //    await _context.SaveChangesAsync();
+            //    return RedirectToAction(nameof(Index));
+            //}
+            //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
+            //return View(beautician);
         }
+
+
+        private bool IsImageFile(IFormFile file)
+        {
+            // 定义有效的图片 MIME 类型
+            string[] allowedImageTypes = { "image/jpeg", "image/png", "image/gif" };
+
+            // 检查文件类型是否为图片
+            return allowedImageTypes.Contains(file.ContentType.ToLower());
+        }
+
+
 
         // GET: Beautician/Edit/5
         public async Task<IActionResult> Edit(int? id)
