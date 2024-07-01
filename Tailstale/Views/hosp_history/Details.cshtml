@@ -1,0 +1,54 @@
+﻿@model Tailstale.Models.hosp_history
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>hosp_history</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.admission_date)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.admission_date)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.discharge_date)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.discharge_date)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.memo)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.memo)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.medical_record)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.medical_record.admission_process)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.nursing_record)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.nursing_record.id)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ward)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ward.ward_ID)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
