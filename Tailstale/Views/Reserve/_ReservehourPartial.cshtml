@@ -1,8 +1,6 @@
 ﻿@model IEnumerable<Tailstale.Models.Reserve>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+
 <table class="table">
     <thead>
         <tr>
@@ -43,10 +41,10 @@
                 @Html.DisplayFor(modelItem => item.created_at)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.business.name)
+                    @Html.DisplayFor(modelItem => item.business.name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.keeper.address)
+                @Html.DisplayFor(modelItem => item.keeper.ID)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |

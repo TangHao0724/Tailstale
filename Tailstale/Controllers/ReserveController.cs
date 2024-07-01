@@ -47,6 +47,8 @@ namespace Tailstale.Controllers
 
             // 查詢符合條件的 Business_hour 記錄
             var businessHours = _context.Reserve
+                .Include(bh => bh.business)//這段讓view的item.business.name可以用id對應到name並顯示,當然前提這兩個表要有導覽屬性(外來建)
+                .Include(bh => bh.keeper)
                 .Where(bh => bh.time.Date == selectedDate)
                 .ToList();
 
@@ -81,7 +83,7 @@ namespace Tailstale.Controllers
         public IActionResult Create()
         {
             ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
-            ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "address");
+            ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name");
             return View();
         }
 

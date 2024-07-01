@@ -35,6 +35,7 @@ namespace Tailstale.Controllers
 
             // 查詢符合條件的 Business_hour 記錄
             var businessHours = _context.Business_hour
+                .Include(bh => bh.business)
                 .Where(bh => bh.business_day == selectedDate)
                 .ToList();
 
