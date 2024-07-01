@@ -189,29 +189,11 @@ ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", serv
                         throw;
                     }
                 }
+                ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", service.business_ID);
                 return RedirectToAction(nameof(Index));
             }
 
-            //if (ModelState.IsValid)
-            //{
-            //    try
-            //    {
-            //        _context.Update(service);
-            //        await _context.SaveChangesAsync();
-            //    }
-            //    catch (DbUpdateConcurrencyException)
-            //    {
-            //        if (!ServiceExists(service.id))
-            //        {
-            //            return NotFound();
-            //        }
-            //        else
-            //        {
-            //            throw;
-            //        }
-            //    }
-            //    return RedirectToAction(nameof(Index));
-            //}
+            
             ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", service.business_ID);
             return View(service);
         }
