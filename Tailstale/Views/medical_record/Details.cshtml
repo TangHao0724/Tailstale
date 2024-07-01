@@ -1,0 +1,79 @@
+﻿@model Tailstale.Models.medical_record
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>medical_record</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.pet)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.pet.pet_ID)
+        </dd>
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.outpatient_clinic)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.outpatient_clinic.name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.created_at)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.created_at)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.weight)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.weight)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.admission_process)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.admission_process)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.diagnosis)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.diagnosis)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.treatment)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.treatment)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.memo)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.memo)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.fee)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.fee)
+        </dd>
+        @*<dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.biological_test)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.biological_test.id)*@
+        
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

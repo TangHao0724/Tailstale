@@ -7,7 +7,11 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Tailstale.styles.css" asp-append-version="true" />
+<<<<<<< HEAD
     <link href="~/css/huninn_fontstyle.css" rel="stylesheet" />
+=======
+    @await RenderSectionAsync("Scripts", required: false)
+>>>>>>> origin/med-record
 </head>
 <body>
 <<<<<<< HEAD
@@ -30,6 +34,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         <li class="nav-item">
+<<<<<<< HEAD
                             <a class="nav-link text-dark" asp-area="" asp-controller="Service" asp-action="Index">Service</a>
                         </li>
                         <li class="nav-item">
@@ -43,6 +48,12 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Consumption_Record" asp-action="Index">Consumption_Record</a>
+=======
+                            <a class="nav-link text-dark" asp-area="" asp-controller="medical_record" asp-action="Index">病歷記錄</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="hosp_history" asp-action="Index">住院紀錄</a>
+>>>>>>> origin/med-record
                         </li>
                     </ul>
                     <partial name="_LoginPartial" />
@@ -66,7 +77,10 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+<<<<<<< HEAD
     @await RenderSectionAsync("Scripts", required: false)
     @await RenderSectionAsync("Styles", required: false)
+=======
+>>>>>>> origin/med-record
 </body>
 </html>
