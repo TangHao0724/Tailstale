@@ -37,9 +37,9 @@ public partial class TailstaleContext : DbContext
 
     public virtual DbSet<Room> Rooms { get; set; }
 
-    public virtual DbSet<Service> Services { get; set; }
+    public virtual DbSet<Service> Service { get; set; }
 
-    public virtual DbSet<Store_Service> Store_Services { get; set; }
+    public virtual DbSet<Store_Service> Store_Service { get; set; }
 
     public virtual DbSet<article> articles { get; set; }
 
@@ -388,7 +388,7 @@ public partial class TailstaleContext : DbContext
                 .IsRequired()
                 .HasMaxLength(100);
 
-            entity.HasOne(d => d.business).WithMany(p => p.Services)
+            entity.HasOne(d => d.business).WithMany(p => p.Service)
                 .HasForeignKey(d => d.business_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Service__busines__31B762FC");
@@ -400,12 +400,12 @@ public partial class TailstaleContext : DbContext
 
             entity.ToTable("Store_Service");
 
-            entity.HasOne(d => d.business).WithMany(p => p.Store_Services)
+            entity.HasOne(d => d.business).WithMany(p => p.Store_Service)
                 .HasForeignKey(d => d.business_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Store_Ser__busin__3D2915A8");
 
-            entity.HasOne(d => d.service).WithMany(p => p.Store_Services)
+            entity.HasOne(d => d.service).WithMany(p => p.Store_Service)
                 .HasForeignKey(d => d.service_id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Store_Ser__servi__3E1D39E1");

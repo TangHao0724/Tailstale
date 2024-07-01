@@ -9,23 +9,23 @@ using Tailstale.Models;
 
 namespace Tailstale.Controllers
 {
-    public class ServicesController : Controller
+    public class ServiceController : Controller
     {
         private readonly TailstaleContext _context;
 
-        public ServicesController(TailstaleContext context)
+        public ServiceController(TailstaleContext context)
         {
             _context = context;
         }
 
-        // GET: Services
+        // GET: Service
         public async Task<IActionResult> Index()
         {
-            var tailstaleContext = _context.Services.Include(s => s.business);
+            var tailstaleContext = _context.Service.Include(s => s.business);
             return View(await tailstaleContext.ToListAsync());
         }
 
-        // GET: Services/Details/5
+        // GET: Service/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,7 +33,7 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var service = await _context.Services
+            var service = await _context.Service
                 .Include(s => s.business)
                 .FirstOrDefaultAsync(m => m.id == id);
             if (service == null)
@@ -44,14 +44,14 @@ namespace Tailstale.Controllers
             return View(service);
         }
 
-        // GET: Services/Create
+        // GET: Service/Create
         public IActionResult Create()
         {
             ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
             return View();
         }
 
-        // POST: Services/Create
+        // POST: Service/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -68,7 +68,7 @@ namespace Tailstale.Controllers
             return View(service);
         }
 
-        // GET: Services/Edit/5
+        // GET: Service/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,7 +76,7 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var service = await _context.Services.FindAsync(id);
+            var service = await _context.Service.FindAsync(id);
             if (service == null)
             {
                 return NotFound();
@@ -85,7 +85,7 @@ namespace Tailstale.Controllers
             return View(service);
         }
 
-        // POST: Services/Edit/5
+        // POST: Service/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -121,7 +121,7 @@ namespace Tailstale.Controllers
             return View(service);
         }
 
-        // GET: Services/Delete/5
+        // GET: Service/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -129,7 +129,7 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var service = await _context.Services
+            var service = await _context.Service
                 .Include(s => s.business)
                 .FirstOrDefaultAsync(m => m.id == id);
             if (service == null)
@@ -140,15 +140,15 @@ namespace Tailstale.Controllers
             return View(service);
         }
 
-        // POST: Services/Delete/5
+        // POST: Service/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var service = await _context.Services.FindAsync(id);
+            var service = await _context.Service.FindAsync(id);
             if (service != null)
             {
-                _context.Services.Remove(service);
+                _context.Service.Remove(service);
             }
 
             await _context.SaveChangesAsync();
@@ -157,7 +157,7 @@ namespace Tailstale.Controllers
 
         private bool ServiceExists(int id)
         {
-            return _context.Services.Any(e => e.id == id);
+            return _context.Service.Any(e => e.id == id);
         }
     }
 }

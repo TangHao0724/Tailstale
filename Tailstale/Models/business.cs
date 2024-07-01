@@ -47,9 +47,9 @@ public partial class business
 
     public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();
 
-    public virtual ICollection<Service> Services { get; set; } = new List<Service>();
+    public virtual ICollection<Service> Service { get; set; } = new List<Service>();
 
-    public virtual ICollection<Store_Service> Store_Services { get; set; } = new List<Store_Service>();
+    public virtual ICollection<Store_Service> Store_Service { get; set; } = new List<Store_Service>();
 
     public virtual ICollection<business_img_type> business_img_types { get; set; } = new List<business_img_type>();
 
