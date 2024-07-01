@@ -20,7 +20,7 @@ namespace Tailstale.Controllers
             _context = context;
         }
 
-        //GET: Business_hour
+        //GET: Business_hour 
         public async Task<IActionResult> Index()
         {
             return View();
