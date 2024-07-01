@@ -97,8 +97,6 @@ public partial class TailstaleContext : DbContext
 
     public virtual DbSet<tag> tags { get; set; }
 
-    public virtual DbSet<user_photo> user_photos { get; set; }
-
     public virtual DbSet<using_person_tag> using_person_tags { get; set; }
 
     public virtual DbSet<using_tag> using_tags { get; set; }
@@ -113,7 +111,7 @@ public partial class TailstaleContext : DbContext
     {
         modelBuilder.Entity<Appointment>(entity =>
         {
-            entity.HasKey(e => e.Appointment_ID).HasName("PK__Appointm__FD01B50369793503");
+            entity.HasKey(e => e.Appointment_ID).HasName("PK__Appointm__FD01B5037F09C2A9");
 
             entity.ToTable("Appointment");
 
@@ -123,24 +121,24 @@ public partial class TailstaleContext : DbContext
 
             entity.HasOne(d => d.keeper).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.keeper_ID)
-                .HasConstraintName("FK__Appointme__keepe__68487DD7");
+                .HasConstraintName("FK__Appointme__keepe__6A30C649");
 
             entity.HasOne(d => d.outpatient_clinic).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.outpatient_clinic_ID)
-                .HasConstraintName("FK__Appointme__outpa__6A30C649");
+                .HasConstraintName("FK__Appointme__outpa__6C190EBB");
 
             entity.HasOne(d => d.pet).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.pet_ID)
-                .HasConstraintName("FK__Appointme__pet_I__6754599E");
+                .HasConstraintName("FK__Appointme__pet_I__693CA210");
 
             entity.HasOne(d => d.statusNavigation).WithMany(p => p.Appointments)
                 .HasForeignKey(d => d.status)
-                .HasConstraintName("FK__Appointme__statu__6B24EA82");
+                .HasConstraintName("FK__Appointme__statu__6D0D32F4");
         });
 
         modelBuilder.Entity<Beautician>(entity =>
         {
-            entity.HasKey(e => e.id).HasName("PK__Beautici__3213E83F680EA23F");
+            entity.HasKey(e => e.id).HasName("PK__Beautici__3213E83FFEAD8654");
 
             entity.ToTable("Beautician");
 
@@ -160,74 +158,77 @@ public partial class TailstaleContext : DbContext
             entity.HasOne(d => d.business).WithMany(p => p.Beauticians)
                 .HasForeignKey(d => d.business_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Beauticia__busin__40F9A68C");
+                .HasConstraintName("FK__Beauticia__busin__44CA3770");
         });
 
         modelBuilder.Entity<Booking>(entity =>
         {
-            entity.HasKey(e => e.bookingID).HasName("PK__Booking__C6D03BEDF5099BC8");
+            entity.HasKey(e => e.bookingID).HasName("PK__Booking__C6D03BED4D59DA63");
 
             entity.ToTable("Booking");
 
             entity.Property(e => e.bookingDate).HasColumnType("datetime");
-            entity.Property(e => e.bookingStatus).HasMaxLength(10);
             entity.Property(e => e.checkinDate).HasColumnType("datetime");
             entity.Property(e => e.checkoutDate).HasColumnType("datetime");
 
+            entity.HasOne(d => d.bookingStatusNavigation).WithMany(p => p.Bookings)
+                .HasForeignKey(d => d.bookingStatus)
+                .HasConstraintName("FK__Booking__booking__14E61A24");
+
             entity.HasOne(d => d.hotel).WithMany(p => p.Bookings)
                 .HasForeignKey(d => d.hotelID)
-                .HasConstraintName("FK__Booking__hotelID__25518C17");
+                .HasConstraintName("FK__Booking__hotelID__12FDD1B2");
 
             entity.HasOne(d => d.keeper).WithMany(p => p.Bookings)
                 .HasForeignKey(d => d.keeper_ID)
-                .HasConstraintName("FK__Booking__keeper___2645B050");
+                .HasConstraintName("FK__Booking__keeper___13F1F5EB");
         });
 
         modelBuilder.Entity<BookingDetail>(entity =>
         {
-            entity.HasKey(e => e.bdID).HasName("PK__BookingD__4E75390F9B89B63B");
+            entity.HasKey(e => e.bdID).HasName("PK__BookingD__4E75390F64E0D909");
 
             entity.HasOne(d => d.booking).WithMany(p => p.BookingDetails)
                 .HasForeignKey(d => d.bookingID)
-                .HasConstraintName("FK__BookingDe__booki__282DF8C2");
+                .HasConstraintName("FK__BookingDe__booki__16CE6296");
 
             entity.HasOne(d => d.room).WithMany(p => p.BookingDetails)
                 .HasForeignKey(d => d.roomID)
-                .HasConstraintName("FK__BookingDe__roomI__2739D489");
+                .HasConstraintName("FK__BookingDe__roomI__15DA3E5D");
         });
 
         modelBuilder.Entity<Business_hour>(entity =>
         {
-            entity.HasKey(e => e.id).HasName("PK__Business__3213E83F9AF343D9");
+            entity.HasKey(e => e.id).HasName("PK__Business__3213E83FAE8F3FA9");
 
             entity.Property(e => e.people_limit).HasDefaultValue(2);
 
             entity.HasOne(d => d.business).WithMany(p => p.Business_hours)
                 .HasForeignKey(d => d.business_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Business___busin__3493CFA7");
+                .HasConstraintName("FK__Business___busin__37703C52");
         });
 
         modelBuilder.Entity<CheckinDetail>(entity =>
         {
-            entity.HasKey(e => e.checkinID).HasName("PK__CheckinD__CF1A6A41E3507158");
+            entity.HasKey(e => e.checkinID).HasName("PK__CheckinD__CF1A6A4120B14C1D");
 
             entity.HasOne(d => d.booking).WithMany(p => p.CheckinDetails)
                 .HasForeignKey(d => d.bookingID)
-                .HasConstraintName("FK__CheckinDe__booki__2CF2ADDF");
+                .HasConstraintName("FK__CheckinDe__booki__1B9317B3");
 
             entity.HasOne(d => d.pet).WithMany(p => p.CheckinDetails)
                 .HasForeignKey(d => d.pet_ID)
-                .HasConstraintName("FK__CheckinDe__pet_I__2EDAF651");
+                .HasConstraintName("FK__CheckinDe__pet_I__1D7B6025");
 
             entity.HasOne(d => d.room).WithMany(p => p.CheckinDetails)
                 .HasForeignKey(d => d.roomID)
-                .HasConstraintName("FK__CheckinDe__roomI__2DE6D218");
+                .HasConstraintName("FK__CheckinDe__roomI__1C873BEC");
         });
 
         modelBuilder.Entity<Consumption_Record>(entity =>
         {
-            entity.HasKey(e => e.id).HasName("PK__Consumpt__3213E83FD1886742");
+            entity.HasKey(e => e.id).HasName("PK__Consumpt__3213E83F227C4A63");
 
             entity.ToTable("Consumption_Record");
 
@@ -248,22 +249,22 @@ public partial class TailstaleContext : DbContext
             entity.HasOne(d => d.beautician).WithMany(p => p.Consumption_Records)
                 .HasForeignKey(d => d.beautician_id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Consumpti__beaut__46B27FE2");
+                .HasConstraintName("FK__Consumpti__beaut__4A8310C6");
 
             entity.HasOne(d => d.business).WithMany(p => p.Consumption_Records)
                 .HasForeignKey(d => d.business_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Consumpti__busin__43D61337");
+                .HasConstraintName("FK__Consumpti__busin__47A6A41B");
 
             entity.HasOne(d => d.keeper).WithMany(p => p.Consumption_Records)
                 .HasForeignKey(d => d.keeper_id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Consumpti__keepe__45BE5BA9");
+                .HasConstraintName("FK__Consumpti__keepe__498EEC8D");
         });
 
         modelBuilder.Entity<Message>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("PK__Message__3214EC27B8379466");
+            entity.HasKey(e => e.ID).HasName("PK__Message__3214EC272210896B");
 
             entity.ToTable("Message");
 
@@ -274,16 +275,16 @@ public partial class TailstaleContext : DbContext
 
             entity.HasOne(d => d.FK_Target).WithMany(p => p.MessageFK_Targets)
                 .HasForeignKey(d => d.FK_Target_ID)
-                .HasConstraintName("FK__Message__FK_Targ__607251E5");
+                .HasConstraintName("FK__Message__FK_Targ__6166761E");
 
             entity.HasOne(d => d.FK_User).WithMany(p => p.MessageFK_Users)
                 .HasForeignKey(d => d.FK_User_ID)
-                .HasConstraintName("FK__Message__FK_User__5F7E2DAC");
+                .HasConstraintName("FK__Message__FK_User__607251E5");
         });
 
         modelBuilder.Entity<PaymentInfo>(entity =>
         {
-            entity.HasKey(e => e.paymentID).HasName("PK__PaymentI__A0D9EFA64B2F4958");
+            entity.HasKey(e => e.paymentID).HasName("PK__PaymentI__A0D9EFA639527AB9");
 
             entity.ToTable("PaymentInfo");
 
@@ -295,20 +296,20 @@ public partial class TailstaleContext : DbContext
 
             entity.HasOne(d => d.booking).WithMany(p => p.PaymentInfos)
                 .HasForeignKey(d => d.bookingID)
-                .HasConstraintName("FK__PaymentIn__booki__2BFE89A6");
+                .HasConstraintName("FK__PaymentIn__booki__1A9EF37A");
 
             entity.HasOne(d => d.business).WithMany(p => p.PaymentInfos)
                 .HasForeignKey(d => d.business_ID)
-                .HasConstraintName("FK__PaymentIn__busin__236943A5");
+                .HasConstraintName("FK__PaymentIn__busin__25518C17");
 
             entity.HasOne(d => d.keeper).WithMany(p => p.PaymentInfos)
                 .HasForeignKey(d => d.keeper_ID)
-                .HasConstraintName("FK__PaymentIn__keepe__2B0A656D");
+                .HasConstraintName("FK__PaymentIn__keepe__19AACF41");
         });
 
         modelBuilder.Entity<Reserve>(entity =>
         {
-            entity.HasKey(e => e.id).HasName("PK__Reserve__3213E83FCB4BFB3F");
+            entity.HasKey(e => e.id).HasName("PK__Reserve__3213E83F89C7DEDD");
 
             entity.ToTable("Reserve");
 
@@ -326,17 +327,21 @@ public partial class TailstaleContext : DbContext
             entity.HasOne(d => d.business).WithMany(p => p.Reserves)
                 .HasForeignKey(d => d.business_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Reserve__busines__3864608B");
+                .HasConstraintName("FK__Reserve__busines__3B40CD36");
 
             entity.HasOne(d => d.keeper).WithMany(p => p.Reserves)
                 .HasForeignKey(d => d.keeper_id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Reserve__keeper___3A4CA8FD");
+                .HasConstraintName("FK__Reserve__keeper___3E1D39E1");
+
+            entity.HasOne(d => d.statusNavigation).WithMany(p => p.Reserves)
+                .HasForeignKey(d => d.status)
+                .HasConstraintName("FK__Reserve__status__3D2915A8");
         });
 
         modelBuilder.Entity<Review>(entity =>
         {
-            entity.HasKey(e => e.reviewID).HasName("PK__Review__2ECD6E241C750ED1");
+            entity.HasKey(e => e.reviewID).HasName("PK__Review__2ECD6E24F5A2F88A");
 
             entity.ToTable("Review");
 
@@ -345,16 +350,16 @@ public partial class TailstaleContext : DbContext
 
             entity.HasOne(d => d.keeper).WithMany(p => p.Reviews)
                 .HasForeignKey(d => d.keeper_ID)
-                .HasConstraintName("FK__Review__keeper_I__2A164134");
+                .HasConstraintName("FK__Review__keeper_I__18B6AB08");
 
             entity.HasOne(d => d.room).WithMany(p => p.Reviews)
                 .HasForeignKey(d => d.roomID)
-                .HasConstraintName("FK__Review__roomID__29221CFB");
+                .HasConstraintName("FK__Review__roomID__17C286CF");
         });
 
         modelBuilder.Entity<Room>(entity =>
         {
-            entity.HasKey(e => e.roomID).HasName("PK__Rooms__6C3BF5DEF7D79A85");
+            entity.HasKey(e => e.roomID).HasName("PK__Rooms__6C3BF5DE5928DADB");
 
             entity.Property(e => e.roomDescrep).HasMaxLength(255);
             entity.Property(e => e.roomSpecies).HasMaxLength(10);
@@ -363,12 +368,12 @@ public partial class TailstaleContext : DbContext
             entity.HasOne(d => d.hotel).WithMany(p => p.Rooms)
                 .HasForeignKey(d => d.hotelID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Rooms__hotelID__245D67DE");
+                .HasConstraintName("FK__Rooms__hotelID__1209AD79");
         });
 
         modelBuilder.Entity<Service>(entity =>
         {
-            entity.HasKey(e => e.id).HasName("PK__Service__3213E83F26C98EE4");
+            entity.HasKey(e => e.id).HasName("PK__Service__3213E83F3299E82E");
 
             entity.ToTable("Service");
 
@@ -389,29 +394,29 @@ public partial class TailstaleContext : DbContext
             entity.HasOne(d => d.business).WithMany(p => p.Services)
                 .HasForeignKey(d => d.business_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Service__busines__31B762FC");
+                .HasConstraintName("FK__Service__busines__3493CFA7");
         });
 
         modelBuilder.Entity<Store_Service>(entity =>
         {
-            entity.HasKey(e => e.id).HasName("PK__Store_Se__3213E83FCA3D31E9");
+            entity.HasKey(e => e.id).HasName("PK__Store_Se__3213E83F5676CDD4");
 
             entity.ToTable("Store_Service");
 
             entity.HasOne(d => d.business).WithMany(p => p.Store_Services)
                 .HasForeignKey(d => d.business_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Store_Ser__busin__3D2915A8");
+                .HasConstraintName("FK__Store_Ser__busin__40F9A68C");
 
             entity.HasOne(d => d.service).WithMany(p => p.Store_Services)
                 .HasForeignKey(d => d.service_id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Store_Ser__servi__3E1D39E1");
+                .HasConstraintName("FK__Store_Ser__servi__41EDCAC5");
         });
 
         modelBuilder.Entity<article>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("PK__article__3214EC2748F43FA4");
+            entity.HasKey(e => e.ID).HasName("PK__article__3214EC271157054E");
 
             entity.ToTable("article");
 
@@ -423,16 +428,16 @@ public partial class TailstaleContext : DbContext
 
             entity.HasOne(d => d.FK_Keeper).WithMany(p => p.articles)
                 .HasForeignKey(d => d.FK_Keeper_ID)
-                .HasConstraintName("FK__article__FK_Keep__498EEC8D");
+                .HasConstraintName("FK__article__FK_Keep__4D5F7D71");
 
             entity.HasOne(d => d.parent).WithMany(p => p.Inverseparent)
                 .HasForeignKey(d => d.parent_ID)
-                .HasConstraintName("FK__article__parent___4B7734FF");
+                .HasConstraintName("FK__article__parent___4F47C5E3");
         });
 
         modelBuilder.Entity<biological_test>(entity =>
         {
-            entity.HasKey(e => e.id).HasName("PK__biologic__3213E83FB98C1EAD");
+            entity.HasKey(e => e.id).HasName("PK__biologic__3213E83FF89ACDB9");
 
             entity.ToTable("biological_test");
 
@@ -443,32 +448,33 @@ public partial class TailstaleContext : DbContext
 
             entity.HasOne(d => d.pet_details).WithMany(p => p.biological_tests)
                 .HasForeignKey(d => d.pet_details_id)
-                .HasConstraintName("FK__biologica__pet_d__76969D2E");
+                .HasConstraintName("FK__biologica__pet_d__787EE5A0");
 
             entity.HasOne(d => d.specimen).WithMany(p => p.biological_tests)
                 .HasForeignKey(d => d.specimen_id)
-                .HasConstraintName("FK__biologica__speci__787EE5A0");
+                .HasConstraintName("FK__biologica__speci__7A672E12");
         });
 
         modelBuilder.Entity<business>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("PK__business__3214EC2715212821");
+            entity.HasKey(e => e.ID).HasName("PK__business__3214EC27D2697E37");
 
             entity.ToTable("business");
 
+            entity.Property(e => e.FK_status_ID).HasDefaultValue(1);
             entity.Property(e => e.address)
                 .HasMaxLength(200)
-                .HasDefaultValue("???");
+                .HasDefaultValue("未填寫");
             entity.Property(e => e.created_at)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.email)
                 .HasMaxLength(100)
-                .HasDefaultValue("???");
-            entity.Property(e => e.geoJson).HasDefaultValue("???");
+                .HasDefaultValue("未填寫");
+            entity.Property(e => e.geoJson).HasDefaultValue("未填寫");
             entity.Property(e => e.license_number)
                 .HasMaxLength(50)
-                .HasDefaultValue("???");
+                .HasDefaultValue("未填寫");
             entity.Property(e => e.name)
                 .IsRequired()
                 .HasMaxLength(100);
@@ -477,22 +483,21 @@ public partial class TailstaleContext : DbContext
                 .HasMaxLength(100);
             entity.Property(e => e.phone)
                 .HasMaxLength(30)
-                .HasDefaultValue("???");
+                .HasDefaultValue("未填寫");
             entity.Property(e => e.photo_url).HasMaxLength(200);
 
             entity.HasOne(d => d.FK_status).WithMany(p => p.businesses)
                 .HasForeignKey(d => d.FK_status_ID)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__business__FK_sta__5165187F");
+                .HasConstraintName("FK__business__FK_sta__52593CB8");
 
             entity.HasOne(d => d.type).WithMany(p => p.businesses)
                 .HasForeignKey(d => d.type_ID)
-                .HasConstraintName("FK__business__type_I__4BAC3F29");
+                .HasConstraintName("FK__business__type_I__4CA06362");
         });
 
         modelBuilder.Entity<business_img>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("PK__business__3214EC2759C6FF54");
+            entity.HasKey(e => e.ID).HasName("PK__business__3214EC277C25D957");
 
             entity.ToTable("business_img");
 
@@ -506,12 +511,12 @@ public partial class TailstaleContext : DbContext
 
             entity.HasOne(d => d.img_type).WithMany(p => p.business_imgs)
                 .HasForeignKey(d => d.img_type_id)
-                .HasConstraintName("FK__business___img_t__70A8B9AE");
+                .HasConstraintName("FK__business___img_t__719CDDE7");
         });
 
         modelBuilder.Entity<business_img_type>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("PK__business__3214EC272BD11D38");
+            entity.HasKey(e => e.ID).HasName("PK__business__3214EC272FC12C34");
 
             entity.ToTable("business_img_type");
 
@@ -522,12 +527,12 @@ public partial class TailstaleContext : DbContext
 
             entity.HasOne(d => d.FK_business).WithMany(p => p.business_img_types)
                 .HasForeignKey(d => d.FK_business_id)
-                .HasConstraintName("FK__business___FK_bu__6CD828CA");
+                .HasConstraintName("FK__business___FK_bu__6DCC4D03");
         });
 
         modelBuilder.Entity<business_type>(entity =>
         {
-            entity.HasKey(e => e.business_type_ID).HasName("PK__business__2F9BFA517A5DBA54");
+            entity.HasKey(e => e.business_type_ID).HasName("PK__business__2F9BFA5116524B35");
 
             entity.ToTable("business_type");
 
@@ -538,7 +543,7 @@ public partial class TailstaleContext : DbContext
 
         modelBuilder.Entity<department>(entity =>
         {
-            entity.HasKey(e => e.department_ID).HasName("PK__departme__C22220EAE5FBC8D3");
+            entity.HasKey(e => e.department_ID).HasName("PK__departme__C22220EA5F43BD77");
 
             entity.ToTable("department");
 
@@ -548,12 +553,12 @@ public partial class TailstaleContext : DbContext
 
             entity.HasOne(d => d.business).WithMany(p => p.departments)
                 .HasForeignKey(d => d.business_ID)
-                .HasConstraintName("FK__departmen__busin__59063A47");
+                .HasConstraintName("FK__departmen__busin__5AEE82B9");
         });
 
         modelBuilder.Entity<hosp_history>(entity =>
         {
-            entity.HasKey(e => e.id).HasName("PK__hosp_his__3213E83FA10FD68B");
+            entity.HasKey(e => e.id).HasName("PK__hosp_his__3213E83F196E85AB");
 
             entity.ToTable("hosp_history");
 
@@ -563,20 +568,20 @@ public partial class TailstaleContext : DbContext
 
             entity.HasOne(d => d.medical_record).WithMany(p => p.hosp_histories)
                 .HasForeignKey(d => d.medical_record_id)
-                .HasConstraintName("FK__hosp_hist__medic__151B244E");
+                .HasConstraintName("FK__hosp_hist__medic__17036CC0");
 
             entity.HasOne(d => d.nursing_record).WithMany(p => p.hosp_histories)
                 .HasForeignKey(d => d.nursing_record_id)
-                .HasConstraintName("FK__hosp_hist__nursi__160F4887");
+                .HasConstraintName("FK__hosp_hist__nursi__17F790F9");
 
             entity.HasOne(d => d.ward).WithMany(p => p.hosp_histories)
                 .HasForeignKey(d => d.ward_id)
-                .HasConstraintName("FK__hosp_hist__ward___17036CC0");
+                .HasConstraintName("FK__hosp_hist__ward___18EBB532");
         });
 
         modelBuilder.Entity<image_file>(entity =>
         {
-            entity.HasKey(e => e.image_id).HasName("PK__image_fi__DC9AC9553807F649");
+            entity.HasKey(e => e.image_id).HasName("PK__image_fi__DC9AC9556D8A1EEE");
 
             entity.Property(e => e.file_path)
                 .IsRequired()
@@ -587,18 +592,16 @@ public partial class TailstaleContext : DbContext
 
             entity.HasOne(d => d.record_type).WithMany(p => p.image_files)
                 .HasForeignKey(d => d.record_type_id)
-                .HasConstraintName("FK__image_fil__recor__6FE99F9F");
+                .HasConstraintName("FK__image_fil__recor__71D1E811");
         });
 
         modelBuilder.Entity<keeper>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("PK__keeper__3214EC27AA828BCD");
+            entity.HasKey(e => e.ID).HasName("PK__keeper__3214EC279F452980");
 
             entity.ToTable("keeper");
 
-            entity.Property(e => e.address)
-                .IsRequired()
-                .HasMaxLength(200);
+            entity.Property(e => e.address).HasMaxLength(200);
             entity.Property(e => e.created_at)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
@@ -611,19 +614,17 @@ public partial class TailstaleContext : DbContext
             entity.Property(e => e.password)
                 .IsRequired()
                 .HasMaxLength(100);
-            entity.Property(e => e.phone)
-                .IsRequired()
-                .HasMaxLength(15);
+            entity.Property(e => e.phone).HasMaxLength(15);
+            entity.Property(e => e.status).HasDefaultValue(1);
 
             entity.HasOne(d => d.statusNavigation).WithMany(p => p.keepers)
                 .HasForeignKey(d => d.status)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__keeper__status__3C69FB99");
         });
 
         modelBuilder.Entity<keeper_img>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("PK__keeper_i__3214EC273D4FD266");
+            entity.HasKey(e => e.ID).HasName("PK__keeper_i__3214EC27104502D3");
 
             entity.ToTable("keeper_img");
 
@@ -637,12 +638,12 @@ public partial class TailstaleContext : DbContext
 
             entity.HasOne(d => d.img_type).WithMany(p => p.keeper_imgs)
                 .HasForeignKey(d => d.img_type_id)
-                .HasConstraintName("FK__keeper_im__img_t__681373AD");
+                .HasConstraintName("FK__keeper_im__img_t__690797E6");
         });
 
         modelBuilder.Entity<keeper_img_type>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("PK__keeper_i__3214EC277033C33C");
+            entity.HasKey(e => e.ID).HasName("PK__keeper_i__3214EC273A786237");
 
             entity.ToTable("keeper_img_type");
 
@@ -653,12 +654,12 @@ public partial class TailstaleContext : DbContext
 
             entity.HasOne(d => d.FK_Keeper).WithMany(p => p.keeper_img_types)
                 .HasForeignKey(d => d.FK_Keeper_id)
-                .HasConstraintName("FK__keeper_im__FK_Ke__6442E2C9");
+                .HasConstraintName("FK__keeper_im__FK_Ke__65370702");
         });
 
         modelBuilder.Entity<medical_record>(entity =>
         {
-            entity.HasKey(e => e.id).HasName("PK__medical___3213E83FFF194A79");
+            entity.HasKey(e => e.id).HasName("PK__medical___3213E83FEA13D748");
 
             entity.ToTable("medical_record");
 
@@ -679,20 +680,20 @@ public partial class TailstaleContext : DbContext
 
             entity.HasOne(d => d.biological_test).WithMany(p => p.medical_records)
                 .HasForeignKey(d => d.biological_test_id)
-                .HasConstraintName("FK__medical_r__biolo__7E37BEF6");
+                .HasConstraintName("FK__medical_r__biolo__00200768");
 
             entity.HasOne(d => d.outpatient_clinic).WithMany(p => p.medical_records)
                 .HasForeignKey(d => d.outpatient_clinic_id)
-                .HasConstraintName("FK__medical_r__outpa__7D439ABD");
+                .HasConstraintName("FK__medical_r__outpa__7F2BE32F");
 
             entity.HasOne(d => d.pet).WithMany(p => p.medical_records)
                 .HasForeignKey(d => d.pet_id)
-                .HasConstraintName("FK__medical_r__pet_i__7B5B524B");
+                .HasConstraintName("FK__medical_r__pet_i__7D439ABD");
         });
 
         modelBuilder.Entity<medicine_generic_name>(entity =>
         {
-            entity.HasKey(e => e.id).HasName("PK__medicine__3213E83F3B9A2E1F");
+            entity.HasKey(e => e.id).HasName("PK__medicine__3213E83F2871DC10");
 
             entity.ToTable("medicine_generic_name");
 
@@ -705,18 +706,18 @@ public partial class TailstaleContext : DbContext
 
         modelBuilder.Entity<medicine_order_detail>(entity =>
         {
-            entity.HasKey(e => e.id).HasName("PK__medicine__3213E83FF43C3AEA");
+            entity.HasKey(e => e.id).HasName("PK__medicine__3213E83F76F36A84");
 
             entity.Property(e => e.status).HasMaxLength(50);
 
             entity.HasOne(d => d.nurseimg_record).WithMany(p => p.medicine_order_details)
                 .HasForeignKey(d => d.nurseimg_record_id)
-                .HasConstraintName("FK__medicine___nurse__123EB7A3");
+                .HasConstraintName("FK__medicine___nurse__14270015");
         });
 
         modelBuilder.Entity<medicine_order_record>(entity =>
         {
-            entity.HasKey(e => e.id).HasName("PK__medicine__3213E83F48D972CE");
+            entity.HasKey(e => e.id).HasName("PK__medicine__3213E83F2FDA8CC7");
 
             entity.ToTable("medicine_order_record");
 
@@ -730,16 +731,16 @@ public partial class TailstaleContext : DbContext
 
             entity.HasOne(d => d.medical_record).WithMany(p => p.medicine_order_records)
                 .HasForeignKey(d => d.medical_record_id)
-                .HasConstraintName("FK__medicine___medic__02FC7413");
+                .HasConstraintName("FK__medicine___medic__04E4BC85");
 
             entity.HasOne(d => d.medicine_generic_name).WithMany(p => p.medicine_order_records)
                 .HasForeignKey(d => d.medicine_generic_name_id)
-                .HasConstraintName("FK__medicine___medic__03F0984C");
+                .HasConstraintName("FK__medicine___medic__05D8E0BE");
         });
 
         modelBuilder.Entity<memo>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("PK__memo__3214EC27D87FC4E8");
+            entity.HasKey(e => e.ID).HasName("PK__memo__3214EC27D2390C69");
 
             entity.ToTable("memo");
 
@@ -747,16 +748,16 @@ public partial class TailstaleContext : DbContext
 
             entity.HasOne(d => d.FK_keeper).WithMany(p => p.memos)
                 .HasForeignKey(d => d.FK_keeper_ID)
-                .HasConstraintName("FK__memo__FK_keeper___5535A963");
+                .HasConstraintName("FK__memo__FK_keeper___571DF1D5");
 
             entity.HasOne(d => d.business).WithMany(p => p.memos)
                 .HasForeignKey(d => d.business_ID)
-                .HasConstraintName("FK__memo__business_I__5629CD9C");
+                .HasConstraintName("FK__memo__business_I__5812160E");
         });
 
         modelBuilder.Entity<nursing_record>(entity =>
         {
-            entity.HasKey(e => e.id).HasName("PK__nursing___3213E83F41D1C51C");
+            entity.HasKey(e => e.id).HasName("PK__nursing___3213E83FB972424A");
 
             entity.ToTable("nursing_record");
 
@@ -766,20 +767,20 @@ public partial class TailstaleContext : DbContext
 
             entity.HasOne(d => d.biological_test).WithMany(p => p.nursing_records)
                 .HasForeignKey(d => d.biological_test_id)
-                .HasConstraintName("FK__nursing_r__biolo__0F624AF8");
+                .HasConstraintName("FK__nursing_r__biolo__114A936A");
 
             entity.HasOne(d => d.pet).WithMany(p => p.nursing_records)
                 .HasForeignKey(d => d.pet_id)
-                .HasConstraintName("FK__nursing_r__pet_i__0D7A0286");
+                .HasConstraintName("FK__nursing_r__pet_i__0F624AF8");
 
             entity.HasOne(d => d.vital_sign_record).WithMany(p => p.nursing_records)
                 .HasForeignKey(d => d.vital_sign_record_id)
-                .HasConstraintName("FK__nursing_r__vital__0E6E26BF");
+                .HasConstraintName("FK__nursing_r__vital__10566F31");
         });
 
         modelBuilder.Entity<order_status>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("PK__order_st__3214EC2736894756");
+            entity.HasKey(e => e.ID).HasName("PK__order_st__3214EC27BCBD470B");
 
             entity.ToTable("order_status");
 
@@ -790,7 +791,7 @@ public partial class TailstaleContext : DbContext
 
         modelBuilder.Entity<outpatient_clinic>(entity =>
         {
-            entity.HasKey(e => e.outpatient_clinic_ID).HasName("PK__outpatie__6AA2EF94A2A3F295");
+            entity.HasKey(e => e.outpatient_clinic_ID).HasName("PK__outpatie__6AA2EF94CDB929B3");
 
             entity.ToTable("outpatient_clinic");
 
@@ -800,67 +801,67 @@ public partial class TailstaleContext : DbContext
 
             entity.HasOne(d => d.business).WithMany(p => p.outpatient_clinics)
                 .HasForeignKey(d => d.business_ID)
-                .HasConstraintName("FK__outpatien__busin__5FB337D6");
+                .HasConstraintName("FK__outpatien__busin__619B8048");
 
             entity.HasOne(d => d.department).WithMany(p => p.outpatient_clinics)
                 .HasForeignKey(d => d.department_ID)
-                .HasConstraintName("FK__outpatien__depar__60A75C0F");
+                .HasConstraintName("FK__outpatien__depar__628FA481");
 
             entity.HasOne(d => d.vet).WithMany(p => p.outpatient_clinics)
                 .HasForeignKey(d => d.vet_ID)
-                .HasConstraintName("FK__outpatien__vet_I__619B8048");
+                .HasConstraintName("FK__outpatien__vet_I__6383C8BA");
         });
 
         modelBuilder.Entity<person_tag>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("PK__person_t__3214EC27078029FA");
+            entity.HasKey(e => e.ID).HasName("PK__person_t__3214EC27ED308750");
 
             entity.Property(e => e.name).HasMaxLength(128);
 
             entity.HasOne(d => d.FK_Keeper).WithMany(p => p.person_tags)
                 .HasForeignKey(d => d.FK_Keeper_ID)
-                .HasConstraintName("FK__person_ta__FK_Ke__55009F39");
+                .HasConstraintName("FK__person_ta__FK_Ke__58D1301D");
         });
 
         modelBuilder.Entity<pet>(entity =>
         {
-            entity.HasKey(e => e.pet_ID).HasName("PK__pet__3913D16662BFF238");
+            entity.HasKey(e => e.pet_ID).HasName("PK__pet__3913D1660915AC48");
 
             entity.ToTable("pet");
 
             entity.Property(e => e.allergy)
                 .HasMaxLength(200)
-                .HasDefaultValue("?????");
+                .HasDefaultValue("無過敏記錄");
             entity.Property(e => e.chip_ID)
                 .HasMaxLength(50)
-                .HasDefaultValue("???");
+                .HasDefaultValue("無晶片");
             entity.Property(e => e.chronic_dis)
                 .HasMaxLength(200)
-                .HasDefaultValue("?????");
+                .HasDefaultValue("無慢性病史");
             entity.Property(e => e.created_at)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.memo)
                 .HasMaxLength(200)
-                .HasDefaultValue("???");
+                .HasDefaultValue("無備註");
             entity.Property(e => e.name).HasMaxLength(100);
             entity.Property(e => e.pet_weight).HasColumnType("decimal(5, 2)");
             entity.Property(e => e.vaccine)
                 .HasMaxLength(100)
-                .HasDefaultValue("???????");
+                .HasDefaultValue("無疫苗施打紀錄");
 
             entity.HasOne(d => d.FK_keeper).WithMany(p => p.pets)
                 .HasForeignKey(d => d.FK_keeper_ID)
-                .HasConstraintName("FK__pet__FK_keeper_I__412EB0B6");
+                .HasConstraintName("FK__pet__FK_keeper_I__4222D4EF");
 
             entity.HasOne(d => d.FK_pet_type).WithMany(p => p.pets)
                 .HasForeignKey(d => d.FK_pet_type_ID)
-                .HasConstraintName("FK__pet__FK_pet_type__403A8C7D");
+                .HasConstraintName("FK__pet__FK_pet_type__412EB0B6");
         });
 
         modelBuilder.Entity<pet_type>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("PK__pet_type__3214EC27AF2946AB");
+            entity.HasKey(e => e.ID).HasName("PK__pet_type__3214EC27E47EAAE5");
 
             entity.ToTable("pet_type");
 
@@ -874,7 +875,7 @@ public partial class TailstaleContext : DbContext
 
         modelBuilder.Entity<record_type>(entity =>
         {
-            entity.HasKey(e => e.id).HasName("PK__record_t__3213E83FB76A0FF2");
+            entity.HasKey(e => e.id).HasName("PK__record_t__3213E83F82C4E45D");
 
             entity.ToTable("record_type");
 
@@ -885,7 +886,7 @@ public partial class TailstaleContext : DbContext
 
         modelBuilder.Entity<speciman>(entity =>
         {
-            entity.HasKey(e => e.id).HasName("PK__specimen__3213E83FADBC1B3D");
+            entity.HasKey(e => e.id).HasName("PK__specimen__3213E83F2A98AE7D");
 
             entity.Property(e => e.normal_range_max).HasColumnType("decimal(7, 3)");
             entity.Property(e => e.normal_range_min).HasColumnType("decimal(7, 3)");
@@ -894,12 +895,12 @@ public partial class TailstaleContext : DbContext
 
             entity.HasOne(d => d.pet_typeNavigation).WithMany(p => p.specimen)
                 .HasForeignKey(d => d.pet_type)
-                .HasConstraintName("FK__specimen__pet_ty__73BA3083");
+                .HasConstraintName("FK__specimen__pet_ty__75A278F5");
         });
 
         modelBuilder.Entity<status>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("PK__status__3214EC2768AC4D6F");
+            entity.HasKey(e => e.ID).HasName("PK__status__3214EC27938CC1D1");
 
             entity.ToTable("status");
 
@@ -910,7 +911,7 @@ public partial class TailstaleContext : DbContext
 
         modelBuilder.Entity<surgery>(entity =>
         {
-            entity.HasKey(e => e.id).HasName("PK__surgery__3213E83F21E60226");
+            entity.HasKey(e => e.id).HasName("PK__surgery__3213E83FCDCB2808");
 
             entity.ToTable("surgery");
 
@@ -922,74 +923,61 @@ public partial class TailstaleContext : DbContext
 
             entity.HasOne(d => d.medical_record).WithMany(p => p.surgeries)
                 .HasForeignKey(d => d.medical_record_id)
-                .HasConstraintName("FK__surgery__medical__08B54D69");
+                .HasConstraintName("FK__surgery__medical__0A9D95DB");
 
             entity.HasOne(d => d.medicine_order_recordNavigation).WithMany(p => p.surgeries)
                 .HasForeignKey(d => d.medicine_order_record)
-                .HasConstraintName("FK__surgery__medicin__09A971A2");
+                .HasConstraintName("FK__surgery__medicin__0B91BA14");
 
             entity.HasOne(d => d.vital_sign_record).WithMany(p => p.surgeries)
                 .HasForeignKey(d => d.vital_sign_record_id)
-                .HasConstraintName("FK__surgery__vital_s__0A9D95DB");
+                .HasConstraintName("FK__surgery__vital_s__0C85DE4D");
         });
 
         modelBuilder.Entity<tag>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("PK__tags__3214EC27328439CD");
+            entity.HasKey(e => e.ID).HasName("PK__tags__3214EC279F1B4D32");
 
             entity.Property(e => e.name).HasMaxLength(128);
-        });
-
-        modelBuilder.Entity<user_photo>(entity =>
-        {
-            entity.HasKey(e => e.ID).HasName("PK__user_pho__3214EC27751CA3B5");
-
-            entity.ToTable("user_photo");
-
-            entity.Property(e => e.name).HasMaxLength(128);
-
-            entity.HasOne(d => d.FK_Keeper).WithMany(p => p.user_photos)
-                .HasForeignKey(d => d.FK_Keeper_ID)
-                .HasConstraintName("FK__user_phot__FK_Ke__5CA1C101");
         });
 
         modelBuilder.Entity<using_person_tag>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("PK__using_pe__3214EC27E408EB9A");
+            entity.HasKey(e => e.ID).HasName("PK__using_pe__3214EC278CBE0E9C");
 
             entity.HasOne(d => d.FK_Keeper).WithMany(p => p.using_person_tags)
                 .HasForeignKey(d => d.FK_Keeper_ID)
-                .HasConstraintName("FK__using_per__FK_Ke__57DD0BE4");
+                .HasConstraintName("FK__using_per__FK_Ke__5BAD9CC8");
 
             entity.HasOne(d => d.FK_article).WithMany(p => p.using_person_tags)
                 .HasForeignKey(d => d.FK_article_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__using_per__FK_ar__58D1301D");
+                .HasConstraintName("FK__using_per__FK_ar__5CA1C101");
 
             entity.HasOne(d => d.FK_person_tags).WithMany(p => p.using_person_tags)
                 .HasForeignKey(d => d.FK_person_tags_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__using_per__FK_pe__59C55456");
+                .HasConstraintName("FK__using_per__FK_pe__5D95E53A");
         });
 
         modelBuilder.Entity<using_tag>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("PK__using_ta__3214EC27B1EB013D");
+            entity.HasKey(e => e.ID).HasName("PK__using_ta__3214EC27A2505C33");
 
             entity.HasOne(d => d.FK_article).WithMany(p => p.using_tags)
                 .HasForeignKey(d => d.FK_article_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__using_tag__FK_ar__51300E55");
+                .HasConstraintName("FK__using_tag__FK_ar__55009F39");
 
             entity.HasOne(d => d.FK_tags).WithMany(p => p.using_tags)
                 .HasForeignKey(d => d.FK_tags_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__using_tag__FK_ta__5224328E");
+                .HasConstraintName("FK__using_tag__FK_ta__55F4C372");
         });
 
         modelBuilder.Entity<vet_information>(entity =>
         {
-            entity.HasKey(e => e.vet_ID).HasName("PK__vet_info__D816DB2B3AF3B0B6");
+            entity.HasKey(e => e.vet_ID).HasName("PK__vet_info__D816DB2BA3C3C6F4");
 
             entity.Property(e => e.license_number).HasMaxLength(50);
             entity.Property(e => e.profile).HasMaxLength(500);
@@ -997,23 +985,23 @@ public partial class TailstaleContext : DbContext
 
             entity.HasOne(d => d.business).WithMany(p => p.vet_informations)
                 .HasForeignKey(d => d.business_ID)
-                .HasConstraintName("FK__vet_infor__busin__5BE2A6F2");
+                .HasConstraintName("FK__vet_infor__busin__5DCAEF64");
 
             entity.HasOne(d => d.department).WithMany(p => p.vet_informations)
                 .HasForeignKey(d => d.department_ID)
-                .HasConstraintName("FK__vet_infor__depar__5CD6CB2B");
+                .HasConstraintName("FK__vet_infor__depar__5EBF139D");
         });
 
         modelBuilder.Entity<vital_sign_record>(entity =>
         {
-            entity.HasKey(e => e.id).HasName("PK__vital_si__3213E83F1BFFC3AE");
+            entity.HasKey(e => e.id).HasName("PK__vital_si__3213E83F6871E045");
 
             entity.ToTable("vital_sign_record");
         });
 
         modelBuilder.Entity<ward>(entity =>
         {
-            entity.HasKey(e => e.ward_ID).HasName("PK__ward__396CB5D59F67060A");
+            entity.HasKey(e => e.ward_ID).HasName("PK__ward__396CB5D5414E0328");
 
             entity.ToTable("ward");
 
@@ -1021,7 +1009,7 @@ public partial class TailstaleContext : DbContext
 
             entity.HasOne(d => d.business).WithMany(p => p.wards)
                 .HasForeignKey(d => d.business_ID)
-                .HasConstraintName("FK__ward__business_I__6477ECF3");
+                .HasConstraintName("FK__ward__business_I__66603565");
         });
 
         OnModelCreatingPartial(modelBuilder);

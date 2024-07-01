@@ -19,7 +19,7 @@ public partial class keeper
 
     public string address { get; set; }
 
-    public int status { get; set; }
+    public int? status { get; set; }
 
     public DateTime? created_at { get; set; }
 
@@ -50,8 +50,6 @@ public partial class keeper
     public virtual ICollection<pet> pets { get; set; } = new List<pet>();
 
     public virtual status statusNavigation { get; set; }
-
-    public virtual ICollection<user_photo> user_photos { get; set; } = new List<user_photo>();
 
     public virtual ICollection<using_person_tag> using_person_tags { get; set; } = new List<using_person_tag>();
 }

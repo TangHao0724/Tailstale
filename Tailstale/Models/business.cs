@@ -25,7 +25,7 @@ public partial class business
 
     public string license_number { get; set; }
 
-    public int FK_status_ID { get; set; }
+    public int? FK_status_ID { get; set; }
 
     public string photo_url { get; set; }
 
