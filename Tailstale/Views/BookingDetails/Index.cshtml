@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Tailstale.Models.BookingDetail>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.bdAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.bdTotal)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.booking)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.room)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.bdAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.bdTotal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.booking.bookingID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.room.roomID)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.bdID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.bdID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.bdID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
