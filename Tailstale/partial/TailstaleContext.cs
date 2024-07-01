@@ -20,10 +20,15 @@ public partial class TailstaleContext : DbContext
 
     public DbSet<Tailstale.Models.keeper> keeper { get; set; } = default!;
     public DbSet<Tailstale.Models.business> business { get; set; } = default!;
+<<<<<<< HEAD
     public DbSet<Tailstale.Models.Booking> Booking { get; set; } = default!;
     public DbSet<Tailstale.Models.BookingDetail> BookingDetail { get; set; } = default!;
     public DbSet<Tailstale.Models.Room> Room { get; set; } = default!;
 
 
+=======
+
+    
+>>>>>>> origin/Salon
 }
 
