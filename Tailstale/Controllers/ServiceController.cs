@@ -93,17 +93,10 @@ namespace Tailstale.Controllers
                 // 成功保存后重定向到 Index 页面
                 return RedirectToAction(nameof(Index));
             }
-ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", service.business_ID);
+             ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", service.business_ID);
             // 如果模型状态无效，返回 Create 页面以显示错误信息和重新填写表单
-            return View(service);
-            //if (ModelState.IsValid)
-            //{
-            //    _context.Add(service);
-            //    await _context.SaveChangesAsync();
-            //    return RedirectToAction(nameof(Index));
-            //}
-            //避免ModelState.IsValid 返回 false時,ViewData失效
-            //return View(service);
+            return View(service);//避免ModelState.IsValid 返回 false時,ViewData失效
+     
         }
 
         // GET: Service/Edit/5
