@@ -9,23 +9,23 @@ using Tailstale.Models;
 
 namespace Tailstale.Controllers
 {
-    public class BeauticiansController : Controller
+    public class BeauticianController : Controller
     {
         private readonly TailstaleContext _context;
 
-        public BeauticiansController(TailstaleContext context)
+        public BeauticianController(TailstaleContext context)
         {
             _context = context;
         }
 
-        // GET: Beauticians
+        // GET: Beautician
         public async Task<IActionResult> Index()
         {
-            var tailstaleContext = _context.Beauticians.Include(b => b.business);
+            var tailstaleContext = _context.Beautician.Include(b => b.business);
             return View(await tailstaleContext.ToListAsync());
         }
 
-        // GET: Beauticians/Details/5
+        // GET: Beautician/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,7 +33,7 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var beautician = await _context.Beauticians
+            var beautician = await _context.Beautician
                 .Include(b => b.business)
                 .FirstOrDefaultAsync(m => m.id == id);
             if (beautician == null)
@@ -44,14 +44,14 @@ namespace Tailstale.Controllers
             return View(beautician);
         }
 
-        // GET: Beauticians/Create
+        // GET: Beautician/Create
         public IActionResult Create()
         {
             ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
             return View();
         }
 
-        // POST: Beauticians/Create
+        // POST: Beautician/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -68,7 +68,7 @@ namespace Tailstale.Controllers
             return View(beautician);
         }
 
-        // GET: Beauticians/Edit/5
+        // GET: Beautician/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,7 +76,7 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var beautician = await _context.Beauticians.FindAsync(id);
+            var beautician = await _context.Beautician.FindAsync(id);
             if (beautician == null)
             {
                 return NotFound();
@@ -85,7 +85,7 @@ namespace Tailstale.Controllers
             return View(beautician);
         }
 
-        // POST: Beauticians/Edit/5
+        // POST: Beautician/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -121,7 +121,7 @@ namespace Tailstale.Controllers
             return View(beautician);
         }
 
-        // GET: Beauticians/Delete/5
+        // GET: Beautician/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -129,7 +129,7 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var beautician = await _context.Beauticians
+            var beautician = await _context.Beautician
                 .Include(b => b.business)
                 .FirstOrDefaultAsync(m => m.id == id);
             if (beautician == null)
@@ -140,15 +140,15 @@ namespace Tailstale.Controllers
             return View(beautician);
         }
 
-        // POST: Beauticians/Delete/5
+        // POST: Beautician/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var beautician = await _context.Beauticians.FindAsync(id);
+            var beautician = await _context.Beautician.FindAsync(id);
             if (beautician != null)
             {
-                _context.Beauticians.Remove(beautician);
+                _context.Beautician.Remove(beautician);
             }
 
             await _context.SaveChangesAsync();
@@ -157,7 +157,7 @@ namespace Tailstale.Controllers
 
         private bool BeauticianExists(int id)
         {
-            return _context.Beauticians.Any(e => e.id == id);
+            return _context.Beautician.Any(e => e.id == id);
         }
     }
 }

@@ -15,7 +15,7 @@ public partial class TailstaleContext : DbContext
 
     public virtual DbSet<Appointment> Appointments { get; set; }
 
-    public virtual DbSet<Beautician> Beauticians { get; set; }
+    public virtual DbSet<Beautician> Beautician { get; set; }
 
     public virtual DbSet<Booking> Bookings { get; set; }
 
@@ -159,7 +159,7 @@ public partial class TailstaleContext : DbContext
                 .HasMaxLength(16);
             entity.Property(e => e.photo).HasMaxLength(255);
 
-            entity.HasOne(d => d.business).WithMany(p => p.Beauticians)
+            entity.HasOne(d => d.business).WithMany(p => p.Beautician)
                 .HasForeignKey(d => d.business_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Beauticia__busin__40F9A68C");

@@ -49,7 +49,7 @@ namespace Tailstale.Controllers
         // GET: Consumption_Record/Create
         public IActionResult Create()
         {
-            ViewData["beautician_id"] = new SelectList(_context.Beauticians, "id", "gender");
+            ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "gender");
             ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
             ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "address");
             return View();
@@ -68,7 +68,7 @@ namespace Tailstale.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["beautician_id"] = new SelectList(_context.Beauticians, "id", "gender", consumption_Record.beautician_id);
+            ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "gender", consumption_Record.beautician_id);
             ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
             ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "address", consumption_Record.keeper_id);
             return View(consumption_Record);
@@ -87,7 +87,7 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
-            ViewData["beautician_id"] = new SelectList(_context.Beauticians, "id", "gender", consumption_Record.beautician_id);
+            ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "gender", consumption_Record.beautician_id);
             ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
             ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "address", consumption_Record.keeper_id);
             return View(consumption_Record);
@@ -125,7 +125,7 @@ namespace Tailstale.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["beautician_id"] = new SelectList(_context.Beauticians, "id", "gender", consumption_Record.beautician_id);
+            ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "gender", consumption_Record.beautician_id);
             ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
             ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "address", consumption_Record.keeper_id);
             return View(consumption_Record);
