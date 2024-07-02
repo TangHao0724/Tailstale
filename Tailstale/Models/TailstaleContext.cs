@@ -25,7 +25,7 @@ public partial class TailstaleContext : DbContext
 
     public virtual DbSet<CheckinDetail> CheckinDetails { get; set; }
 
-    public virtual DbSet<Consumption_Record> Consumption_Records { get; set; }
+    public virtual DbSet<Consumption_Record> Consumption_Record { get; set; }
 
     public virtual DbSet<Message> Messages { get; set; }
 
@@ -247,17 +247,17 @@ public partial class TailstaleContext : DbContext
                 .HasMaxLength(100);
             entity.Property(e => e.time).HasColumnType("datetime");
 
-            entity.HasOne(d => d.beautician).WithMany(p => p.Consumption_Records)
+            entity.HasOne(d => d.beautician).WithMany(p => p.Consumption_Record)
                 .HasForeignKey(d => d.beautician_id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Consumpti__beaut__46B27FE2");
 
-            entity.HasOne(d => d.business).WithMany(p => p.Consumption_Records)
+            entity.HasOne(d => d.business).WithMany(p => p.Consumption_Record)
                 .HasForeignKey(d => d.business_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Consumpti__busin__43D61337");
 
-            entity.HasOne(d => d.keeper).WithMany(p => p.Consumption_Records)
+            entity.HasOne(d => d.keeper).WithMany(p => p.Consumption_Record)
                 .HasForeignKey(d => d.keeper_id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Consumpti__keepe__45BE5BA9");

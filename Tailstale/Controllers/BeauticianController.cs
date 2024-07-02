@@ -351,6 +351,39 @@ namespace Tailstale.Controllers
                 _context.Beautician.Remove(beautician);
             }
 
+            try
+            {
+                if (!string.IsNullOrEmpty(beautician.photo))
+                {
+                    // 指定第一張圖片的完整路徑
+                    string imagePath1 = Path.Combine(_hostingEnvironment.WebRootPath, "Salon_img", beautician.photo);
+
+                    // 刪除第一張圖片檔案
+                    if (System.IO.File.Exists(imagePath1))
+                    {
+                        System.IO.File.Delete(imagePath1);
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(beautician.Highest_license))
+                {
+                    // 指定第二張圖片的完整路徑
+                    string imagePath2 = Path.Combine(_hostingEnvironment.WebRootPath, "Salon_img", beautician.Highest_license);
+
+                    // 刪除第二張圖片檔案
+                    if (System.IO.File.Exists(imagePath2))
+                    {
+                        System.IO.File.Delete(imagePath2);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error deleting image file: {ex.Message}");
+            }
+
+
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

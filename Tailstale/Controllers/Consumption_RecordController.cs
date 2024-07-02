@@ -12,16 +12,18 @@ namespace Tailstale.Controllers
     public class Consumption_RecordController : Controller
     {
         private readonly TailstaleContext _context;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public Consumption_RecordController(TailstaleContext context)
+        public Consumption_RecordController(TailstaleContext context, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         // GET: Consumption_Record
         public async Task<IActionResult> Index()
         {
-            var tailstaleContext = _context.Consumption_Records.Include(c => c.beautician).Include(c => c.business).Include(c => c.keeper);
+            var tailstaleContext = _context.Consumption_Record.Include(c => c.beautician).Include(c => c.business).Include(c => c.keeper);
             return View(await tailstaleContext.ToListAsync());
         }
 
@@ -33,7 +35,7 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var consumption_Record = await _context.Consumption_Records
+            var consumption_Record = await _context.Consumption_Record
                 .Include(c => c.beautician)
                 .Include(c => c.business)
                 .Include(c => c.keeper)
@@ -49,9 +51,9 @@ namespace Tailstale.Controllers
         // GET: Consumption_Record/Create
         public IActionResult Create()
         {
-            ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "gender");
+            ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "name");
             ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
-            ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "address");
+            ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name");
             return View();
         }
 
@@ -62,17 +64,113 @@ namespace Tailstale.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("id,keeper_id,pet_name,business_ID,time,beautician_id,service_name,pet_weight,price,end_time,before_photo,after_photo")] Consumption_Record consumption_Record)
         {
+
             if (ModelState.IsValid)
             {
+                // 处理第一个上传的文件（Photo）
+                if (HttpContext.Request.Form.Files.Count > 0)
+                {
+                    var photoFile = HttpContext.Request.Form.Files[0]; // 获取第一个上传的文件
+
+                    if (photoFile != null && photoFile.Length > 0) // 检查文件是否有效
+                    {
+                        // 检查文件类型是否为图片
+                        if (!IsImageFile(photoFile))
+                        {
+                            ModelState.AddModelError("photo", "Only image files are allowed for Photo.");
+                            ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "name", consumption_Record.beautician_id);
+                            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
+                            ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name", consumption_Record.keeper_id);
+                            return View(consumption_Record);
+                        }
+
+                        // 生成唯一的文件名，避免重复
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(photoFile.FileName);
+
+                        // 指定文件的完整路径，将文件保存到 wwwroot/images 文件夹下
+                        string filePath = Path.Combine(_hostingEnvironment.WebRootPath, "Salon_img", uniqueFileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await photoFile.CopyToAsync(stream); // 将文件复制到指定路径
+                        }
+
+                        // 将文件名（包含扩展名）保存到 beautician 对象的 photo 属性
+                        consumption_Record.after_photo = uniqueFileName;
+                    }
+                }
+
+                // 处理第二个上传的文件（Highest_license）
+                if (HttpContext.Request.Form.Files.Count > 1)
+                {
+                    var licenseFile = HttpContext.Request.Form.Files[1]; // 获取第二个上传的文件
+
+                    if (licenseFile != null && licenseFile.Length > 0) // 检查文件是否有效
+                    {
+                        // 检查文件类型是否为图片
+                        if (!IsImageFile(licenseFile))
+                        {
+                            ModelState.AddModelError("Highest_license", "Only image files are allowed for Highest License.");
+                            ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "name", consumption_Record.beautician_id);
+                            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
+                            ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name", consumption_Record.keeper_id);
+                            return View(consumption_Record);
+                        }
+
+                        // 生成唯一的文件名，避免重复
+                        string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(licenseFile.FileName);
+
+                        // 指定文件的完整路径，将文件保存到 wwwroot/images 文件夹下
+                        string filePath = Path.Combine(_hostingEnvironment.WebRootPath, "Salon_img", uniqueFileName);
+
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await licenseFile.CopyToAsync(stream); // 将文件复制到指定路径
+                        }
+
+                        // 将文件名（包含扩展名）保存到 beautician 对象的 Highest_license 属性
+                        consumption_Record.before_photo = uniqueFileName;
+                    }
+                }
+
+                // 将 beautician 对象添加到数据库上下文并保存更改
                 _context.Add(consumption_Record);
                 await _context.SaveChangesAsync();
+                ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "name", consumption_Record.beautician_id);
+                ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
+                ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name", consumption_Record.keeper_id);
+                // 成功保存后重定向到 Index 页面
                 return RedirectToAction(nameof(Index));
             }
+
+
+
+
+
+
+            //if (ModelState.IsValid)
+            //{
+            //    _context.Add(consumption_Record);
+            //    await _context.SaveChangesAsync();
+            //    return RedirectToAction(nameof(Index));
+            //}
             ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "gender", consumption_Record.beautician_id);
             ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
             ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "address", consumption_Record.keeper_id);
             return View(consumption_Record);
         }
+
+
+        private bool IsImageFile(IFormFile file)
+        {
+            // 定义有效的图片 MIME 类型
+            string[] allowedImageTypes = { "image/jpeg", "image/png", "image/gif" };
+
+            // 检查文件类型是否为图片
+            return allowedImageTypes.Contains(file.ContentType.ToLower());
+        }
+
+
 
         // GET: Consumption_Record/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -82,7 +180,7 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var consumption_Record = await _context.Consumption_Records.FindAsync(id);
+            var consumption_Record = await _context.Consumption_Record.FindAsync(id);
             if (consumption_Record == null)
             {
                 return NotFound();
@@ -105,12 +203,65 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
+
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                    // 取得原始的 Beautician 資料
+                    var originalConsumption_Record = await _context.Consumption_Record.AsNoTracking().FirstOrDefaultAsync(b => b.id == consumption_Record.id);
+
+                    // 檢查是否有新的圖片文件上傳
+                    if (HttpContext.Request.Form.Files.Count > 0)
+                    {
+                        foreach (var file in HttpContext.Request.Form.Files)
+                        {
+                            if (file != null && file.Length > 0) // 檢查文件有效性
+                            {
+                                // 生成唯一的文件名，避免重复
+                                string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(file.FileName);
+
+                                // 指定文件的完整路徑，保存到 wwwroot/Salon_img 文件夾下
+                                string filePath = Path.Combine(_hostingEnvironment.WebRootPath, "Salon_img", uniqueFileName);
+
+                                // 保存文件到目標路徑
+                                using (var stream = new FileStream(filePath, FileMode.Create))
+                                {
+                                    await file.CopyToAsync(stream);
+                                }
+
+                                // 根据文件的类型更新对应的属性
+                                if (file.Name == "before_photo")
+                                {
+                                    // 刪除舊的檔案
+                                    DeleteImageFile(originalConsumption_Record.before_photo);
+
+                                    // 更新 photo 屬性為新的文件名
+                                    consumption_Record.before_photo = uniqueFileName;
+                                }
+                                else if (file.Name == "after_photo")
+                                {
+                                    // 刪除舊的檔案
+                                    DeleteImageFile(originalConsumption_Record.after_photo);
+
+                                    // 更新 Highest_license 屬性為新的文件名
+                                    consumption_Record.after_photo = uniqueFileName;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // 沒有新圖片上傳，保留原有的 photo 和 Highest_license 值
+                        consumption_Record.before_photo = originalConsumption_Record.before_photo;
+                        consumption_Record.after_photo = originalConsumption_Record.after_photo;
+                    }
+
+                    // 更新 Beautician 資料
                     _context.Update(consumption_Record);
                     await _context.SaveChangesAsync();
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -123,13 +274,58 @@ namespace Tailstale.Controllers
                         throw;
                     }
                 }
+                ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "name", consumption_Record.beautician_id);
+                ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
+                ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name", consumption_Record.keeper_id);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "gender", consumption_Record.beautician_id);
+
+
+
+            //if (ModelState.IsValid)
+            //{
+            //    try
+            //    {
+            //        _context.Update(consumption_Record);
+            //        await _context.SaveChangesAsync();
+            //    }
+            //    catch (DbUpdateConcurrencyException)
+            //    {
+            //        if (!Consumption_RecordExists(consumption_Record.id))
+            //        {
+            //            return NotFound();
+            //        }
+            //        else
+            //        {
+            //            throw;
+            //        }
+            //    }
+            //    return RedirectToAction(nameof(Index));
+            //}
+            ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "name", consumption_Record.beautician_id);
             ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
-            ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "address", consumption_Record.keeper_id);
+            ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name", consumption_Record.keeper_id);
             return View(consumption_Record);
         }
+
+
+
+        private void DeleteImageFile(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return;
+            }
+
+            string filePath = Path.Combine(_hostingEnvironment.WebRootPath, "Salon_img", fileName);
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
+        }
+
+
+
 
         // GET: Consumption_Record/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -139,7 +335,7 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var consumption_Record = await _context.Consumption_Records
+            var consumption_Record = await _context.Consumption_Record
                 .Include(c => c.beautician)
                 .Include(c => c.business)
                 .Include(c => c.keeper)
@@ -157,11 +353,72 @@ namespace Tailstale.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var consumption_Record = await _context.Consumption_Records.FindAsync(id);
+            var consumption_Record = await _context.Consumption_Record.FindAsync(id);
             if (consumption_Record != null)
             {
-                _context.Consumption_Records.Remove(consumption_Record);
+                _context.Consumption_Record.Remove(consumption_Record);
             }
+
+
+            try
+            {
+                if (!string.IsNullOrEmpty(consumption_Record.before_photo))
+                {
+                    // 指定第一張圖片的完整路徑
+                    string imagePath1 = Path.Combine(_hostingEnvironment.WebRootPath, "Salon_img", consumption_Record.before_photo);
+
+                    // 刪除第一張圖片檔案
+                    if (System.IO.File.Exists(imagePath1))
+                    {
+                        System.IO.File.Delete(imagePath1);
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(consumption_Record.after_photo))
+                {
+                    // 指定第二張圖片的完整路徑
+                    string imagePath2 = Path.Combine(_hostingEnvironment.WebRootPath, "Salon_img", consumption_Record.after_photo);
+
+                    // 刪除第二張圖片檔案
+                    if (System.IO.File.Exists(imagePath2))
+                    {
+                        System.IO.File.Delete(imagePath2);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error deleting image file: {ex.Message}");
+            }
+
+
+
+            //if (!string.IsNullOrEmpty(consumption_Record.photo))
+            //{
+            //    // 指定圖片的完整路徑
+            //    string imagePath1 = Path.Combine(_hostingEnvironment.WebRootPath, "Salon_img", consumption_Record.before_photo);
+            //    string imagePath2 = Path.Combine(_hostingEnvironment.WebRootPath, "Salon_img", consumption_Record.after_photo);
+            //    try
+            //    {
+            //        // 刪除圖片檔案
+            //        if (System.IO.File.Exists(imagePath1))
+            //        {
+            //            System.IO.File.Delete(imagePath1);
+            //        }
+            //        if (System.IO.File.Exists(imagePath2))
+            //        {
+            //            System.IO.File.Delete(imagePath2);
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+
+            //        throw new Exception($"Error deleting image file: {ex.Message}");
+            //    }
+            //}
+
+
+
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
@@ -169,7 +426,7 @@ namespace Tailstale.Controllers
 
         private bool Consumption_RecordExists(int id)
         {
-            return _context.Consumption_Records.Any(e => e.id == id);
+            return _context.Consumption_Record.Any(e => e.id == id);
         }
     }
 }

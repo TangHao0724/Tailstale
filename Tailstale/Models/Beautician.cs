@@ -23,7 +23,7 @@ public partial class Beautician
 
     public string Remark { get; set; }
 
-    public virtual ICollection<Consumption_Record> Consumption_Records { get; set; } = new List<Consumption_Record>();
+    public virtual ICollection<Consumption_Record> Consumption_Record { get; set; } = new List<Consumption_Record>();
 
     public virtual business business { get; set; }
 }

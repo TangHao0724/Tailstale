@@ -37,7 +37,7 @@ public partial class business
 
     public virtual ICollection<Business_hour> Business_hours { get; set; } = new List<Business_hour>();
 
-    public virtual ICollection<Consumption_Record> Consumption_Records { get; set; } = new List<Consumption_Record>();
+    public virtual ICollection<Consumption_Record> Consumption_Record { get; set; } = new List<Consumption_Record>();
 
     public virtual status FK_status { get; set; }
 
