@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Xml.Linq;
 using Tailstale.Models;
 
-namespace Tailstale.Index_ViewCpmpoment
+namespace Tailstale.Index_ViewComponent
 {
     [Microsoft.AspNetCore.Mvc.ViewComponent]
     public class InfoViewComponent : ViewComponent

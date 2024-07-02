@@ -4,28 +4,36 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Tailstale.Index_DTO;
 using Tailstale.Models;
-using Tailstale.Index_ViewCpmpoment;
-using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Moq;
+using Tailstale.Index_ViewComponent;
+using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Components;  
 
 namespace Tailstale.Controllers
 {
+    public class ApiInputID
+    {
+        public int ID { get; set; }
+    }
+
+    [Microsoft.AspNetCore.Mvc.Route("/api/UserMangerApi")]
+    [ApiController] 
     public class UserMangerApiController : Controller
     {
-
-
+        //建構函式，不要動
         private readonly TailstaleContext _context;
-        public  UserMangerApiController(TailstaleContext context)
+
+        public UserMangerApiController( TailstaleContext context)
         {
             _context = context;
         }
 
 
-        //傳送Index頁面上的ID 跟NAME
-        [HttpGet]
-        [Route("/api/ UserMangerApi/userInfo")]
+        //傳入Api的ID類型
+
+
+
+        //傳送Index頁面上Keeper的ID 跟NAME
+        [HttpGet("userInfo")]
         public async Task<JsonResult> userInfo()
         {
             var users = await _context.keepers
@@ -33,33 +41,45 @@ namespace Tailstale.Controllers
                         {
                             Id = u.ID,
                             Name = u.name
-                            // 添加其他需要返回的列
                         })
                         .ToListAsync();
             return Json(users);
         }
 
         //根據傳入ID 傳送userInfoView頁面上 該位Keeper的所有資料
-        [HttpGet]
-        [Route("/api/UserMangerApi/userInfodetail")]
-        public async Task<IActionResult> userInfodetail([FromQuery] int? id)
+        [HttpGet("userInfodetail")]
+        public async Task<IActionResult> userInfodetail([FromQuery] ApiInputID input)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var html = await GetInfoViewComponentHtml("InfoViewComponent", input.ID);
 
-            var keeper = await _context.keepers.FindAsync(id);
-            if (keeper == null)
-            {
-                return NotFound();
-            }
-            return Json(keeper);
+            return Content(html, "text/html");
         }
 
+        public async Task<string> GetInfoViewComponentHtml(string componentName, int ID)
+        {
+            var viewComponentResult = await HttpContext.RequestServices.GetRequiredService<IViewComponentHelper>()
+               .InvokeAsync(componentName, new { ID });
+            using (var writer = new StringWriter())
+            {
+                viewComponentResult.WriteTo(writer, HtmlEncoder.Default);   
+                return writer.ToString();
+            }
+        }
+
+        [HttpGet("uu")]
+        public async Task<string> uu([FromQuery] ApiInputID input)
+        {
+            var viewComponentResult = await HttpContext.RequestServices.GetRequiredService<IViewComponentHelper>()
+            .InvokeAsync("InfoComponent", new { input.ID });
+            using (var writer = new StringWriter())
+            {
+                viewComponentResult.WriteTo(writer, HtmlEncoder.Default);
+                var showhtml = writer.ToString();
+                return showhtml;
+            }
+        }
         //新增會員
-        [HttpPost]
-        [Route("/api/UserMangerApi/PostUser")]
+        [HttpPost("PostUser")]
         public async Task<IActionResult> PostUser([FromBody] UserDTO userDTO)
         {
             if (!ModelState.IsValid)
@@ -88,6 +108,7 @@ namespace Tailstale.Controllers
         }
        
     }
+
 
     
 }
