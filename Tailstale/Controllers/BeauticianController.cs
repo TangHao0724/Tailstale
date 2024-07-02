@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Tailstale.Models;
 
@@ -23,9 +24,43 @@ namespace Tailstale.Controllers
         // GET: Beautician
         public async Task<IActionResult> Index()
         {
-            var tailstaleContext = _context.Beautician.Include(b => b.business);
-            return View(await tailstaleContext.ToListAsync());
+            //var tailstaleContext = _context.Beautician.Include(b => b.business);
+            //return View(await tailstaleContext.ToListAsync());
+            var businesses = await _context.businesses
+        .Where(b => b.type_ID == 2)
+        .ToListAsync();
+
+            ViewData["business_type"] = new SelectList(businesses, "type_ID", "name");
+            //ViewData["business_type"] = new SelectList(_context.businesses, "type_ID", "name");
+            return View();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Index(int aid)
+        {
+            //var tailstaleContext = _context.Business_hours.Include(b => b.business);
+            //return View(await tailstaleContext.ToListAsync());
+            var business = await _context.businesses
+        .FirstOrDefaultAsync(b => b.type_ID == aid);
+
+            if (business == null)
+            {
+                // 如果未找到符合条件的 business 记录，返回空的 PartialView
+                return PartialView("_BeauticianPartial", new List<Beautician>());
+            }
+
+            // 查询符合条件的 Beautician 记录
+            var beauticians = _context.Beautician
+                .Include(bh => bh.business)
+                .Where(bh => bh.business_ID == business.ID)
+                .ToList();
+
+
+            // 返回到前端，假設你的 View 期望接收一段 HTML 作為結果
+            return PartialView("_BeauticianPartial", beauticians);
+        }
+
+
 
         // GET: Beautician/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -192,8 +227,59 @@ namespace Tailstale.Controllers
             {
                 try
                 {
+                    // 取得原始的 Beautician 資料
+                    var originalBeautician = await _context.Beautician.AsNoTracking().FirstOrDefaultAsync(b => b.id == beautician.id);
+
+                    // 檢查是否有新的圖片文件上傳
+                    if (HttpContext.Request.Form.Files.Count > 0)
+                    {
+                        foreach (var file in HttpContext.Request.Form.Files)
+                        {
+                            if (file != null && file.Length > 0) // 檢查文件有效性
+                            {
+                                // 生成唯一的文件名，避免重复
+                                string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(file.FileName);
+
+                                // 指定文件的完整路徑，保存到 wwwroot/Salon_img 文件夾下
+                                string filePath = Path.Combine(_hostingEnvironment.WebRootPath, "Salon_img", uniqueFileName);
+
+                                // 保存文件到目標路徑
+                                using (var stream = new FileStream(filePath, FileMode.Create))
+                                {
+                                    await file.CopyToAsync(stream);
+                                }
+
+                                // 根据文件的类型更新对应的属性
+                                if (file.Name == "photo")
+                                {
+                                    // 刪除舊的檔案
+                                    DeleteImageFile(originalBeautician.photo);
+
+                                    // 更新 photo 屬性為新的文件名
+                                    beautician.photo = uniqueFileName;
+                                }
+                                else if (file.Name == "Highest_license")
+                                {
+                                    // 刪除舊的檔案
+                                    DeleteImageFile(originalBeautician.Highest_license);
+
+                                    // 更新 Highest_license 屬性為新的文件名
+                                    beautician.Highest_license = uniqueFileName;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // 沒有新圖片上傳，保留原有的 photo 和 Highest_license 值
+                        beautician.photo = originalBeautician.photo;
+                        beautician.Highest_license = originalBeautician.Highest_license;
+                    }
+
+                    // 更新 Beautician 資料
                     _context.Update(beautician);
                     await _context.SaveChangesAsync();
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -206,11 +292,33 @@ namespace Tailstale.Controllers
                         throw;
                     }
                 }
+                ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
             return View(beautician);
+
+
+
+       
         }
+
+        private void DeleteImageFile(string fileName)
+        {
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return;
+            }
+
+            string filePath = Path.Combine(_hostingEnvironment.WebRootPath, "Salon_img", fileName);
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
+        }
+
+
 
         // GET: Beautician/Delete/5
         public async Task<IActionResult> Delete(int? id)
