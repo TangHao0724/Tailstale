@@ -13,8 +13,8 @@
 
 
 <!-- Modal  -->
-<!-- UserUpdateModal  -->
-<div class="modal fade" id="UserUpdateModal" tabindex="-1" aria-labelledby="UserUpdateModal" aria-hidden="true">
+<!-- UserInsertModal  -->
+<div class="modal fade" id="UserInsertModal" tabindex="-1" aria-labelledby="UserInsertModal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -79,6 +79,58 @@
         </div>
     </div>
 </div>
+<!-- UserUpdateModal-->
+<div class="modal fade" id="UserUpdateModal" tabindex="-1" aria-labelledby="UserUpdateModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">修改會員資料</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="UpdateUser">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="updateName" name="updateName" placeholder="名稱">
+                        <label for="updateName" class="form-label" >名稱</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="updateEmail" name="updateEmail" placeholder="電子信箱">
+                        <label for="updateEmail" class="form-label" >電子信箱</label>
+                    </div>
+                    <div class=" form-floating mb-3">
+                        <input type="text" class="form-control" id="updateAddress" name="updateAddress" placeholder="聯絡地址">
+                        <label for="updateAddress" class="form-label">聯絡地址</label>
+                        
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="updatePhone" name="updatePhone" placeholder="聯絡電話">
+                        <label for="updatePhone" class="form-label">聯絡電話</label>
+                        
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="updatePassword" name="updatePassword" placeholder="密碼">
+                        <label for="updatePassword" class="form-label" >密碼</label>
+                        
+                    </div>
+                    <div class="form-floating mb-3">
+                        <select class="form-statusSelect" aria-label="form-statusSelect" id="updateStatus" name="inputeStatus">
+                          <option selected>會員狀態</option>
+                          <option value="1">尚未驗證</option>
+                          <option value="2">已驗證</option>
+                          <option value="3">停權</option>
+                        </select>
+                        
+                    </div>
+                    <button type="submit" class="btn btn-primary justify-content-end">修改資料</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- UserUpdateModal-->
 <!-- Modal -->
 
 <h1>會員管理中心</h1>
@@ -100,7 +152,7 @@
                     </thead>
                 </table>
             <div class="row">
-                <button class="btn btn-outline-primary btn-sm " type="button" data-bs-toggle="modal" data-bs-target="#UserUpdateModal">新建會員</button>
+                <button class="btn btn-outline-primary btn-sm " type="button" data-bs-toggle="modal" data-bs-target="#UserInsertModal">新建會員</button>
             </div>
         </div>
         <div class="col-lg-8 col-md-8 col-sm-12  px-4 mx-0 container-fluid p-1  ">
@@ -165,35 +217,35 @@
                             <div class="row">
                                 <div calss="col-8">
                                     <dl class="row">
-                                        <dt class="col-sm-2">ID編號：</dt>
+                                        <dt class="col-4 col-md-12 ">ID編號：</dt>
 
                                         <dd class="col-sm-10" >
                                             <span id="selectedID"></span>
                                         </dd>
-                                        <dt class="col-sm-2">姓名：</dt>
+                                        <dt class="col-4 col-md-12">姓名：</dt>
 
                                         <dd class="col-sm-10">
                                             <span id="selectedName"></span>
                                         </dd>
-                                        <dt class="col-sm-2">
+                                        <dt class="col-4 col-md-12">
                                             連絡電話：
                                         </dt>
                                         <dd class="col-sm-10">
                                             <span id="selectedPhone"></span>
                                         </dd>
-                                        <dt class="col-sm-2">
+                                        <dt class="col-4 col-md-12">
                                             電子信箱：
                                         </dt>
                                         <dd class="col-sm-10">
                                             <span id="selectedEmail"></span>
                                         </dd>
-                                        <dt class="col-sm-2">
+                                        <dt class="col-4 col-md-12">
                                             連絡住址：
                                         </dt>
                                         <dd class="col-sm-10">
                                             <span id="selectedAddress"></span>
                                         </dd>
-                                        <dt class="col-sm-2">
+                                        <dt class="col-4 col-md-12">
                                             會員狀態：
                                         </dt>
                                         <dd class="col-sm-10">
@@ -239,7 +291,7 @@
                             <li><a class="dropdown-item">圖片</a></li>
                         </ul>
                     </div>
-                    <button class="btn btn-outline-primary btn-sm mx-3" type="button" data-bs-toggle="modal" data-bs-target="#UserUpdateModal">修改</button>
+                    <button class="btn btn-outline-primary btn-sm mx-3" type="button" data-bs-toggle="modal" data-bs-target="#UserUpdateModal" id="updatebtn">修改</button>
                     <button class="btn btn-danger btn-sm " type="button" data-bs-toggle="modal" data-bs-target="#DeleteModal" id="deletebtn">刪除</button>
                 </div>
             </div>
@@ -303,6 +355,7 @@
                             .then(response => {
                                 // 處理成功的回應
                                 console.log(response.data);
+                                
                                 $("#selectedID").text(JSON.stringify(response.data.id));
                                 $("#selectedName").text(JSON.stringify(response.data.name));
                                 $("#selectedPhone").text(JSON.stringify(response.data.phone));
@@ -310,6 +363,12 @@
                                 $("#selectedAddress").text(JSON.stringify(response.data.address));
                                 var statusArr = ["空狀態", "尚未驗證", "已驗證", "停權"];
                                 $("#selectedStatus").text(statusArr[response.data.status]);
+
+                                $("updateName").val(JSON.stringify(response.data.id))
+                                $("updatePhone").val(JSON.stringify(response.data.id))
+                                $("updateEmail").val(JSON.stringify(response.data.id))
+                                $("updateAddress").val(JSON.stringify(response.data.id))
+                                $("updatePassword").val(JSON.stringify(response.data.id))
 
                             })
                             .catch(error => {
@@ -326,22 +385,35 @@
             $("#deletebtn").on("click", function () {
                 $("#deleteID").text(selectUserID);
             })
-            //刪除用戶
+
+            //刪除帳號
             $("#deleteIDbtn").on("click", function () {
 
                 axios.post("/api/UserMangerApi/DeleteUser", {
                     ID: selectUserID
                 })
                     .then(response => {
-                        console.log('API 回應資料：', response.data);
-                        
+                    console.log('API 回應資料：', JSON.stringify(response.data));
+                    reflashdatatable();
+                    $('#DeleteModal').modal('hide');
                     }).catch(error => {
                     // 處理錯誤
                     console.error('發生錯誤：', error)
                     });
+                    $("#selectedID").text('');
+                    $("#selectedName").text(``);
+                    $("#selectedPhone").text(``);
+                    $("#selectedEmail").text(``);
+                    $("#selectedAddress").text(``);
+                    $("#selectedStatus").text(``);
 
             });
 
+            //修改帳號內容
+            //這裡填入資訊進入MODEL
+            $("#updatebtn").on("click",function(){
+                
+            })
 
             //建立新帳號
             $('#insertUser').submit(function (event) {
@@ -360,7 +432,7 @@
                     .then(function (response) {
                         console.log('API 返回:', response.data);
                             alert('建立成功，用户ID: ' + JSON.stringify(response.data.userId));
-                            $('#UserUpdateModal').modal('hide');
+                            $('#UserInsertModal').modal('hide');
                         reflashdatatable();
                     })
                     .catch(function (error) {
@@ -369,10 +441,12 @@
                         // 处理错误信息
                     });
             });
+
+
             //更新資料後刷新旁邊的表
             var reflashdatatable = function () {
 
-                axios.get('/api/ UserMangerApi/userInfo')
+                axios.get('/api/UserMangerApi/userInfo')
                     .then(response => {
                         // 處理成功的回應
                         console.log('API 回應資料：', response.data);
@@ -382,8 +456,7 @@
 
                         $('#table tbody').on('click', 'button', function () {
                             var data = $('#table').DataTable().row($(this).parents('tr')).data();
-                            alert('你按下的ID是：' + data.id);
-                            // 在這裡添加自訂功能
+                            // 在這裡  添加自訂功能
                         });
                     })
                     .catch(error => {
