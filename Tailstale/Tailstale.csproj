@@ -8,12 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="Views\UserManger\Info.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="efpt.config.json.user" />
-    <None Include="Views\Shared\Info.cshtml" />
+    <None Include="Views\UserMangerApi\Info.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

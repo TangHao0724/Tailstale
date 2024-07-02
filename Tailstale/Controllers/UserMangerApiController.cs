@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Tailstale.Index_DTO;
 using Tailstale.Models;
-using Tailstale.Index_ViewComponent;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Components;  
 
@@ -53,7 +52,7 @@ namespace Tailstale.Controllers
         public async Task<IActionResult> userInfodetail([FromQuery] ApiInputID input)
         {
  
-            return PartialView("Info",1); ;
+            return PartialView("Info", input.ID); ;
         }
 
         //public async Task<IActionResult> GetInfoViewComponentHtml(string componentName, int ID)
