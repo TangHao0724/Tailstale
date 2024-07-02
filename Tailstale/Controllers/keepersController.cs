@@ -22,9 +22,15 @@ namespace Tailstale.Controllers
         public async Task<IActionResult> Index()
         {
             var tailstaleContext = _context.keepers.Include(k => k.statusNavigation);
+
             return View(await tailstaleContext.ToListAsync());
         }
+        public async Task<IActionResult> IndexUI()
+        {
+            var tailstaleContext = _context.keepers.Include(k => k.statusNavigation);
 
+            return View(await tailstaleContext.ToListAsync());
+        }
         // GET: keepers/Details/5
         public async Task<IActionResult> Details(int? id)
         {

@@ -183,10 +183,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[user_photo]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[using_person_tags]",
          "ObjectType": 0
       },

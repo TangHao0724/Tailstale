@@ -1,0 +1,95 @@
+﻿@model IEnumerable<Tailstale.Models.Consumption_Record>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.pet_name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.time)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.service_name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.pet_weight)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.end_time)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.before_photo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.after_photo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.beautician)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.business)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.keeper)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.pet_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.time)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.service_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.pet_weight)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.end_time)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.before_photo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.after_photo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.beautician.gender)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.business.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.keeper.address)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

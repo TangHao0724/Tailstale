@@ -1,0 +1,83 @@
+﻿@model IEnumerable<Tailstale.Hospital_ViewModel.vet_information_ViewModel>
+
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section Styles
+{
+    <style>
+        textarea {
+            height: 200px;
+            width: 300px;
+        }
+    </style>
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.vet_name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.license_number)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.profile)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.business)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.department)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.URL)
+            </th
+            <th>
+                @Html.DisplayNameFor(model => model.name)
+            </th
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.vet_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.license_number)
+            </td>
+            <td>
+               @*  @Html.DisplayFor(modelItem => item.profile) *@
+                <textarea>
+                        @Html.DisplayFor(modelItem => item.profile)
+                </textarea>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.business.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.department.department_name)
+            </td>
+            <td>
+                 <partial name="_showimgPartial" model="item">
+            </td>
+           
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.vet_ID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.vet_ID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.vet_ID">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

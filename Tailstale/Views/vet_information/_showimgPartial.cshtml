@@ -1,0 +1,10 @@
+﻿@model business_img
+
+@if (Model.URL == null)
+{
+    <img src="~/imgs/noimage.jpg" title="尚無照片" style="width:320px;height:240px" />
+}
+else
+{
+    <img src="@Html.DisplayFor(model => model.URL)" title="@Html.DisplayFor(model => model.name)" style="width:320px;height:240px" />
+}
