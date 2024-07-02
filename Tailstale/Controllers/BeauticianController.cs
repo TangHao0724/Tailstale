@@ -207,6 +207,7 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
+            //beautician = await _context.Beautician.FirstOrDefaultAsync(b => b.id == id);
             ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
             return View(beautician);
         }
