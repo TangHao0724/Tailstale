@@ -47,7 +47,7 @@ namespace Tailstale.Controllers
                                    name = b_img.name
                                };
 
-                return View(v_Infovm);
+                return View(await v_Infovm.ToListAsync());
             }
             catch (Exception ex)
             {
@@ -85,22 +85,114 @@ namespace Tailstale.Controllers
             return View();
         }
 
+
+
         // POST: vet_information/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("vet_ID,vet_name,business_ID,license_number,department_ID,profile")] vet_information vet_information)
+        public async Task<IActionResult> Create( insert_vet_information_ViewModel v_Infovm)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(vet_information);
+                //try
+                //{
+                //    // 取出原先所有資料                    
+                //    var b_img = await _context.business_imgs.FindAsync(v_Infovm.business_ID);
+                //    // 判斷是否有上傳檔案
+                //    if (Request.Form.Files["URL"] != null)
+                //    {
+                //        // 取得照片欄位名稱
+                //        var pictureFile = Request.Form.Files["URL"];
+
+                //        // 新增存圖檔路徑
+                //        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/HospitalImages/Vet_Info");
+                //        // 確保目標目錄存在
+                //        if (!Directory.Exists(uploadsFolder))
+                //        {
+                //            // 如果路徑不在則創建
+                //            Directory.CreateDirectory(uploadsFolder);
+                //        }
+
+                //        // 生成唯一的文件名以避免重名
+                //        var uniqueFileName = Guid.NewGuid().ToString() + "_" + pictureFile.FileName;
+
+                //        // 目標文件的完整路徑
+                //        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                //        // 將文件保存到指定路徑
+                //        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                //        {
+                //            await pictureFile.CopyToAsync(fileStream);
+                //        }
+
+                //        // 刪除舊圖片文件（如果有）
+                //        // 判斷是否原有圖片
+                //        if (!string.IsNullOrEmpty(v_Infovm.URL))
+                //        {
+                //            // 取得當前目錄,圖片存放路徑, 去掉路徑開頭的 / 符號，以防止路徑不正確
+                //            var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/HospitalImages/Vet_Info", v_Infovm.URL.TrimStart('/'));
+                //            // 檢查舊圖片文件是否存在
+                //            if (System.IO.File.Exists(oldFilePath))
+                //            {
+                //                // 存在則刪除照片
+                //                System.IO.File.Delete(oldFilePath);
+                //            }
+                //        }
+
+                //        // 更新圖片路徑
+                //        v_Infovm.URL = "/images/" + uniqueFileName;
+                //    }
+                //    else
+                //    {
+                //        // 放入原先資料
+                //        v_Infovm.URL = b_img.URL;
+                //    }
+                //    // 解除追蹤
+                //    _context.Entry(b_img).State = EntityState.Detached;
+
+                //    _context.Update(v_Infovm);
+                //    await _context.SaveChangesAsync();
+                //}
+                //catch (DbUpdateConcurrencyException)
+                //{
+                //    //if (!vet_informationExists(v_Infovm.vet_ID))
+                //    //{
+                //    //    return NotFound();
+                //    //}
+                //    //else
+                //    //{
+                //    //    throw;
+                //    //}
+                //}
+                //_context.Add(v_Infovm);
+                //await _context.SaveChangesAsync();
+                //return RedirectToAction(nameof(Index));
+
+                vet_information entity = new vet_information()
+                {
+                    vet_name = v_Infovm.vet_name,
+                    business_ID = v_Infovm.business_ID,
+                    license_number = v_Infovm.license_number,
+                    department_ID = v_Infovm.department_ID,
+                    profile = v_Infovm.profile,
+                };
+                _context.Add(entity);
+
+                _context.Add(new business_img()
+                {
+                    URL = v_Infovm.URL,
+                    name = v_Infovm.name,
+                    img_type_id = 1,
+                });
+
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+
             }
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", vet_information.business_ID);
-            ViewData["department_ID"] = new SelectList(_context.departments, "department_ID", "department_name", vet_information.department_ID);
-            return View(vet_information);
+            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", v_Infovm.business_ID);
+            ViewData["department_ID"] = new SelectList(_context.departments, "department_ID", "department_name", v_Infovm.department_ID);
+            return View(Index);
         }
 
         // GET: vet_information/Edit/5
@@ -126,9 +218,9 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("vet_ID,vet_name,business_ID,license_number,department_ID,profile")] vet_information vet_information)
+        public async Task<IActionResult> Edit(int id, [Bind("vet_ID,vet_name,business_ID,license_number,department_ID,profile,ID,img_type_id,URL,name")] vet_information_ViewModel v_Infovm)
         {
-            if (id != vet_information.vet_ID)
+            if (id != v_Infovm.vet_ID)
             {
                 return NotFound();
             }
@@ -137,12 +229,66 @@ namespace Tailstale.Controllers
             {
                 try
                 {
-                    _context.Update(vet_information);
+                    // 取出原先所有資料                    
+                    var b_img = await _context.business_imgs.FindAsync(v_Infovm.business_ID);
+                    // 判斷是否有上傳檔案
+                    if (Request.Form.Files["URL"] != null)
+                    {
+                        // 取得照片欄位名稱
+                        var pictureFile = Request.Form.Files["URL"];
+
+                        // 新增存圖檔路徑
+                        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/HospitalImages/Vet_Info");
+                        // 確保目標目錄存在
+                        if (!Directory.Exists(uploadsFolder))
+                        {
+                            // 如果路徑不在則創建
+                            Directory.CreateDirectory(uploadsFolder);
+                        }
+
+                        // 生成唯一的文件名以避免重名
+                        var uniqueFileName = Guid.NewGuid().ToString() + "_" + pictureFile.FileName;
+
+                        // 目標文件的完整路徑
+                        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                        // 將文件保存到指定路徑
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await pictureFile.CopyToAsync(fileStream);
+                        }
+
+                        // 刪除舊圖片文件（如果有）
+                        // 判斷是否原有圖片
+                        if (!string.IsNullOrEmpty(v_Infovm.URL))
+                        {
+                            // 取得當前目錄,圖片存放路徑, 去掉路徑開頭的 / 符號，以防止路徑不正確
+                            var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/HospitalImages/Vet_Info", v_Infovm.URL.TrimStart('/'));
+                            // 檢查舊圖片文件是否存在
+                            if (System.IO.File.Exists(oldFilePath))
+                            {
+                                // 存在則刪除照片
+                                System.IO.File.Delete(oldFilePath);
+                            }
+                        }
+
+                        // 更新圖片路徑
+                        v_Infovm.URL = "/images/" + uniqueFileName;
+                    }
+                    else
+                    {
+                        // 放入原先資料
+                        v_Infovm.URL = b_img.URL;
+                    }
+                    // 解除追蹤
+                    _context.Entry(b_img).State = EntityState.Detached;
+
+                    _context.Update(v_Infovm);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!vet_informationExists(vet_information.vet_ID))
+                    if (!vet_informationExists(v_Infovm.vet_ID))
                     {
                         return NotFound();
                     }
@@ -153,9 +299,9 @@ namespace Tailstale.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", vet_information.business_ID);
-            ViewData["department_ID"] = new SelectList(_context.departments, "department_ID", "department_name", vet_information.department_ID);
-            return View(vet_information);
+            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", v_Infovm.business_ID);
+            ViewData["department_ID"] = new SelectList(_context.departments, "department_ID", "department_name", v_Infovm.department_ID);
+            return View(v_Infovm);
         }
 
         // GET: vet_information/Delete/5

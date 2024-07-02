@@ -15,10 +15,10 @@
     </style>
 }
 
-<h1>Index</h1>
+<h2>醫師資料管理</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">新增醫師資料</a>
 </p>
 <table class="table">
     <thead>
@@ -30,21 +30,21 @@
                 @Html.DisplayNameFor(model => model.license_number)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.profile)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.business)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.department)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.profile)
+            </th>
+            
+            <th>
                 @Html.DisplayNameFor(model => model.URL)
-            </th
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.name)
-            </th
-            <th></th>
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -57,19 +57,22 @@
                 @Html.DisplayFor(modelItem => item.license_number)
             </td>
             <td>
-               @*  @Html.DisplayFor(modelItem => item.profile) *@
-                <textarea>
-                        @Html.DisplayFor(modelItem => item.profile)
-                </textarea>
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.business.name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.department.department_name)
             </td>
             <td>
-                 <partial name="_showimgPartial" model="item">
+                <textarea>
+                        @Html.DisplayFor(modelItem => item.profile)
+                </textarea>
+            </td>
+            
+            <td>
+                  @* <partial name="_showimgPartial" model="item">  *@
+            </td>
+            <td>
+                 @Html.DisplayFor(model => item.name)
             </td>
            
             <td>
@@ -77,7 +80,7 @@
                 <a asp-action="Details" asp-route-id="@item.vet_ID">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.vet_ID">Delete</a>
             </td>
-        </tr>
-}
+        </tr> 
+} 
     </tbody>
 </table>

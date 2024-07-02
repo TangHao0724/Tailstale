@@ -8,6 +8,8 @@ namespace Tailstale.Models;
 
 public partial class TailstaleContext : DbContext
 {
+    internal readonly object vet_information_ViewModel;
+
     public TailstaleContext(DbContextOptions<TailstaleContext> options)
         : base(options)
     {
