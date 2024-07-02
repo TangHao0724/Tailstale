@@ -24,9 +24,44 @@ namespace Tailstale.Controllers
         public async Task<IActionResult> Index()
         {
             
-            var tailstaleContext = _context.Service.Include(s => s.business);
-            return View(await tailstaleContext.ToListAsync());
+            //var tailstaleContext = _context.Service.Include(s => s.business);
+
+            var businesses = await _context.businesses
+            .Where(b => b.type_ID == 2)
+            .ToListAsync();
+
+            ViewData["business_type"] = new SelectList(businesses, "type_ID", "name");
+            return View();
+            //return View(await tailstaleContext.ToListAsync());
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Index(int aid)
+        {
+            //var tailstaleContext = _context.Business_hours.Include(b => b.business);
+            //return View(await tailstaleContext.ToListAsync());
+            var business = await _context.businesses
+        .FirstOrDefaultAsync(b => b.type_ID == aid);
+
+            if (business == null)
+            {
+                // 如果未找到符合条件的 business 记录，返回空的 PartialView
+                return PartialView("_ServicePartial", new List<Beautician>());
+            }
+
+            // 查询符合条件的 Beautician 记录
+            var beauticians = _context.Service
+                .Include(bh => bh.business)
+                .Where(bh => bh.business_ID == business.ID)
+                .ToList();
+
+
+            // 返回到前端，假設你的 View 期望接收一段 HTML 作為結果
+            return PartialView("_ServicePartial", beauticians);
+        }
+
+
 
         // GET: Service/Details/5
         public async Task<IActionResult> Details(int? id)
