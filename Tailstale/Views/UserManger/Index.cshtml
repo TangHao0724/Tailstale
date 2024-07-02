@@ -12,7 +12,7 @@
 }
 
 
-
+<!-- Modal  -->
 <!-- UserUpdateModal  -->
 <div class="modal fade" id="UserUpdateModal" tabindex="-1" aria-labelledby="UserUpdateModal" aria-hidden="true">
     <div class="modal-dialog">
@@ -56,6 +56,25 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- UserDeleteModal  -->
+<div class="modal fade" id="DeleteModal" tabindex="-1" aria-labelledby="DeleteModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">刪除確認</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                請問真的要刪除 編號：<span class="text-danger" id="deleteID"></span>嗎?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                <button type="button" class="btn btn-danger" id="deleteIDbtn">確認</button>
             </div>
         </div>
     </div>
@@ -142,9 +161,54 @@
                 </ul>
                 <div class="tab-content" id="nav-tabContent">
                     <div class="tab-pane fade show " id="nav-info" role="tabpanel" aria-labelledby="nav-info-tab">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div calss="col-8">
+                                    <dl class="row">
+                                        <dt class="col-sm-2">ID編號：</dt>
+
+                                        <dd class="col-sm-10" >
+                                            <span id="selectedID"></span>
+                                        </dd>
+                                        <dt class="col-sm-2">姓名：</dt>
+
+                                        <dd class="col-sm-10">
+                                            <span id="selectedName"></span>
+                                        </dd>
+                                        <dt class="col-sm-2">
+                                            連絡電話：
+                                        </dt>
+                                        <dd class="col-sm-10">
+                                            <span id="selectedPhone"></span>
+                                        </dd>
+                                        <dt class="col-sm-2">
+                                            電子信箱：
+                                        </dt>
+                                        <dd class="col-sm-10">
+                                            <span id="selectedEmail"></span>
+                                        </dd>
+                                        <dt class="col-sm-2">
+                                            連絡住址：
+                                        </dt>
+                                        <dd class="col-sm-10">
+                                            <span id="selectedAddress"></span>
+                                        </dd>
+                                        <dt class="col-sm-2">
+                                            會員狀態：
+                                        </dt>
+                                        <dd class="col-sm-10">
+                                            <span id="selectedStatus"></span>
+                                        </dd>
+                                        <dl />
+                                </div>
+                                <div calss="col-4">
+                                </div>
+                            </div>
+                        </div>
+                       
                     </div>
                     <div class="tab-pane fade show " id="nav-petInfo" role="tabpanel" aria-labelledby="nav-petInfo-tab">
-                       
+
                     </div>
                     <div class="tab-pane fade" id="nav-hisOrder" role="tabpanel" aria-labelledby="nav-hisOrder-tab">
                         @await Component.InvokeAsync("Info", new { id = 123 })
@@ -176,7 +240,7 @@
                         </ul>
                     </div>
                     <button class="btn btn-outline-primary btn-sm mx-3" type="button" data-bs-toggle="modal" data-bs-target="#UserUpdateModal">修改</button>
-                    <button class="btn btn-danger btn-sm " type="button" data-bs-toggle="modal" data-bs-target="#UserUpdateModal">刪除</button>
+                    <button class="btn btn-danger btn-sm " type="button" data-bs-toggle="modal" data-bs-target="#DeleteModal" id="deletebtn">刪除</button>
                 </div>
             </div>
 
@@ -214,11 +278,11 @@
                 scrollY: '50vh',
                 scrollCollapse: true,
                 deferRender: true,
-                
                 language: {
                     url: 'https://cdn.datatables.net/plug-ins/1.13.1/i18n/zh-HANT.json'
                 }
             });
+
             axios.get('/api/UserMangerApi/userInfo')
                 .then(response => {
                     // 處理成功的回應
@@ -226,53 +290,56 @@
                     infoa = response.data;
 
                     $('#table').DataTable().clear().rows.add(infoa).draw();
-                    $('#table tbody').on('click', 'button', function () {        
+                    $('#table tbody').on('click', 'button', function () {
                         data = $('#table').DataTable().row($(this).parents('tr')).data().id;
-                        
                         selectUserID = data;
                         $("#selectID").text(selectUserID);
-                        
+                        //刷新InfoDetail
+                        axios.get('/api/UserMangerApi/userInfoDetail', {
+                            params: {
+                                ID: selectUserID
+                            }
+                        })
+                            .then(response => {
+                                // 處理成功的回應
+                                console.log(response.data);
+                                $("#selectedID").text(JSON.stringify(response.data.id));
+                                $("#selectedName").text(JSON.stringify(response.data.name));
+                                $("#selectedPhone").text(JSON.stringify(response.data.phone));
+                                $("#selectedEmail").text(JSON.stringify(response.data.email));
+                                $("#selectedAddress").text(JSON.stringify(response.data.address));
+                                var statusArr = ["空狀態", "尚未驗證", "已驗證", "停權"];
+                                $("#selectedStatus").text(statusArr[response.data.status]);
+
+                            })
+                            .catch(error => {
+                                // 處理錯誤
+                                console.error('發生錯誤：', error)
+                            });
                     });
-                })
-                .catch (error => {
-                // 處理錯誤
-                console.error('發生錯誤：', error)
-                });
-
-
-            //切換至info頁面
-            $("#info-tab").on("click", function () {
-                axios.get('/api/UserMangerApi/userInfodetail', {
-                    params: {   
-                        ID: selectUserID
-                    }
-                })
-                .then(response => {
-                    // 處理成功的回應
-                    console.log(response.data);
-                    $("#nav-info").html(response.data);
-                })
-                .catch(error => {
+                }).catch(error => {
                     // 處理錯誤
                     console.error('發生錯誤：', error)
                 });
-            });
-            //切換至petInfo-tab頁面
-            $("#petInfo-tab").on("click", function () {
-                axios.get('/api/UserMangerApi/uu', {
-                    params: {
-                        ID: selectUserID
-                    }
+
+
+            $("#deletebtn").on("click", function () {
+                $("#deleteID").text(selectUserID);
+            })
+            //刪除用戶
+            $("#deleteIDbtn").on("click", function () {
+
+                axios.post("/api/UserMangerApi/DeleteUser", {
+                    ID: selectUserID
                 })
                     .then(response => {
-                        // 處理成功的回應
-                        console.log(response.data);
-                        $("#nav-petInfo").text(response.data);
-                    })
-                    .catch(error => {
-                        // 處理錯誤
-                        console.error('發生錯誤：', error)
+                        console.log('API 回應資料：', response.data);
+                        
+                    }).catch(error => {
+                    // 處理錯誤
+                    console.error('發生錯誤：', error)
                     });
+
             });
 
 
@@ -301,8 +368,6 @@
                         alert('建立失敗');
                         // 处理错误信息
                     });
-
-
             });
             //更新資料後刷新旁邊的表
             var reflashdatatable = function () {
@@ -329,6 +394,7 @@
             };
 
 
+            
         });
             
 

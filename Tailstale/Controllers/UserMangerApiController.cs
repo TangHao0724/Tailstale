@@ -38,7 +38,7 @@ namespace Tailstale.Controllers
         {
             var users = await _context.keepers
                         .Select(u => new
-                        {
+                        {    
                             Id = u.ID,
                             Name = u.name
                         })
@@ -47,37 +47,34 @@ namespace Tailstale.Controllers
         }
 
         //根據傳入ID 傳送userInfoView頁面上 該位Keeper的所有資料
-        [HttpGet("userInfodetail")]
+        [HttpGet("userInfoDetail")]
         public async Task<IActionResult> userInfodetail([FromQuery] ApiInputID input)
         {
-            var html = await GetInfoViewComponentHtml("InfoViewComponent", input.ID);
 
-            return Content(html, "text/html");
-        }
+            var keeper = await _context.keepers
+                .Include(k => k.statusNavigation)
+                .FirstOrDefaultAsync(m => m.ID == input.ID);
 
-        public async Task<string> GetInfoViewComponentHtml(string componentName, int ID)
-        {
-            var viewComponentResult = await HttpContext.RequestServices.GetRequiredService<IViewComponentHelper>()
-               .InvokeAsync(componentName, new { ID });
-            using (var writer = new StringWriter())
+            if (keeper == null)
             {
-                viewComponentResult.WriteTo(writer, HtmlEncoder.Default);   
-                return writer.ToString();
+                return NotFound();
             }
+            var UserDetailDTO = new UserDetailDTO
+            {
+                ID = keeper.ID,
+                password = keeper.password,
+                name = keeper.name,
+                phone = keeper.phone,
+                email = keeper.email,
+                address = keeper.address,
+                status = keeper.status,
+
+            };
+            return Json(UserDetailDTO);
         }
 
-        [HttpGet("uu")]
-        public async Task<string> uu([FromQuery] ApiInputID input)
-        {
-            var viewComponentResult = await HttpContext.RequestServices.GetRequiredService<IViewComponentHelper>()
-            .InvokeAsync("InfoComponent", new { input.ID });
-            using (var writer = new StringWriter())
-            {
-                viewComponentResult.WriteTo(writer, HtmlEncoder.Default);
-                var showhtml = writer.ToString();
-                return showhtml;
-            }
-        }
+
+
         //新增會員
         [HttpPost("PostUser")]
         public async Task<IActionResult> PostUser([FromBody] UserDTO userDTO)
@@ -100,13 +97,35 @@ namespace Tailstale.Controllers
                 };
                 _context.keepers.Add(user);
                 await _context.SaveChangesAsync();
-                return Ok(new { message = "用户创建成功", userId = user.ID });
+                return Ok(new { message = "建立成功", userId = user.ID });
             }
             catch (Exception ex) {
                 return StatusCode(500, new { message = "服务器内部错误", details = ex.Message });
             }
         }
-       
+        // POST: DeleteUser
+        [HttpPost("DeleteUser")]
+        public async Task<IActionResult> DeleteUser([FromBody] ApiInputID input)
+        {
+            if (input == null || input.ID <= 0)
+            {
+                return BadRequest("輸入錯誤");
+            }
+            var keeper = await _context.keepers.FindAsync(input.ID);
+            if (keeper != null)
+            {
+                _context.keepers.Remove(keeper);
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok($"已成功刪除 編號：{input}") ;
+        }
+
+        private bool keeperExists(int id)
+        {
+            return _context.keepers.Any(e => e.ID == id);
+        }
+
     }
 
 
