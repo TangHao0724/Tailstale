@@ -21,10 +21,12 @@ namespace Tailstale.Controllers
     {
         //建構函式，不要動
         private readonly TailstaleContext _context;
+        private readonly IViewComponentHelper _viewComponentHelper;
 
-        public UserMangerApiController( TailstaleContext context)
+        public UserMangerApiController(IViewComponentHelper viewComponentHelper, TailstaleContext context)
         {
             _context = context;
+            _viewComponentHelper = viewComponentHelper;
         }
 
 
@@ -50,21 +52,16 @@ namespace Tailstale.Controllers
         [HttpGet("userInfodetail")]
         public async Task<IActionResult> userInfodetail([FromQuery] ApiInputID input)
         {
-            var html = await GetInfoViewComponentHtml("InfoViewComponent", input.ID);
-
-            return Content(html, "text/html");
+ 
+            return PartialView("Info",1); ;
         }
 
-        public async Task<string> GetInfoViewComponentHtml(string componentName, int ID)
-        {
-            var viewComponentResult = await HttpContext.RequestServices.GetRequiredService<IViewComponentHelper>()
-               .InvokeAsync(componentName, new { ID });
-            using (var writer = new StringWriter())
-            {
-                viewComponentResult.WriteTo(writer, HtmlEncoder.Default);   
-                return writer.ToString();
-            }
-        }
+        //public async Task<IActionResult> GetInfoViewComponentHtml(string componentName, int ID)
+        //{
+        //    var viewComponentResult = await _viewComponentHelper.InvokeAsync(componentName, ID);
+        //    viewComponentResult.WriteTo(writer, HtmlEncoder.Default);
+        //    return PartialView(viewComponentResult);
+        //}
 
         [HttpGet("uu")]
         public async Task<string> uu([FromQuery] ApiInputID input)

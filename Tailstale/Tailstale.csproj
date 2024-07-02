@@ -8,7 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\UserManger\Info.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="efpt.config.json.user" />
+    <None Include="Views\Shared\Info.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +24,14 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.5" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
     <PackageReference Include="Moq" Version="4.20.70" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\UserManger\Info.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\UserManger\Info.cshtml" />
   </ItemGroup>
 
 </Project>
