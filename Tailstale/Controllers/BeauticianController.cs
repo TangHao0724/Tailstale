@@ -231,6 +231,16 @@ namespace Tailstale.Controllers
                     // 取得原始的 Beautician 資料
                     var originalBeautician = await _context.Beautician.AsNoTracking().FirstOrDefaultAsync(b => b.id == beautician.id);
 
+                    if (beautician.photo == null)
+                    {
+                        // 沒有新圖片上傳，保留原有的 photo 和 Highest_license 值
+                        beautician.photo = originalBeautician.photo;
+                    }
+                    if (beautician.Highest_license == null)
+                    {
+                        beautician.Highest_license = originalBeautician.Highest_license;
+                    }
+
                     // 檢查是否有新的圖片文件上傳
                     if (HttpContext.Request.Form.Files.Count > 0)
                     {
@@ -270,12 +280,7 @@ namespace Tailstale.Controllers
                             }
                         }
                     }
-                    else
-                    {
-                        // 沒有新圖片上傳，保留原有的 photo 和 Highest_license 值
-                        beautician.photo = originalBeautician.photo;
-                        beautician.Highest_license = originalBeautician.Highest_license;
-                    }
+                    
 
                     // 更新 Beautician 資料
                     _context.Update(beautician);

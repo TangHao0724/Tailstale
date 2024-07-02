@@ -212,6 +212,15 @@ namespace Tailstale.Controllers
                     // 取得原始的 Beautician 資料
                     var originalConsumption_Record = await _context.Consumption_Record.AsNoTracking().FirstOrDefaultAsync(b => b.id == consumption_Record.id);
 
+                    if (consumption_Record.after_photo == null) {
+                        // 沒有新圖片上傳，保留原有的 photo 和 Highest_license 值
+                       
+                        consumption_Record.after_photo = originalConsumption_Record.after_photo;
+                    }
+                    if (consumption_Record.before_photo == null)
+                    {
+                        consumption_Record.before_photo = originalConsumption_Record.before_photo;
+                    }
                     // 檢查是否有新的圖片文件上傳
                     if (HttpContext.Request.Form.Files.Count > 0)
                     {
@@ -219,6 +228,7 @@ namespace Tailstale.Controllers
                         {
                             if (file != null && file.Length > 0) // 檢查文件有效性
                             {
+
                                 // 生成唯一的文件名，避免重复
                                 string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(file.FileName);
 
@@ -251,12 +261,10 @@ namespace Tailstale.Controllers
                             }
                         }
                     }
-                    else
-                    {
-                        // 沒有新圖片上傳，保留原有的 photo 和 Highest_license 值
-                        consumption_Record.before_photo = originalConsumption_Record.before_photo;
-                        consumption_Record.after_photo = originalConsumption_Record.after_photo;
-                    }
+                    
+                    
+                        
+                    
 
                     // 更新 Beautician 資料
                     _context.Update(consumption_Record);
