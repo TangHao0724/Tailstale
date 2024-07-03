@@ -23,9 +23,56 @@ namespace Tailstale.Controllers
         // GET: Consumption_Record
         public async Task<IActionResult> Index()
         {
-            var tailstaleContext = _context.Consumption_Record.Include(c => c.beautician).Include(c => c.business).Include(c => c.keeper);
-            return View(await tailstaleContext.ToListAsync());
+            var businesses = await _context.businesses
+            .Where(b => b.type_ID == 2)
+            .ToListAsync();
+
+            ViewData["business_type"] = new SelectList(businesses, "type_ID", "name");
+            return View();
+            //var tailstaleContext = _context.Consumption_Record.Include(c => c.beautician).Include(c => c.business).Include(c => c.keeper);
+            //return View(await tailstaleContext.ToListAsync());
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Index(int aid,int uid)
+        {
+            //var tailstaleContext = _context.Business_hours.Include(b => b.business);
+            //return View(await tailstaleContext.ToListAsync());
+            var business = await _context.businesses
+        .FirstOrDefaultAsync(b => b.type_ID == aid);
+
+            var business2 = await _context.Consumption_Record
+        .FirstOrDefaultAsync(b => b.keeper_id == uid);
+
+            if (business == null && business2 == null)
+            {
+                // 如果未找到符合条件的 business 记录，返回空的 PartialView
+                return PartialView("_Consumption_RecordPartial", new List<Consumption_Record>());
+            }
+
+            // 查询符合条件的 Beautician 记录
+            
+            
+            if (aid == 2)
+            {
+var beauticians = _context.Consumption_Record
+                .Include(bh => bh.business)
+                .Where(bh => bh.business_ID == business.ID)
+                .ToList();
+              return PartialView("_Consumption_RecordPartial", beauticians);
+            }
+            else
+            {
+var beauticians2 = _context.Consumption_Record
+               .Where(bh => bh.keeper_id == business2.keeper_id)
+               .ToList();
+                return PartialView("_Consumption_RecordPartial", beauticians2);
+            }
+            // 返回到前端，假設你的 View 期望接收一段 HTML 作為結果
+           
+        }
+
+
 
         // GET: Consumption_Record/Details/5
         public async Task<IActionResult> Details(int? id)
