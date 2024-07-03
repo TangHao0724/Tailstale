@@ -93,7 +93,7 @@ namespace Tailstale.Controllers
                 return RedirectToAction(nameof(Index));
             }
             
-            ViewData["img_type_id"] = new SelectList(_context.business_img_types, "ID", "ID", business_img.img_type_id);
+            //ViewData["img_type_id"] = new SelectList(_context.business_img_types, "ID", "ID", business_img.img_type_id);
             ViewData["img_type_id"] = new SelectList(_context.business_img_types, "ID", "ID", business_img.img_type_id);
             return View(business_img);
         }
@@ -132,7 +132,7 @@ namespace Tailstale.Controllers
                 try
                 {
                     // 取得原始的 Service 資料
-                    var originalService = await _context.Service.AsNoTracking().FirstOrDefaultAsync(s => s.id == business_img.ID);
+                    var originalService = await _context.business_imgs.AsNoTracking().FirstOrDefaultAsync(s => s.ID == business_img.ID);
 
                     // 檢查是否有新的圖片文件上傳
                     if (HttpContext.Request.Form.Files.Count > 0)
@@ -154,7 +154,7 @@ namespace Tailstale.Controllers
                             }
 
                             // 刪除舊的檔案
-                            DeleteImageFile(originalService.service_img);
+                            DeleteImageFile(originalService.URL);
 
                             // 更新 service_img 屬性為新的文件名
                             business_img.URL = uniqueFileName;
@@ -163,7 +163,7 @@ namespace Tailstale.Controllers
                     else
                     {
                         // 沒有新圖片上傳，保留原有的 service_img 值
-                        business_img.URL = originalService.service_img;
+                        business_img.URL = originalService.URL;
                     }
 
                     // 更新 Service 資料
@@ -239,6 +239,26 @@ namespace Tailstale.Controllers
             {
                 _context.business_imgs.Remove(business_img);
             }
+            if (!string.IsNullOrEmpty(business_img.URL))
+            {
+                // 指定圖片的完整路徑
+                string imagePath = Path.Combine(_hostingEnvironment.WebRootPath, "Salon_img", business_img.URL);
+
+                try
+                {
+                    // 刪除圖片檔案
+                    if (System.IO.File.Exists(imagePath))
+                    {
+                        System.IO.File.Delete(imagePath);
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    throw new Exception($"Error deleting image file: {ex.Message}");
+                }
+            }
+
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
