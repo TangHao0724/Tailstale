@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h2>門診管理</h2>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -12,6 +12,15 @@
 <table class="table">
     <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.business)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.department)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.vet)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.name)
             </th>
@@ -24,21 +33,20 @@
             <th>
                 @Html.DisplayNameFor(model => model.max_patients)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.business)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.department)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.vet)
-            </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.business.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.department.department_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.vet.vet_name)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.name)
             </td>
@@ -51,15 +59,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.max_patients)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.business.name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.department.department_name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.vet.vet_ID)
-            </td>
+           
             <td>
                 <a asp-action="Edit" asp-route-id="@item.outpatient_clinic_ID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.outpatient_clinic_ID">Details</a> |

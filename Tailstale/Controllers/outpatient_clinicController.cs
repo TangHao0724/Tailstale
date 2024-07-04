@@ -49,10 +49,23 @@ namespace Tailstale.Controllers
         // GET: outpatient_clinic/Create
         public IActionResult Create()
         {
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
+            ViewData["business_ID"] = new SelectList(_context.businesses.Where(b => b.type_ID == 3), "ID", "name");
             ViewData["department_ID"] = new SelectList(_context.departments, "department_ID", "department_name");
-            ViewData["vet_ID"] = new SelectList(_context.vet_informations, "vet_ID", "vet_ID");
+            ViewData["vet_ID"] = new SelectList(Enumerable.Empty<vet_information>(), "vet_ID", "vet_name");
+            
             return View();
+        }
+
+        public JsonResult GetVetsByDepartment(int department_ID)
+        {
+            // 查詢對應部門的獸醫列表
+            var vets = _context.vet_informations
+                .Where(v => v.department_ID == department_ID)
+                .Select(v => new { v.vet_ID, v.vet_name })
+                .ToList();
+
+            // 返回 JSON 格式的獸醫列表
+            return Json(vets);
         }
 
         // POST: outpatient_clinic/Create
@@ -89,7 +102,7 @@ namespace Tailstale.Controllers
             }
             ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", outpatient_clinic.business_ID);
             ViewData["department_ID"] = new SelectList(_context.departments, "department_ID", "department_name", outpatient_clinic.department_ID);
-            ViewData["vet_ID"] = new SelectList(_context.vet_informations, "vet_ID", "vet_ID", outpatient_clinic.vet_ID);
+            ViewData["vet_ID"] = new SelectList(_context.vet_informations, "vet_ID", "vet_name", outpatient_clinic.vet_ID);
             return View(outpatient_clinic);
         }
 
