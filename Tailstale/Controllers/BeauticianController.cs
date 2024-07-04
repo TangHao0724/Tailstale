@@ -84,7 +84,12 @@ namespace Tailstale.Controllers
         // GET: Beautician/Create
         public IActionResult Create()
         {
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
+            var businesses = _context.businesses
+            .Where(b => b.type_ID == 2)
+            .ToList();
+
+            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+            //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
             return View();
         }
 
@@ -95,8 +100,12 @@ namespace Tailstale.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("id,name,gender,photo,phone,business_ID,Highest_license,Remark")] Beautician beautician)
         {
+            var businesses3 = _context.businesses
+            .Where(b => b.type_ID == 2)
+            .ToList();
             if (ModelState.IsValid)
             {
+                
                 // 处理第一个上传的文件（Photo）
                 if (HttpContext.Request.Form.Files.Count > 0)
                 {
@@ -107,8 +116,11 @@ namespace Tailstale.Controllers
                         // 检查文件类型是否为图片
                         if (!IsImageFile(photoFile))
                         {
+                            
+
+                            ViewData["business_ID"] = new SelectList(businesses3, "ID", "name");
                             ModelState.AddModelError("photo", "Only image files are allowed for Photo.");
-                            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
+                            //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
                             return View(beautician);
                         }
 
@@ -138,8 +150,11 @@ namespace Tailstale.Controllers
                         // 检查文件类型是否为图片
                         if (!IsImageFile(licenseFile))
                         {
+                           
+
+                            ViewData["business_ID"] = new SelectList(businesses3, "ID", "name");
                             ModelState.AddModelError("Highest_license", "Only image files are allowed for Highest License.");
-                            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
+                            //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
                             return View(beautician);
                         }
 
@@ -162,24 +177,23 @@ namespace Tailstale.Controllers
                 // 将 beautician 对象添加到数据库上下文并保存更改
                 _context.Add(beautician);
                 await _context.SaveChangesAsync();
-                ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
+                
+
+                ViewData["business_ID"] = new SelectList(businesses3, "ID", "name");
+                //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
                 // 成功保存后重定向到 Index 页面
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
+            
+
+            ViewData["business_ID"] = new SelectList(businesses3, "ID", "name");
+            //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
             return View(beautician);
 
 
 
-            //if (ModelState.IsValid)
-            //{
-            //    _context.Add(beautician);
-            //    await _context.SaveChangesAsync();
-            //    return RedirectToAction(nameof(Index));
-            //}
-            //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
-            //return View(beautician);
+           
         }
 
 
@@ -208,7 +222,12 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
             //beautician = await _context.Beautician.FirstOrDefaultAsync(b => b.id == id);
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
+            var businesses = _context.businesses
+            .Where(b => b.type_ID == 2)
+            .ToList();
+
+            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+            //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
             return View(beautician);
         }
 
@@ -298,11 +317,20 @@ namespace Tailstale.Controllers
                         throw;
                     }
                 }
-                ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
+                var businesses3 = _context.businesses
+            .Where(b => b.type_ID == 2)
+            .ToList();
+
+                ViewData["business_ID"] = new SelectList(businesses3, "ID", "name");
+               // ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
                 return RedirectToAction(nameof(Index));
             }
+            var businesses = _context.businesses
+            .Where(b => b.type_ID == 2)
+            .ToList();
 
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
+            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+           // ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
             return View(beautician);
 
 

@@ -1,4 +1,4 @@
-﻿@model Tailstale.Models.business_img
+﻿@model Tailstale.Models.business_img_type
 
 @{
     ViewData["Title"] = "Details";
@@ -7,21 +7,14 @@
 <h1>Details</h1>
 
 <div>
-    <h4>business_img</h4>
+    <h4>business_img_type</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.URL)
+            @Html.DisplayNameFor(model => model.typename)
         </dt>
         <dd class = "col-sm-10">
-            <img src="~/Salon_img/@Html.DisplayFor(model => model.URL)" alt="Alternate Text" style="width:320px;height:500px" />
-           
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.name)
+            @Html.DisplayFor(model => model.typename)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.created_at)
@@ -30,10 +23,10 @@
             @Html.DisplayFor(model => model.created_at)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.img_type)
+            @Html.DisplayNameFor(model => model.FK_business)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.img_type.ID)
+            @Html.DisplayFor(model => model.FK_business.name)
         </dd>
     </dl>
 </div>

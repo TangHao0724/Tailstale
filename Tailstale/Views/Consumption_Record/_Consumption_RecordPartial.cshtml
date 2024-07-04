@@ -1,8 +1,6 @@
 ﻿@model IEnumerable<Tailstale.Models.Consumption_Record>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+
 <table class="table">
     <thead>
         <tr>
@@ -70,13 +68,13 @@
                 @Html.DisplayFor(modelItem => item.after_photo)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.beautician.gender)
+                @Html.DisplayFor(modelItem => item.beautician.name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.business.name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.keeper.address)
+                @Html.DisplayFor(modelItem => item.keeper.name)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |

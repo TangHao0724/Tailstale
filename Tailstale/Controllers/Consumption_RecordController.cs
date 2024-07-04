@@ -57,6 +57,8 @@ namespace Tailstale.Controllers
             {
 var beauticians = _context.Consumption_Record
                 .Include(bh => bh.business)
+                .Include(bh => bh.beautician)
+                .Include(bh => bh.keeper)
                 .Where(bh => bh.business_ID == business.ID)
                 .ToList();
               return PartialView("_Consumption_RecordPartial", beauticians);
@@ -65,6 +67,9 @@ var beauticians = _context.Consumption_Record
             {
 var beauticians2 = _context.Consumption_Record
                .Where(bh => bh.keeper_id == business2.keeper_id)
+               .Include(bh => bh.business)
+               .Include(bh => bh.beautician)
+                .Include(bh => bh.keeper)
                .ToList();
                 return PartialView("_Consumption_RecordPartial", beauticians2);
             }
@@ -98,8 +103,13 @@ var beauticians2 = _context.Consumption_Record
         // GET: Consumption_Record/Create
         public IActionResult Create()
         {
+            var businesses = _context.businesses
+            .Where(b => b.type_ID == 2)
+            .ToList();
+
+            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
             ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "name");
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
+            //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
             ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name");
             return View();
         }
@@ -111,7 +121,9 @@ var beauticians2 = _context.Consumption_Record
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("id,keeper_id,pet_name,business_ID,time,beautician_id,service_name,pet_weight,price,end_time,before_photo,after_photo")] Consumption_Record consumption_Record)
         {
-
+            var businesses = _context.businesses
+            .Where(b => b.type_ID == 2)
+            .ToList();
             if (ModelState.IsValid)
             {
                 // 处理第一个上传的文件（Photo）
@@ -126,7 +138,8 @@ var beauticians2 = _context.Consumption_Record
                         {
                             ModelState.AddModelError("photo", "Only image files are allowed for Photo.");
                             ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "name", consumption_Record.beautician_id);
-                            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
+                            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+                            //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
                             ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name", consumption_Record.keeper_id);
                             return View(consumption_Record);
                         }
@@ -158,8 +171,9 @@ var beauticians2 = _context.Consumption_Record
                         if (!IsImageFile(licenseFile))
                         {
                             ModelState.AddModelError("Highest_license", "Only image files are allowed for Highest License.");
+                            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
                             ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "name", consumption_Record.beautician_id);
-                            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
+                            //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
                             ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name", consumption_Record.keeper_id);
                             return View(consumption_Record);
                         }
@@ -183,8 +197,11 @@ var beauticians2 = _context.Consumption_Record
                 // 将 beautician 对象添加到数据库上下文并保存更改
                 _context.Add(consumption_Record);
                 await _context.SaveChangesAsync();
+                
+
+                ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
                 ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "name", consumption_Record.beautician_id);
-                ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
+                //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
                 ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name", consumption_Record.keeper_id);
                 // 成功保存后重定向到 Index 页面
                 return RedirectToAction(nameof(Index));
@@ -195,14 +212,12 @@ var beauticians2 = _context.Consumption_Record
 
 
 
-            //if (ModelState.IsValid)
-            //{
-            //    _context.Add(consumption_Record);
-            //    await _context.SaveChangesAsync();
-            //    return RedirectToAction(nameof(Index));
-            //}
+           
+            
+
+            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
             ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "gender", consumption_Record.beautician_id);
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
+            //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
             ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "address", consumption_Record.keeper_id);
             return View(consumption_Record);
         }
@@ -232,9 +247,14 @@ var beauticians2 = _context.Consumption_Record
             {
                 return NotFound();
             }
-            ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "gender", consumption_Record.beautician_id);
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
-            ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "address", consumption_Record.keeper_id);
+            var businesses = _context.businesses
+            .Where(b => b.type_ID == 2)
+            .ToList();
+
+            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+            ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "name", consumption_Record.beautician_id);
+            //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
+            ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name", consumption_Record.keeper_id);
             return View(consumption_Record);
         }
 
@@ -250,7 +270,9 @@ var beauticians2 = _context.Consumption_Record
                 return NotFound();
             }
 
-
+            var businesses = _context.businesses
+            .Where(b => b.type_ID == 2)
+            .ToList();
 
             if (ModelState.IsValid)
             {
@@ -329,36 +351,22 @@ var beauticians2 = _context.Consumption_Record
                         throw;
                     }
                 }
+                
+
+                ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
                 ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "name", consumption_Record.beautician_id);
-                ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
+                //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
                 ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name", consumption_Record.keeper_id);
                 return RedirectToAction(nameof(Index));
             }
 
 
 
-            //if (ModelState.IsValid)
-            //{
-            //    try
-            //    {
-            //        _context.Update(consumption_Record);
-            //        await _context.SaveChangesAsync();
-            //    }
-            //    catch (DbUpdateConcurrencyException)
-            //    {
-            //        if (!Consumption_RecordExists(consumption_Record.id))
-            //        {
-            //            return NotFound();
-            //        }
-            //        else
-            //        {
-            //            throw;
-            //        }
-            //    }
-            //    return RedirectToAction(nameof(Index));
-            //}
+            
+
+            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
             ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "name", consumption_Record.beautician_id);
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
+            //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
             ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name", consumption_Record.keeper_id);
             return View(consumption_Record);
         }

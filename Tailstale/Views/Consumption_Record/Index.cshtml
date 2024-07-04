@@ -6,7 +6,7 @@
 <header>
     <partial name="_NavBar" />
 </header>
-<h1>Index</h1>
+<h1>消費紀錄</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -15,7 +15,7 @@
 <div>門市搜尋或會員id搜尋擇一,清空欄位才能選擇別的方式</div>
 <div>
     <select id="typeIdInput" class="form-control" asp-items="ViewBag.business_type">
-        <option>門市搜尋</option>
+        <option value="">門市搜尋</option>
     </select>
     <input id="selectuser" type="text" class="form-control" placeholder="會員id搜尋"/>
     <input id="selectday" type="submit" value="查詢" class="btn btn-primary" />
@@ -91,87 +91,4 @@
     </script>
 }
 
-@* <table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.keeper_id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.pet_name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.time)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.service_name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.pet_weight)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.end_time)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.before_photo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.after_photo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.beautician)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.business_ID)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-               @Html.DisplayFor(modelItem => item.keeper.name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.pet_name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.time)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.service_name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.pet_weight)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.end_time)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.before_photo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.after_photo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.beautician.name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.business.name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table> *@
+

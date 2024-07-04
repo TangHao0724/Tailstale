@@ -11,7 +11,7 @@ public partial class Service
 
     public int business_ID { get; set; }
 
-    [StringLength(maximumLength:10, MinimumLength =2, ErrorMessage ="長度不合法,最多10字")]//,最多8個字,最少3個字,可以防攻擊
+    [StringLength(maximumLength:10, MinimumLength =1, ErrorMessage ="長度不合法,最多10字")]//,最多8個字,最少3個字,可以防攻擊
     [Required(ErrorMessage = "category欄位未填寫")]
     public string category { get; set; }
 

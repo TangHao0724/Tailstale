@@ -85,7 +85,12 @@ namespace Tailstale.Controllers
         // GET: Service/Create
         public IActionResult Create()
         {
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
+            var businesses =  _context.businesses
+            .Where(b => b.type_ID == 2)
+            .ToList();
+
+            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+           //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
             return View();
         }
 
@@ -128,6 +133,7 @@ namespace Tailstale.Controllers
                 // 成功保存后重定向到 Index 页面
                 return RedirectToAction(nameof(Index));
             }
+
              ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", service.business_ID);
             // 如果模型状态无效，返回 Create 页面以显示错误信息和重新填写表单
             return View(service);//避免ModelState.IsValid 返回 false時,ViewData失效
@@ -147,7 +153,12 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", service.business_ID);
+            var businesses = _context.businesses
+            .Where(b => b.type_ID == 2)
+            .ToList();
+
+            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+            //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", service.business_ID);
             return View(service);
         }
 
@@ -217,12 +228,21 @@ namespace Tailstale.Controllers
                         throw;
                     }
                 }
-                ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", service.business_ID);
+                var businesses3 = _context.businesses
+            .Where(b => b.type_ID == 2)
+            .ToList();
+
+                ViewData["business_ID"] = new SelectList(businesses3, "ID", "name");
+                //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", service.business_ID);
                 return RedirectToAction(nameof(Index));
             }
 
-            
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", service.business_ID);
+            var businesses = _context.businesses
+            .Where(b => b.type_ID == 2)
+            .ToList();
+
+            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+            //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", service.business_ID);
             return View(service);
         }
 
