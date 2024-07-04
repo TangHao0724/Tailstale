@@ -1,0 +1,317 @@
+﻿
+
+@{
+    ViewData["Title"] = "會員管理中心";
+}
+
+@section styles{
+    <style>
+        <link href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css" rel="stylesheet" / >
+        
+    </style>
+}
+
+
+
+<!-- UserUpdateModal  -->
+<div class="modal fade" id="UserUpdateModal" tabindex="-1" aria-labelledby="UserUpdateModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">新建會員</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="insertUser">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="inputName" name="inputName" placeholder="名稱">
+                        <label for="inputName" class="form-label" >名稱</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="inputEmail" name="inputEmail" placeholder="電子信箱">
+                        <label for="inputEmail" class="form-label" >電子信箱</label>
+                    </div>
+                    <div class=" form-floating mb-3">
+                        <input type="text" class="form-control" id="inputAddress" name="inputAddress" placeholder="聯絡地址">
+                        <label for="inputAddress" class="form-label">聯絡地址</label>
+                        
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="inputPhone" name="inputPhone" placeholder="聯絡電話">
+                        <label for="inputPhone" class="form-label">聯絡電話</label>
+                        
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="inputPassword" name="inputPassword" placeholder="密碼">
+                        <label for="inputPassword" class="form-label" >密碼</label>
+                        
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="inputRePassword" placeholder="確認密碼">
+                        <label for="inputRePassword" class="form-label" >確認密碼</label>
+
+                    </div>
+                    <button type="submit" class="btn btn-primary justify-content-end">新增</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+
+<h1>會員管理中心</h1>
+
+
+<div class="container-fliud">
+    <div class="row ">
+        <div class="col-lg-4 col-md-4 col-sm-12 shadow rounded-2 p-4 mx-0">
+            <div class="row">
+                <h4 class="">會員瀏覽</h4>
+            </div>
+            <table class="table col-12 table-striped table-hover" id="table">
+                    <thead>
+                        <tr>
+                            <th>使用者ID</th>
+                            <th>姓名</th>
+                            <th>選擇</th>
+                        </tr>
+                    </thead>
+                </table>
+            <div class="row">
+                <button class="btn btn-outline-primary btn-sm " type="button" data-bs-toggle="modal" data-bs-target="#UserUpdateModal">新建會員</button>
+            </div>
+        </div>
+        <div class="col-lg-8 col-md-8 col-sm-12  px-4 mx-0 container-fluid p-1  ">
+            <div class="row mb-2 shadow rounded-2 p-3">
+                <ul class="nav justify-content-center nav-tabs" id="infoTab" role="tablist">
+                    <li class="nav-item">
+                        <button class="nav-link " 
+                                id="info-tab" data-bs-toggle="tab" 
+                                data-bs-target="#nav-info" 
+                                type="button" role="tab" 
+                                aria-controls="userInfo" 
+                                aria-selected="true">
+                                用戶資訊</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link"
+                                id="petInfo-tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#nav-petInfo"
+                                type="button" role="tab"
+                                aria-controls="petInfo"
+                                aria-selected="true">
+                            寵物資訊
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link " 
+                                id="hisOrder-tab" 
+                                data-bs-toggle="tab"
+                                data-bs-target="#nav-hisOrder" 
+                                type="button" role="tab" 
+                                aria-controls="hisOrder" 
+                                aria-selected="true">
+                                歷史預約</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link " 
+                                id="hisRecord-tab" 
+                                data-bs-toggle="tab" 
+                                data-bs-target="#nav-hisRecord" 
+                                type="button" role="tab" 
+                                aria-controls="hisRecord" 
+                                aria-selected="true">
+                                歷史貼文</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link "
+                                id="img-tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#nav-img"
+                                type="button" role="tab"
+                                aria-controls="img"
+                                aria-selected="true">
+                            已存圖片
+                        </button>
+                    </li>
+
+                </ul>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show " id="nav-info" role="tabpanel" aria-labelledby="nav-info-tab">
+                    </div>
+                    <div class="tab-pane fade show " id="nav-petInfo" role="tabpanel" aria-labelledby="nav-petInfo-tab">
+                        寵物資訊
+                    </div>
+                    <div class="tab-pane fade" id="nav-hisOrder" role="tabpanel" aria-labelledby="nav-hisOrder-tab">
+                        歷史預約
+                    </div>
+                    <div class="tab-pane fade" id="nav-hisRecord" role="tabpanel" aria-labelledby="nav-hisRecord-tab">
+                        歷史紀錄
+                    </div>
+                    <div class="tab-pane fade" id="nav-img" role="tabpanel" aria-labelledby="nav-img-tab">
+                        圖片
+                    </div>
+
+                 </div>
+             </div>
+
+            <div class="row mb-2 shadow rounded-2 px-2 align-items-center justify-content-between">
+                <div class="col-8 d-flex ">
+                    <span  class="text-primary me-2">用戶:</span>
+                    <span id="selectID" class="text-primary me-4"></span>
+                    <span class="text-center">   擁有預約數： 擁有寵物數： 預約完成數： </span>
+                </div>
+                <div class="col-4  py-3 d-flex  ">
+                    <div class="btn-group dropup">
+                        <button type="button" class="btn btn-secondary dropdown-toggle btn-sm" data-bs-toggle="dropdown" aria-expanded="false">為用戶新增</button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item">寵物</a></li>
+                            <li><a class="dropdown-item">訂單</a></li>
+                            <li><a class="dropdown-item">貼文</a></li>
+                            <li><a class="dropdown-item">圖片</a></li>
+                        </ul>
+                    </div>
+                    <button class="btn btn-outline-primary btn-sm mx-3" type="button" data-bs-toggle="modal" data-bs-target="#UserUpdateModal">修改</button>
+                    <button class="btn btn-danger btn-sm " type="button" data-bs-toggle="modal" data-bs-target="#UserUpdateModal">刪除</button>
+                </div>
+            </div>
+
+         </div>
+   
+           
+    </div>
+
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js" integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var infoa; // userdata
+            var selectUserID; //ID
+            var userdetail;
+
+
+            $('#table').DataTable({
+                columns: [
+                    { "data": "id", "width": "20%" },
+                    { "data": "name", "width": "20%" },
+                    {
+                        "data": null,
+                        "defaultContent": '<button class="btn btn-primary btn-sm">選擇</button>',
+                        "orderable": false,
+                        "width": "20%"
+                    }
+                ],
+                paging: false ,
+                scrollY: '50vh',
+                scrollCollapse: true,
+                deferRender: true,
+                
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.13.1/i18n/zh-HANT.json'
+                }
+            });
+            axios.get('/api/ UserMangerApi/userInfo')
+                .then(response => {
+                    // 處理成功的回應
+                    console.log('API 回應資料：', response.data);
+                    infoa = response.data;
+
+                    $('#table').DataTable().clear().rows.add(infoa).draw();
+                    
+
+                    $('#table tbody').on('click', 'button', function () {        
+                        data = $('#table').DataTable().row($(this).parents('tr')).data().id;
+                       
+                        data = selectUserID;
+                        $("#selectID").text(selectUserID);
+                        
+                    });
+                })
+                .catch (error => {
+                // 處理錯誤
+                console.error('發生錯誤：', error)
+                });
+            
+            $("#info-tab").on("click", function () {
+                $("#nav-info").text(data);
+                axios.get('/api/UserMangerApi/userInfodetail', {
+                    params: { id: selectUserID }
+                })
+                .then(response => {
+                    // 處理成功的回應
+                    console.log('API 回應資料：', response.data);
+                    userdetail = response.data;
+                    alert(userdetail);
+                })
+                .catch(error => {
+                    // 處理錯誤
+                    console.error('發生錯誤：', error)
+                });
+            });
+            //建立新帳號
+            $('#insertUser').submit(function (event) {
+                event.preventDefault();
+
+                var UserformData = {
+                    name: $('#inputName').val(),
+                    email: $('#inputEmail').val(),
+                    password: $('#inputPassword').val(),
+                    address: $('#inputAddress').val(),
+                    phone: $('#inputPhone').val()
+                    
+                };
+
+                axios.post('/api/UserMangerApi/PostUser', UserformData)
+                    .then(function (response) {
+                        console.log('API 返回:', response.data);
+                            alert('建立成功，用户ID: ' + JSON.stringify(response.data.userId));
+                            $('#UserUpdateModal').modal('hide');
+                        reflashdatatable();
+                    })
+                    .catch(function (error) {
+                        console.error('API 請求失敗', error);
+                        alert('建立失敗');
+                        // 处理错误信息
+                    });
+
+
+            });
+            //更新資料後刷新旁邊的表
+            var reflashdatatable = function () {
+
+                axios.get('/api/ UserMangerApi/userInfo')
+                    .then(response => {
+                        // 處理成功的回應
+                        console.log('API 回應資料：', response.data);
+                        infoa = response.data;
+
+                        $('#table').DataTable().clear().rows.add(infoa).draw();
+
+                        $('#table tbody').on('click', 'button', function () {
+                            var data = $('#table').DataTable().row($(this).parents('tr')).data();
+                            alert('你按下的ID是：' + data.id);
+                            // 在這裡添加自訂功能
+                        });
+                    })
+                    .catch(error => {
+                        // 處理錯誤
+                        console.error('發生錯誤：', error)
+                    });
+
+            };
+
+
+        });
+            
+
+    </script>
+}
