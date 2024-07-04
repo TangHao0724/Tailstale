@@ -18,8 +18,13 @@ public partial class vet_information
     public int? department_ID { get; set; }
 
     public string profile { get; set; }
-    
+
+    public int? business_img_ID { get; set; }
+
     public virtual business business { get; set; }
+
+    public virtual business_img business_img { get; set; }
+
     public virtual department department { get; set; }
 
     public virtual ICollection<outpatient_clinic> outpatient_clinics { get; set; } = new List<outpatient_clinic>();

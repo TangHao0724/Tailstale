@@ -8,8 +8,6 @@ namespace Tailstale.Models;
 
 public partial class TailstaleContext : DbContext
 {
-    internal readonly object vet_information_ViewModel;
-
     public TailstaleContext(DbContextOptions<TailstaleContext> options)
         : base(options)
     {
@@ -988,6 +986,10 @@ public partial class TailstaleContext : DbContext
             entity.HasOne(d => d.business).WithMany(p => p.vet_informations)
                 .HasForeignKey(d => d.business_ID)
                 .HasConstraintName("FK__vet_infor__busin__5DCAEF64");
+
+            entity.HasOne(d => d.business_img).WithMany(p => p.vet_informations)
+                .HasForeignKey(d => d.business_img_ID)
+                .HasConstraintName("FK__vet_infor__busin__3FD07829");
 
             entity.HasOne(d => d.department).WithMany(p => p.vet_informations)
                 .HasForeignKey(d => d.department_ID)

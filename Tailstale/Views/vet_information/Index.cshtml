@@ -7,28 +7,23 @@
 
 @section Styles
 {
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
     <style>
-        textarea {
-            height: 200px;
-            width: 300px;
-        }
+        
     </style>
 }
 
 <h2>醫師資料管理</h2>
+<hr>
 
 <p>
-    <a asp-action="Create">新增醫師資料</a>
+    <a asp-action="Create" class="btn btn-outline-primary">新增醫師資料</a>
 </p>
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.vet_name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.license_number)
-            </th>
             <th>
                 @Html.DisplayNameFor(model => model.business)
             </th>
@@ -36,26 +31,27 @@
                 @Html.DisplayNameFor(model => model.department)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.profile)
+                @Html.DisplayNameFor(model => model.vet_name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.license_number)
             </th>
             
-            <th>
+           @*  <th>
+                @Html.DisplayNameFor(model => model.profile)
+            </th> *@
+            
+            @* <th>
                 @Html.DisplayNameFor(model => model.URL)
-            </th>
-            <th>
+            </th> *@
+            @* <th>
                 @Html.DisplayNameFor(model => model.name)
-            </th>
+            </th> *@
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.vet_name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.license_number)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.business.name)
             </td>
@@ -63,24 +59,40 @@
                 @Html.DisplayFor(modelItem => item.department.department_name)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.vet_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.license_number)
+            </td>
+            
+            @* <td>
                 <textarea>
                         @Html.DisplayFor(modelItem => item.profile)
                 </textarea>
-            </td>
-            
-            <td>
-                  @* <partial name="_showimgPartial" model="item">  *@
-            </td>
-            <td>
+            </td> *@
+            @* <td>
+                 <partial name="_showimgPartial" model="item.business_img">
+            </td> *@
+            @* <td>
                  @Html.DisplayFor(model => item.name)
-            </td>
+            </td> *@
            
             <td>
-                <a asp-action="Edit" asp-route-id="@item.vet_ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.vet_ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.vet_ID">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.vet_ID" class="btn btn-outline-primary"><i class="bi bi-pencil-square"></i> Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.vet_ID" class="btn btn-outline-primary"><i class="bi bi-person-lines-fill"></i> Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.vet_ID" class="btn btn-outline-primary"><i class="bi bi-trash3"></i> Delete</a>
             </td>
         </tr> 
 } 
     </tbody>
 </table>
+
+
+@section Scripts
+{      
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <script>
+
+    </script>
+}
