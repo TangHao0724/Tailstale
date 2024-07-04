@@ -6,7 +6,7 @@
 <header>
     <partial name="_NavBar" />
 </header>
-<h1>作品圖上傳</h1>
+<h1>美容作品</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -27,6 +27,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.img_type)
             </th>
+
             <th></th>
         </tr>
     </thead>
@@ -43,8 +44,9 @@
                 @Html.DisplayFor(modelItem => item.created_at)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.img_type.ID)
+                @Html.DisplayFor(modelItem => item.img_type_id)
             </td>
+  
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.ID">Details</a> |

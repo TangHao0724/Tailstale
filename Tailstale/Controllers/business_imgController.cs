@@ -23,7 +23,7 @@ namespace Tailstale.Controllers
         // GET: business_img
         public async Task<IActionResult> Index()
         {
-            var tailstaleContext = _context.business_imgs.Include(b => b.img_type);
+            var tailstaleContext =  _context.business_imgs.Include(b => b.img_type).Where(n => n.img_type_id == 2);
             return View(await tailstaleContext.ToListAsync());
         }
 
