@@ -165,6 +165,9 @@
             console.log(response.data);;
             $("#nav-img").html(response.data);
             ImgBind();
+            $("deleteBTN").on("click", function () {
+                alert("sad")
+            })
 
 
 
@@ -235,7 +238,26 @@
     })
     $("#img-tab").on("click", function () {
         $("#nav-info").html('');
-        reflashImgPage();
+               UMapi.get('/userImgPage', {
+            params: {
+                ID: selectUserID
+            }
+        }).then(response => {
+            // 處理成功的回應
+            console.log(response.data);;
+            $("#nav-img").html(response.data);
+            ImgBind();
+            $("deleteBTN").on("click", function () {
+                alert("sad")
+            })
+
+
+
+        }).catch(error => {
+            // 處理錯誤
+            console.error('發生錯誤：', error)
+        });
+
     })
 
     //建立新帳號API
