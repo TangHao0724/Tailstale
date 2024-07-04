@@ -188,7 +188,7 @@
             })
                 .then(function (response) {
                     console.log('API 返回:', response.data);
-
+                    alert(`上傳成功!：`)
                     $('#InsertImgModal').modal('hide');
                 })
                 .catch(function (error) {
