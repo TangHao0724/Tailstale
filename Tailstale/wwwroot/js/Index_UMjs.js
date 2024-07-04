@@ -166,8 +166,9 @@
 
 
         }).catch(error => {
-            // 處理錯誤
+            // 處理錯誤     
             console.error('發生錯誤：', error)
+            alert(error.stringify);
         });
 
     }
@@ -181,7 +182,12 @@
                 type_name: $('#insertImgtype').val(),
                 Imgname: $('#insertImgName').val(),
             };
-            Imgapi.post("UploadsingleImg", ImgData)
+
+            Imgapi.post("UploadsingleImg", ImgData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
                 .then(function (response) {
                     console.log('API 返回:', response.data);
 
@@ -189,7 +195,7 @@
                 })
                 .catch(function (error) {
                     console.error('API 請求失敗', error);
-                    alert('建立失敗');
+                    alert( error.stringify);
                     // 处理错误信息
                 })
 
