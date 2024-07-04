@@ -6,6 +6,7 @@ using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Tailstale.med_recordViewModels;
 using Tailstale.MedRecordDTO;
 using Tailstale.Models;
 
