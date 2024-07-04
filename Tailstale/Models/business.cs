@@ -31,25 +31,25 @@ public partial class business
 
     public DateTime? created_at { get; set; }
 
-    public virtual ICollection<Beautician> Beauticians { get; set; } = new List<Beautician>();
+    public virtual ICollection<Beautician> Beautician { get; set; } = new List<Beautician>();
 
     public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 
     public virtual ICollection<Business_hour> Business_hours { get; set; } = new List<Business_hour>();
 
-    public virtual ICollection<Consumption_Record> Consumption_Records { get; set; } = new List<Consumption_Record>();
+    public virtual ICollection<Consumption_Record> Consumption_Record { get; set; } = new List<Consumption_Record>();
 
     public virtual status FK_status { get; set; }
 
     public virtual ICollection<PaymentInfo> PaymentInfos { get; set; } = new List<PaymentInfo>();
 
-    public virtual ICollection<Reserve> Reserves { get; set; } = new List<Reserve>();
+    public virtual ICollection<Reserve> Reserve { get; set; } = new List<Reserve>();
 
     public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();
 
-    public virtual ICollection<Service> Services { get; set; } = new List<Service>();
+    public virtual ICollection<Service> Service { get; set; } = new List<Service>();
 
-    public virtual ICollection<Store_Service> Store_Services { get; set; } = new List<Store_Service>();
+    public virtual ICollection<Store_Service> Store_Service { get; set; } = new List<Store_Service>();
 
     public virtual ICollection<business_img_type> business_img_types { get; set; } = new List<business_img_type>();
 

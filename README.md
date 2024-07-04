@@ -11,7 +11,7 @@ EX；「public DbSet<Tailstale.Models.{{選擇要的Model}}> 選擇要得Model {
 6. CSS、JS則相同，各自命名"{{負責部分}}_styles"建立資料夾並放入。
 
 7. 如果有任何問題，直接問群組。或者GPT。
-
+8. 已經把NAVBAR製成 PARTIAL 需要用的時候再用/shared/_NAvBar <partial name="_NavBar" /> 叫出來
 
 
 (負責部分EX：Hotel/Salon/Hospital/med-record/Socal/Index)

@@ -15,31 +15,31 @@ public partial class TailstaleContext : DbContext
 
     public virtual DbSet<Appointment> Appointments { get; set; }
 
-    public virtual DbSet<Beautician> Beauticians { get; set; }
+    public virtual DbSet<Beautician> Beautician { get; set; }
 
     public virtual DbSet<Booking> Bookings { get; set; }
 
     public virtual DbSet<BookingDetail> BookingDetails { get; set; }
 
-    public virtual DbSet<Business_hour> Business_hours { get; set; }
+    public virtual DbSet<Business_hour> Business_hour { get; set; }
 
     public virtual DbSet<CheckinDetail> CheckinDetails { get; set; }
 
-    public virtual DbSet<Consumption_Record> Consumption_Records { get; set; }
+    public virtual DbSet<Consumption_Record> Consumption_Record { get; set; }
 
     public virtual DbSet<Message> Messages { get; set; }
 
     public virtual DbSet<PaymentInfo> PaymentInfos { get; set; }
 
-    public virtual DbSet<Reserve> Reserves { get; set; }
+    public virtual DbSet<Reserve> Reserve { get; set; }
 
     public virtual DbSet<Review> Reviews { get; set; }
 
     public virtual DbSet<Room> Rooms { get; set; }
 
-    public virtual DbSet<Service> Services { get; set; }
+    public virtual DbSet<Service> Service { get; set; }
 
-    public virtual DbSet<Store_Service> Store_Services { get; set; }
+    public virtual DbSet<Store_Service> Store_Service { get; set; }
 
     public virtual DbSet<article> articles { get; set; }
 
@@ -52,6 +52,8 @@ public partial class TailstaleContext : DbContext
     public virtual DbSet<business_img_type> business_img_types { get; set; }
 
     public virtual DbSet<business_type> business_types { get; set; }
+
+    //public virtual DbSet<Tailstale.Models.Business_hour> Business_hour { get; set; }
 
     public virtual DbSet<department> departments { get; set; }
 
@@ -155,7 +157,7 @@ public partial class TailstaleContext : DbContext
                 .HasMaxLength(16);
             entity.Property(e => e.photo).HasMaxLength(255);
 
-            entity.HasOne(d => d.business).WithMany(p => p.Beauticians)
+            entity.HasOne(d => d.business).WithMany(p => p.Beautician)
                 .HasForeignKey(d => d.business_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Beauticia__busin__44CA3770");
@@ -246,17 +248,17 @@ public partial class TailstaleContext : DbContext
                 .HasMaxLength(100);
             entity.Property(e => e.time).HasColumnType("datetime");
 
-            entity.HasOne(d => d.beautician).WithMany(p => p.Consumption_Records)
+            entity.HasOne(d => d.beautician).WithMany(p => p.Consumption_Record)
                 .HasForeignKey(d => d.beautician_id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Consumpti__beaut__4A8310C6");
 
-            entity.HasOne(d => d.business).WithMany(p => p.Consumption_Records)
+            entity.HasOne(d => d.business).WithMany(p => p.Consumption_Record)
                 .HasForeignKey(d => d.business_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Consumpti__busin__47A6A41B");
 
-            entity.HasOne(d => d.keeper).WithMany(p => p.Consumption_Records)
+            entity.HasOne(d => d.keeper).WithMany(p => p.Consumption_Record)
                 .HasForeignKey(d => d.keeper_id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Consumpti__keepe__498EEC8D");
@@ -324,12 +326,12 @@ public partial class TailstaleContext : DbContext
                 .HasMaxLength(100);
             entity.Property(e => e.time).HasColumnType("datetime");
 
-            entity.HasOne(d => d.business).WithMany(p => p.Reserves)
+            entity.HasOne(d => d.business).WithMany(p => p.Reserve)
                 .HasForeignKey(d => d.business_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Reserve__busines__3B40CD36");
 
-            entity.HasOne(d => d.keeper).WithMany(p => p.Reserves)
+            entity.HasOne(d => d.keeper).WithMany(p => p.Reserve)
                 .HasForeignKey(d => d.keeper_id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Reserve__keeper___3E1D39E1");
@@ -391,7 +393,7 @@ public partial class TailstaleContext : DbContext
                 .IsRequired()
                 .HasMaxLength(100);
 
-            entity.HasOne(d => d.business).WithMany(p => p.Services)
+            entity.HasOne(d => d.business).WithMany(p => p.Service)
                 .HasForeignKey(d => d.business_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Service__busines__3493CFA7");
@@ -403,12 +405,12 @@ public partial class TailstaleContext : DbContext
 
             entity.ToTable("Store_Service");
 
-            entity.HasOne(d => d.business).WithMany(p => p.Store_Services)
+            entity.HasOne(d => d.business).WithMany(p => p.Store_Service)
                 .HasForeignKey(d => d.business_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Store_Ser__busin__40F9A68C");
 
-            entity.HasOne(d => d.service).WithMany(p => p.Store_Services)
+            entity.HasOne(d => d.service).WithMany(p => p.Store_Service)
                 .HasForeignKey(d => d.service_id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Store_Ser__servi__41EDCAC5");

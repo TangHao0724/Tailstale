@@ -2,6 +2,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Tailstale.Models;
 
@@ -11,6 +12,8 @@ public partial class Store_Service
 
     public int business_ID { get; set; }
 
+    
+    [Required(ErrorMessage = "sservice_id欄位未填寫")]
     public int service_id { get; set; }
 
     public virtual business business { get; set; }
