@@ -3,13 +3,15 @@
 @{
     ViewData["Title"] = "Index";
 }
-
+<header>
+    <partial name="_NavBar" />
+</header>
 <h1>圖片類型</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table border">
+<table class="table border table-striped">
     <thead>
         <tr>
             <th>
