@@ -23,42 +23,60 @@ namespace Tailstale.Controllers
         //GET: Business_hour 
         public async Task<IActionResult> Index()
         {
+            var businesses = await _context.businesses
+       .Where(b => b.type_ID == 2)
+       .ToListAsync();
+
+            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(string business_day)
+        public async Task<IActionResult> Index(int? id,string business_day)
         {
-            //var tailstaleContext = _context.Business_hours.Include(b => b.business);
-            //return View(await tailstaleContext.ToListAsync());
-            DateOnly selectedDate = DateOnly.Parse(business_day);
+            
+            if (!id.HasValue && string.IsNullOrEmpty(business_day))
+            {
 
-            // 查詢符合條件的 Business_hour 記錄
-            var businessHours = _context.Business_hour
-                .Include(bh => bh.business)
-                .Where(bh => bh.business_day == selectedDate)
-                .ToList();
+                return PartialView("_hourPartial", new List<Reserve>());
+            }
 
-            // 返回到前端，假設你的 View 期望接收一段 HTML 作為結果
+            // 準備查詢
+            IQueryable<Business_hour> query = _context.Business_hour
+                .Include(bh => bh.business);
+                
+
+            // 根據 id 的情況添加條件
+            if (id.HasValue)
+            {
+                query = query.Where(bh => bh.business_ID == id);
+            }
+
+            // 根據 time 的情況添加條件
+            if (!string.IsNullOrEmpty(business_day))
+            {
+                // 將 time 字符串解析為 DateTime 對象
+                DateOnly selectedDate;
+                if (!DateOnly.TryParse(business_day, out selectedDate))
+                {
+                    // 如果解析失敗，返回空的部分視圖
+
+                    return PartialView("_hourPartial", new List<Business_hour>());
+                }
+                // 只比較日期部分
+                query = query.Where(bh => bh.business_day == selectedDate);
+            }
+
+            // 执行查询并返回结果
+            var businessHours = await query.ToListAsync();
+
             return PartialView("_hourPartial", businessHours);
+
+
         }
 
 
-        //public async Task<IActionResult> Orders(DateOnly? selectedDate)//對orders右鍵新增檢視,選razor檢視>,名稱用_OrdersPartial,範本選List(客戶可能很多訂單),模型類別選order(訂單),db選Nort...,打勾局部檢視
-        //{
-        //    var query = _context.Business_hour.AsQueryable();
 
-
-        //    if (selectedDate.HasValue)
-        //    {
-        //        // 篩選選定日期的資料
-        //        query = query.Where(bh => bh.business_day == selectedDate.Value);
-        //    }
-
-        //    var businessHours = await query.ToListAsync();
-
-        //    return View(businessHours);
-        //}
 
 
 

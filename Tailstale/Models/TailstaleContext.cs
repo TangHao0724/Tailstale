@@ -937,7 +937,7 @@ public partial class TailstaleContext : DbContext
             entity.Property(e => e.name).HasMaxLength(128);
         });
 
-        modelBuilder.Entity<user_photo>(entity =>
+        modelBuilder.Entity<keeper_img>(entity =>
         {
             entity.HasKey(e => e.ID).HasName("PK__user_pho__3214EC27751CA3B5");
 
