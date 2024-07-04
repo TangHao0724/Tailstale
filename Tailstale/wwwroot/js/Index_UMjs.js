@@ -7,6 +7,7 @@
         baseURL: '/api/UserMangerApi/',
         timeout: 1000,
     })
+
     const Imgapi = axios.create({
         baseURL: '/api/ImgApi/',
         timeout: 1000,
@@ -34,7 +35,8 @@
                     }
                     $("#nav-info").show();
                     reflashInfoDetail();
-                    UserInfoBind();
+                    
+                    
                     //如果目前號碼等於selectUserID Disabled選擇紐
                 });
             })
@@ -52,8 +54,8 @@
             // 處理成功的回應
             console.log(response.data);
             $("#nav-info").html(response.data);
-            UserInfoBind();
             reflashInfoDetail();
+            UserInfoBind();
             
 
         }).catch(error => {
@@ -89,6 +91,7 @@
                 $("#updatePhone").val(userDetailJson.phone)
                 $("#updatePassword").val(userDetailJson.phone)
                 $("#updateStatus").val(userDetailJson.status)
+                
             })
             .catch(error => {
                 // 處理錯誤
@@ -96,32 +99,26 @@
             });
     }//更新Info讀取的資料
     var UserInfoBind = function () {
-        
-        if ($('#deleteTBTN').length > 0) {
-            console.log('The element with the specified ID has been inserted.');
+        $("#nav-info #UserDeleteModal #selectID").text(`${selectUserID}`);//為什麼沒有
+        //刪除帳號
+        $(" #nav-info #deleteTBTN").on("click", function () {
+            UMapi.post('/DeleteUser',
+                { ID: selectUserID },
+                { headers: { 'Content-Type': 'application/json' } }
+            )
+                .then(function (response) {
 
-        } else {
-            console.log('The element with the specified ID has not been inserted.');
-            //刪除帳號
-            $("#nav-info #UserDeleteModal #selectID").text(`${selectUserID}`);//為什麼沒有
-            $(" #nav-info #deleteTBTN").on("click", function () {
-                UMapi.post('/DeleteUser',
-                    { ID: selectUserID },
-                    { headers: { 'Content-Type': 'application/json' } }
-                )
-                    .then(function (response) {
-
-                        console.log('API 返回:', response.data);
-                        alert(response.data);
-                        $('#UserDeleteModal').modal('hide');
-                        reflashDataTable();
-                    })
-                    .catch(function (error) {
-                        console.error('API 請求失敗', error);
-                    });
+                    console.log('API 返回:', response.data);
+                    alert(response.data);
+                    $('#UserDeleteModal').modal('hide');
+                    reflashDataTable();
+                })
+                .catch(function (error) {
+                    console.error('API 請求失敗', error);
+                });
             });
-            //更新USER
-            $("#nav-info #UserUpdateModal #UpdateUser").submit(function (event) {
+        //更新USER
+         $("#nav-info #UserUpdateModal #UpdateUser").submit(function (event) {
                 event.preventDefault();
 
                 var UpdateData = {
@@ -137,7 +134,7 @@
                 UMapi.post('/UpdateUser', UpdateData)
                     .then(function (response) {
                         console.log('API 返回:', response.data);
-                        alert(JSON.stringify(response.data.userId));
+                        alert("已經修改 編號：" + JSON.stringify(response.data.userId));
                         $('#UserUpdateModal').modal('hide');
                         reflashInfoDetail();
 
@@ -147,9 +144,6 @@
                         // 处理错误信息
                     })
             })
-
-        }
-
 
     }//刷新時綁定Info物件,
 
@@ -165,7 +159,7 @@
             console.log(response.data);;
             $("#nav-img").html(response.data);
             ImgBind();
-            $("deleteBTN").on("click", function () {
+            $("deleteImgBTN").on("click", function () {
                 alert("sad")
             })
 
@@ -179,7 +173,8 @@
     }
     var ImgBind = function () {
         //上傳圖片
-        $("InsertImg").submit(function (event) {
+        $("#InsertImg").submit(function (event) {
+            event.preventDefault();
             var ImgData = {
                 User_id: selectUserID,
                 img: $("insertImg").val(),
@@ -200,7 +195,9 @@
 
         })
 
-
+        $("#deleteImgBTN").on("click", function () {
+            alert("aaaa");
+        })
     }//綁定到Imgpage物件
 
 
@@ -238,25 +235,7 @@
     })
     $("#img-tab").on("click", function () {
         $("#nav-info").html('');
-               UMapi.get('/userImgPage', {
-            params: {
-                ID: selectUserID
-            }
-        }).then(response => {
-            // 處理成功的回應
-            console.log(response.data);;
-            $("#nav-img").html(response.data);
-            ImgBind();
-            $("deleteBTN").on("click", function () {
-                alert("sad")
-            })
-
-
-
-        }).catch(error => {
-            // 處理錯誤
-            console.error('發生錯誤：', error)
-        });
+        reflashImgPage();
 
     })
 
