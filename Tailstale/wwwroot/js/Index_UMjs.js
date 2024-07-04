@@ -176,12 +176,10 @@
         //上傳圖片
         $("#InsertImg").submit(function (event) {
             event.preventDefault();
-            var ImgData = {
-                User_id: selectUserID,
-                img: $("insertImg").val(),
-                type_name: $('#insertImgtype').val(),
-                Imgname: $('#insertImgName').val(),
-            };
+
+            var ImgData = new FormData(this);
+
+            ImgData.append("User_id", selectUserID);
 
             Imgapi.post("UploadsingleImg", ImgData, {
                 headers: {

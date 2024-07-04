@@ -12,24 +12,24 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="InsertImg" enctype="multipart/form-data" method="post asp-action="api/ImgApi/UploadsingleImg">
+                <form method="post" enctype="multipart/form-data" id="InsertImg">
                     <div class="form-floating mb-3">
-                        <input type="file" name="insertImg" id="insertImg" />
+                        <input type="file" name="img" id="insertImg" />
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="insertImgName" name="insertImgName" placeholder="圖片名稱">
+                        <input type="text" class="form-control" id="insertImgName" name="Imgname" placeholder="圖片名稱">
                         <label for="insertImgName" class="form-label">圖片名稱</label>
                     </div>
                     <div class="form-floating mb-3">
                         <select class="form-select" aria-label="Default select example">
                             <option selected>選擇存入相簿</option>
-                        </select>
+                        </select>   
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="insertImgtype" name="insertImgtype" placeholder="建立相簿並存入">
+                        <input type="text" class="form-control" id="insertImgtype" name="type_name" placeholder="建立相簿並存入">
                         <label for="updateEmail" class="form-label">建立相簿並存入</label>
                     </div>
-                    <button type="submit">Upload</button>
+                    <button type="submit" class="btn btn-danger">Upload</button>
 
                 </form>
 
@@ -42,6 +42,40 @@
     </div>
 </div>
 <!-- InsertImgModall_E  -->
+<!--UpdateImgdModel-->
+<div class="modal fade" id="UpdateImgModal" tabindex="-1" aria-labelledby="InsertImgModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"> 更換相片</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" enctype="multipart/form-data" asp-controller="Upload" asp-action="UploadsingleImg">
+                    <div class="form-group">
+                        <label for="file">File:</label>
+                        <input type="file" id="file" name="img" />
+                    </div>
+                    <div class="form-group">
+                        <label for="type_name">Type Name:</label>
+                        <input type="text" id="type_name" name="type_name" />
+                    </div>
+                    <div class="form-group">
+                        <label for="User_id">User ID:</label>
+                        <input type="text" id="User_id" name="User_id" />
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Upload" />
+                    </div>
+                </form>
+            </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Modal_E -->
 
@@ -68,7 +102,7 @@
 
         <div class="col-4  py-3 d-flex  ">
             <button class="btn btn-outline-primary btn-sm mx-3 " type="button" data-bs-toggle="modal" data-bs-target="#InsertImgModal">新增相片</button>
-            <button class="btn btn-outline-primary btn-sm mx-3" type="button" data-bs-toggle="modal" data-bs-target="#UserUpdateModal">修改</button>
+            <button class="btn btn-outline-primary btn-sm mx-3" type="button" data-bs-toggle="modal" data-bs-target="#UpdateImgModal">修改</button>
             <button class="btn btn-danger btn-sm " type="button" data-bs-toggle="modal" data-bs-target="#UserDeleteModal" id="deleteImgBTN">刪除</button>
         </div>
     </div>
