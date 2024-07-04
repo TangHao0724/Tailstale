@@ -26,7 +26,8 @@
         <form asp-action="Edit" enctype="multipart/form-data" >
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="vet_ID" />
-        <div class="border border-1 border-secondary rounded px-4 py-2">
+            <input type="hidden" asp-for="business_img_ID" />
+        <div class="border border-1 border-secondary rounded px-4 py-4">
             <div class="container mt-4">
                 <div class="row">
                     <div class="col-12 col-md-6">
@@ -36,12 +37,12 @@
                     </div>
                     <div class="col-12 col-md-6">
                         <div class="form-group">
-                            <label asp-for="business_ID" class="control-label">院所名稱</label>
+                            <label asp-for="business_ID" class="control-label"></label>
                             <select asp-for="business_ID" class="form-control" asp-items="ViewBag.business_ID"></select>
                             <span asp-validation-for="business_ID" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <label asp-for="department_ID" class="control-label">科別名稱</label>
+                            <label asp-for="department_ID" class="control-label"></label>
                             <select asp-for="department_ID" class="form-control" asp-items="ViewBag.department_ID"></select>
                             <span asp-validation-for="department_ID" class="text-danger"></span>
                         </div>
@@ -60,6 +61,9 @@
                                 <span asp-validation-for="URL" class="text-danger"></span>
                         </div>
                         <div class="form-group">
+                            <input asp-for="img_type_id" class="form-control" style="display:none" value="1" />
+                        </div>
+                        <div class="form-group">
                             <label asp-for="name" class="control-label"></label>
                             <input asp-for="name" class="form-control" />
                             <span asp-validation-for="name" class="text-danger"></span>
@@ -75,15 +79,14 @@
                             <textarea asp-for="profile" class="form-control"></textarea>
                             <span asp-validation-for="profile" class="text-danger"></span>
                         </div>
-                            <div class="form-group text-end mt-3">
-                            <input type="submit" value="Save" class="btn btn-outline-primary" />
-                            <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
+                        <div class="form-group text-end mt-3">
+                            <input type="submit" value="儲存修改" class="btn btn-outline-primary" />
+                            <a asp-action="Index" class="btn btn-outline-primary">返回醫師列表</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-            
         </form>
     </div>
 </div>
@@ -149,7 +152,8 @@
     <script>
         $(document).ready(function () {
             let imageTemp;
-            $('#vet_photo').on("change", function () {
+            $('#URL').on("change", function () {
+                //alert('photochange');
                 // 等待0.1秒
                 setTimeout(function () {
                     console.log($('URL').val());
@@ -170,10 +174,10 @@
                         var reader = new FileReader();
                         // 檔案讀取完成的事件
                         reader.onload = function (e) {
-                            // 選到#TheaterImage的上一個元素修改src屬性
-                            $('#vet_photo').prev().attr("src", e.target.result);
-                            // 選到#TheaterImage的上一個元素修改title屬性
-                            $('#vet_photo').prev().attr("title", file.name);
+                            // 選到#vet_photo的上一個元素修改src屬性
+                            $('#vet_photo').attr("src", e.target.result);
+                            // 選到#vet_photo的上一個元素修改title屬性
+                            $('#vet_photo').attr("title", file.name);
                             imageTemp = e.target.result;
                         }
                         // 用圖片的URL讀取圖片

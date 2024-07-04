@@ -19,26 +19,26 @@ namespace Tailstale.Hospital_ViewModel
         [StringLength(500, ErrorMessage = "請勿填寫超過字數上限500字")]
         [Display(Name = "學經歷簡介")]
         public string profile { get; set; }
-        
+
+        [Display(Name = "院所名稱")]
         public int? business_ID { get; set; }
         [Display(Name = "院所名稱")]
-        public virtual business business { get; set; }        
+        public virtual business? business { get; set; }
+        [Display(Name = "科別名稱")]
         public int? department_ID { get; set; }
         [Display(Name = "科別名稱")]
-        public virtual department department { get; set; }
+        public virtual department? department { get; set; }
 
         public int? business_img_ID { get; set; }
-        public virtual business_img business_img { get; set; }
+        public virtual business_img? business_img { get; set; }
 
         public int? img_type_id { get; set; }
 
-        [Required(ErrorMessage = "請上傳醫師照片")]
         [Display(Name = "醫師照片")]
-        public string URL { get; set; }
-
-        [Required(ErrorMessage = "照片名稱為必填欄位")]
+        public string? URL { get; set; }
+        
         [Display(Name = "照片名稱")]
-        public string name { get; set; }
+        public string? name { get; set; }
 
     }
 
@@ -57,12 +57,14 @@ namespace Tailstale.Hospital_ViewModel
         [Display(Name = "學經歷簡介")]
         public string profile { get; set; }
 
+        [Display(Name = "院所名稱")]
         public int? business_ID { get; set; }
+        [Display(Name = "科別名稱")]
         public int? department_ID { get; set; }
 
         [Display(Name = "醫師照片")]
-        [Required(ErrorMessage = "請上傳醫師照片")]
-        public string URL { get; set; }
+        //[Required(ErrorMessage = "請上傳醫師照片")]
+        public string? URL { get; set; }
         public int? business_img_ID { get; set; }
 
         [Display(Name = "照片名稱")]
