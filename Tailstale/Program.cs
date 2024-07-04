@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Tailstale.Data;
 using Tailstale.Models;
 
@@ -10,8 +11,24 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+var Fuen104Policy = "Fuen104Policy";
+builder.Services.AddCors(options => {
+    options.AddPolicy(name: Fuen104Policy, policy => {
+        policy.WithOrigins("*").WithMethods("*").WithHeaders("*");
+    });
+});
+builder.Services.AddSession(option =>
+{
+    option.Cookie.Name = "Tailstate.Session";
+    option.IdleTimeout = TimeSpan.FromMinutes(20);
+    option.Cookie.HttpOnly = true;
+    option.Cookie.IsEssential = true;
+    option.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+});
+builder.Services.AddAutoMapper(typeof(Program));
+
 builder.Services.AddDbContext<TailstaleContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Tailstale")));
+    options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("Tailstale")));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -36,8 +53,10 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseSession();
 
 app.UseAuthorization();
+app.UseCors();
 
 app.MapControllerRoute(
     name: "default",

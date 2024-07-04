@@ -11,11 +11,13 @@ namespace Tailstale.Controllers
 {
     public class businessesController : Controller
     {
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly TailstaleContext _context;
 
-        public businessesController(TailstaleContext context)
+        public businessesController(TailstaleContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: businesses
@@ -58,11 +60,22 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,password,type_ID,name,email,phone,address,geoJson,license_number,FK_status_ID,photo_url,created_at")] business business)
+        public async Task<IActionResult> Create( business business,IFormFile? file)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(business);
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                if (file != null)
+                {
+                    string fileName = Guid.NewGuid().ToString()+Path.GetExtension(file.FileName);
+                    string businessPath=Path.Combine(wwwRootPath, @"images\business");
+                    using (var fileStream = new FileStream(Path.Combine(businessPath, fileName), FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+                    business.photo_url=@"images\business\"+fileName;
+                }
+                _context.businesses.Add(business);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -94,7 +107,7 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,password,type_ID,name,email,phone,address,geoJson,license_number,FK_status_ID,photo_url,created_at")] business business)
+        public async Task<IActionResult> Edit(int id,  business business, IFormFile file)
         {
             if (id != business.ID)
             {
@@ -103,8 +116,27 @@ namespace Tailstale.Controllers
 
             if (ModelState.IsValid)
             {
+                string wwwRootPath = _webHostEnvironment.WebRootPath;
+                if (file != null)
+                {
+                    string fileName = Guid.NewGuid().ToString()+Path.GetExtension(file.FileName);
+                    string businessPath=Path.Combine(wwwRootPath, @"images\business");
+                    if (!string.IsNullOrEmpty(business.photo_url))
+                    {
+                        var oldImagePath = Path.Combine(wwwRootPath, business.photo_url.TrimStart('\\'));
+                        if (!System.IO.File.Exists(oldImagePath)) {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+                    using (var fileStream = new FileStream(Path.Combine(businessPath,fileName),FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+                    business.photo_url = @"images\business\" + fileName;
+                }
                 try
                 {
+
                     _context.Update(business);
                     await _context.SaveChangesAsync();
                 }

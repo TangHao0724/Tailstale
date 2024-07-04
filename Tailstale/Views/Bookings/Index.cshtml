@@ -4,14 +4,24 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
 
+<h1>Index</h1>
+<p>
+    <a asp-controller="BookingDetails" asp-action="ShowBookingD">ShowBooking</a>
+</p>
+<p>
+    <a asp-action="ShowBooking">ShowBooking2</a>
+</p>
 <p>
     <a asp-action="Create">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.bookingID)
+            </th>
+           
             <th>
                 @Html.DisplayNameFor(model => model.checkinDate)
             </th>
@@ -22,10 +32,10 @@
                 @Html.DisplayNameFor(model => model.bookingAmountTotal)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.bookingStatus)
+                @Html.DisplayNameFor(model => model.bookingDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.bookingDate)
+                @Html.DisplayNameFor(model => model.bookingStatusNavigation)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.hotel)
@@ -39,6 +49,9 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+                <td id="bookingID">
+                    @Html.DisplayFor(modelItem => item.bookingID)
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.checkinDate)
             </td>
@@ -49,23 +62,42 @@
                 @Html.DisplayFor(modelItem => item.bookingAmountTotal)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.bookingStatus)
+                @Html.DisplayFor(modelItem => item.bookingDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.bookingDate)
+                @Html.DisplayFor(modelItem => item.bookingStatusNavigation.status_name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.hotel.name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.keeper.address)
+                @Html.DisplayFor(modelItem => item.keeper.email)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.bookingID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.bookingID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.bookingID">Delete</a>
-            </td>
+                    <div class="d-flex justify-content-between">
+                        <p><a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.bookingID">Edit</a></p>
+                        <p><a class="btn btn-primary" asp-action="Details" asp-route-id="@item.bookingID">Details</a></p>
+                        <p>
+                            <a class="btn btn-primary" asp-action="Delete" asp-route-id="@item.bookingID">Delete</a>
+                        </p>
+                        <p>
+                            <a id="search" class="btn btn-primary" asp-controller="BookingDetails" asp-action="ShowBookingD" asp-route-id="@item.bookingID">Search</a>
+                        </p>
+                </div>
+                    
+                </td>
         </tr>
 }
     </tbody>
 </table>
+
+@section Scripts{
+    <script>
+        $("#search").on("click", async function{
+            //var bookingID = parseInt(document.getElementById("bookingID").val());
+            alert(1);
+        });
+
+    </script>
+
+}

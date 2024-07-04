@@ -3,6 +3,13 @@
 @{
     ViewData["Title"] = "Create";
 }
+@section Styles{
+    <style>
+        input[readonly]{
+            background-color:white;
+        }
+    </style>
+}
 
 <h1>Create</h1>
 
@@ -29,6 +36,7 @@
                 <label asp-for="bdTotal" class="control-label"></label>
                 <input asp-for="bdTotal" class="form-control" />
                 <span asp-validation-for="bdTotal" class="text-danger"></span>
+                <input id="122" />
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -45,20 +53,46 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         var baseAddress = "https://localhost:7112";
-        $("#roomID").on("change", function () {
-            var p = $(this).val();
-           // alert(p);
-            $.ajax({
-                type: "GET",
-                url: `${baseAddress}/BookingDetails/GetRoomPrice?${p}`,
-               
-            })
-            .done(data=>{
-                    $("#bdAmount").text(data);
-            }).
-            fail(err=>{
-                    alert(err.statusText);
-            });
+        $("#bdAmount").on("keyup", async function () {
+            var p = parseInt($("#roomID").val());
+            var e = parseInt($("#bdAmount").val());
+
+           // alert(e)
+            if (e >= 1) {
+                var result = await $.ajax({
+                    type: "POST",
+                    url: `${baseAddress}/BookingDetails/GetRoomPrice`,
+                    data: JSON.stringify({
+                        roomID: p,
+                        roomAmount: e
+
+                    }), // 將 p 轉換為 JSON 字串
+                    contentType: "application/json"
+                })
+                    .done(data => { $("#bdTotal").val(data); })
+                    .fail(err => { alert(err) });
+            }
+            else {
+                alert("123")
+            }
+            
+           // var data = await result.text();
+            
+
+            // $.ajax({
+            //     url: `${baseAddress}/BookingDetails/GetRoomPrice`,
+            //     type: 'POST',
+            //     dataType: 'json',
+            //     data: {
+            //         roomID: p
+            //     },
+
+            // }).done(data => {
+            //     $("#bdAmount").val(data);
+            // })
+            // .fail(err => { 
+            // alert(err)
+            // })
 
         });
     </script>

@@ -1,0 +1,98 @@
+﻿@model IEnumerable<Tailstale.Models.Room>
+
+@{
+    ViewData["Title"] = "ShowRoomFromHotel";
+}
+
+<h1 id="hotelNameDisplay"></h1>
+<div>
+    <p>
+        <a id="create" class="btn btn-primary" asp-action="Create">新增房間</a>
+    </p>
+</div>
+
+<div class="container">
+    <div class="mb-3 mx-1 mx-md-3">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.roomSpecies)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.roomType)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.roomPrice)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.roomDiscount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.roomReserve)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.roomDescrep)
+                    </th>
+                    
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.roomSpecies)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.roomType)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.roomPrice)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.roomDiscount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.roomReserve)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.roomDescrep)
+                        </td>
+                       
+                        <td>
+                            <a class="btn btn-success" asp-action="Edit" asp-route-id="@item.roomID">編輯</a>
+                            <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@item.roomID">詳細資訊</a>
+                            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.roomID">刪除</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+    </div>
+</div>
+
+
+@section Scripts{
+    <script>
+       
+            window.onload = function () {
+            // var heading = document.querySelector("h1");
+            // heading.textContent = "這是新的標題";
+
+            $.ajax({
+                url: '@Url.Action("GetHotelName", "Rooms")',
+                type: 'POST',
+                success: function (data) {
+                    // 將獲取到的 hotelname 值顯示在前端
+                    $('#hotelNameDisplay').text(data);
+                }
+            });
+       }
+       
+       
+    </script>
+}

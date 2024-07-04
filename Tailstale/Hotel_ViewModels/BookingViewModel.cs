@@ -1,8 +1,10 @@
 ﻿using Tailstale.Hotel_DTO;
+using Tailstale.Models;
+using WebApplication1.DTO;
 
-namespace Tailstale.Hotel_DTO
+namespace Tailstale.Hotel_ViewModels
 {
-    public class BookingDTO
+    public class BookingViewModel
     {
         public int BookingID { get; set; }
         public string KeeperName { get; set; }
@@ -12,7 +14,10 @@ namespace Tailstale.Hotel_DTO
         public string BookingStatus { get; set; }
         public int BookingTotal { get; set; }
         public DateTime BookingDate { get; set; }
-        public List<BookingDetailDTO> BookingDetailDTOs { get; set; }
+        public List<BookingDetailViewModel> BDVM { get; set; }
+
+
+
 
     }
 }

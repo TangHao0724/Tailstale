@@ -1,0 +1,42 @@
+﻿@model Tailstale.Hotel_DTO.BookingDetailDTO
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>BookingDetail</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.bdAmount)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.bdAmount)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.bdTotal)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.bdTotal)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.bookingID)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.bookingID)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.roomName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.roomName)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.bookingID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

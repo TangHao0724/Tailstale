@@ -10,6 +10,7 @@
     <a asp-action="Create">Create New</a>
 </p>
 <table class="table">
+   
     <thead>
         <tr>
             <th>
@@ -35,6 +36,7 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.photo_url)
+                
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.created_at)
@@ -73,7 +75,8 @@
                 @Html.DisplayFor(modelItem => item.license_number)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.photo_url)
+                    <partial name="_PicturePartials" model="@item"></partial>
+                   @*  <img class="mt-4" src="@item.photo_url" width="100%" style="border-radius:1px;border:1px solid #bbb9b9" /> *@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.created_at)
@@ -85,11 +88,14 @@
                 @Html.DisplayFor(modelItem => item.type.business_type_name)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                <a class="btn btn-dark" asp-action="Edit" asp-route-id="@item.ID">Edit</a> 
+                    <a class="btn btn-dark" asp-action="Details" asp-route-id="@item.ID">Details</a>
+                    <a class="btn btn-dark" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    <a class="btn btn-dark" id="login"  asp-controller="Rooms" asp-action="ShowRoomFromHotel" asp-route-id="@item.ID">登入</a>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+
