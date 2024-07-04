@@ -173,6 +173,13 @@ public partial class TailstaleContext : DbContext
             entity.Property(e => e.checkinDate).HasColumnType("datetime");
             entity.Property(e => e.checkoutDate).HasColumnType("datetime");
 
+
+
+            entity.HasOne(d => d.bookingStatusNavigation).WithMany(p => p.Bookings)
+                .HasForeignKey(d => d.bookingStatus)
+                .HasConstraintName("FK__Booking__booking__17036CC0");
+
+
             entity.HasOne(d => d.hotel).WithMany(p => p.Bookings)
                 .HasForeignKey(d => d.hotelID)
                 .HasConstraintName("FK__Booking__hotelID__25518C17");
