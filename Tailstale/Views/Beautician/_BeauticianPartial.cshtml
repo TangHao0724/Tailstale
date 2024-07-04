@@ -1,7 +1,8 @@
 ﻿@model IEnumerable<Tailstale.Models.Beautician>
 
+    
 
-<table class="table">
+<table class="table border">
     <thead>
         <tr>
             <th>
@@ -38,16 +39,16 @@
                 @Html.DisplayFor(modelItem => item.gender)
             </td>
             <td>
-                    <img src="~/Salon_img/@Html.DisplayFor(modelItem => item.photo)" alt="Alternate Text" style="width:320px;height:240px" />
+                    <img src="~/Salon_img/@Html.DisplayFor(modelItem => item.photo)" alt="Alternate Text" style="width:250px;height:240px" />
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.phone)
             </td>
             <td>
                
-                    <img src="~/Salon_img/@Html.DisplayFor(modelItem => item.Highest_license)" alt="Alternate Text" style="width:320px;height:240px" />
+                    <img src="~/Salon_img/@Html.DisplayFor(modelItem => item.Highest_license)" alt="Alternate Text" style="width:250px;height:240px" />
             </td>
-            <td>
+             <td>
                 @Html.DisplayFor(modelItem => item.Remark)
             </td>
             <td>
