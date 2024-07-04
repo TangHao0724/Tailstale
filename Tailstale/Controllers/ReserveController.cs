@@ -23,38 +23,74 @@ namespace Tailstale.Controllers
         {
             //var tailstaleContext = _context.Reserve.Include(r => r.business).Include(r => r.keeper);
             //return View(await tailstaleContext.ToListAsync());
+            var businesses = await _context.businesses
+       .Where(b => b.type_ID == 2)
+       .ToListAsync();
+
+            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+       
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(string time)
+        public async Task<IActionResult> Index(int? id,string time)
         {
             //var tailstaleContext = _context.Business_hours.Include(b => b.business);
             //return View(await tailstaleContext.ToListAsync());
-            if (string.IsNullOrEmpty(time))
+
+            //if (string.IsNullOrEmpty(time))
+            //{
+            //    ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
+            //    return PartialView("_ReservehourPartial", new List<Reserve>());
+            //}
+
+
+            if (!id.HasValue && string.IsNullOrEmpty(time))
             {
+                
                 return PartialView("_ReservehourPartial", new List<Reserve>());
             }
 
-            DateTime selectedDate;
-            if (!DateTime.TryParse(time, out selectedDate))
+            // 準備查詢
+            IQueryable<Reserve> query = _context.Reserve
+                .Include(bh => bh.business)
+                .Include(bh => bh.keeper);
+
+            // 根據 id 的情況添加條件
+            if (id.HasValue)
             {
-                // 如果转换失败，则返回空的 PartialView
-                return PartialView("_ReservehourPartial", new List<Reserve>());
+                query = query.Where(bh => bh.business_ID == id);
             }
 
-            //DateTime selectedDate = DateTime.Parse(time);
+            // 根據 time 的情況添加條件
+            if (!string.IsNullOrEmpty(time))
+            {
+                // 將 time 字符串解析為 DateTime 對象
+                DateTime selectedDate;
+                if (!DateTime.TryParse(time, out selectedDate))
+                {
+                    // 如果解析失敗，返回空的部分視圖
+                   
+                    return PartialView("_ReservehourPartial", new List<Reserve>());
+                }
+                // 只比較日期部分
+                query = query.Where(bh => bh.time.Date == selectedDate.Date);
+            }
 
-            // 查詢符合條件的 Business_hour 記錄
-            var businessHours = _context.Reserve
-                .Include(bh => bh.business)//這段讓view的item.business.name可以用id對應到name並顯示,當然前提這兩個表要有導覽屬性(外來建)
-                .Include(bh => bh.keeper)
-                .Where(bh => bh.time.Date == selectedDate)
-                .ToList();
-
-            // 返回到前端，假設你的 View 期望接收一段 HTML 作為結果
+            // 执行查询并返回结果
+            var businessHours = await query.ToListAsync();
+            
             return PartialView("_ReservehourPartial", businessHours);
+
+
+
+
         }
+
+
+
+
+    
 
 
 

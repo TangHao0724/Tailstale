@@ -12,6 +12,7 @@
 </p>
 
 <div>
+    <select id="IdInput" class="form-control" asp-items="ViewBag.business_ID"></select>
     <input type="date" class="form-control" asp-for="business_day" value="" />
     <input id="selectday" type="submit" value="查詢" class="btn btn-primary"  />
     <div class="mb-3">
@@ -24,13 +25,15 @@
 {
     <script>
         function updateOrders() { //查詢要發送ajax呼叫,不會刷新
+            var selectedId = document.getElementById("IdInput").value;
             var selectedDate = document.getElementById("business_day").value;
             $.ajax({ //ajax呼叫需要接物件當參數,物件用{},物件要填屬性
                 
                 type: "post",//動詞get
                 //url:`/Customers/Orders/${CustomerId.value}`,//``可以把變數帶進去, 這段這樣寫發行會有問題,這只能在vs用
                 url: `@Url.Action("Index", "Business_hour")`, //這是發行後可以網址正常,Url是urlhelper,負責生成網址列?的內容,這段是server端語法
-                data: { business_day: selectedDate },
+                data: { id: selectedId,
+                    business_day: selectedDate },
             }).done(data => {  //成功要做啥,收到結果,如果收到data要拿來做甚麼用,後端送回來的data是html(因為是IActionResult),
                 $("#orders").html(data);//抓到orders把它整個內容(html)換掉換成data
             }).fail(err => { //呼叫錯誤要做啥,收到error要拿來做啥
