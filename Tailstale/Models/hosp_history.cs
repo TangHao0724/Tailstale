@@ -2,7 +2,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-
+//Model不能改
 namespace Tailstale.Models;
 
 public partial class hosp_history

@@ -9,23 +9,23 @@ using Tailstale.Models;
 
 namespace Tailstale.Controllers
 {
-    public class hosp_historyController : Controller
+    public class HospController : Controller
     {
         private readonly TailstaleContext _context;
 
-        public hosp_historyController(TailstaleContext context)
+        public HospController(TailstaleContext context)
         {
             _context = context;
         }
 
-        // GET: hosp_history
+        // GET: Hosp
         public async Task<IActionResult> Index()
         {
             var tailstaleContext = _context.hosp_histories.Include(h => h.medical_record).Include(h => h.nursing_record).Include(h => h.ward);
             return View(await tailstaleContext.ToListAsync());
         }
 
-        // GET: hosp_history/Details/5
+        // GET: Hosp/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,7 +46,7 @@ namespace Tailstale.Controllers
             return View(hosp_history);
         }
 
-        // GET: hosp_history/Create
+        // GET: Hosp/Create
         public IActionResult Create()
         {
             ViewData["medical_record_id"] = new SelectList(_context.medical_records, "id", "admission_process");
@@ -55,7 +55,7 @@ namespace Tailstale.Controllers
             return View();
         }
 
-        // POST: hosp_history/Create
+        // POST: Hosp/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -74,7 +74,7 @@ namespace Tailstale.Controllers
             return View(hosp_history);
         }
 
-        // GET: hosp_history/Edit/5
+        // GET: Hosp/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -93,7 +93,7 @@ namespace Tailstale.Controllers
             return View(hosp_history);
         }
 
-        // POST: hosp_history/Edit/5
+        // POST: Hosp/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -131,7 +131,7 @@ namespace Tailstale.Controllers
             return View(hosp_history);
         }
 
-        // GET: hosp_history/Delete/5
+        // GET: Hosp/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -152,7 +152,7 @@ namespace Tailstale.Controllers
             return View(hosp_history);
         }
 
-        // POST: hosp_history/Delete/5
+        // POST: Hosp/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

@@ -1,4 +1,4 @@
-﻿@model Tailstale.Models.medical_record
+﻿@model Tailstale.MedRecordDTO.MedicalRecordDTO
 
 @{
     ViewData["Title"] = "Create";
@@ -12,13 +12,26 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="id" />
+            <div class="form-group">
+                <label asp-for="keeper" class="control-label"></label>
+                <input asp-for="keeper" class="form-control" />
+                <span asp-validation-for="keeper" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="pet_id" class="control-label"></label>
-                <select asp-for="pet_id" class ="form-control" asp-items="ViewBag.pet_id"></select>
+                <input asp-for="pet_id" class="form-control" />
+                <span asp-validation-for="pet_id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="created_at" class="control-label"></label>
+                <input asp-for="created_at" class="form-control" />
+                <span asp-validation-for="created_at" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="outpatient_clinic_id" class="control-label"></label>
-                <select asp-for="outpatient_clinic_id" class ="form-control" asp-items="ViewBag.outpatient_clinic_id"></select>
+                <input asp-for="outpatient_clinic_id" class="form-control" />
+                <span asp-validation-for="outpatient_clinic_id" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="weight" class="control-label"></label>
@@ -40,10 +53,6 @@
                 <input asp-for="treatment" class="form-control" />
                 <span asp-validation-for="treatment" class="text-danger"></span>
             </div>
-            @*<div class="form-group">
-                <label asp-for="biological_test_id" class="control-label"></label>
-                <select asp-for="biological_test_id" class ="form-control" asp-items="ViewBag.biological_test_id"></select>
-            </div>*@
             <div class="form-group">
                 <label asp-for="memo" class="control-label"></label>
                 <input asp-for="memo" class="form-control" />
@@ -62,7 +71,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">回病歷列表</a>
 </div>
 
 @section Scripts {

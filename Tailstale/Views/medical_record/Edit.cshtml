@@ -1,31 +1,42 @@
-﻿@model Tailstale.Models.medical_record
+﻿@model Tailstale.MedRecordDTO.MedicalRecordDTO 
+@*存在路徑+檔案*@
 
 @{
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
-
+<h1>修改</h1>
+@*順序不用跟DTO一樣*@
 <h4>medical_record</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="id" />
+            <input type="hidden" asp-for="id" />@*藏id*@
+            <div class="form-group">
+                <label asp-for="id" class="control-label"></label>
+                <input asp-for="id" class="form-control" readonly />@*readonly唯獨*@
+                <span asp-validation-for="id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="keeper" class="control-label"></label>
+                <input asp-for="keeper" class="form-control" readonly />
+                <span asp-validation-for="keeper" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="pet_id" class="control-label"></label>
-                <select asp-for="pet_id" class="form-control" asp-items="ViewBag.pet_id"></select>
+                <input asp-for="pet_id" class="form-control" readonly />
                 <span asp-validation-for="pet_id" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="created_at" class="control-label"></label>
-                <input asp-for="created_at" class="form-control" />
+                <input asp-for="created_at" class="form-control" readonly />
                 <span asp-validation-for="created_at" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="outpatient_clinic_id" class="control-label"></label>
-                <select asp-for="outpatient_clinic_id" class="form-control" asp-items="ViewBag.outpatient_clinic_id"></select>
+                <input asp-for="outpatient_clinic_id" class="form-control" readonly />
                 <span asp-validation-for="outpatient_clinic_id" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -48,11 +59,6 @@
                 <input asp-for="treatment" class="form-control" />
                 <span asp-validation-for="treatment" class="text-danger"></span>
             </div>
-            @*<div class="form-group">
-                <label asp-for="biological_test_id" class="control-label"></label>
-                <select asp-for="biological_test_id" class="form-control" asp-items="ViewBag.biological_test_id"></select>
-                <span asp-validation-for="biological_test_id" class="text-danger"></span>
-            </div>*@
             <div class="form-group">
                 <label asp-for="memo" class="control-label"></label>
                 <input asp-for="memo" class="form-control" />
@@ -71,7 +77,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">返回病歷清單</a>
 </div>
 
 @section Scripts {
