@@ -11,4 +11,29 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <a class="btn btn-primary" asp-area="" asp-controller="businesses" asp-action="Index">業主</a>
+    <a class="btn btn-primary" asp-area="" asp-controller="keepers" asp-action="Index">使用者
+    </a>
+    <a class="btn btn-primary" asp-area="" asp-controller="Rooms" asp-action="Index">房間</a>
+    <a class="btn btn-primary" asp-area="" asp-controller="Bookings" asp-action="Index">訂單</a>
+    <a class="btn btn-primary" asp-area="" asp-controller="BookingDetails" asp-action="Index">訂單詳細</a>
+    <a id="test"class="btn btn-primary" >測試訂單</a>
 </div>
+
+@section Scripts{
+    <script>
+        $("#test").on("click",function(){
+            var booking = {
+                bookingID:0,
+                keeper_ID:1001,
+                hotelID:2003,
+                checkinDate:"2024/7/7",
+                checkoutDate:"2024/7/12",
+                bookingAmountTotal:1111,
+            };
+            
+            alert(booking)
+        })
+
+    </script>
+}

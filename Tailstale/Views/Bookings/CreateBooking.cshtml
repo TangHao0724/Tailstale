@@ -1,0 +1,43 @@
+﻿@model business
+<h1>按照飯店下單</h1>
+<div class="container">
+    <div class="mb-3">
+        <label>飯店</label>
+        <select asp-for="ID" asp-items="@ViewBag.Hotel"></select>
+    </div>
+    <div class="mb-3">
+        <div id="room"></div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        var baseAddress = "https://localhost:7112";
+       
+        
+        $("#ID").on("change", function () {
+            var hotelID = document.getElementById("ID").value;
+            if (hotelID == null) {
+                
+                $("#room").html("")
+            }
+            else {
+              
+                    updateRoom();
+            }
+            async function updateRoom() {
+                await $.ajax({
+                    type: "GET",
+                    url: `${baseAddress}/Bookings/Room/${hotelID}`,
+                })
+                    .done(data => { $("#room").html(data); })
+                    .fail(err => { alert(err) });
+
+
+            }
+            
+        });
+       
+        
+    </script>
+}

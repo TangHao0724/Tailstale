@@ -1,0 +1,81 @@
+﻿@model IEnumerable<Tailstale.Models.Room>
+
+<p>
+    <a class="btn btn-primary" id="submit">送出訂單</a>
+</p>
+<p>
+    <label>使用者</label>
+    <input type="number" />
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.roomSpecies)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.roomType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.roomPrice)
+            </th>
+       
+            <th>
+                @Html.DisplayNameFor(model => model.roomReserve)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.roomDescrep)
+            </th>
+          
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+            <tr class="room-row" data-room-number="@item.roomID" data-price="@item.roomPrice">
+            <td>
+                @Html.DisplayFor(modelItem => item.roomSpecies)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.roomType)
+            </td>
+            <td id="price">
+                @Html.DisplayFor(modelItem => item.roomPrice)
+            </td>
+         
+            <td>
+                @Html.DisplayFor(modelItem => item.roomReserve)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.roomDescrep)
+            </td>
+                <td>
+                    <input type="number" class="quantity-input" value="1" min="1" />
+                </td>
+        
+            <td>
+                    <form>
+                        <input type="hidden" name="roomID" value="@item.roomID" />
+                        <input type="hidden" name="quantity" value="1" />
+                        <button class="add-to-cart" type="button">加入購物車</button>
+                        
+                    </form>
+             
+               
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section Scripts{
+
+    <script>
+        $(function () {
+            $(".add-to-cart").on("mouseout", function () {
+                
+                alert("Product ID: ");
+            });
+        });
+    </script>
+}

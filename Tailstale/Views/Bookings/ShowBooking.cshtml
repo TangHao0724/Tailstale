@@ -1,0 +1,62 @@
+﻿@model IEnumerable<Tailstale.Hotel_DTO.BookingDTO>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>預訂 ID</th>
+            <th>飯店名稱</th>
+            <th>管家名稱</th>
+            <th>預訂狀態</th>
+            <th>入住日期</th>
+            <th>退房日期</th>
+            <th>預訂日期</th>
+            <th>總金額</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var booking in Model)
+        {
+            <tr>
+                <td>@booking.BookingID</td>
+                <td>@booking.HotelName</td>
+                <td>@booking.KeeperName</td>
+                <td>@booking.BookingStatus</td>
+                <td>@booking.CheckinDate</td>
+                <td>@booking.CheckoutDate</td>
+                <td>@booking.BookingDate</td>
+                <td>@booking.BookingTotal</td>
+                <td>
+                    <div class="d-flex justify-content-between">
+                        <p><a class="btn btn-primary" asp-action="Edit" asp-route-id="@booking.BookingID">Edit</a></p>
+                        <p><a class="btn btn-primary" asp-action="Details" asp-route-id="@booking.BookingID">Details</a></p>
+                        <p>
+                            <a class="btn btn-primary" asp-action="Delete" asp-route-id="@booking.BookingID">Delete</a>
+                        </p>
+                        <p>
+                            <a class="btn btn-primary" asp-action="Delete" asp-route-id="@booking.BookingID">訂單詳細</a>
+                        </p>
+                    </div>
+
+                </td>
+            </tr>
+            <tr>
+                <th>房型</th>
+                <th>房價</th>
+                <th>數量</th>
+                <th>小計</th>
+                
+            </tr>
+            @foreach(var a in booking.BookingDetailDTOs)
+            {
+                <tr>
+                    <td>@a.roomName</td>
+                    <td>@a.roomPrice</td>
+                    <td>@a.bdAmount</td>
+                    <td>@a.bdTotal</td>
+               </tr>
+                
+            }
+            
+        }
+    </tbody>
+</table>

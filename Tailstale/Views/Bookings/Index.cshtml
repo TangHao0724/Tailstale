@@ -1,0 +1,103 @@
+﻿@model IEnumerable<Tailstale.Models.Booking>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+<h1>Index</h1>
+<p>
+    <a asp-controller="BookingDetails" asp-action="ShowBookingD">ShowBooking</a>
+</p>
+<p>
+    <a asp-action="ShowBooking">ShowBooking2</a>
+</p>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.bookingID)
+            </th>
+           
+            <th>
+                @Html.DisplayNameFor(model => model.checkinDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.checkoutDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.bookingAmountTotal)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.bookingDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.bookingStatusNavigation)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.hotel)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.keeper)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+                <td id="bookingID">
+                    @Html.DisplayFor(modelItem => item.bookingID)
+                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.checkinDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.checkoutDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.bookingAmountTotal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.bookingDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.bookingStatusNavigation.status_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.hotel.name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.keeper.email)
+            </td>
+            <td>
+                    <div class="d-flex justify-content-between">
+                        <p><a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.bookingID">Edit</a></p>
+                        <p><a class="btn btn-primary" asp-action="Details" asp-route-id="@item.bookingID">Details</a></p>
+                        <p>
+                            <a class="btn btn-primary" asp-action="Delete" asp-route-id="@item.bookingID">Delete</a>
+                        </p>
+                        <p>
+                            <a id="search" class="btn btn-primary" asp-controller="BookingDetails" asp-action="ShowBookingD" asp-route-id="@item.bookingID">Search</a>
+                        </p>
+                </div>
+                    
+                </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section Scripts{
+    <script>
+        $("#search").on("click", async function{
+            //var bookingID = parseInt(document.getElementById("bookingID").val());
+            alert(1);
+        });
+
+    </script>
+
+}
