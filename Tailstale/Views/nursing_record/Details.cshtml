@@ -1,0 +1,54 @@
+﻿@model Tailstale.Models.nursing_record
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>nursing_record</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.datetime)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.datetime)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.weight)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.weight)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.memo)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.memo)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.biological_test)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.biological_test.id)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.pet)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.pet.pet_ID)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.vital_sign_record)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.vital_sign_record.id)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

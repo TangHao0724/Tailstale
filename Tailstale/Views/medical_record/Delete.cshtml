@@ -1,0 +1,80 @@
+﻿@model Tailstale.Models.medical_record
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<div>
+    <h4>medical_record</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.pet)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.pet.pet_ID)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.created_at)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.created_at)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.outpatient_clinic)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.outpatient_clinic.name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.weight)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.weight)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.admission_process)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.admission_process)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.diagnosis)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.diagnosis)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.treatment)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.treatment)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.memo)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.memo)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.fee)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.fee)
+        </dd>
+        @*<dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.biological_test)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.biological_test.id)
+        </dd>*@
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="id" />
+        <button type="submit" class="btn btn-primary" onclick="return confirm('確定刪除？')"><i class="fa-solid fa-trash-can"></i>  刪除</button>
+        <a asp-action="Index">病歷列表</a>
+    </form>
+</div>

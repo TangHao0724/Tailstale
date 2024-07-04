@@ -1,0 +1,101 @@
+﻿@model IEnumerable<Tailstale.MedRecordDTO.MedicalRecordDTO>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>病歷記錄</h1>
+
+<p>
+    <a asp-action="Create"><i class="fa-solid fa-plus"></i>新增紀錄</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.created_at)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.keeper)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.pet_id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.weight)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.admission_process)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.diagnosis)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.treatment)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.memo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.fee)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.outpatient_clinic_id)
+            </th>
+            @*<th>
+                @Html.DisplayNameFor(model => model.biological_test)
+            </th>*@
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) 
+{
+        <tr>
+            <th>
+                @Html.DisplayFor(model => item.id)
+            </th>
+            <td>
+                @Html.DisplayFor(modelItem => item.created_at)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.keeper)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.pet_id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.weight)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.admission_process)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.diagnosis)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.treatment)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.memo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.fee)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.outpatient_clinic_id)
+            </td>
+            @*<td>
+                @Html.DisplayFor(modelItem => item.biological_test.id)
+            </td>*@
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.id">修改</a>
+                <a asp-action="Details" asp-route-id="@item.id">詳細內容</a>
+                <a asp-action="Delete" asp-route-id="@item.id">刪除</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
