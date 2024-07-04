@@ -18,4 +18,6 @@ public partial class business_img
     public DateTime? created_at { get; set; }
 
     public virtual business_img_type img_type { get; set; }
+
+    public virtual ICollection<vet_information> vet_informations { get; set; } = new List<vet_information>();
 }

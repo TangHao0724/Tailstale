@@ -19,7 +19,11 @@ public partial class vet_information
 
     public string profile { get; set; }
 
+    public int? business_img_ID { get; set; }
+
     public virtual business business { get; set; }
+
+    public virtual business_img business_img { get; set; }
 
     public virtual department department { get; set; }
 
