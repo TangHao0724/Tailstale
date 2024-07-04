@@ -3,11 +3,19 @@
     var selectUserID; //ID
     var userDetailJson;
 
+    const UMapi = axios.create({
+        baseURL: '/api/UserMangerApi/',
+        timeout: 1000,
+    })
+    const Imgapi = axios.create({
+        baseURL: '/api/ImgApi/',
+        timeout: 1000,
+    })
     //function
     
     var reflashDataTable = function () {
         
-        axios.get('/api/UserMangerApi/userInfo')
+        UMapi.get('/userInfo')
             .then(response => {
                 // 處理成功的回應
                 console.log('API 回應資料：', response.data);
@@ -36,7 +44,7 @@
             });
     }//更新資料後刷新旁邊的表
     var reflashInfoPage = function () {
-        axios.get('/api/UserMangerApi/userInfoPage', {
+        UMapi.get('/userInfoPage', {
             params: {
                 ID: selectUserID
             }
@@ -56,7 +64,7 @@
            
     }// 刷新Info頁面
     var reflashInfoDetail = function () {
-        axios.get('/api/UserMangerApi/userInfoDetail', {
+        UMapi.get('/userInfoDetail', {
             params: {
                 ID: selectUserID
             }
@@ -75,7 +83,12 @@
                 let Statusarr = ['無狀態', '尚未驗證', '已驗證', '停權']
                 $('#selectedStatus').text(`${Statusarr[JSON.stringify(response.data.status)]}`);
 
-                insertValue();
+                $("#updateName").val(userDetailJson.name)
+                $("#updateEmail").val(userDetailJson.email)
+                $("#updateAddress").val(userDetailJson.address)
+                $("#updatePhone").val(userDetailJson.phone)
+                $("#updatePassword").val(userDetailJson.phone)
+                $("#updateStatus").val(userDetailJson.status)
             })
             .catch(error => {
                 // 處理錯誤
@@ -84,11 +97,15 @@
     }//更新Info讀取的資料
     var UserInfoBind = function () {
         
-        
-        //刪除帳號
-        $("#nav-info #UserDeleteModal #seletID").text(selectUserID);
-        $(" #nav-info #deleteTBTN").on("click", function () {
-                axios.post('/api/UserMangerApi/DeleteUser',
+        if ($('#deleteTBTN').length > 0) {
+            console.log('The element with the specified ID has been inserted.');
+
+        } else {
+            console.log('The element with the specified ID has not been inserted.');
+            //刪除帳號
+            $("#nav-info #UserDeleteModal #selectID").text(`${selectUserID}`);//為什麼沒有
+            $(" #nav-info #deleteTBTN").on("click", function () {
+                UMapi.post('/DeleteUser',
                     { ID: selectUserID },
                     { headers: { 'Content-Type': 'application/json' } }
                 )
@@ -103,45 +120,84 @@
                         console.error('API 請求失敗', error);
                     });
             });
-        //更新USER
-        $("#nav-info #UserUpdateModal #UpdateUser").submit(function (event) {
-            event.preventDefault();
+            //更新USER
+            $("#nav-info #UserUpdateModal #UpdateUser").submit(function (event) {
+                event.preventDefault();
 
-            var UpdateData = {
-                ID: selectUserID,
-                name: $('#updateName').val(),
-                email: $('#updateEmail').val(),
-                password: $('#updatePassword').val(),
-                address: $('#updateAddress').val(),
-                phone: $('#updatePhone').val(),
-                status: $('#updateStatus').val(),
+                var UpdateData = {
+                    ID: selectUserID,
+                    name: $('#updateName').val(),
+                    email: $('#updateEmail').val(),
+                    password: $('#updatePassword').val(),
+                    address: $('#updateAddress').val(),
+                    phone: $('#updatePhone').val(),
+                    status: $('#updateStatus').val(),
 
+                };
+                UMapi.post('/UpdateUser', UpdateData)
+                    .then(function (response) {
+                        console.log('API 返回:', response.data);
+                        alert(JSON.stringify(response.data.userId));
+                        $('#UserUpdateModal').modal('hide');
+                        reflashInfoDetail();
+
+                    }).catch(function (error) {
+                        console.error('API 請求失敗', error);
+                        alert('你有問題');
+                        // 处理错误信息
+                    })
+            })
+
+        }
+
+
+    }//刷新時綁定Info物件,
+
+
+
+    var reflashImgPage = function () {
+        UMapi.get('/userImgPage', {
+            params: {
+                ID: selectUserID
+            }
+        }).then(response => {
+            // 處理成功的回應
+            console.log(response.data);;
+            $("#nav-img").html(response.data);
+            ImgBind();
+
+
+
+        }).catch(error => {
+            // 處理錯誤
+            console.error('發生錯誤：', error)
+        });
+
+    }
+    var ImgBind = function () {
+        //上傳圖片
+        $("InsertImg").submit(function (event) {
+            var ImgData = {
+                User_id: selectUserID,
+                img: $("insertImg").val(),
+                type_name: $('#insertImgtype').val(),
+                Imgname: $('#insertImgName').val(),
             };
-            axios.post('/api/UserMangerApi/UpdateUser', UpdateData)
+            Imgapi.post("UploadsingleImg", ImgData)
                 .then(function (response) {
                     console.log('API 返回:', response.data);
-                    alert(JSON.stringify(response.data.userId));
-                    $('#UserUpdateModal').modal('hide');
-                    reflashInfoDetail();
 
-                }).catch(function (error) {
+                    $('#InsertImgModal').modal('hide');
+                })
+                .catch(function (error) {
                     console.error('API 請求失敗', error);
-                    alert('你有問題');
+                    alert('建立失敗');
                     // 处理错误信息
                 })
+
         })
-        
+    }//綁定到Imgpage物件
 
-    }//綁定deleteUser,
-
-    var insertValue = function () {
-        $("#updateName").val(userDetailJson.name)
-        $("#updateEmail").val(userDetailJson.email)
-        $("#updateAddress").val(userDetailJson.address)
-        $("#updatePhone").val(userDetailJson.phone)
-        $("#updatePassword").val(userDetailJson.phone)
-        $("#updateStatus").val(userDetailJson.status)
-    }
 
     //function
 
@@ -170,15 +226,17 @@
     //初始加載
     //切換至info頁面
     reflashDataTable();
+    //點即時打開頁面
     $("#info-tab").on("click", function () {
 
         reflashInfoPage();
     })
-    $("#DUBtn").on("click", function () {
-        alert(selectUserID);
+    $("#img-tab").on("click", function () {
+        $("#nav-info").html('');
+        reflashImgPage();
     })
 
-    //建立新帳號
+    //建立新帳號API
     $('#insertUser').submit(function (event) {
         event.preventDefault();
 
@@ -191,12 +249,11 @@
             phone: $('#inputPhone').val()
 
         };
-
-        axios.post('/api/UserMangerApi/PostUser', UserformData)
+        UMapi.post('/PostUser', UserformData)
             .then(function (response) {
                 console.log('API 返回:', response.data);
-                alert('建立成功，用户ID: ' + JSON.stringify(response.data.userId));
-                $('#UserUpdateModal').modal('hide');
+
+                $('#UserInsertModal').modal('hide');
                 reflashDataTable();
             })
             .catch(function (error) {
@@ -205,8 +262,7 @@
                 // 处理错误信息
             })
 
-
     });
-   
+
     
 });

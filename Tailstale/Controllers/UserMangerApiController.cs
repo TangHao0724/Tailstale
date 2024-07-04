@@ -47,8 +47,21 @@ namespace Tailstale.Controllers
             return Json(users);
         }
 
+        //根據傳入ID 傳送Info頁面
+        [HttpGet("userInfoPage")]
+        public async Task<IActionResult> userInfoPage([FromQuery] ApiInputID input)
+        {
+            return PartialView("_Info", input.ID); ;
+        }
 
-        //傳送Index頁面上Keeper的ID 跟NAME
+        //根據傳入ID 傳送Image頁面
+        [HttpGet("userImgPage")]
+        public async Task<IActionResult> userImgPage([FromQuery] ApiInputID input)
+        {
+            return PartialView("_Img", input.ID); ;
+        }
+
+        //傳送Index頁面上詳細內容
         [HttpGet("userInfoDetail")]
         public async Task<IActionResult> userInfoDetail([FromQuery] ApiInputID input)
         {
@@ -78,13 +91,7 @@ namespace Tailstale.Controllers
             return Json(result);
         }
 
-        //根據傳入ID 傳送Info頁面
-        [HttpGet("userInfoPage")]
-        public async Task<IActionResult> userInfoPage([FromQuery] ApiInputID input)
-        {
-            return PartialView("Info", input.ID); ;
 
-        }
 
 
         //新增會員
@@ -134,6 +141,7 @@ namespace Tailstale.Controllers
             await _context.SaveChangesAsync();
             return Ok($"已成功刪除 編號：{input.ID}");
         }
+        //更新使用者資訊
         [HttpPost("UpdateUser")]
         public async Task<IActionResult> UpdateUser([FromBody] UserDetailDTO userDetailDTO )
         {
