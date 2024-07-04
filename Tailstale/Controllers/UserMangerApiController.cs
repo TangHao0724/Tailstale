@@ -4,28 +4,37 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.EntityFrameworkCore;
 using Tailstale.Index_DTO;
 using Tailstale.Models;
-using Tailstale.Index_ViewCpmpoment;
-using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Moq;
+using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Components;
 
 namespace Tailstale.Controllers
 {
+    public class ApiInputID
+    {
+        public int ID { get; set; }
+    }
+
+    [Microsoft.AspNetCore.Mvc.Route("/api/UserMangerApi")]
+    [ApiController]
     public class UserMangerApiController : Controller
     {
-
-
+        //建構函式，不要動
         private readonly TailstaleContext _context;
-        public  UserMangerApiController(TailstaleContext context)
+        private readonly IViewComponentHelper _viewComponentHelper;
+
+        public UserMangerApiController(IViewComponentHelper viewComponentHelper, TailstaleContext context)
         {
             _context = context;
+            _viewComponentHelper = viewComponentHelper;
         }
 
 
-        //傳送Index頁面上的ID 跟NAME
-        [HttpGet]
-        [Route("/api/ UserMangerApi/userInfo")]
+        //傳入Api的ID類型
+
+
+
+        //傳送Index頁面上Keeper的ID 跟NAME
+        [HttpGet("userInfo")]
         public async Task<JsonResult> userInfo()
         {
             var users = await _context.keepers
@@ -33,33 +42,60 @@ namespace Tailstale.Controllers
                         {
                             Id = u.ID,
                             Name = u.name
-                            // 添加其他需要返回的列
                         })
                         .ToListAsync();
             return Json(users);
         }
 
-        //根據傳入ID 傳送userInfoView頁面上 該位Keeper的所有資料
-        [HttpGet]
-        [Route("/api/UserMangerApi/userInfodetail")]
-        public async Task<IActionResult> userInfodetail([FromQuery] int? id)
+        //根據傳入ID 傳送Info頁面
+        [HttpGet("userInfoPage")]
+        public async Task<IActionResult> userInfoPage([FromQuery] ApiInputID input)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var keeper = await _context.keepers.FindAsync(id);
-            if (keeper == null)
-            {
-                return NotFound();
-            }
-            return Json(keeper);
+            return PartialView("_Info", input.ID); ;
         }
 
+        //根據傳入ID 傳送Image頁面
+        [HttpGet("userImgPage")]
+        public async Task<IActionResult> userImgPage([FromQuery] ApiInputID input)
+        {
+            return PartialView("_Img", input.ID); ;
+        }
+
+        //傳送Index頁面上詳細內容
+        [HttpGet("userInfoDetail")]
+        public async Task<IActionResult> userInfoDetail([FromQuery] ApiInputID input)
+        {
+
+            var keeper = await _context.keepers
+            .Include(k => k.statusNavigation)
+            .FirstOrDefaultAsync(m => m.ID == input.ID);
+
+            if (keeper == null)
+                return NotFound();
+            
+
+        UserDetailDTO result = new UserDetailDTO
+            {
+                ID = input.ID,
+                password = keeper.password,
+                name = keeper.name,
+                address = keeper.address,
+                email = keeper.email,
+                phone = keeper.phone,
+                status = keeper.status,
+                created_at = keeper.created_at
+
+
+
+            };
+            return Json(result);
+        }
+
+
+
+
         //新增會員
-        [HttpPost]
-        [Route("/api/UserMangerApi/PostUser")]
+        [HttpPost("PostUser")]
         public async Task<IActionResult> PostUser([FromBody] UserDTO userDTO)
         {
             if (!ModelState.IsValid)
@@ -82,12 +118,63 @@ namespace Tailstale.Controllers
                 await _context.SaveChangesAsync();
                 return Ok(new { message = "用户创建成功", userId = user.ID });
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return StatusCode(500, new { message = "服务器内部错误", details = ex.Message });
             }
         }
-       
-    }
+        //刪除USER
+        // POST: DeleteUser
+        [HttpPost("DeleteUser")]
+        public async Task<IActionResult> DeleteUser([FromBody] ApiInputID input)
+        {
+            if (input == null || input.ID <= 0)
+            {
+                return BadRequest("輸入錯誤");
+            }
+            var keeper = await _context.keepers.FindAsync(input.ID);
+            if (keeper != null)
+            {
+                _context.keepers.Remove(keeper);
+            }
 
-    
+            await _context.SaveChangesAsync();
+            return Ok($"已成功刪除 編號：{input.ID}");
+        }
+        //更新使用者資訊
+        [HttpPost("UpdateUser")]
+        public async Task<IActionResult> UpdateUser([FromBody] UserDetailDTO userDetailDTO )
+        {
+            var updateTarget = await _context.keepers.FindAsync(userDetailDTO.ID);
+                if(updateTarget == null)
+            {
+                return NotFound(new { message = $"User with ID {userDetailDTO.ID} not found" });
+            }
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+
+                updateTarget.name = userDetailDTO.name;
+                updateTarget.email = userDetailDTO.email;
+                updateTarget.phone = userDetailDTO.phone;
+                updateTarget.password = userDetailDTO.password;
+                updateTarget.address = userDetailDTO.address;
+                updateTarget.status = userDetailDTO.status;
+                
+                _context.keepers.Update(updateTarget);
+                await _context.SaveChangesAsync();
+                return Ok(new { message = "更新成功", userId = updateTarget.ID });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "內部錯誤", details = ex.Message });
+            }
+        }
+
+    }
 }
+
+

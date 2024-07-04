@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <None Include="efpt.config.json.user" />
+    <None Include="Views\UserMangerApi\_Info.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,7 +28,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\images\business\" />
+    <UpToDateCheckInput Remove="Views\UserManger\Info.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\UserManger\Info.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\Index_img\" />
   </ItemGroup>
 
 </Project>
