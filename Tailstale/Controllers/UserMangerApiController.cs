@@ -82,10 +82,8 @@ namespace Tailstale.Controllers
                 address = keeper.address,
                 email = keeper.email,
                 phone = keeper.phone,
-                status = keeper.status,
+                status = (int)keeper.status,
                 created_at = keeper.created_at
-
-
 
             };
             return Json(result);
