@@ -2,6 +2,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Tailstale.Models;
 
@@ -11,6 +12,8 @@ public partial class Business_hour
 
     public int business_ID { get; set; }
 
+    
+    [Required(ErrorMessage = " business_day欄位未填寫")]
     public DateOnly business_day { get; set; }
 
     public int people_limit { get; set; }

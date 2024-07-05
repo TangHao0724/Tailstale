@@ -85,7 +85,12 @@ namespace Tailstale.Controllers
         // GET: Business_hour/Create
         public IActionResult Create()
         {
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
+            var businesses = _context.businesses
+            .Where(b => b.type_ID == 2)
+            .ToList();
+
+            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+            //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
             return View();
         }
 
@@ -102,7 +107,12 @@ namespace Tailstale.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", business_hour.business_ID);
+            var businesses = _context.businesses
+            .Where(b => b.type_ID == 2)
+            .ToList();
+
+            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+            //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", business_hour.business_ID);
             return View(business_hour);
         }
 
@@ -119,7 +129,12 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", business_hour.business_ID);
+            var businesses = _context.businesses
+            .Where(b => b.type_ID == 2)
+            .ToList();
+
+            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+            //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", business_hour.business_ID);
             return View(business_hour);
         }
 
@@ -155,7 +170,12 @@ namespace Tailstale.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", business_hour.business_ID);
+            var businesses = _context.businesses
+            .Where(b => b.type_ID == 2)
+            .ToList();
+
+            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+            //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", business_hour.business_ID);
             return View(business_hour);
         }
 

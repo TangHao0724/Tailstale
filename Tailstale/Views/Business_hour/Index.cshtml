@@ -3,12 +3,14 @@
 @{
     ViewData["Title"] = "Index";
 }
-
-<h1>Index</h1>
-
+<header>
+    <partial name="_NavBar" />
+</header>
+<h1>營業日</h1>
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
 <div>
     <input type="date" class="form-control" asp-for="business_day" value="" />
     <input id="selectday" type="submit" value="查詢" class="btn btn-primary"  />

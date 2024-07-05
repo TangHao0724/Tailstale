@@ -230,8 +230,9 @@
 
                     $('#table tbody').on('click', 'button', function () {        
                         data = $('#table').DataTable().row($(this).parents('tr')).data().id;
-                        $("#selectID").text(data);
+                       
                         data = selectUserID;
+                        $("#selectID").text(selectUserID);
                         
                     });
                 })

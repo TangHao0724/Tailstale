@@ -3,93 +3,92 @@
 @{
     ViewData["Title"] = "Index";
 }
-
-<h1>Index</h1>
+<header>
+    <partial name="_NavBar" />
+</header>
+<h1>消費紀錄</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.pet_name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.time)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.service_name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.pet_weight)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.end_time)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.before_photo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.after_photo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.beautician)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.business)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.keeper)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.pet_name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.time)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.service_name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.pet_weight)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.end_time)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.before_photo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.after_photo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.beautician.gender)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.business.name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.keeper.address)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
-            </td>
-        </tr>
+<h2>消費紀錄查詢</h2>
+<div>門市搜尋或會員id搜尋擇一,清空欄位才能選擇別的方式</div>
+<div>
+    <select id="typeIdInput" class="form-control" asp-items="ViewBag.business_type">
+        <option value="">門市搜尋</option>
+    </select>
+    <input id="selectuser" type="text" class="form-control" placeholder="會員id搜尋"/>
+    <input id="selectday" type="submit" value="查詢" class="btn btn-primary" />
+    <div class="mb-3">
+        <div id="orders"></div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script>
+        function updateOrders() { //查詢要發送ajax呼叫,不會刷新
+            var selectedDate = document.getElementById("typeIdInput").value;
+            var selectuser = document.getElementById("selectuser").value;
+            $.ajax({ //ajax呼叫需要接物件當參數,物件用{},物件要填屬性
+
+                type: "post",//動詞get
+                //url:`/Customers/Orders/${CustomerId.value}`,//``可以把變數帶進去, 這段這樣寫發行會有問題,這只能在vs用
+                url: `@Url.Action("Index", "Consumption_Record")`, //這是發行後可以網址正常,Url是urlhelper,負責生成網址列?的內容,這段是server端語法
+                data: { aid: selectedDate,
+                    uid: selectuser
+                },
+            }).done(data => {  //成功要做啥,收到結果,如果收到data要拿來做甚麼用,後端送回來的data是html(因為是IActionResult),
+                $("#orders").html(data);//抓到orders把它整個內容(html)換掉換成data
+            }).fail(err => { //呼叫錯誤要做啥,收到error要拿來做啥
+                console.log(err.responseText);//他就給你error而已?,也可以用.statusCode狀態瑪?,或用status
+            });
+        }
+
+        $("#selectday").on("click", function () {//偵測下拉選項的選項如果改變,
+            //alert(CustomerId.value);  秀出她的value,這樣就可以查到下拉選項隱藏的內容,我只要拿這個CustomerId(我們想做關聯查詢的那個紀錄)欄位資料發送呼叫到server端撈出這個客戶的訂單就可以了
+
+            updateOrders();//使用此函
+
+        });
+
+
+        $("#typeIdInput").change(function () {
+            if ($(this).val() !== "") {
+                $("#selectuser").prop("disabled", true);
+            } else {
+                $("#selectuser").prop("disabled", false);
+            }
+        });
+
+        // 监听 input 的输入事件
+        $("#selectuser").on("input", function () {
+            if ($(this).val() !== "") {
+                $("#typeIdInput").prop("disabled", true);
+            } else {
+                $("#typeIdInput").prop("disabled", false);
+            }
+        });
+
+        // function toggleInput() {
+        //     var selectValue = document.getElementById("typeIdInput").value;
+        //     var select = document.getElementById("typeIdInput");
+        //     var input = document.getElementById("selectuser");
+        //     var inputValue = document.getElementById("selectuser").value;
+
+        //     if (!selectValue) {
+        //         input.disabled = true;
+        //     } else if (!inputValue) {
+        //         select.disabled = true;
+        //     } else {
+        //         select.disabled = false;
+        //         input.disabled = false;
+        //     }}
+        
+        
+
+    </script>
 }
-    </tbody>
-</table>
+
+

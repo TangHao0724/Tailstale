@@ -1,34 +1,23 @@
-﻿@model IEnumerable<Tailstale.Models.Beautician>
+﻿@model IEnumerable<Tailstale.Models.Service>
 
-@{
-    ViewData["Title"] = "Index";
-}
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
+<table class="table border">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.name)
+                @Html.DisplayNameFor(model => model.category)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.gender)
+                @Html.DisplayNameFor(model => model.service_name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.photo)
+                @Html.DisplayNameFor(model => model.service_content)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.phone)
+                @Html.DisplayNameFor(model => model.service_img)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Highest_license)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Remark)
+                @Html.DisplayNameFor(model => model.price)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.business)
@@ -40,22 +29,19 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.name)
+                @Html.DisplayFor(modelItem => item.category)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.gender)
+                @Html.DisplayFor(modelItem => item.service_name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.photo)
+                @Html.DisplayFor(modelItem => item.service_content)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.phone)
+                    <img src="~/Salon_img/@Html.DisplayFor(modelItem => item.service_img)" alt="Alternate Text" style="width:270px;height:240px" />
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Highest_license)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Remark)
+                @Html.DisplayFor(modelItem => item.price)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.business.name)

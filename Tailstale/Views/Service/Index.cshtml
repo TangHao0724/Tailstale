@@ -1,0 +1,119 @@
+﻿@model Tailstale.Models.Service
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section Styles {
+    <style>
+        td {
+            max-width: 300px; /* 设置最大宽度 */
+            overflow: hidden; /* 隐藏超出部分 */
+            text-overflow: ellipsis; /* 使用省略号表示更多内容 */
+            white-space: nowrap; /* 强制文本在同一行显示 */
+        }
+
+    </style>
+}
+
+<header>
+    <partial name="_NavBar" />
+</header>
+<h1>門市服務項目</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<div>
+    <select id="typeIdInput" class="form-control" asp-items="ViewBag.business_type"></select>
+    <input id="selectday" type="submit" value="查詢" class="btn btn-primary" />
+    <div class="mb-3">
+        <div id="orders"></div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script>
+        function updateOrders() { //查詢要發送ajax呼叫,不會刷新
+            var selectedDate = document.getElementById("typeIdInput").value;
+            $.ajax({ //ajax呼叫需要接物件當參數,物件用{},物件要填屬性
+
+                type: "post",//動詞get
+                //url:`/Customers/Orders/${CustomerId.value}`,//``可以把變數帶進去, 這段這樣寫發行會有問題,這只能在vs用
+                url: `@Url.Action("Index", "Service")`, //這是發行後可以網址正常,Url是urlhelper,負責生成網址列?的內容,這段是server端語法
+                data: { aid: selectedDate },
+            }).done(data => {  //成功要做啥,收到結果,如果收到data要拿來做甚麼用,後端送回來的data是html(因為是IActionResult),
+                $("#orders").html(data);//抓到orders把它整個內容(html)換掉換成data
+            }).fail(err => { //呼叫錯誤要做啥,收到error要拿來做啥
+                console.log(err.responseText);//他就給你error而已?,也可以用.statusCode狀態瑪?,或用status
+            });
+        }
+
+        $("#selectday").on("click", function () {//偵測下拉選項的選項如果改變,
+            //alert(CustomerId.value);  秀出她的value,這樣就可以查到下拉選項隱藏的內容,我只要拿這個CustomerId(我們想做關聯查詢的那個紀錄)欄位資料發送呼叫到server端撈出這個客戶的訂單就可以了
+
+            updateOrders();//使用此函
+
+        });
+
+    </script>
+}
+
+
+@* <table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.service_name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.service_content)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.service_img)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.business)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.category)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.service_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.service_content)
+            </td>
+            <td>
+                <img src="~/Salon_img/@Html.DisplayFor(modelItem => item.service_img)" alt="Alternate Text" style="width:320px;height:240px" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.business.name)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table> *@

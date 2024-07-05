@@ -9,23 +9,23 @@ using Tailstale.Models;
 
 namespace Tailstale.Controllers
 {
-    public class BeauticiansController : Controller
+    public class business_img_typeController : Controller
     {
         private readonly TailstaleContext _context;
 
-        public BeauticiansController(TailstaleContext context)
+        public business_img_typeController(TailstaleContext context)
         {
             _context = context;
         }
 
-        // GET: Beauticians
+        // GET: business_img_type
         public async Task<IActionResult> Index()
         {
-            var tailstaleContext = _context.Beauticians.Include(b => b.business);
+            var tailstaleContext = _context.business_img_types.Include(b => b.FK_business);
             return View(await tailstaleContext.ToListAsync());
         }
 
-        // GET: Beauticians/Details/5
+        // GET: business_img_type/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,42 +33,42 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var beautician = await _context.Beauticians
-                .Include(b => b.business)
-                .FirstOrDefaultAsync(m => m.id == id);
-            if (beautician == null)
+            var business_img_type = await _context.business_img_types
+                .Include(b => b.FK_business)
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (business_img_type == null)
             {
                 return NotFound();
             }
 
-            return View(beautician);
+            return View(business_img_type);
         }
 
-        // GET: Beauticians/Create
+        // GET: business_img_type/Create
         public IActionResult Create()
         {
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
+            ViewData["FK_business_id"] = new SelectList(_context.businesses, "ID", "name");
             return View();
         }
 
-        // POST: Beauticians/Create
+        // POST: business_img_type/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,name,gender,photo,phone,business_ID,Highest_license,Remark")] Beautician beautician)
+        public async Task<IActionResult> Create([Bind("ID,FK_business_id,typename,created_at")] business_img_type business_img_type)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(beautician);
+                _context.Add(business_img_type);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
-            return View(beautician);
+            ViewData["FK_business_id"] = new SelectList(_context.businesses, "ID", "name", business_img_type.FK_business_id);
+            return View(business_img_type);
         }
 
-        // GET: Beauticians/Edit/5
+        // GET: business_img_type/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,23 +76,23 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var beautician = await _context.Beauticians.FindAsync(id);
-            if (beautician == null)
+            var business_img_type = await _context.business_img_types.FindAsync(id);
+            if (business_img_type == null)
             {
                 return NotFound();
             }
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
-            return View(beautician);
+            ViewData["FK_business_id"] = new SelectList(_context.businesses, "ID", "name", business_img_type.FK_business_id);
+            return View(business_img_type);
         }
 
-        // POST: Beauticians/Edit/5
+        // POST: business_img_type/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,name,gender,photo,phone,business_ID,Highest_license,Remark")] Beautician beautician)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,FK_business_id,typename,created_at")] business_img_type business_img_type)
         {
-            if (id != beautician.id)
+            if (id != business_img_type.ID)
             {
                 return NotFound();
             }
@@ -101,12 +101,12 @@ namespace Tailstale.Controllers
             {
                 try
                 {
-                    _context.Update(beautician);
+                    _context.Update(business_img_type);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BeauticianExists(beautician.id))
+                    if (!business_img_typeExists(business_img_type.ID))
                     {
                         return NotFound();
                     }
@@ -117,11 +117,11 @@ namespace Tailstale.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
-            return View(beautician);
+            ViewData["FK_business_id"] = new SelectList(_context.businesses, "ID", "name", business_img_type.FK_business_id);
+            return View(business_img_type);
         }
 
-        // GET: Beauticians/Delete/5
+        // GET: business_img_type/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -129,35 +129,35 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var beautician = await _context.Beauticians
-                .Include(b => b.business)
-                .FirstOrDefaultAsync(m => m.id == id);
-            if (beautician == null)
+            var business_img_type = await _context.business_img_types
+                .Include(b => b.FK_business)
+                .FirstOrDefaultAsync(m => m.ID == id);
+            if (business_img_type == null)
             {
                 return NotFound();
             }
 
-            return View(beautician);
+            return View(business_img_type);
         }
 
-        // POST: Beauticians/Delete/5
+        // POST: business_img_type/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var beautician = await _context.Beauticians.FindAsync(id);
-            if (beautician != null)
+            var business_img_type = await _context.business_img_types.FindAsync(id);
+            if (business_img_type != null)
             {
-                _context.Beauticians.Remove(beautician);
+                _context.business_img_types.Remove(business_img_type);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool BeauticianExists(int id)
+        private bool business_img_typeExists(int id)
         {
-            return _context.Beauticians.Any(e => e.id == id);
+            return _context.business_img_types.Any(e => e.ID == id);
         }
     }
 }
