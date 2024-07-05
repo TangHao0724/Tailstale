@@ -177,19 +177,29 @@ namespace Tailstale.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        
 
-        [HttpGet,ActionName("ShowBooking")]
+        [HttpPost]
         public async Task<IActionResult> ShowBooking()
         {
+            int? a = HttpContext.Session.GetInt32("hotelID11"); ;
+            if (a != null)
+            {
+                var bookingDTO1 = _context.Bookings
+                    .Include(a => a.bookingStatusNavigation).Include(a => a.hotel).Include(a => a.keeper).Include(a => a.BookingDetails).Where(b => b.hotelID == a).Select(a => a);
+                var map1 = _mappper.Map<IEnumerable<BookingDTO>>(bookingDTO1);
+                return View(map1);
+            }
+
             var bookingDTO = _context.Bookings
                 .Include(a => a.bookingStatusNavigation).Include(a => a.hotel).Include(a => a.keeper).Include(a => a.BookingDetails).Select(a => a);
-           var map =_mappper.Map<IEnumerable<BookingDTO>>(bookingDTO);
+            var map = _mappper.Map<IEnumerable<BookingDTO>>(bookingDTO);
 
             return View(map);
         }
-        //BookingDetails/ShowBookingDetail/100000
        
+        
+        //BookingDetails/ShowBookingDetail/100000
+
         public async Task<string> ShowBookingDetail(int bookingID)
         {
             var a = _context.BookingDetails.Where(a => a.bookingID == bookingID).Select(a => a);
