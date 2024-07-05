@@ -5,7 +5,7 @@
         <tr>
             <th>預訂 ID</th>
             <th>飯店名稱</th>
-            <th>管家名稱</th>
+            <th>名稱</th>
             <th>預訂狀態</th>
             <th>入住日期</th>
             <th>退房日期</th>
@@ -44,19 +44,20 @@
                 <th>房價</th>
                 <th>數量</th>
                 <th>小計</th>
-                
+
             </tr>
-            @foreach(var a in booking.BookingDetailDTOs)
+            @foreach (var a in booking.BookingDetailDTOs)
             {
                 <tr>
                     <td>@a.roomName</td>
                     <td>@a.roomPrice</td>
                     <td>@a.bdAmount</td>
                     <td>@a.bdTotal</td>
-               </tr>
-                
+                </tr>
+
             }
-            
+
         }
     </tbody>
 </table>
+

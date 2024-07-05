@@ -91,7 +91,7 @@
                 <a class="btn btn-dark" asp-action="Edit" asp-route-id="@item.ID">Edit</a> 
                     <a class="btn btn-dark" asp-action="Details" asp-route-id="@item.ID">Details</a>
                     <a class="btn btn-dark" asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-                    <a class="btn btn-dark" id="login"  asp-controller="Rooms" asp-action="ShowRoomFromHotel" asp-route-id="@item.ID">登入</a>
+                    <a class="btn btn-dark" id="login" asp-controller="businesses" asp-action="businesslogin" asp-route-id="@item.ID">登入</a>
             </td>
         </tr>
 }

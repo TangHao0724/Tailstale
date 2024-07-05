@@ -1,0 +1,16 @@
+﻿@model Tailstale.Models.business
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+<div class="d-flex col-12">
+    <div class="col-6">
+    
+<a class="btn btn-dark" id="login" asp-controller="Rooms" asp-action="ShowRoomFromHotel" asp-route-id="@ViewBag.HotelID">房間</a>
+    </div>
+    <div class="col-6">
+<form id="111" method="post" action="/Bookings/ShowBooking">
+    <!-- form fields -->
+    <button class="btn btn-dark" type="submit">訂單</button>
+</form>
+    </div>
+</div>
+
