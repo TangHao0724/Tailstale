@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Tailstale.MedRecordDTO;
 using Tailstale.Models;
 
 namespace Tailstale.Controllers
@@ -21,8 +22,21 @@ namespace Tailstale.Controllers
         // GET: nursing_record
         public async Task<IActionResult> Index()
         {
-            var tailstaleContext = _context.nursing_records.Include(n => n.biological_test).Include(n => n.pet).Include(n => n.vital_sign_record);
-            return View(await tailstaleContext.ToListAsync());
+            var Nursing = from n in _context.nursing_records
+                          join p in _context.pets on n.pet_id equals p.pet_ID
+                          join v in _context.vital_sign_records on n.vital_sign_record_id equals v.id
+                          join b in _context.biological_tests on n.biological_test_id equals b.id
+                          select new NursingDTO
+                          {
+                              id = n.id,
+                              pet_id = p.pet_ID,
+                              datetime = n.datetime,
+                              weight = n.weight,
+                              memo = n.memo,
+                              VS_id = v.id,
+                              test_id = b.id,
+                          };
+            return View(Nursing);
         }
 
         // GET: nursing_record/Details/5

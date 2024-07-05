@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Tailstale.MedRecordDTO;
 using Tailstale.Models;
 
 namespace Tailstale.Controllers
@@ -19,13 +20,28 @@ namespace Tailstale.Controllers
         }
 
         // GET: Hosp
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var tailstaleContext = _context.hosp_histories.Include(h => h.medical_record).Include(h => h.nursing_record).Include(h => h.ward);
-            return View(await tailstaleContext.ToListAsync());
+            var Hosp = from h in _context.hosp_histories
+                       join m in _context.medical_records on h.medical_record_id equals m.id
+                       join n in _context.nursing_records on h.nursing_record_id equals n.id
+                       join w in _context.wards on h.ward_id equals w.ward_ID
+                       select new HospDTO
+                       {
+                           id = h.id,
+                           medical_record_id = m.id,
+                           admission_date = h.admission_date,
+                           discharge_date = h.discharge_date,
+                           nursing_record_id = n.id,
+                           ward_id = w.ward_ID,
+                           memo = h.memo,
+                       };
+            return View(Hosp);
         }
 
         // GET: Hosp/Details/5
+        [HttpGet]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -47,6 +63,7 @@ namespace Tailstale.Controllers
         }
 
         // GET: Hosp/Create
+        [HttpGet]
         public IActionResult Create()
         {
             ViewData["medical_record_id"] = new SelectList(_context.medical_records, "id", "admission_process");

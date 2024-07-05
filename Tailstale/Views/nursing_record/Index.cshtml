@@ -1,13 +1,13 @@
-﻿@model IEnumerable<Tailstale.Models.nursing_record>
+﻿@model IEnumerable<Tailstale.MedRecordDTO.NursingDTO>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>護理記錄</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">新增記錄</a>
 </p>
 <table class="table">
     <thead>
@@ -22,15 +22,11 @@
                 @Html.DisplayNameFor(model => model.memo)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.biological_test)
+                @Html.DisplayNameFor(model => model.pet_id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.pet)
+                @Html.DisplayNameFor(model => model.VS_id)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.vital_sign_record)
-            </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -46,18 +42,15 @@
                 @Html.DisplayFor(modelItem => item.memo)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.biological_test.id)
+                @Html.DisplayFor(modelItem => item.pet_id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.pet.pet_ID)
+                @Html.DisplayFor(modelItem => item.VS_id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.vital_sign_record.id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.id">修改</a> |
+                <a asp-action="Details" asp-route-id="@item.id">記錄內容</a> |
+                <a asp-action="Delete" asp-route-id="@item.id">刪除記錄</a>
             </td>
         </tr>
 }

@@ -6,7 +6,6 @@ using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Tailstale.med_recordViewModels;
 using Tailstale.MedRecordDTO;
 using Tailstale.Models;
 
@@ -24,10 +23,7 @@ namespace Tailstale.Controllers
 
         // GET: medical_record
         public async Task<IActionResult> Index()
-        {
-            /*var records = from r in _context.medical_records join pet
-                          on medical_records.pet_id = pet.pet_id join keeper
-                          on pet.keeper_id = keeper.id */
+        { //渲染
             var records = from r in _context.medical_records
                           join o in _context.outpatient_clinics on r.outpatient_clinic_id equals o.outpatient_clinic_ID
                           join p in _context.pets on r.pet_id equals p.pet_ID

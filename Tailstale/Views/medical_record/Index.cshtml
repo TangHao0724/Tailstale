@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>病歷記錄</h1>
+<h1>病歷記錄列表</h1>
 
 <p>
     <a asp-action="Create"><i class="fa-solid fa-plus"></i>新增紀錄</a>
@@ -45,9 +45,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.outpatient_clinic_id)
             </th>
-            @*<th>
-                @Html.DisplayNameFor(model => model.biological_test)
-            </th>*@
         </tr>
     </thead>
     <tbody>
@@ -92,7 +89,7 @@
             </td>*@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.id">修改</a>
-                <a asp-action="Details" asp-route-id="@item.id">詳細內容</a>
+                <a asp-action="Details" asp-route-id="@item.id">病歷資料</a>
                 <a asp-action="Delete" asp-route-id="@item.id">刪除</a>
             </td>
         </tr>

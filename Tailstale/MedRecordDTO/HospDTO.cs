@@ -5,7 +5,7 @@ namespace Tailstale.MedRecordDTO
 {
     public class HospDTO
     {
-        [Display(Name= "id")]
+        [Display(Name= "記錄編號")]
         public int id { get; set; }
 
         [Display(Name = "就醫紀錄")]

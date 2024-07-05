@@ -1,13 +1,13 @@
-﻿@model IEnumerable<Tailstale.Models.hosp_history>
+﻿@model IEnumerable<Tailstale.MedRecordDTO.HospDTO>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>住院記錄列表</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">新增住院記錄</a>
 </p>
 <table class="table">
     <thead>
@@ -19,47 +19,47 @@
                 @Html.DisplayNameFor(model => model.discharge_date)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.medical_record_id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.nursing_record_id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ward_id)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.memo)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.medical_record)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.nursing_record)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ward)
-            </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.admission_date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.discharge_date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.memo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.medical_record.admission_process)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.nursing_record.id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ward.ward_ID)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.admission_date)
+                </td>
+                <td>
+                    @Html.DisplayFor(moitemdelItem => item.admission_date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.discharge_date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.nursing_record_id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ward_id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.memo)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.id">修改記錄</a> |
+                    <a asp-action="Details" asp-route-id="@item.id">詳細資料</a> |
+                    <a asp-action="Delete" asp-route-id="@item.id">刪除記錄</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
