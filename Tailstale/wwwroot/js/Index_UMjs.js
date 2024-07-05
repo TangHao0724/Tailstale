@@ -47,6 +47,7 @@
                     }
                     $("#nav-info").show();
                     reflashInfoDetail();
+                    reflashImgDetail();
                     
                     
                     //如果目前號碼等於selectUserID Disabled選擇紐
@@ -173,7 +174,14 @@
             $('#imgTypeTable').DataTable({
                 columns: [
                     { "data": "id", "width": "20%" },
-                    { "data": "typename", "width": "20%" },
+                    {
+                        "data": "typename", "width": "20%" ,
+                        render: function (data, type, row) {
+                            return '<a class="btn row-link" data-id="'+row.id+'">' + data + '</a>'
+                        }
+                        
+                    },
+
                     {
                         "data": null,
                         "defaultContent": '<button class="btn btn-primary btn-sm">選擇</button>',
@@ -274,9 +282,10 @@
 
         })
         //刪除相片
-        $("#DeleteImgBtn").on("cilck", function () {
-            Imgapi.psot("DeleteImgType",
-                { ID: selectUserID },
+        $(" #Deleteimg").on("click", function () {
+
+            Imgapi.post("DeleteImgType", 
+                { ID: imgtypeID },
                 { headers: { 'Content-Type': 'application/json' } }
             ).then(response => {
                 console.log(response.data)
@@ -286,6 +295,11 @@
                 alert(error.stringify);
                 // 处理错误信息
             })
+            $(document).on('click', '.row-link', function (e) {
+                e.preventDefault();
+                var rowId = $(this).data('id');
+                console.log("連結已被點擊，該行的 ID 是：" + rowId);
+            });
 
         })
 
@@ -300,13 +314,17 @@
     $('#table').DataTable({
         columns: [
             { "data": "id", "width": "20%" },
-            { "data": "name", "width": "20%" },
+            {
+                data: "name",
+                width: "20%",
+            },
             {
                 "data": null,
                 "defaultContent": '<button class="btn btn-primary btn-sm">選擇</button>',
                 "orderable": false,
                 "width": "20%"
             }
+
         ],
         paging: false,
         scrollY: '50vh',
