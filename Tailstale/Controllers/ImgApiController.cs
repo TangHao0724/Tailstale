@@ -112,21 +112,25 @@ namespace Tailstale.Controllers
             }
             return Json(imgType);
         }
-        [HttpPost("DeleteUser")]
-        public async Task<IActionResult> DeleteUser([FromBody] ApiInputID input)
+        [HttpPost("DeleteImgType")]
+        public async Task<IActionResult> DeleteImgType([FromBody] ApiInputID input)
         {
+            //先清空標籤內圖片
+            //在清刪除標籤
             if (input == null || input.ID <= 0)
             {
                 return BadRequest("輸入錯誤");
             }
-            var keeper = await _context.keepers.FindAsync(input.ID);
-            if (keeper != null)
-            {
-                _context.keepers.Remove(keeper);
-            }
+            var typeID = _context.keeper_imgs.Where(n => n.img_type_id == input.ID);
+
+            _context.keeper_imgs.RemoveRange(typeID);
+            await _context.SaveChangesAsync();
+
+            var type = _context.keeper_img_types.Find(input.ID);
+            _context.keeper_img_types.Remove(type);
 
             await _context.SaveChangesAsync();
-            return Ok($"已成功刪除 編號：{input.ID}");
+            return Ok($"已成功刪除相簿 編號：{input.ID}");
         }
 
     }

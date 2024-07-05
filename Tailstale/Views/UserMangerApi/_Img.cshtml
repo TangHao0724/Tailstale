@@ -32,8 +32,6 @@
                     <button type="submit" class="btn btn-danger">Upload</button>
 
                 </form>
-
-                
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
@@ -42,36 +40,20 @@
     </div>
 </div>
 <!-- InsertImgModall_E  -->
-<!--UpdateImgdModel-->
+<!-- DeleteimgtypeModal -->
 <div class="modal fade" id="DeleteimgtypeModal" tabindex="-1" aria-labelledby="InsertImgModal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel"> 更換相片</h5>
+                <h5 class="modal-title" id="exampleModalLabel"> 刪除相簿</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="post" enctype="multipart/form-data" asp-controller="Upload" asp-action="UploadsingleImg">
-                    <div class="form-group">
-                        <label for="file">File:</label>
-                        <input type="file" id="file" name="img" />
-                    </div>
-                    <div class="form-group">
-                        <label for="type_name">Type Name:</label>
-                        <input type="text" id="type_name" name="type_name" />
-                    </div>
-                    <div class="form-group">
-                        <label for="User_id">User ID:</label>
-                        <input type="text" id="User_id" name="User_id" />
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" value="Upload" />
-                    </div>
-                </form>
-            </div>
+                   確定要刪除該相簿嗎？裡頭的影像會一起刪除喔！
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="DeleteImgBtn">確定</button>
             </div>
         </div>
     </div>
@@ -93,9 +75,9 @@
                     <button type="submit" class="btn btn-danger">增加</button>
                 </form>
             </div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+            </div>
         </div>
     </div>
 </div>
@@ -105,7 +87,7 @@
 
 <div class="container-fluid">
     <div class="row shadow rounded-2 align-content-center mb-4">
-        <div class="col-7">
+        <div class="col-12">
             <div>
                 <table class="table col-12 table-striped table-hover" id="imgTypeTable">
                     <thead>
@@ -118,9 +100,7 @@
                 </table>
             </div>
         </div>
-        <div class="col-4">
-            tsideadasd
-        </div>
+
     </div>
     <div class="row shadow rounded-2 justify-content-sm-end justify-content-lg-end">
 

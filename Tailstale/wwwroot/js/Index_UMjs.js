@@ -3,6 +3,7 @@
     var selectUserID; //ID
     var userDetailJson;
     var imgDetail;
+    var imgtypeID;//typeID
 
     const UMapi = axios.create({
         baseURL: '/api/UserMangerApi/',
@@ -189,10 +190,10 @@
                     url: 'https://cdn.datatables.net/plug-ins/1.13.1/i18n/zh-HANT.json'
                 }
             });
+
           
             reflashImgDetail();
             ImgBind();
-
 
              
         }).catch(error => {
@@ -211,7 +212,14 @@
         }).then(response => {
             console.log(response.data)
             alert(JSON.stringify(response.data))
-                $('#imgTypeTable').DataTable().clear().rows.add(response.data).draw();
+            $('#imgTypeTable').DataTable().clear().rows.add(response.data).draw();
+            $('#imgTypeTable tbody').on('click', 'button', function () {
+                data = $('#imgTypeTable').DataTable().row($(this).parents('tr')).data().id;
+                imgtypeID = data;
+                //進入下一層img_type
+            })
+
+                
 
         }).catch(error => {
             console.log(error)
@@ -219,8 +227,8 @@
 
     }
     var ImgBind = function () {
-        //上傳圖片
-        $("#InsertImg").submit(function (event) {
+        //上傳圖片並相片種類
+       $("#InsertImg").submit(function (event) {
             event.preventDefault();
 
             var ImgData = new FormData(this);
@@ -234,17 +242,18 @@
             })
                 .then(function (response) {
                     console.log('API 返回:', response.data);
-                    alert(JSON.stringify(response.data))
+                    alert(`上傳成功!：`)
                     $('#InsertImgModal').modal('hide');
+                    reflashImgDetail();
                 })
                 .catch(function (error) {
                     console.error('API 請求失敗', error);
                     alert( error.stringify);
                     // 处理错误信息
                 })
-                    
-        })
 
+        })
+        //插入相簿
         $("#InsertImgType").submit(function (event) {
             event.preventDefault();
 
@@ -262,6 +271,21 @@
                     alert(error.stringify);
                     // 处理错误信息
                 })
+
+        })
+        //刪除相片
+        $("#DeleteImgBtn").on("cilck", function () {
+            Imgapi.psot("DeleteImgType",
+                { ID: selectUserID },
+                { headers: { 'Content-Type': 'application/json' } }
+            ).then(response => {
+                console.log(response.data)
+                alert(JSON.stringify(response.data))
+            }).catch(function (error) {
+                console.error('請求失敗', error);
+                alert(error.stringify);
+                // 处理错误信息
+            })
 
         })
 
