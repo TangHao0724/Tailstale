@@ -4,29 +4,43 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+@section Styles
+{
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+
+    </style>
+}
+
+<h2>病房總覽</h2>
+<hr>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">新增病房資料</a>
 </p>
 <table class="table">
     <thead>
         <tr>
+           
+            <th>
+                @Html.DisplayNameFor(model => model.business)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.status)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.memo)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.business)
-            </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
+        <tr>            
+            <td>
+                @Html.DisplayFor(modelItem => item.business.name)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.status)
             </td>
@@ -34,12 +48,9 @@
                 @Html.DisplayFor(modelItem => item.memo)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.business.name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ward_ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ward_ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ward_ID">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.ward_ID"><i class="bi bi-pencil-square"></i></a>
+                    <a asp-action="Details" asp-route-id="@item.ward_ID"><i class="bi bi-person-lines-fill"></i></a> 
+                    <a asp-action="Delete" asp-route-id="@item.ward_ID"><i class="bi bi-trash3"></i></a>
             </td>
         </tr>
 }
