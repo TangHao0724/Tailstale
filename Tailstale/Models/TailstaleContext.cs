@@ -329,6 +329,16 @@ public partial class TailstaleContext : DbContext
                 .HasMaxLength(100);
             entity.Property(e => e.time).HasColumnType("datetime");
 
+
+            entity.HasOne(d => d.statusNavigation).WithMany(p => p.Reserves)
+                .HasForeignKey(d => d.status)
+                .HasConstraintName("FK__Reserve__status__3D2915A8");
+
+            entity.HasOne(d => d.business).WithMany(p => p.Reserve)
+                .HasForeignKey(d => d.business_ID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Reserve__busines__3864608B");
+
             entity.HasOne(d => d.business).WithMany(p => p.Reserve)
                 .HasForeignKey(d => d.business_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)

@@ -19,31 +19,33 @@
                     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Keepers" asp-action="Index">Privacy</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link text-dark" asp-area="" asp-controller="UserManger" asp-action="Index">會員管理</a>
                 </li>
-                <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="Service" asp-action="Index">服務項目</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    寵物美容
+                    </a>
+                    <ul class="dropdown-menu text-dark" aria-labelledby="navbarDropdown">
+                        <li><a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Service" asp-action="Index">服務項目</a></li>
+                        <li><a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Beautician" asp-action="Index">美容師</a></li>
+                        <li><a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Business_hour" asp-action="Index">營業日</a></li>
+                        <li><a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Reserve" asp-action="Index">預約紀錄</a></li>
+                        <li><a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="business_img" asp-action="Index">作品上傳</a></li>
+                        <li><a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="business_img_type" asp-action="Index">圖片類別</a></li>
+                        <li><a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Consumption_Record" asp-action="Index">消費紀錄</a></li>
+                    </ul>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Beauticians" asp-action="Index">美容師</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Business_hour" asp-action="Index">營業日</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Reserve" asp-action="Index">預約紀錄</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Consumption_Record" asp-action="Index">消費紀錄</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="medical_record" asp-action="Index">病歷記錄</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Hosp" asp-action="Index">住院紀錄</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        寵物病歷
+                    </a>
+                    <ul class="dropdown-menu text-dark" aria-labelledby="navbarDropdown">
+                        <li><a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="vet_information" asp-action="Index">醫師管理</a></li>
+                        <li><a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="medical_record" asp-action="Index">病歷記錄</a></li>
+                        <li><a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="medical_record" asp-action="Index">病歷記錄</a></li>
+                        <li><a class="nav-link text-dark dropdown-item" asp-area="" asp-controller="Hosp" asp-action="Index">住院紀錄</a></li>
+
+                    </ul>
                 </li>
             </ul>
 

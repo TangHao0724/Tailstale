@@ -23,8 +23,21 @@ namespace Tailstale.Controllers
         // GET: business_img
         public async Task<IActionResult> Index()
         {
-            var tailstaleContext =  _context.business_imgs.Include(b => b.img_type).Where(n => n.img_type_id == 2);
-            return View(await tailstaleContext.ToListAsync());
+            //var tailstaleContext =  _context.business_imgs.Include(b => b.img_type).Where(n => n.img_type_id == 2);
+            var query = _context.business_imgs
+                    .Join(_context.business_img_types,
+                          img => img.img_type_id,
+                          imgType => imgType.ID,
+                          (img, imgType) => new { img, imgType })
+                    .Join(_context.businesses,
+                          imgImgType => imgImgType.imgType.FK_business_id,
+                          bus => bus.ID,
+                          (imgImgType, bus) => new { imgImgType.img, imgImgType.imgType, bus })
+                    .Where(result => result.bus.type_ID == 2)
+                    .Select(result => result.img);
+
+
+            return View(await query.ToListAsync());
         }
 
         // GET: business_img/Details/5
