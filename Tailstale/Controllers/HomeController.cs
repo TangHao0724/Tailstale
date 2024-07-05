@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using Tailstale.Models;
-using Tailstale.partial;
 
 namespace Tailstale.Controllers
 {

@@ -23,7 +23,7 @@ public partial class Service
     [Required(ErrorMessage = "service_conten欄位未填寫")]
     public string service_content { get; set; }
 
-    public string? service_img { get; set; }
+    public string service_img { get; set; }
 
     [Required(ErrorMessage = "price欄位未填寫")]
     public string price { get; set; }

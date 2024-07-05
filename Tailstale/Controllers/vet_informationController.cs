@@ -162,7 +162,7 @@ namespace Tailstale.Controllers
                 _context.Add(business_Img);
                 await _context.SaveChangesAsync();
 
-                vet_information vet_Information = new vet_information
+                vet_information _vet_Information = new vet_information
                 {
                     vet_name = v_Infovm.vet_name,
                     business_ID = v_Infovm.business_ID,
@@ -171,8 +171,15 @@ namespace Tailstale.Controllers
                     profile = v_Infovm.profile,
                     business_img_ID = business_Img.ID,
                 };
-                _context.Add(vet_Information);
-                await _context.SaveChangesAsync();
+                _context.vet_informations.Add(_vet_Information);
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception ex) {
+                    string MESSAGE = ex.Message;
+                    string innerMESSAGE = ex.InnerException.Message;
+                }
             }
             else
             {

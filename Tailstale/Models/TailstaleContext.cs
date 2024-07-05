@@ -1005,6 +1005,10 @@ public partial class TailstaleContext : DbContext
             entity.Property(e => e.profile).HasMaxLength(500);
             entity.Property(e => e.vet_name).HasMaxLength(100);
 
+            entity.HasOne(d => d.business_img).WithMany(p => p.vet_informations)
+                .HasForeignKey(d => d.business_img_ID)
+                .HasConstraintName("FK__vet_infor__busin__0697FACD");
+
             entity.HasOne(d => d.business).WithMany(p => p.vet_informations)
                 .HasForeignKey(d => d.business_ID)
                 .HasConstraintName("FK__vet_infor__busin__5BE2A6F2");

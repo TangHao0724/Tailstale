@@ -24,6 +24,7 @@ public partial class vet_information
     public virtual business business { get; set; }
 
     public virtual business_img business_img { get; set; }
+    
 
     public virtual department department { get; set; }
 

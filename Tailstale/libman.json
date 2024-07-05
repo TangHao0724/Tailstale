@@ -3,7 +3,7 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-<<<<<<< HEAD
+
       "library": "datatables@1.10.21",
       "destination": "wwwroot/lib/datatables/",
       "files": [
@@ -15,10 +15,8 @@
         "js/dataTables.bootstrap.min.js",
         "css/dataTables.bootstrap.min.css"
       ]
-=======
-      "library": "font-awesome@6.5.2",
-      "destination": "wwwroot/lib/font-awesome/"
->>>>>>> origin/med-record
+
+
     }
   ]
 }
