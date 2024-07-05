@@ -43,7 +43,7 @@
 </div>
 <!-- InsertImgModall_E  -->
 <!--UpdateImgdModel-->
-<div class="modal fade" id="UpdateImgModal" tabindex="-1" aria-labelledby="InsertImgModal" aria-hidden="true">
+<div class="modal fade" id="DeleteimgtypeModal" tabindex="-1" aria-labelledby="InsertImgModal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -76,14 +76,38 @@
         </div>
     </div>
 </div>
+<!--InsertImgTypeModal-->
+<div class="modal fade" id="InsertImgTypeModal" tabindex="-1" aria-labelledby="InsertImgTypeModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"> 建立相簿</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="InsertImgType">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="type_name" name="type_name" placeholder="相簿名稱">
+                        <label for="updateEmail" class="form-label">相簿名稱</label>
+                    </div>
+                    <button type="submit" class="btn btn-danger">增加</button>
+                </form>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+        </div>
+    </div>
+</div>
 
+<!--InsertImgTypeModal_E-->
 <!-- Modal_E -->
 
 <div class="container-fluid">
     <div class="row shadow rounded-2 align-content-center mb-4">
         <div class="col-7">
             <div>
-                <table class="table col-12 table-striped table-hover" id="table">
+                <table class="table col-12 table-striped table-hover" id="imgTypeTable">
                     <thead>
                         <tr>
                             <th>相簿編號</th>
@@ -98,12 +122,12 @@
             tsideadasd
         </div>
     </div>
-    <div class="row shadow rounded-2 justify-content-sm-end">
+    <div class="row shadow rounded-2 justify-content-sm-end justify-content-lg-end">
 
-        <div class="col-4  py-3 d-flex  ">
-            <button class="btn btn-outline-primary btn-sm mx-3 " type="button" data-bs-toggle="modal" data-bs-target="#InsertImgModal">新增相片</button>
-            <button class="btn btn-outline-primary btn-sm mx-3" type="button" data-bs-toggle="modal" data-bs-target="#UpdateImgModal">修改</button>
-            <button class="btn btn-danger btn-sm " type="button" data-bs-toggle="modal" data-bs-target="#UserDeleteModal" id="deleteImgBTN">刪除</button>
+        <div class="col-4  py-3  d-flex align-content-center"">
+            <button class="btn btn-outline-primary btn-sm mx-3 " type="button" data-bs-toggle="modal" data-bs-target="#InsertImgTypeModal">新增相簿</button>
+            <button class="btn btn-primary btn-sm mx-3 " type="button" data-bs-toggle="modal" data-bs-target="#InsertImgModal">新增相片</button>
+            <button class="btn btn-danger btn-sm " type="button" data-bs-toggle="modal" data-bs-target="#DeleteimgtypeModal" id="deleteImgBTN">刪除</button>
         </div>
     </div>
 </div>

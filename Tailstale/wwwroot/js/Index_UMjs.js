@@ -2,6 +2,7 @@
     var infoaJson; // userID,Name
     var selectUserID; //ID
     var userDetailJson;
+    var imgDetail;
 
     const UMapi = axios.create({
         baseURL: '/api/UserMangerApi/',
@@ -13,7 +14,17 @@
         timeout: 1000,
     })
     //function
-    
+
+    function isJson(str) {
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            return false;
+        }
+        return true;
+    }
+
+    //特殊
     var reflashDataTable = function () {
         
         UMapi.get('/userInfo')
@@ -158,18 +169,53 @@
             // 處理成功的回應
             console.log(response.data);;
             $("#nav-img").html(response.data);
+            $('#imgTypeTable').DataTable({
+                columns: [
+                    { "data": "id", "width": "20%" },
+                    { "data": "typename", "width": "20%" },
+                    {
+                        "data": null,
+                        "defaultContent": '<button class="btn btn-primary btn-sm">選擇</button>',
+                        "orderable": false,
+                        "width": "20%"
+                    }
+                ],
+                paging: false,
+                scrollY: '50vh',
+                scrollCollapse: true,
+                deferRender: true,
+
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.13.1/i18n/zh-HANT.json'
+                }
+            });
+          
+            reflashImgDetail();
             ImgBind();
-            $("deleteImgBTN").on("click", function () {
-                alert("sad")
-            })
 
 
-
+             
         }).catch(error => {
             // 處理錯誤     
             console.error('發生錯誤：', error)
             alert(error.stringify);
         });
+
+    }
+
+    var reflashImgDetail = function () {
+        Imgapi.get("/userImgType", {
+            params: {
+                ID: selectUserID
+            }
+        }).then(response => {
+            console.log(response.data)
+            alert(JSON.stringify(response.data))
+                $('#imgTypeTable').DataTable().clear().rows.add(response.data).draw();
+
+        }).catch(error => {
+            console.log(error)
+        })
 
     }
     var ImgBind = function () {
@@ -188,7 +234,7 @@
             })
                 .then(function (response) {
                     console.log('API 返回:', response.data);
-                    alert(`上傳成功!：`)
+                    alert(JSON.stringify(response.data))
                     $('#InsertImgModal').modal('hide');
                 })
                 .catch(function (error) {
@@ -196,12 +242,31 @@
                     alert( error.stringify);
                     // 处理错误信息
                 })
+                    
+        })
+
+        $("#InsertImgType").submit(function (event) {
+            event.preventDefault();
+
+            let typedata = new FormData(this);
+            typedata.append("User_id", selectUserID);
+            Imgapi.post("InsertImgType", typedata
+            )
+                .then(function (response) {
+                    console.log('API 返回:', response.data);
+                    alert(JSON.stringify(response.data))
+                    $('#InsertImgTypegModal').modal('hide');
+                })
+                .catch(function (error) {
+                    console.error('API 請求失敗', error);
+                    alert(error.stringify);
+                    // 处理错误信息
+                })
 
         })
 
-        $("#deleteImgBTN").on("click", function () {
-            alert("aaaa");
-        })
+
+        
     }//綁定到Imgpage物件
 
 
@@ -240,6 +305,9 @@
     $("#img-tab").on("click", function () {
         $("#nav-info").html('');
         reflashImgPage();
+
+        //呼叫IMGtype內容
+        
 
     })
 
