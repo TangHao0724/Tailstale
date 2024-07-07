@@ -89,6 +89,8 @@ public partial class TailstaleContext : DbContext
 
     public virtual DbSet<record_type> record_types { get; set; }
 
+    public virtual DbSet<roomType> roomTypes { get; set; }
+
     public virtual DbSet<speciman> specimen { get; set; }
 
     public virtual DbSet<status> statuses { get; set; }
@@ -363,7 +365,14 @@ public partial class TailstaleContext : DbContext
 
             entity.Property(e => e.roomDescrep).HasMaxLength(255);
             entity.Property(e => e.roomSpecies).HasMaxLength(10);
-            entity.Property(e => e.roomType).HasMaxLength(10);
+
+            entity.HasOne(d => d.FK_roomImg).WithMany(p => p.Rooms)
+                .HasForeignKey(d => d.FK_roomImg_ID)
+                .HasConstraintName("FK_roomImg_ID");
+
+            entity.HasOne(d => d.FK_roomType).WithMany(p => p.Rooms)
+                .HasForeignKey(d => d.FK_roomType_ID)
+                .HasConstraintName("FK_roomType_ID");
 
             entity.HasOne(d => d.hotel).WithMany(p => p.Rooms)
                 .HasForeignKey(d => d.hotelID)
@@ -787,6 +796,10 @@ public partial class TailstaleContext : DbContext
             entity.Property(e => e.status_name)
                 .IsRequired()
                 .HasMaxLength(20);
+
+            entity.HasOne(d => d.FK_businessType).WithMany(p => p.order_statuses)
+                .HasForeignKey(d => d.FK_businessType_ID)
+                .HasConstraintName("FK_businessType_ID");
         });
 
         modelBuilder.Entity<outpatient_clinic>(entity =>
@@ -882,6 +895,21 @@ public partial class TailstaleContext : DbContext
             entity.Property(e => e.name)
                 .IsRequired()
                 .HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<roomType>(entity =>
+        {
+            entity.HasKey(e => e.roomType_ID).HasName("PK__roomType__28045B887630C061");
+
+            entity.ToTable("roomType");
+
+            entity.Property(e => e.roomType1)
+                .HasMaxLength(30)
+                .HasColumnName("roomType");
+
+            entity.HasOne(d => d.FK_business).WithMany(p => p.roomTypes)
+                .HasForeignKey(d => d.FK_businessID)
+                .HasConstraintName("FK__roomType__FK_bus__0F2D40CE");
         });
 
         modelBuilder.Entity<speciman>(entity =>

@@ -2,29 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Tailstale.Hotel_DTO;
 using Tailstale.Models;
-using Tailstale.Tools;
-using WebApplication1.DTO;
 
 namespace Tailstale.Controllers
 {
     public class RoomsController : Controller
     {
         private readonly TailstaleContext _context;
+        private readonly IMapper _mapper;
 
-        public RoomsController(TailstaleContext context)
+        public RoomsController(TailstaleContext context,IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
+
         }
 
         // GET: Rooms
         public async Task<IActionResult> Index()
         {
-            var tailstaleContext = _context.Rooms.Include(r => r.hotel);
+            var tailstaleContext = _context.Rooms.Include(r => r.FK_roomImg).Include(r => r.FK_roomType).Include(r => r.hotel);
             return View(await tailstaleContext.ToListAsync());
         }
 
@@ -37,20 +39,28 @@ namespace Tailstale.Controllers
             }
 
             var room = await _context.Rooms
+                .Include(r => r.FK_roomImg)
+                .Include(r => r.FK_roomType)
                 .Include(r => r.hotel)
                 .FirstOrDefaultAsync(m => m.roomID == id);
-            if (room == null)
+            EditRoomDTO e = ConvertToEditRoomDTO(room);
+            if (e == null)
             {
                 return NotFound();
             }
 
-            return View(room);
+            return View(e);
         }
 
         // GET: Rooms/Create
         public IActionResult Create()
         {
-            ViewData["hotelID"] = new SelectList(_context.businesses, "ID", "name");
+            var hotelID = HttpContext.Session.GetInt32("hotelID11");
+           
+            ViewData["FK_roomType_ID"] = new SelectList(_context.roomTypes.Where(b => b.FK_businessID == hotelID).Select(h => new {
+                TypeId = h.roomType_ID,
+                Type = h.roomType1,
+            }), "TypeId", "Type");
             return View();
         }
 
@@ -59,27 +69,33 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(RoomDTO room)
+        public async Task<IActionResult> Create( RoomDTO room)
         {
+            var hotelID = HttpContext.Session.GetInt32("hotelID11");
             if (ModelState.IsValid)
             {
-                int getID = await GetHotelID();
-               
+                int InthotelID = Convert.ToInt32(hotelID);
                 Room Room = new Room
                 {
-                    hotelID = getID,
-                    roomSpecies=room.roomSpecies,
-                    roomType=room.roomType,
-                    roomPrice=room.roomPrice,
-                    roomDiscount  =room.roomDiscount,
-                    roomReserve=room.roomReserve,
-                    roomDescrep=room.roomDescrep,
+                    
+                    hotelID = InthotelID,
+                    roomSpecies = room.roomSpecies,
+                    FK_roomType_ID = room.roomType.roomType_ID,
+                    roomPrice = room.roomPrice,
+                    roomDiscount = room.roomDiscount,
+                    roomReserve = room.roomReserve,
+                    roomDescrep = room.roomDescrep,
                 };
+
                 _context.Rooms.Add(Room);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(ShowRoomFromHotel), new { hotelID=getID});
+                return RedirectToAction(nameof(ShowRoomFromHotel), new { hotelID = InthotelID });
             }
-           // ViewData["hotelID"] = new SelectList(_context.businesses, "ID", "name", room.hotelID);
+            
+            ViewData["FK_roomType_ID"] = new SelectList(_context.roomTypes.Where(b => b.FK_businessID == hotelID).Select(h => new {
+                TypeId = h.roomType_ID,
+                Type = h.roomType1,
+            }), "TypeId", "Type");
             return View(room);
         }
 
@@ -90,14 +106,41 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
+            var hotelID = HttpContext.Session.GetInt32("hotelID11");
+
 
             var room = await _context.Rooms.FindAsync(id);
-            if (room == null)
+            EditRoomDTO e = ConvertToEditRoomDTO(room);
+
+            if (e == null)
             {
                 return NotFound();
             }
-            
-            return View(room);
+
+            ViewData["FK_roomType_ID"] = new SelectList(_context.roomTypes.Where(b => b.FK_businessID == hotelID).Select(h => new
+            {
+                TypeId = h.roomType_ID,
+                Type = h.roomType1,
+            }), "TypeId", "Type", e.roomType.roomType_ID);
+
+            return View(e);
+            // return View(map);
+        }
+
+        private static EditRoomDTO ConvertToEditRoomDTO(Room? room)
+        {
+            return new EditRoomDTO
+            {
+                roomID = room.roomID,
+                hotelID = room.hotelID,
+                roomPrice = room.roomPrice,
+                roomDiscount = room.roomDiscount,
+                roomReserve = room.roomReserve,
+                roomDescrep = room.roomDescrep,
+                roomSpecies = room.roomSpecies,
+                roomType = room.FK_roomType,
+
+            };
         }
 
         // POST: Rooms/Edit/5
@@ -105,32 +148,33 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Room room)
+        public async Task<IActionResult> Edit(int id, EditRoomDTO room)
         {
-            int getID = await GetHotelID();
+            var hotelID = HttpContext.Session.GetInt32("hotelID11");
             if (id != room.roomID)
             {
                 return NotFound();
             }
-
+           
             if (ModelState.IsValid)
             {
+                int InthotelID = Convert.ToInt32(hotelID);
                 try
                 {
-                    
-                    Room editRoom = new Room()
+                   
+                    Room Room = new Room
                     {
-                        hotelID =getID,
+
+                        hotelID = InthotelID,
+                        roomSpecies = room.roomSpecies,
+                        FK_roomType_ID = room.roomType.roomType_ID,
                         roomPrice = room.roomPrice,
                         roomDiscount = room.roomDiscount,
+                        roomReserve = room.roomReserve,
                         roomDescrep = room.roomDescrep,
-                        roomID=room.roomID,
-                        roomSpecies=room.roomSpecies,
-                        roomType=room.roomType,
-                        roomReserve=room.roomReserve,
                     };
 
-                    _context.Rooms.Update(editRoom);
+                    _context.Rooms.Update(Room);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -144,8 +188,10 @@ namespace Tailstale.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(ShowRoomFromHotel), new { hotelID = getID });
+                return RedirectToAction(nameof(ShowRoomFromHotel), new { hotelID = InthotelID });
+                
             }
+         
            
             return View(room);
         }
@@ -159,14 +205,17 @@ namespace Tailstale.Controllers
             }
 
             var room = await _context.Rooms
+                .Include(r => r.FK_roomImg)
+                .Include(r => r.FK_roomType)
                 .Include(r => r.hotel)
                 .FirstOrDefaultAsync(m => m.roomID == id);
             if (room == null)
             {
                 return NotFound();
             }
+            EditRoomDTO e= ConvertToEditRoomDTO(room);
 
-            return View(room);
+            return View(e);
         }
 
         // POST: Rooms/Delete/5
@@ -175,13 +224,17 @@ namespace Tailstale.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var room = await _context.Rooms.FindAsync(id);
+            var hotelID = HttpContext.Session.GetInt32("hotelID11");
+            int InthotelID = Convert.ToInt32(hotelID);
+
             if (room != null)
             {
                 _context.Rooms.Remove(room);
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(ShowRoomFromHotel), new { hotelID = InthotelID });
+           
         }
 
         private bool RoomExists(int id)
@@ -198,41 +251,20 @@ namespace Tailstale.Controllers
             }
             else
             {
+                var tailstaleContext = _context.Rooms.Include(r => r.hotel).Include(r => r.FK_roomType).Where(r => r.hotelID == hotelID);
+                //var tailstaleContext = _context.Rooms.Include(r => r.hotel).Where(r=>r.hotelID==hotelID);
 
-                var tailstaleContext = _context.Rooms.Include(r => r.hotel).Where(r=>r.hotelID==hotelID);
-                //var businessType = _context.businesses.Where(b => b.ID == hotelID).Select(c => c.name).FirstOrDefault();
-               // int hotelID = _context.businesses.Where(b => b.ID == hotelID).Select(c => c.ID).FirstOrDefault();
-                string hotelName = _context.businesses.Where(b=>b.ID==hotelID).Select(c=>c.name).FirstOrDefault();
-                    HttpContext.Session.SetInt32("hotelID", hotelID);
-                    HttpContext.Session.SetString("hotelName", hotelName);
-                    return View(tailstaleContext);
+                string hotelName = _context.businesses.Where(b => b.ID == hotelID).Select(c => c.name).FirstOrDefault();
+                HttpContext.Session.SetInt32("hotelID", hotelID);
+                HttpContext.Session.SetString("hotelName", hotelName);
+                return View(tailstaleContext);
 
             }
-            
-         
-        }
-        [HttpPost]
 
-        public async Task<string> GetHotelName()
-        {
-            //var getSession = _httpContextAccessor.HttpContext.Session.GetString("hotelname");
-            string sessionValue = HttpContext.Session.GetString("hotelName");
-            //var getSession = "1222";
-
-
-            return sessionValue;
 
         }
-        public async Task<int> GetHotelID()
-        {
-            //var getSession = _httpContextAccessor.HttpContext.Session.GetString("hotelname");
-            int sessionValue = Convert.ToInt32(HttpContext.Session.GetInt32("hotelID"));
-            //var getSession = "1222";
+        
 
-
-            return sessionValue;
-
-        }
 
     }
 }

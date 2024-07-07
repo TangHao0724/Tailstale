@@ -59,6 +59,8 @@ public partial class business
 
     public virtual ICollection<outpatient_clinic> outpatient_clinics { get; set; } = new List<outpatient_clinic>();
 
+    public virtual ICollection<roomType> roomTypes { get; set; } = new List<roomType>();
+
     public virtual business_type type { get; set; }
 
     public virtual ICollection<vet_information> vet_informations { get; set; } = new List<vet_information>();

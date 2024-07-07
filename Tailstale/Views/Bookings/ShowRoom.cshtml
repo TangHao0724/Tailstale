@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Tailstale.Models.Room>
 
 @{
-    ViewData["Title"] = "ShowRoomFromHotel";
+    ViewData["Title"] = "ShowRoom";
 }
 
 <h1 id="hotelNameDisplay"></h1>
@@ -62,9 +62,12 @@
                         </td>
 
                         <td>
-                            <a class="btn btn-success" asp-action="Edit" asp-route-id="@item.roomID">編輯</a>
-                            <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@item.roomID">詳細資訊</a>
-                            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.roomID">刪除</a>
+                            <form>
+                                <input type="hidden" name="roomID" value="@item.roomID" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <button id="@item.roomID" class="add-to-cart" type="button">加入購物車</button>
+
+                            </form>
                         </td>
                     </tr>
                 }
@@ -79,20 +82,20 @@
 @section Scripts {
     <script>
 
-        window.onload = function () {
-            // var heading = document.querySelector("h1");
-            // heading.textContent = "這是新的標題";
+        $(function () {
+            var cartButtons = document.querySelectorAll('.add-to-cart');
+            
+            cartButtons.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var roomID = this.id;
+                    var quantity = this.parentElement.querySelector('input[name="quantity"]').value;
 
-            $.ajax({
-                url: '@Url.Action("GetHotelName", "Rooms")',
-                type: 'POST',
-                success: function (data) {
-                    // 將獲取到的 hotelname 值顯示在前端
-                    $('#hotelNameDisplay').text(data);
-                }
+                    // 在這裡處理加入購物車的邏輯
+                    // console.log('Room ID:', roomID);
+                    // console.log('Quantity:', quantity);
+                });
             });
-        }
-
+        });
 
     </script>
 }

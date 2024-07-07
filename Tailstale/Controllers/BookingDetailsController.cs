@@ -31,7 +31,9 @@ namespace Tailstale.Controllers
         public async Task<IActionResult> Index()
         {
             var tailstaleContext = _context.BookingDetails.Include(b => b.booking).Include(b => b.room).AsNoTracking();
-            return View(tailstaleContext);
+            
+            var map = _mapper.Map<IEnumerable<BookingDetailDTO>>(tailstaleContext);
+            return View(map);
         }
 
         // GET: BookingDetails/Details/5

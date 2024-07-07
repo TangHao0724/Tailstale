@@ -60,7 +60,7 @@ namespace Tailstale.Controllers
         // GET: Bookings/Create
         public IActionResult Create()
         {
-            ViewData["bookingStatus"] = new SelectList(_context.order_statuses, "ID", "status_name");
+            ViewData["bookingStatus"] = new SelectList(_context.order_statuses.Where(os => os.FK_businessType_ID == 1), "ID", "status_name");
             ViewData["hotelID"] = new SelectList(_context.businesses, "ID", "name");
             ViewData["keeper_ID"] = new SelectList(_context.keepers, "ID", "email");
             return View();
@@ -71,7 +71,7 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("bookingID,keeper_ID,hotelID,checkinDate,checkoutDate,bookingAmountTotal,bookingStatus,bookingDate")] Booking booking)
+        public async Task<IActionResult> Create( Booking booking)
         {
             if (ModelState.IsValid)
             {
@@ -79,7 +79,7 @@ namespace Tailstale.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["bookingStatus"] = new SelectList(_context.order_statuses, "ID", "status_name", booking.bookingStatus);
+            ViewData["bookingStatus"] = new SelectList(_context.order_statuses.Where(os => os.FK_businessType_ID == 1), "ID", "status_name", booking.bookingStatus);
             ViewData["hotelID"] = new SelectList(_context.businesses, "ID", "name", booking.hotelID);
             ViewData["keeper_ID"] = new SelectList(_context.keepers, "ID", "email", booking.keeper_ID);
             return View(booking);
@@ -98,7 +98,7 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
-            ViewData["bookingStatus"] = new SelectList(_context.order_statuses, "ID", "status_name", booking.bookingStatus);
+            ViewData["bookingStatus"] = new SelectList(_context.order_statuses.Where(os => os.FK_businessType_ID == 1), "ID", "status_name", booking.bookingStatus);
             ViewData["hotelID"] = new SelectList(_context.businesses, "ID", "name", booking.hotelID);
             ViewData["keeper_ID"] = new SelectList(_context.keepers, "ID", "email", booking.keeper_ID);
             return View(booking);
@@ -136,7 +136,7 @@ namespace Tailstale.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["bookingStatus"] = new SelectList(_context.order_statuses, "ID", "status_name", booking.bookingStatus);
+            ViewData["bookingStatus"] = new SelectList(_context.order_statuses.Where(os=>os.FK_businessType_ID==1), "ID", "status_name", booking.bookingStatus);
             ViewData["hotelID"] = new SelectList(_context.businesses, "ID", "name", booking.hotelID);
             ViewData["keeper_ID"] = new SelectList(_context.keepers, "ID", "email", booking.keeper_ID);
             return View(booking);
@@ -181,17 +181,19 @@ namespace Tailstale.Controllers
         [HttpPost]
         public async Task<IActionResult> ShowBooking()
         {
-            int? a = HttpContext.Session.GetInt32("hotelID11"); ;
+            int? a = HttpContext.Session.GetInt32("hotelID11");
+            
             if (a != null)
             {
-                var bookingDTO1 = _context.Bookings
-                    .Include(a => a.bookingStatusNavigation).Include(a => a.hotel).Include(a => a.keeper).Include(a => a.BookingDetails).Where(b => b.hotelID == a).Select(a => a);
-                var map1 = _mappper.Map<IEnumerable<BookingDTO>>(bookingDTO1);
+                var booking = _context.Bookings
+                    .Include(a => a.bookingStatusNavigation).Include(a => a.hotel).Include(a => a.keeper).Include(a => a.BookingDetails).Where(b => b.hotelID == a).Select(a=>a);
+                var map1 = _mappper.Map<IEnumerable<BookingDTO>>(booking);
                 return View(map1);
-            }
+            };
 
             var bookingDTO = _context.Bookings
                 .Include(a => a.bookingStatusNavigation).Include(a => a.hotel).Include(a => a.keeper).Include(a => a.BookingDetails).Select(a => a);
+
             var map = _mappper.Map<IEnumerable<BookingDTO>>(bookingDTO);
 
             return View(map);
@@ -233,7 +235,7 @@ namespace Tailstale.Controllers
                 return BDDTO.Select(bd => new BookingDetailViewModel
                 {
                     bookingID = bd.bookingID,
-                    roomName = bd.roomName,
+                   // roomName = bd.roomName,
                     bdAmount = bd.bdAmount,
                     bdTotal = bd.bdTotal,
                 }).ToList();
@@ -264,12 +266,29 @@ namespace Tailstale.Controllers
             {
                 //string hotelName = h.name;
                 //HttpContext.Session.SetString("hotelName", hotelName);
-                
-               
-                return PartialView("_RoomPartial", _context.Rooms.Where(o => o.hotelID == h.ID) );
+                var room = _context.Rooms.Where(o => o.hotelID == h.ID);
+                var map = _mappper.Map<IEnumerable<RoomDTO>>(room);
+               // EditRoomDTO e = ConvertToEditRoomDTO(room);
+
+
+                return PartialView("_RoomPartial", map);
             }
         }
-       
+        private static EditRoomDTO ConvertToEditRoomDTO(Room? room)
+        {
+            return new EditRoomDTO
+            {
+                roomID = room.roomID,
+                hotelID = room.hotelID,
+                roomPrice = room.roomPrice,
+                roomDiscount = room.roomDiscount,
+                roomReserve = room.roomReserve,
+                roomDescrep = room.roomDescrep,
+                roomSpecies = room.roomSpecies,
+                roomType = room.FK_roomType,
+
+            };
+        }
 
 
         private static BookingDTO MyBookingDTO(Booking a) 
@@ -280,8 +299,8 @@ namespace Tailstale.Controllers
                 BookingDetailDTO bd = new BookingDetailDTO 
                 {
                     bookingID = d.bookingID,
-                    roomName = d.room.roomType,
                     bdAmount = d.bdAmount,
+                    //roomName=d.room.,
                     bdTotal = d.bdTotal,
                 };
                 detail.Add(bd);
@@ -317,5 +336,54 @@ namespace Tailstale.Controllers
         {
             return _context.Bookings.Any(e => e.bookingID == id);
         }
+        public async Task<IActionResult> ShowRoomFromHotel(int hotelID)
+        {
+            if (hotelID == 0)
+            {
+                return NotFound();
+            }
+            else
+            {
+                var tailstaleContext = _context.Rooms.Include(r => r.hotel).Include(r => r.FK_roomType).Where(r => r.hotelID == hotelID);
+                //var tailstaleContext = _context.Rooms.Include(r => r.hotel).Where(r=>r.hotelID==hotelID);
+
+                string hotelName = _context.businesses.Where(b => b.ID == hotelID).Select(c => c.name).FirstOrDefault();
+                HttpContext.Session.SetInt32("hotelID", hotelID);
+                HttpContext.Session.SetString("hotelName", hotelName);
+                return View(tailstaleContext);
+
+            }
+
+
+        }
+        public async Task<IActionResult> businessList()
+        {
+            var tailstaleContext = _context.businesses.Include(b => b.FK_status).Include(b => b.type);
+            return View(await tailstaleContext.ToListAsync());
+        }
+        [HttpGet]
+        [Route("Bookings/ShowRoom/{hotelID:int}")]
+        public async Task<IActionResult> ShowRoom(int hotelID)
+        {
+            if (hotelID == 0)
+            {
+                return NotFound();
+            }
+            else
+            {
+                var tailstaleContext = _context.Rooms.Include(r => r.hotel).Include(r => r.FK_roomType).Where(r => r.hotelID == hotelID);
+                //var tailstaleContext = _context.Rooms.Include(r => r.hotel).Where(r=>r.hotelID==hotelID);
+
+                string hotelName = _context.businesses.Where(b => b.ID == hotelID).Select(c => c.name).FirstOrDefault();
+                HttpContext.Session.SetInt32("hotelID", hotelID);
+                HttpContext.Session.SetString("hotelName", hotelName);
+                return View(tailstaleContext);
+
+            }
+
+
+        }
+
+
     }
 }

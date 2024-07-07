@@ -4,19 +4,16 @@
     ViewData["Title"] = "Index";
 }
 
-
+<h1>Index</h1>
 
 <p>
-    <a class="btn btn-primary" asp-action="Create">新增</a>
+    <a asp-action="Create">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.roomSpecies)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.roomType)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.roomPrice)
@@ -31,6 +28,12 @@
                 @Html.DisplayNameFor(model => model.roomDescrep)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.FK_roomImg)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FK_roomType)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.hotel)
             </th>
             <th></th>
@@ -41,9 +44,6 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.roomSpecies)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.roomType)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.roomPrice)
@@ -58,12 +58,18 @@
                 @Html.DisplayFor(modelItem => item.roomDescrep)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.FK_roomImg.ID)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FK_roomType.roomType_ID)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.hotel.name)
             </td>
             <td>
-                    <a class="btn btn-success" asp-action="Edit" asp-route-id="@item.roomID">Edit</a>
-                    <a class="btn btn-info" asp-action="Details" asp-route-id="@item.roomID">Details</a>
-                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.roomID">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.roomID">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.roomID">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.roomID">Delete</a>
             </td>
         </tr>
 }

@@ -159,6 +159,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[roomType]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Service]",
          "ObjectType": 0
       },

@@ -17,5 +17,7 @@ public partial class business_img
 
     public DateTime? created_at { get; set; }
 
+    public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();
+
     public virtual business_img_type img_type { get; set; }
 }

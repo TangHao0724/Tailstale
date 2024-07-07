@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Tailstale.Models.BookingDetail>
+﻿@model IEnumerable<Tailstale.Hotel_DTO.BookingDetailDTO>
 
 @{
     ViewData["Title"] = "Index";
@@ -19,10 +19,10 @@
                 @Html.DisplayNameFor(model => model.bdTotal)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.booking)
+                @Html.DisplayNameFor(model => model.bookingID)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.room.roomType)
+                @Html.DisplayNameFor(model => model.roomName)
             </th>
             <th></th>
         </tr>
@@ -37,15 +37,15 @@
                 @Html.DisplayFor(modelItem => item.bdTotal)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.booking.bookingID)
+                @Html.DisplayFor(modelItem => item.roomName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.room.roomType)
-            </td>
+                @Html.DisplayFor(modelItem => item.roomName)
+            </td> 
             <td>
-                <a asp-action="Edit" asp-route-id="@item.bdID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.bdID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.bdID">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.bookingID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.bookingID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.bookingID">Delete</a>
             </td>
         </tr>
 }

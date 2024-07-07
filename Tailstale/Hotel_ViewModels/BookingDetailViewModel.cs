@@ -1,4 +1,6 @@
-﻿namespace Tailstale.Hotel_ViewModels
+﻿using Tailstale.Hotel_DTO;
+
+namespace Tailstale.Hotel_ViewModels
 {
     public class BookingDetailViewModel
     {
@@ -8,5 +10,7 @@
         public int? bdAmount { get; set; }
 
         public int? bdTotal { get; set; }
+        public int bdID { get; set; }
+        public RoomDTO room { get; set; }
     }
 }
