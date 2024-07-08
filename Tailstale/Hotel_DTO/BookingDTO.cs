@@ -1,4 +1,5 @@
-﻿using Tailstale.Hotel_DTO;
+﻿using System.ComponentModel.DataAnnotations;
+using Tailstale.Hotel_DTO;
 
 namespace Tailstale.Hotel_DTO
 {

@@ -1,0 +1,32 @@
+﻿@model IEnumerable<Tailstale.Hotel_DTO.FindRoomResultDTO>
+
+
+
+<table class="form-control">
+    <thead>
+        <tr>
+            <td>@Html.DisplayNameFor(model => model.roomID)</td>
+            <td>@Html.DisplayNameFor(model => model.roomType.roomType1)</td>
+            <td>@Html.DisplayNameFor(model => model.roomPrice)</td>
+            <td>@Html.DisplayNameFor(model => model.roomReserve)</td>
+            <td>@Html.DisplayNameFor(model => model.hotelID)</td>
+            <td>@Html.DisplayNameFor(model => model.roomDescription)</td>
+            <td>@Html.DisplayNameFor(model => model.roomSpecies)</td>
+        </tr>
+
+    </thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => r.roomID)</td>
+                <td>@Html.DisplayFor(modelItem => r.roomType.roomType1)</td>
+                <td>@Html.DisplayFor(modelItem => r.roomPrice)</td>
+                <td>@Html.DisplayFor(modelItem => r.roomReserve)</td>
+                <td>@Html.DisplayFor(modelItem => r.hotelID)</td>
+                <td>@Html.DisplayFor(modelItem => r.roomDescription)</td>
+                <td>@Html.DisplayFor(modelItem => r.roomSpecies)</td>
+            </tr>
+        }
+    </tbody>
+</table>

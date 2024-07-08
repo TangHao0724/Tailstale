@@ -1,4 +1,4 @@
-﻿@model Tailstale.Models.Booking
+﻿@model Tailstale.Hotel_DTO.BookingDTO
 
 @{
     ViewData["Title"] = "Create";
@@ -13,36 +13,36 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="keeper_ID" class="control-label"></label>
-                <select asp-for="keeper_ID" class ="form-control" asp-items="ViewBag.keeper_ID"></select>
+                <label asp-for="KeeperName" class="control-label"></label>
+                <select asp-for="KeeperName" class ="form-control" asp-items="ViewBag.keeper_ID"></select>
             </div>
-            <div class="form-group">
-                <label asp-for="hotelID" class="control-label"></label>
+           @*  <div class="form-group">
+                <label asp-for="" class="control-label"></label>
                 <select asp-for="hotelID" class ="form-control" asp-items="ViewBag.hotelID"></select>
+            </div> *@
+            <div class="form-group">
+                <label asp-for="CheckinDate" class="control-label"></label>
+                <input type="date" min="@DateTime.Now.Date" max="@DateTime.Now.Date.AddMonths(24)" placeholder="@DateTime.Now.Date" asp-for="CheckinDate.Date" class="form-control" />
+                <span asp-validation-for="CheckinDate" class="validity text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="checkinDate" class="control-label"></label>
-                <input asp-for="checkinDate" class="form-control" />
-                <span asp-validation-for="checkinDate" class="text-danger"></span>
+                <label asp-for="CheckoutDate" class="control-label"></label>
+                <input type="date" min="@DateTime.Now" max="@DateTime.Now.AddMonths(24)" placeholder="@DateTime.Now.Date" asp-for="CheckoutDate.Date" class="form-control" />
+                <span asp-validation-for="CheckoutDate"  class="validity text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="checkoutDate" class="control-label"></label>
-                <input asp-for="checkoutDate" class="form-control" />
-                <span asp-validation-for="checkoutDate" class="text-danger"></span>
+                <label asp-for="BookingTotal" class="control-label"></label>
+                <input asp-for="BookingTotal" class="form-control" />
+                <span asp-validation-for="BookingTotal" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="bookingAmountTotal" class="control-label"></label>
-                <input asp-for="bookingAmountTotal" class="form-control" />
-                <span asp-validation-for="bookingAmountTotal" class="text-danger"></span>
+                <label asp-for="BookingStatus" class="control-label"></label>
+                <select asp-for="BookingStatus" class="form-control" asp-items="ViewBag.bookingStatus"></select>
             </div>
             <div class="form-group">
-                <label asp-for="bookingStatus" class="control-label"></label>
-                <select asp-for="bookingStatus" class ="form-control" asp-items="ViewBag.bookingStatus"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="bookingDate" class="control-label"></label>
-                <input asp-for="bookingDate" class="form-control" />
-                <span asp-validation-for="bookingDate" class="text-danger"></span>
+                <label asp-for="BookingDate" class="control-label"></label>
+                <input asp-for="BookingDate" class="form-control" />
+                <span asp-validation-for="BookingDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

@@ -1,0 +1,62 @@
+﻿
+
+
+
+<form asp-action="SearchRoom" asp-controller="Bookings" method="post">
+    <label for="checkin">Check-in:</label>
+    <input type="date" id="checkin" name="checkin" />
+
+    <label for="checkout">Check-out:</label>
+    <input type="date" id="checkout" name="checkout" />
+
+    <button type="submit">提交</button>
+</form>
+<div id="result">
+
+</div>
+
+@section Scripts{
+
+    <script>
+        $("submit").on("click", async function () {
+                var cI = document.getElementById("checkin").value;
+                var cO = document.getElementById("checkout").value;
+            const dtCI = new Date(cI);
+            const dtCO = new Date(cO);
+             console.log(dtCI);
+             console.log(dtCO);
+
+            if (dtCI <= dtCO && dtCI != null && dtCO != null) {
+                roomPartial();
+            }
+            else { 
+                 $("#result").html("")
+            }
+
+
+           
+            async function roomPartial(){
+               await fetch('https://localhost:7112/Bookings/SearchRoom', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        startDate: dtCI,
+                        endDate: dtCO
+                    })
+                })
+                    .then(data => {
+                        // 處理伺服器的回應
+                        $("#result").html(data);
+                    })
+                    .catch(error => {
+                        alert(error)
+                    });
+            }
+            
+
+           
+        });
+    </script>
+}

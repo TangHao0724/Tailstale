@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +15,7 @@ using WebApplication1.DTO;
 
 namespace Tailstale.Controllers
 {
-   
+    [EnableCors("Fuen104Policy")]
     public class BookingsController : Controller
     {
         private readonly TailstaleContext _context;
@@ -103,10 +104,6 @@ namespace Tailstale.Controllers
             ViewData["keeper_ID"] = new SelectList(_context.keepers, "ID", "email", booking.keeper_ID);
             return View(booking);
         }
-
-        // POST: Bookings/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Booking booking)
@@ -201,7 +198,6 @@ namespace Tailstale.Controllers
        
         
         //BookingDetails/ShowBookingDetail/100000
-
         public async Task<string> ShowBookingDetail(int bookingID)
         {
             var a = _context.BookingDetails.Where(a => a.bookingID == bookingID).Select(a => a);
@@ -211,36 +207,36 @@ namespace Tailstale.Controllers
             return ("123");
         }
         
-        public class BookingViewModelConvert
-        {
-            public static BookingViewModel BVM(BookingDTO dto)
-            {
-                return new BookingViewModel
-                {
-                    BookingID = dto.BookingID,
-                    HotelName = dto.HotelName,
-                    KeeperName = dto.KeeperName,
-                    BookingStatus = dto.BookingStatus,
-                    CheckinDate = dto.CheckinDate,
-                    CheckoutDate = dto.CheckoutDate,
-                    BookingDate = dto.BookingDate,
-                    BookingTotal = dto.BookingTotal,
-                    BDVM = ConvertBDDTOToVM(dto.BookingDetailDTOs)
+        //public class BookingViewModelConvert
+        //{
+        //    public static BookingViewModel BVM(BookingDTO dto)
+        //    {
+        //        return new BookingViewModel
+        //        {
+        //            BookingID = dto.BookingID,
+        //            HotelName = dto.HotelName,
+        //            KeeperName = dto.KeeperName,
+        //            BookingStatus = dto.BookingStatus,
+        //            CheckinDate = dto.CheckinDate.Date,
+        //            CheckoutDate = dto.CheckoutDate,
+        //            BookingDate = dto.BookingDate,
+        //            BookingTotal = dto.BookingTotal,
+        //            BDVM = ConvertBDDTOToVM(dto.BookingDetailDTOs)
 
-                };
+        //        };
 
-            }
-            private static List<BookingDetailViewModel> ConvertBDDTOToVM(List<BookingDetailDTO> BDDTO)
-            {
-                return BDDTO.Select(bd => new BookingDetailViewModel
-                {
-                    bookingID = bd.bookingID,
-                   // roomName = bd.roomName,
-                    bdAmount = bd.bdAmount,
-                    bdTotal = bd.bdTotal,
-                }).ToList();
-            }
-        }
+        //    }
+        //    private static List<BookingDetailViewModel> ConvertBDDTOToVM(List<BookingDetailDTO> BDDTO)
+        //    {
+        //        return BDDTO.Select(bd => new BookingDetailViewModel
+        //        {
+        //            bookingID = bd.bookingID,
+        //           // roomName = bd.roomName,
+        //            bdAmount = bd.bdAmount,
+        //            bdTotal = bd.bdTotal,
+        //        }).ToList();
+        //    }
+        //}
 
         //Bookings/CreateBooking
         public async Task<IActionResult> CreateBooking()
@@ -383,6 +379,153 @@ namespace Tailstale.Controllers
 
 
         }
+
+        public IActionResult BookingEnter(int? Cat,int? Dog,DateTime checkinD,DateTime checkoutD)
+        {
+            
+            var startDate = new DateTime(2024, 6, 3);
+            var endDate = new DateTime(2024, 6, 10);
+
+            //var roomAvailability = from r in Room
+            //                       select new
+            //                       {
+            //                           RoomID = r.RoomID,
+            //                           Available = !Booking.Any(b => b.checkinDate <= endDate && b.checkoutDate >= startDate && b.RoomID == r.RoomID)
+            //                       };
+            //            select roomID, sum(bdAmount) from booking
+            //join BookingDetails
+            //on Booking.bookingID = BookingDetails.bookingID
+            //where (@adate = checkinDate AND @bdate = checkoutDate)
+            //or(@bdate >= checkinDate)
+            //or(@adate >= checkinDate and @adate <= checkoutDate)
+            //group by roomID
+            var a = _context.Bookings.Include(book => book.BookingDetails).Where(b=>b.checkinDate== startDate);
+
+
+            return View();
+        }
+
+       
+        //Bookings/SearchRoom
+        [HttpPost]
+        public async Task<IActionResult> SearchRoom([FromBody] InputDate iD,int? Cat,int? dog)
+        {
+
+            var result = GetBookedRoomIds(iD.startDate, iD.endDate).ToList();
+            var tailstaleContext = _context.Rooms.ToList();
+            var finalresult=tailstaleContext.Join(result, t => t.roomID, r => r.RoomId, (tailstaleContext, result) => new FindRoomResultDTO
+            {
+                roomID = tailstaleContext.roomID,
+                roomPrice = (int)tailstaleContext.roomPrice,
+                roomDescription = tailstaleContext.roomDescrep,
+                roomReserve = result.AvailableCount,
+                roomType = tailstaleContext.FK_roomType,
+               hotelID=tailstaleContext.hotelID,
+               roomSpecies = tailstaleContext.roomSpecies,
+               business=tailstaleContext.hotel
+
+            });
+            return PartialView("_SearchRoom", finalresult);
+            //return View(finalresult);
+        }
+        [HttpGet]
+        public async Task<IActionResult>  PostDateToSearch()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostDateToSearch([FromBody]InputDate iD, int? Cat, int? dog)
+        {
+            if (iD.startDate <= iD.endDate)
+            {
+                return RedirectToAction(nameof(SearchRoom),new InputDate
+                {
+                    startDate= iD.startDate,
+                    endDate= iD.endDate,
+                });
+            }
+            return RedirectToAction(nameof(PostDateToSearch));
+
+        }
+        [HttpGet]
+        //bookings/GetAvailableRooms
+        public IEnumerable<AvailableRoom> GetAvailableRooms(DateTime startDate, DateTime endDate)
+        {
+            var availableRooms = GetBookedRoomIds(startDate, endDate);
+
+            // 查詢 Rooms 模型,根據 RoomAvailability 中的 RoomId 找到對應的房間詳細信息
+           
+            var roomIds = availableRooms.Select(ra => ra.RoomId).ToList();
+            var rooms = _context.Rooms.Where(r => roomIds.Contains(r.roomID)).ToList();
+
+            var result = from ra in availableRooms
+                         join r in rooms on ra.RoomId equals r.roomID
+                         select new AvailableRoom
+                         {
+                             RoomId = r.roomID,
+                             RoomName = r.FK_roomType.roomType1,
+                             AvailableCount = ra.AvailableCount
+                         };
+
+            return result;
+        }
+
+        public class AvailableRoom
+        {
+            public int RoomId { get; set; }
+            public string RoomName { get; set; }
+            public int AvailableCount { get; set; }
+        }
+        public class getDate
+        {
+            public DateTime StartDate { get; set; }
+            public DateTime EndDate { get; set; }
+
+        }
+        //Bookings/GetBookedRoomIds
+        [HttpGet]        
+        public IEnumerable<RoomAvailability> GetBookedRoomIds(DateTime startDate, DateTime endDate)
+        {
+            
+            var bookedRoom1 = _context.BookingDetails.Include(b=>b.booking)
+                .Where(b=> (b.booking.checkinDate <= endDate && b.booking.checkoutDate >= startDate) ||
+                           (b.booking.checkinDate >= startDate && b.booking.checkinDate <= endDate) ||
+                           (b.booking.checkoutDate >= startDate && b.booking.checkoutDate <= endDate))
+                .GroupBy(b => b.roomID)
+                .Select(g => new RoomReseve
+                {
+                     RoomId = g.Key,
+                     Quantity = Convert.ToInt32(g.Sum(x => x.bdAmount))
+                 });
+            // 查詢所有可用的房間
+            var allRooms = _context.Rooms
+                .Select(r => new RoomReseve
+                {
+                    RoomId = r.roomID,
+                    Quantity = Convert.ToInt32(r.roomReserve)
+                });
+
+            // 計算剩餘房間數量
+            var bookedRoomsList = bookedRoom1.ToList();
+            var allRoomsList = allRooms.ToList();
+
+            var availableRooms = allRoomsList.GroupJoin(
+                bookedRoomsList,
+                r => r.RoomId,
+                b => b.RoomId,
+                (r, b) => new RoomAvailability
+                {
+                    RoomId = r.RoomId,
+                    AvailableCount = r.Quantity - (b.FirstOrDefault() != null ? b.FirstOrDefault().Quantity : 0)
+                });
+           
+            return availableRooms;
+            //return bookedRoom1;
+
+        }
+
+
 
 
     }

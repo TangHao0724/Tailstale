@@ -1,11 +1,11 @@
 ﻿@model IEnumerable<Tailstale.Hotel_DTO.BookingDTO>
-
+dfsdfs
 <table class="table">
     <thead>
         <tr>
             <th>預訂 ID</th>
             <th>飯店名稱</th>
-            <th>名稱</th>
+            <th>顧客名稱</th>
             <th>預訂狀態</th>
             <th>入住日期</th>
             <th>退房日期</th>
@@ -21,9 +21,9 @@
                 <td>@booking.HotelName</td>
                 <td>@booking.KeeperName</td>
                 <td>@booking.BookingStatus</td>
-                <td>@booking.CheckinDate</td>
-                <td>@booking.CheckoutDate</td>
-                <td>@booking.BookingDate</td>
+                <td>@booking.CheckinDate.ToString("d")</td>
+                <td>@booking.CheckoutDate.ToString("d")</td>
+                <td>@booking.BookingDate.Date</td>
                 <td>@booking.BookingTotal</td>
                 <td>
                     <div class="d-flex justify-content-between">
