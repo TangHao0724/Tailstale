@@ -1,0 +1,114 @@
+﻿@model Tailstale.Hotel_DTO.RoomDTO
+
+@{
+    ViewData["Title"] = "房間管理";
+}
+
+@section Styles{
+<style>
+        .form-group input[type=submit],
+        .form-group label {
+            text-transform:uppercase
+        }
+
+        .form-group label{
+            color:gray
+        }
+</style>
+}
+<div class="col-md-12">
+    <div class="col-md-12 offset-md-4">
+        <h1>房間管理</h1>
+
+
+        
+        <div class="row">
+            <div class="col-md-4">
+                <hr />
+                <form asp-action="AddOrEdit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="roomID"/>
+                    <div class="form-group" hidden>
+                        <label asp-for="hotelID" class="control-label"></label>
+                        <input type="hidden" asp-for="hotelID" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="roomSpecies" class="control-label"></label>
+                        
+                        <select asp-for="roomSpecies" class="form-control">
+                            <option>貓</option>
+                            <option>狗</option>
+                        </select>
+                        <span asp-validation-for="roomSpecies" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for=roomType.roomType_ID class="control-label"></label>
+                        <select asp-for="roomType.roomType_ID" class="form-control" asp-items="ViewBag.FK_roomType_ID"></select>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="roomPrice" class="control-label"></label>
+                                <input asp-for="roomPrice" class="form-control" />
+                                <span asp-validation-for="roomPrice" class="text-danger"></span>
+                            </div>
+
+
+
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="roomDiscount" class="control-label"></label>
+                                <input asp-for="roomDiscount" class="form-control" />
+                                <span asp-validation-for="roomDiscount" class="text-danger"></span>
+                            </div>
+
+                        </div>
+                        <div class="col-md-4">
+
+                            <div class="form-group">
+                                <label asp-for="roomReserve" class="control-label">
+                                </label>
+                                <input asp-for="roomReserve" class="form-control" />
+                                <span asp-validation-for="roomReserve" class="text-danger">
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+
+                    
+                    <div class="form-group">
+                        <label asp-for="roomDescrep" class="control-label"></label>
+                        <textarea asp-for="roomDescrep" class="form-control" rows="4" cols="50"></textarea>
+                        <span asp-validation-for="roomDescrep" class="text-danger"></span>
+                    </div>
+                    <div class="row mt-2">
+
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="submit" value="送出" class="btn btn-primary w-100" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div>
+                        <a class="btn btn-success w-100" asp-action="ShowRoomFromHotel" asp-route-id="@ViewBag.HotelID">查看所有房間</a>
+                        </div>
+                    </div>
+                    </div>
+                    
+                </form>
+            </div>
+        </div>
+
+
+
+
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

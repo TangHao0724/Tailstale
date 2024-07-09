@@ -53,15 +53,36 @@ namespace Tailstale.Controllers
         }
 
         // GET: Rooms/Create
-        public IActionResult Create()
+        public IActionResult AddOrEdit(int id=0)
         {
             var hotelID = HttpContext.Session.GetInt32("hotelID11");
-           
+            //var c = _context.Rooms.Include(r => r.FK_roomType);
             ViewData["FK_roomType_ID"] = new SelectList(_context.roomTypes.Where(b => b.FK_businessID == hotelID).Select(h => new {
                 TypeId = h.roomType_ID,
                 Type = h.roomType1,
             }), "TypeId", "Type");
-            return View();
+            ViewBag.HotelID=hotelID;
+            if (id == 0)
+                return View(new RoomDTO());
+            else
+            {
+                var getroom = _context.Rooms.Find(id);
+                RoomDTO roomDTO = new RoomDTO
+                {
+                    hotelID = getroom.hotelID,
+                    
+                    roomID=getroom.roomID,
+                    roomSpecies=getroom.roomSpecies,
+                    roomPrice= getroom.roomPrice,
+                    roomDiscount= getroom.roomDiscount,
+                    roomReserve= getroom.roomReserve,
+                    roomDescrep= getroom.roomDescrep,
+                    roomType= getroom.FK_roomType,
+                };
+
+                return View(roomDTO);
+            }
+                
         }
 
         // POST: Rooms/Create
@@ -69,15 +90,16 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create( RoomDTO room)
+        public async Task<IActionResult> AddOrEdit( RoomDTO room)
         {
             var hotelID = HttpContext.Session.GetInt32("hotelID11");
             if (ModelState.IsValid)
             {
+                
                 int InthotelID = Convert.ToInt32(hotelID);
                 Room Room = new Room
                 {
-                    
+                    roomID=(int)room.roomID,
                     hotelID = InthotelID,
                     roomSpecies = room.roomSpecies,
                     FK_roomType_ID = room.roomType.roomType_ID,
@@ -87,7 +109,16 @@ namespace Tailstale.Controllers
                     roomDescrep = room.roomDescrep,
                 };
 
-                _context.Rooms.Add(Room);
+                if (room.roomID == 0)
+                {
+                    
+                    _context.Rooms.Add(Room);
+                }
+                else
+                {
+                    _context.Rooms.Update(Room);
+                }
+                    
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(ShowRoomFromHotel), new { hotelID = InthotelID });
             }
@@ -99,33 +130,6 @@ namespace Tailstale.Controllers
             return View(room);
         }
 
-        // GET: Rooms/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var hotelID = HttpContext.Session.GetInt32("hotelID11");
-
-
-            var room = await _context.Rooms.FindAsync(id);
-            EditRoomDTO e = ConvertToEditRoomDTO(room);
-
-            if (e == null)
-            {
-                return NotFound();
-            }
-
-            ViewData["FK_roomType_ID"] = new SelectList(_context.roomTypes.Where(b => b.FK_businessID == hotelID).Select(h => new
-            {
-                TypeId = h.roomType_ID,
-                Type = h.roomType1,
-            }), "TypeId", "Type", e.roomType.roomType_ID);
-
-            return View(e);
-            // return View(map);
-        }
 
         private static EditRoomDTO ConvertToEditRoomDTO(Room? room)
         {
@@ -143,80 +147,7 @@ namespace Tailstale.Controllers
             };
         }
 
-        // POST: Rooms/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, EditRoomDTO room)
-        {
-            var hotelID = HttpContext.Session.GetInt32("hotelID11");
-            if (id != room.roomID)
-            {
-                return NotFound();
-            }
-           
-            if (ModelState.IsValid)
-            {
-                int InthotelID = Convert.ToInt32(hotelID);
-                try
-                {
-                   
-                    Room Room = new Room
-                    {
 
-                        hotelID = InthotelID,
-                        roomSpecies = room.roomSpecies,
-                        FK_roomType_ID = room.roomType.roomType_ID,
-                        roomPrice = room.roomPrice,
-                        roomDiscount = room.roomDiscount,
-                        roomReserve = room.roomReserve,
-                        roomDescrep = room.roomDescrep,
-                    };
-
-                    _context.Rooms.Update(Room);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RoomExists(room.roomID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(ShowRoomFromHotel), new { hotelID = InthotelID });
-                
-            }
-         
-           
-            return View(room);
-        }
-
-        // GET: Rooms/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var room = await _context.Rooms
-                .Include(r => r.FK_roomImg)
-                .Include(r => r.FK_roomType)
-                .Include(r => r.hotel)
-                .FirstOrDefaultAsync(m => m.roomID == id);
-            if (room == null)
-            {
-                return NotFound();
-            }
-            EditRoomDTO e= ConvertToEditRoomDTO(room);
-
-            return View(e);
-        }
 
         // POST: Rooms/Delete/5
         [HttpPost, ActionName("Delete")]
@@ -237,25 +168,23 @@ namespace Tailstale.Controllers
            
         }
 
-        private bool RoomExists(int id)
+        
+        
+        [HttpPost, ActionName("ShowRoomFromHotel")]
+        //[Route("Rooms/ShowRoomFromHotel/{hotelID:int}")]
+        public async Task<IActionResult> ShowRoomFromHotel(int id)
         {
-            return _context.Rooms.Any(e => e.roomID == id);
-        }
-        [HttpGet]
-        [Route("Rooms/ShowRoomFromHotel/{hotelID:int}")]
-        public async Task<IActionResult> ShowRoomFromHotel(int hotelID)
-        {
-            if (hotelID == 0)
+            if (id == 0)
             {
                 return NotFound();
             }
             else
             {
-                var tailstaleContext = _context.Rooms.Include(r => r.hotel).Include(r => r.FK_roomType).Where(r => r.hotelID == hotelID);
+                var tailstaleContext = _context.Rooms.Include(r => r.hotel).Include(r => r.FK_roomType).Where(r => r.hotelID == id);
                 //var tailstaleContext = _context.Rooms.Include(r => r.hotel).Where(r=>r.hotelID==hotelID);
 
-                string hotelName = _context.businesses.Where(b => b.ID == hotelID).Select(c => c.name).FirstOrDefault();
-                HttpContext.Session.SetInt32("hotelID", hotelID);
+                string hotelName = _context.businesses.Where(b => b.ID == id).Select(c => c.name).FirstOrDefault();
+                HttpContext.Session.SetInt32("hotelID", id);
                 HttpContext.Session.SetString("hotelName", hotelName);
                 return View(tailstaleContext);
 
