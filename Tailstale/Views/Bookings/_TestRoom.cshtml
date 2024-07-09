@@ -1,0 +1,71 @@
+﻿@model IEnumerable<Tailstale.Hotel_DTO.RoomDTO>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<div class="container">
+    <div class="mb-3 mx-1 mx-md-3">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.roomSpecies)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.roomType.roomType1)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.roomPrice)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.roomDiscount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.roomReserve)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.roomDescrep)
+                    </th>
+
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.roomSpecies)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.roomType.roomType1)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.roomPrice)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.roomDiscount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.roomReserve)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.roomDescrep)
+                        </td>
+
+                        <td>
+                            <form>
+                                <input type="hidden" name="roomID" value="@item.roomID" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <button id="@item.roomID" class="add-to-cart" type="button">加入購物車</button>
+
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+    </div>
+</div>

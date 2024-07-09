@@ -340,13 +340,15 @@ namespace Tailstale.Controllers
             }
             else
             {
+                
                 var tailstaleContext = _context.Rooms.Include(r => r.hotel).Include(r => r.FK_roomType).Where(r => r.hotelID == hotelID);
                 //var tailstaleContext = _context.Rooms.Include(r => r.hotel).Where(r=>r.hotelID==hotelID);
 
                 string hotelName = _context.businesses.Where(b => b.ID == hotelID).Select(c => c.name).FirstOrDefault();
                 HttpContext.Session.SetInt32("hotelID", hotelID);
                 HttpContext.Session.SetString("hotelName", hotelName);
-                return View(tailstaleContext);
+                return PartialView("_TestRoom", tailstaleContext);
+                
 
             }
 
@@ -380,32 +382,8 @@ namespace Tailstale.Controllers
 
         }
 
-        public IActionResult BookingEnter(int? Cat,int? Dog,DateTime checkinD,DateTime checkoutD)
-        {
-            
-            var startDate = new DateTime(2024, 6, 3);
-            var endDate = new DateTime(2024, 6, 10);
 
-            //var roomAvailability = from r in Room
-            //                       select new
-            //                       {
-            //                           RoomID = r.RoomID,
-            //                           Available = !Booking.Any(b => b.checkinDate <= endDate && b.checkoutDate >= startDate && b.RoomID == r.RoomID)
-            //                       };
-            //            select roomID, sum(bdAmount) from booking
-            //join BookingDetails
-            //on Booking.bookingID = BookingDetails.bookingID
-            //where (@adate = checkinDate AND @bdate = checkoutDate)
-            //or(@bdate >= checkinDate)
-            //or(@adate >= checkinDate and @adate <= checkoutDate)
-            //group by roomID
-            var a = _context.Bookings.Include(book => book.BookingDetails).Where(b=>b.checkinDate== startDate);
-
-
-            return View();
-        }
-
-       
+       //查詢所有剩餘的房間
         //Bookings/SearchRoom
         [HttpPost]
         public async Task<IActionResult> SearchRoom([FromBody] InputDate iD,int? Cat,int? dog)
@@ -425,8 +403,8 @@ namespace Tailstale.Controllers
                business=tailstaleContext.hotel
 
             });
-            return PartialView("_SearchRoom", finalresult);
-            //return View(finalresult);
+          // return PartialView("_SearchRoom", finalresult);
+            return View(finalresult);
         }
         [HttpGet]
         public async Task<IActionResult>  PostDateToSearch()
@@ -448,41 +426,8 @@ namespace Tailstale.Controllers
             return RedirectToAction(nameof(PostDateToSearch));
 
         }
-        [HttpGet]
-        //bookings/GetAvailableRooms
-        public IEnumerable<AvailableRoom> GetAvailableRooms(DateTime startDate, DateTime endDate)
-        {
-            var availableRooms = GetBookedRoomIds(startDate, endDate);
-
-            // 查詢 Rooms 模型,根據 RoomAvailability 中的 RoomId 找到對應的房間詳細信息
-           
-            var roomIds = availableRooms.Select(ra => ra.RoomId).ToList();
-            var rooms = _context.Rooms.Where(r => roomIds.Contains(r.roomID)).ToList();
-
-            var result = from ra in availableRooms
-                         join r in rooms on ra.RoomId equals r.roomID
-                         select new AvailableRoom
-                         {
-                             RoomId = r.roomID,
-                             RoomName = r.FK_roomType.roomType1,
-                             AvailableCount = ra.AvailableCount
-                         };
-
-            return result;
-        }
-
-        public class AvailableRoom
-        {
-            public int RoomId { get; set; }
-            public string RoomName { get; set; }
-            public int AvailableCount { get; set; }
-        }
-        public class getDate
-        {
-            public DateTime StartDate { get; set; }
-            public DateTime EndDate { get; set; }
-
-        }
+      
+        //取得剩餘房間數量
         //Bookings/GetBookedRoomIds
         [HttpGet]        
         public IEnumerable<RoomAvailability> GetBookedRoomIds(DateTime startDate, DateTime endDate)

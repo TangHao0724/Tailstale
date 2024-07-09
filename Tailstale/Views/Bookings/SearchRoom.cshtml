@@ -16,22 +16,18 @@
 
     </thead>
     <tbody>
-        
 
-        
-    
-
-@foreach(var r in Model)
-{
-    <tr>
-    <td>@Html.DisplayFor(modelItem=>r.roomID)</td>
-    <td>@Html.DisplayFor(modelItem => r.roomType.roomType1)</td>
-    <td>@Html.DisplayFor(modelItem => r.roomPrice)</td>
-    <td>@Html.DisplayFor(modelItem => r.roomReserve)</td>
-    <td>@Html.DisplayFor(modelItem => r.hotelID)</td>
-    <td>@Html.DisplayFor(modelItem=>r.roomDescription)</td>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => r.roomID)</td>
+                <td>@Html.DisplayFor(modelItem => r.roomType.roomType1)</td>
+                <td>@Html.DisplayFor(modelItem => r.roomPrice)</td>
+                <td>@Html.DisplayFor(modelItem => r.roomReserve)</td>
+                <td>@Html.DisplayFor(modelItem => r.hotelID)</td>
+                <td>@Html.DisplayFor(modelItem => r.roomDescription)</td>
                 <td>@Html.DisplayFor(modelItem => r.roomSpecies)</td>
-    </tr>
-}
+            </tr>
+        }
     </tbody>
 </table>

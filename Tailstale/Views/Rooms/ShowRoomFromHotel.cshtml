@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Tailstale.Models.Room>
+﻿@using Tailstale;
+@model IEnumerable<Tailstale.Models.Room>
 
 @{
     ViewData["Title"] = "ShowRoomFromHotel";
@@ -10,6 +11,19 @@
         <a id="create" class="btn btn-primary" asp-action="Create">新增房間</a>
     </p>
 </div>
+<div>
+    <p>
+        <button id="room">管理房間</button>
+        <a id="create" class="btn btn-primary" asp-controller="roomTypes" asp-action="Index">管理房間</a>
+    </p>
+</div>
+<div>
+    <p>
+        <button>管理房間類型</button>
+        <a id="create" class="btn btn-primary" asp-controller="roomTypes" asp-action="Index">管理房間類型</a>
+    </p>
+</div>
+
 
 <div class="container">
     <div class="mb-3 mx-1 mx-md-3">
@@ -75,6 +89,7 @@
     </div>
 </div>
 
+@await Html.PartialAsync("/Bookings/ShowRoom.cshtml")
 
 @section Scripts {
     <script>
@@ -91,7 +106,22 @@
                     $('#hotelNameDisplay').text(data);
                 }
             });
-        }
+
+            var baseAddress = "https://localhost:7112";
+
+            $("#room").on("click", async function () {
+                var hotelID = 1001;
+                await $.ajax({
+                    type: "GET",
+                    url: `${baseAddress}/Bookings/ShowRoomFromHotel/${hotelID}`,
+                })
+                    .done(data => { $("#room").html(data); })
+                    .fail(err => { alert(err) });
+            })
+        };
+
+        
+
 
 
     </script>
