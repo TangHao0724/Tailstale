@@ -10,7 +10,7 @@
 </form>
 <button id="bt">提交</button>
 
-@await Html.PartialAsync("/Bookings/SearchRoom.cshtml")
+@* @await Html.PartialAsync("/Bookings/SearchRoom.cshtml") *@
 <div id="result">
 
 </div>
@@ -22,24 +22,51 @@
                 var cI = document.getElementById("checkin").value;
                 var cO = document.getElementById("checkout").value;
             const dtCI = new Date(cI);
-            const dtCO = new Date(cO);
-             console.log(dtCI);
-             console.log(dtCO);
 
-            if (dtCI <= dtCO && dtCI != null && dtCO != null) {
+
+            let formattedDate = dtCI.getFullYear() + "-" +
+                String(dtCI.getMonth() + 1).padStart(2, '0') + "-" +
+                String(dtCI.getDate()).padStart(2, '0');
+
+            console.log(formattedDate);
+
+
+            
+
+            const dtCO = new Date(cO);
+
+            let formattedDateO = dtCO.getFullYear() + "-" +
+                String(dtCO.getMonth() + 1).padStart(2, '0') + "-" +
+                String(dtCO.getDate()).padStart(2, '0');
+
+            console.log(formattedDateO);
+             // console.log(dtCI);
+             // console.log(dtCO);
+
+            if (formattedDate <= formattedDateO && formattedDate != null && formattedDateO != null) {
                 roomPartial();
             }
+            var test = {
+                iD: {
+                    startDate: formattedDate,
+                    endDate: formattedDateO
+                }
 
+            }
+            console.log(test);
             async function roomPartial() {
                 try {
                     const response = await fetch('https://localhost:7112/Bookings/SearchRoom', {
-                        method: 'POST',
+                        method: 'Post',
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            startDate: dtCI,
-                            endDate: dtCO
+                            
+                            startDate: formattedDate,
+                            endDate: formattedDateO
+                            
+                            
                         })
                     });
 

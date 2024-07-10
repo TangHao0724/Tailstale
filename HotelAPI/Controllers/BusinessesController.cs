@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using HotelAPI.Models;
 using WebApplication1.DTO;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
+using System.Net;
 
 namespace HotelAPI.Controllers
 {
@@ -28,6 +30,7 @@ namespace HotelAPI.Controllers
             return await _context.Businesses.ToListAsync();
         }
 
+        
         // GET: api/Businesses/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Business>> GetBusiness(int id)
@@ -112,5 +115,26 @@ namespace HotelAPI.Controllers
         {
             return _context.Businesses.Any(e => e.Id == id);
         }
+
+        [HttpPost]
+        public async Task <string> GetPosition()
+        {
+            var address = "820高雄市岡山區大莊路80巷";
+            var url = String.Format("http://maps.google.com/maps/api/geocode/json?sensor=false&address={0}", address);
+
+            string result = String.Empty;
+            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
+            using (var response = request.GetResponse())
+            using (StreamReader sr = new StreamReader(response.GetResponseStream()))
+            {
+                //Json格式: 請參考http://code.google.com/intl/zh-TW/apis/maps/documentation/geocoding/
+                result = sr.ReadToEnd();
+            }
+            return result;
+        }
+
+
+
+
     }
 }

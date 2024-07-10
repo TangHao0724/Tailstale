@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using AutoMapper;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +14,7 @@ using Tailstale.Models;
 
 namespace Tailstale.Controllers
 {
+    [EnableCors("Fuen104Policy")]
     public class RoomsController : Controller
     {
         private readonly TailstaleContext _context;
@@ -192,8 +196,25 @@ namespace Tailstale.Controllers
 
 
         }
-        
 
+        //Rooms/GetPosition
+
+        public async Task<XElement> GetPosition()
+        {
+            var address = "高雄市岡山區大莊路80巷";
+            var url = String.Format("http://maps.google.com/maps/api/geocode/json?sensor=false&address={0}", Uri.EscapeDataString(address));
+
+            var request = WebRequest.Create(url);
+            var response = request.GetResponse();
+            var xdoc = XDocument.Load(response.GetResponseStream());
+
+            var result = xdoc.Element("GeocodeResponse").Element("result");
+            var locationElement = result.Element("geometry").Element("location");
+            var lat = locationElement.Element("lat");
+            var lng = locationElement.Element("lng");
+
+            return lng;
+        }
 
     }
 }
