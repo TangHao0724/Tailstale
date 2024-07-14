@@ -2,7 +2,6 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Tailstale.Models;
 
@@ -10,36 +9,20 @@ public partial class Consumption_Record
 {
     public int id { get; set; }
 
-    
-    [Required(ErrorMessage = "keeper_id欄位未填寫")]
     public int keeper_id { get; set; }
 
-    [StringLength(maximumLength: 10, MinimumLength = 1, ErrorMessage = "長度不合法,最多10字")]//,最多8個字,最少3個字,可以防攻擊
-    [Required(ErrorMessage = "pet_name欄位未填寫")]
     public string pet_name { get; set; }
 
-    
-    [Required(ErrorMessage = "business_ID欄位未填寫")]
     public int business_ID { get; set; }
 
-    
-    [Required(ErrorMessage = "time欄位未填寫")]
     public DateTime time { get; set; }
 
-    
-    [Required(ErrorMessage = "beautician_id欄位未填寫")]
     public int beautician_id { get; set; }
 
-    [StringLength(maximumLength: 100, MinimumLength = 1, ErrorMessage = "長度不合法,最多100字")]//,最多8個字,最少3個字,可以防攻擊
-    [Required(ErrorMessage = "service_name欄位未填寫")]
     public string service_name { get; set; }
 
-    [Range(0.1, 999.9, ErrorMessage = "寵物重量必須在0.1到999.9之間")]
-    [Required(ErrorMessage = "pet_weight欄位未填寫")]
     public decimal pet_weight { get; set; }
 
-    
-    [Required(ErrorMessage = "price欄位未填寫")]
     public int price { get; set; }
 
     public DateTime? end_time { get; set; }

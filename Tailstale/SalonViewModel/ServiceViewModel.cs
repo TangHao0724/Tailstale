@@ -29,7 +29,7 @@ namespace Tailstale.Models
         [Required(ErrorMessage = "price欄位未填寫")]
         public string price { get; set; }
 
-        public virtual ICollection<Store_Service> Store_Service { get; set; } = new List<Store_Service>();
+        
 
         public virtual business business { get; set; }
     }

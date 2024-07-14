@@ -9,11 +9,11 @@ public partial class speciman
 {
     public int id { get; set; }
 
+    public int? pet_type { get; set; }
+
     public string specimen_name { get; set; }
 
     public string test_name { get; set; }
-
-    public int? pet_type { get; set; }
 
     public decimal? normal_range_min { get; set; }
 

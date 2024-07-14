@@ -13,9 +13,9 @@ public partial class image_file
 
     public int record_id { get; set; }
 
-    public string file_path { get; set; }
-
     public DateTime? uploaded_at { get; set; }
+
+    public string file_path { get; set; }
 
     public virtual record_type record_type { get; set; }
 }

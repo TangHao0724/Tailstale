@@ -19,7 +19,7 @@ public partial class Booking
 
     public int? bookingAmountTotal { get; set; }
 
-    public string bookingStatus { get; set; }
+    public int? bookingStatus { get; set; }
 
     public DateTime? bookingDate { get; set; }
 
@@ -28,6 +28,8 @@ public partial class Booking
     public virtual ICollection<CheckinDetail> CheckinDetails { get; set; } = new List<CheckinDetail>();
 
     public virtual ICollection<PaymentInfo> PaymentInfos { get; set; } = new List<PaymentInfo>();
+
+    public virtual order_status bookingStatusNavigation { get; set; }
 
     public virtual business hotel { get; set; }
 

@@ -9,9 +9,9 @@ public partial class pet
 {
     public int pet_ID { get; set; }
 
-    public int? FK_pet_type_ID { get; set; }
+    public int? pet_type_ID { get; set; }
 
-    public int? FK_keeper_ID { get; set; }
+    public int? keeper_ID { get; set; }
 
     public string name { get; set; }
 
@@ -41,13 +41,19 @@ public partial class pet
 
     public virtual ICollection<CheckinDetail> CheckinDetails { get; set; } = new List<CheckinDetail>();
 
-    public virtual keeper FK_keeper { get; set; }
-
-    public virtual pet_type FK_pet_type { get; set; }
-
     public virtual ICollection<biological_test> biological_tests { get; set; } = new List<biological_test>();
+
+    public virtual keeper keeper { get; set; }
+
+    public virtual ICollection<medical_imaging> medical_imagings { get; set; } = new List<medical_imaging>();
 
     public virtual ICollection<medical_record> medical_records { get; set; } = new List<medical_record>();
 
+    public virtual ICollection<medicine_order_record> medicine_order_records { get; set; } = new List<medicine_order_record>();
+
     public virtual ICollection<nursing_record> nursing_records { get; set; } = new List<nursing_record>();
+
+    public virtual pet_type pet_type { get; set; }
+
+    public virtual ICollection<vital_sign_record> vital_sign_records { get; set; } = new List<vital_sign_record>();
 }

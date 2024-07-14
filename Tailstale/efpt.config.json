@@ -43,7 +43,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Business_hours]",
+         "Name": "[dbo].[Business_hour]",
          "ObjectType": 0
       },
       {
@@ -67,7 +67,19 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[daily_outpatient_clinic_schedule]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[department]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[dosage_form]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[frequency]",
          "ObjectType": 0
       },
       {
@@ -91,19 +103,27 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[medical_imaging]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[medical_record]",
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[medicine_generic_name]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[medicine_order_details]",
+         "Name": "[dbo].[medicine]",
          "ObjectType": 0
       },
       {
          "Name": "[dbo].[medicine_order_record]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[medicine_order_status]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[member_status]",
          "ObjectType": 0
       },
       {
@@ -124,6 +144,10 @@
       },
       {
          "Name": "[dbo].[outpatient_clinic]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[outpatient_clinic_timeslot]",
          "ObjectType": 0
       },
       {
@@ -159,6 +183,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[roomType]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Service]",
          "ObjectType": 0
       },
@@ -167,23 +195,11 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[status]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[Store_Service]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[surgery]",
          "ObjectType": 0
       },
       {
          "Name": "[dbo].[tags]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[user_photo]",
          "ObjectType": 0
       },
       {

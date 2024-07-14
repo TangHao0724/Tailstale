@@ -95,7 +95,7 @@ namespace Tailstale.Controllers
 
 
 
-        // GET: Reserves/Details/5
+        // GET: Reserve/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)

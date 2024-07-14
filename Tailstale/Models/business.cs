@@ -11,6 +11,8 @@ public partial class business
 
     public string password { get; set; }
 
+    public string salt { get; set; }
+
     public int? type_ID { get; set; }
 
     public string name { get; set; }
@@ -25,21 +27,19 @@ public partial class business
 
     public string license_number { get; set; }
 
-    public int FK_status_ID { get; set; }
+    public int? business_status { get; set; }
 
     public string photo_url { get; set; }
 
     public DateTime? created_at { get; set; }
 
-    public virtual ICollection<Beautician> Beautician { get; set; } = new List<Beautician>();
+    public virtual ICollection<Beautician> Beauticians { get; set; } = new List<Beautician>();
 
     public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 
-    public virtual ICollection<Business_hour> Business_hours { get; set; } = new List<Business_hour>();
+    public virtual ICollection<Business_hour> Business_hour { get; set; } = new List<Business_hour>();
 
     public virtual ICollection<Consumption_Record> Consumption_Record { get; set; } = new List<Consumption_Record>();
-
-    public virtual status FK_status { get; set; }
 
     public virtual ICollection<PaymentInfo> PaymentInfos { get; set; } = new List<PaymentInfo>();
 
@@ -49,15 +49,15 @@ public partial class business
 
     public virtual ICollection<Service> Service { get; set; } = new List<Service>();
 
-    public virtual ICollection<Store_Service> Store_Service { get; set; } = new List<Store_Service>();
-
     public virtual ICollection<business_img_type> business_img_types { get; set; } = new List<business_img_type>();
+
+    public virtual member_status business_statusNavigation { get; set; }
 
     public virtual ICollection<department> departments { get; set; } = new List<department>();
 
     public virtual ICollection<memo> memos { get; set; } = new List<memo>();
 
-    public virtual ICollection<outpatient_clinic> outpatient_clinics { get; set; } = new List<outpatient_clinic>();
+    public virtual ICollection<roomType> roomTypes { get; set; } = new List<roomType>();
 
     public virtual business_type type { get; set; }
 
