@@ -9,6 +9,8 @@ public partial class medical_record
 {
     public int id { get; set; }
 
+    public int? keeper_id { get; set; }
+
     public int? pet_id { get; set; }
 
     public DateTime? created_at { get; set; }
@@ -17,27 +19,27 @@ public partial class medical_record
 
     public decimal? weight { get; set; }
 
+    public int? vital_sign_record_id { get; set; }
+
     public string admission_process { get; set; }
 
     public string diagnosis { get; set; }
 
     public string treatment { get; set; }
 
-    public int? biological_test_id { get; set; }
-
     public string memo { get; set; }
 
     public int? fee { get; set; }
 
-    public virtual biological_test biological_test { get; set; }
-
     public virtual ICollection<hosp_history> hosp_histories { get; set; } = new List<hosp_history>();
 
-    public virtual ICollection<medicine_order_record> medicine_order_records { get; set; } = new List<medicine_order_record>();
+    public virtual keeper keeper { get; set; }
 
     public virtual outpatient_clinic outpatient_clinic { get; set; }
 
     public virtual pet pet { get; set; }
 
     public virtual ICollection<surgery> surgeries { get; set; } = new List<surgery>();
+
+    public virtual vital_sign_record vital_sign_record { get; set; }
 }

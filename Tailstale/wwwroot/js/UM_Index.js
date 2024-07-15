@@ -27,7 +27,7 @@
 
     //特殊
     var reflashDataTable = function () {
-        
+
         UMapi.get('/userInfo')
             .then(response => {
                 // 處理成功的回應
@@ -48,8 +48,8 @@
                     $("#nav-info").show();
                     reflashInfoDetail();
                     reflashImgDetail();
-                    
-                    
+
+
                     //如果目前號碼等於selectUserID Disabled選擇紐
                 });
             })
@@ -69,14 +69,14 @@
             $("#nav-info").html(response.data);
             reflashInfoDetail();
             UserInfoBind();
-            
+
 
         }).catch(error => {
             // 處理錯誤
             console.error('發生錯誤：', error)
         });
-            
-           
+
+
     }// 刷新Info頁面
     var reflashInfoDetail = function () {
         UMapi.get('/userInfoDetail', {
@@ -104,7 +104,7 @@
                 $("#updatePhone").val(userDetailJson.phone)
                 $("#updatePassword").val(userDetailJson.phone)
                 $("#updateStatus").val(userDetailJson.status)
-                
+
             })
             .catch(error => {
                 // 處理錯誤
@@ -129,39 +129,61 @@
                 .catch(function (error) {
                     console.error('API 請求失敗', error);
                 });
-            });
+        });
         //更新USER
-         $("#nav-info #UserUpdateModal #UpdateUser").submit(function (event) {
-                event.preventDefault();
+        $("#nav-info #UserUpdateModal #UpdateUser").submit(function (event) {
+            event.preventDefault();
 
-                var UpdateData = {
-                    ID: selectUserID,
-                    name: $('#updateName').val(),
-                    email: $('#updateEmail').val(),
-                    password: $('#updatePassword').val(),
-                    address: $('#updateAddress').val(),
-                    phone: $('#updatePhone').val(),
-                    status: $('#updateStatus').val(),
+            var UpdateData = {
+                ID: selectUserID,
+                name: $('#updateName').val(),
+                email: $('#updateEmail').val(),
+                password: $('#updatePassword').val(),
+                address: $('#updateAddress').val(),
+                phone: $('#updatePhone').val(),
+                status: $('#updateStatus').val(),
 
-                };
-                UMapi.post('/UpdateUser', UpdateData)
-                    .then(function (response) {
-                        console.log('API 返回:', response.data);
-                        alert("已經修改 編號：" + JSON.stringify(response.data.userId));
-                        $('#UserUpdateModal').modal('hide');
-                        reflashInfoDetail();
+            };
+            UMapi.post('/UpdateUser', UpdateData)
+                .then(function (response) {
+                    console.log('API 返回:', response.data);
+                    alert("已經修改 編號：" + JSON.stringify(response.data.userId));
+                    $('#UserUpdateModal').modal('hide');
+                    reflashInfoDetail();
 
-                    }).catch(function (error) {
-                        console.error('API 請求失敗', error);
-                        alert('你有問題');
-                        // 处理错误信息
-                    })
-            })
+                }).catch(function (error) {
+                    console.error('API 請求失敗', error);
+                    alert('你有問題');
+                    // 处理错误信息
+                })
+        })
 
     }//刷新時綁定Info物件,
 
+    var reflashPetpage = function () {
+        UMapi.get('/userPetPage', {
+            params: {
+                ID: selectUserID
+            }
+        }).then(response => {
+            // 處理成功的回應
+            console.log(response.data);
+            $("#nav-petInfo").html(response.data);
+            reflashInfoDetail();
+            UserInfoBind();
 
 
+        }).catch(error => {
+            // 處理錯誤
+            console.error('發生錯誤：', error)
+        });
+    }//刷新Pet頁面
+    var reflashPetDetail = function () {
+
+    }//生成Pet內容
+    var PetBind = function () {
+
+    }//生成綁定內容
     var reflashImgPage = function () {
         UMapi.get('/userImgPage', {
             params: {
@@ -173,22 +195,28 @@
             $("#nav-img").html(response.data);
             $('#imgTypeTable').DataTable({
                 columns: [
-                    { "data": "id", "width": "20%" },
                     {
-                        "data": "typename", "width": "20%" ,
-                        render: function (data, type, row) {
-                            return '<a class="btn row-link" data-id="'+row.id+'">' + data + '</a>'
-                        }
-                        
+                        "data": "id",
+                        width: '20%',
                     },
+                    {
+                        "data": "typename", 
+                        width: "50%",
+                        render: function (data, type, row) {
+                            return '<a class="my_a link-dark text-decoration-none" data-id="' + row.id + '" style="cursor: pointer;">' + data + '</a>'
+                        }
 
+                    },
                     {
                         "data": null,
                         "defaultContent": '<button class="btn btn-primary btn-sm">選擇</button>',
                         "orderable": false,
-                        "width": "20%"
-                    }
+                        width: "30%",
+                        
+                    },
+
                 ],
+                retrieve:true,
                 paging: false,
                 scrollY: '50vh',
                 scrollCollapse: true,
@@ -199,18 +227,18 @@
                 }
             });
 
-          
+
             reflashImgDetail();
             ImgBind();
 
-             
+
         }).catch(error => {
             // 處理錯誤     
             console.error('發生錯誤：', error)
             alert(error.stringify);
         });
 
-    }
+    }//刷新圖片內容
 
     var reflashImgDetail = function () {
         Imgapi.get("/userImgType", {
@@ -219,7 +247,6 @@
             }
         }).then(response => {
             console.log(response.data)
-            alert(JSON.stringify(response.data))
             $('#imgTypeTable').DataTable().clear().rows.add(response.data).draw();
             $('#imgTypeTable tbody').on('click', 'button', function () {
                 data = $('#imgTypeTable').DataTable().row($(this).parents('tr')).data().id;
@@ -227,19 +254,26 @@
                 //進入下一層img_type
             })
 
-                
+
 
         }).catch(error => {
             console.log(error)
         })
 
-    }
+    }//刷新圖片內容
+
+    
     var ImgBind = function () {
+        //點擊相簿名稱的反應
+        $('#imgTypeTable').on('click', '.my_a', function () {
+            alert('您點擊了按鈕！');
+        });
         //上傳圖片並相片種類
-       $("#InsertImg").submit(function (event) {
+        $("#InsertImg").submit(function (event) {
             event.preventDefault();
 
             var ImgData = new FormData(this);
+
 
             ImgData.append("User_id", selectUserID);
 
@@ -250,29 +284,9 @@
             })
                 .then(function (response) {
                     console.log('API 返回:', response.data);
-                    alert(`上傳成功!：`)
+                    alert(JSON.stringify(response.data))
                     $('#InsertImgModal').modal('hide');
                     reflashImgDetail();
-                })
-                .catch(function (error) {
-                    console.error('API 請求失敗', error);
-                    alert( error.stringify);
-                    // 处理错误信息
-                })
-
-        })
-        //插入相簿
-        $("#InsertImgType").submit(function (event) {
-            event.preventDefault();
-
-            let typedata = new FormData(this);
-            typedata.append("User_id", selectUserID);
-            Imgapi.post("InsertImgType", typedata
-            )
-                .then(function (response) {
-                    console.log('API 返回:', response.data);
-                    alert(JSON.stringify(response.data))
-                    $('#InsertImgTypegModal').modal('hide');
                 })
                 .catch(function (error) {
                     console.error('API 請求失敗', error);
@@ -281,15 +295,39 @@
                 })
 
         })
+        //插入相簿
+        $("#InsertImgType").submit(function (event) {
+            event.preventDefault();
+
+            var imgData = {
+                User_id: selectUserID,
+                type_name: $('#type_name').val(),
+            };
+            Imgapi.post("InsertImgType", imgData)
+                .then(function (response) {
+                    console.log('API 返回:', response.data);
+                    alert(JSON.stringify(response.data))
+                    $('#InsertImgTypeModal').modal('hide');
+                    reflashImgDetail();
+                })
+                .catch(function (error) {
+                    console.error('API 請求失敗', error);
+                    alert(error.stringify);
+                    // 处理错误信息
+                })
+
+        })
+
         //刪除相片
         $(" #Deleteimg").on("click", function () {
 
-            Imgapi.post("DeleteImgType", 
+            Imgapi.post("DeleteImgType",
                 { ID: imgtypeID },
                 { headers: { 'Content-Type': 'application/json' } }
             ).then(response => {
                 console.log(response.data)
                 alert(JSON.stringify(response.data))
+                reflashImgDetail();
             }).catch(function (error) {
                 console.error('請求失敗', error);
                 alert(error.stringify);
@@ -304,7 +342,7 @@
         })
 
 
-        
+
     }//綁定到Imgpage物件
 
 
@@ -313,16 +351,15 @@
     //表格
     $('#table').DataTable({
         columns: [
-            { "data": "id", "width": "20%" },
+            { "data": "id",  },
             {
                 data: "name",
-                width: "20%",
             },
             {
                 "data": null,
                 "defaultContent": '<button class="btn btn-primary btn-sm">選擇</button>',
                 "orderable": false,
-                "width": "20%"
+               
             }
 
         ],
@@ -341,24 +378,29 @@
     reflashDataTable();
     //點即時打開頁面
     $("#info-tab").on("click", function () {
-
+        $("nav-info").empty();
         reflashInfoPage();
     })
     $("#img-tab").on("click", function () {
-        $("#nav-info").html('');
+        $("#nav-info").empty();
         reflashImgPage();
 
-        //呼叫IMGtype內容
-        
-
+        //打開IMGtype分頁
     })
+
+    $("#petInfo-tab").on("click", function () {
+        
+        reflashPetpage();
+
+        
+    })//打開Pet分頁
 
     //建立新帳號API
     $('#insertUser').submit(function (event) {
         event.preventDefault();
 
         var UserformData = {
-            
+
             name: $('#inputName').val(),
             email: $('#inputEmail').val(),
             password: $('#inputPassword').val(),
@@ -381,5 +423,5 @@
 
     });
 
-    
+
 });

@@ -8,8 +8,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\js\NewFolder\**" />
+    <Content Remove="wwwroot\js\NewFolder\**" />
+    <EmbeddedResource Remove="wwwroot\js\NewFolder\**" />
+    <None Remove="wwwroot\js\NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\js\UM_Index.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="efpt.config.json.user" />
     <None Include="Views\UserMangerApi\_Info.cshtml" />
+    <None Include="wwwroot\js\UM_Index.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,6 +40,7 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\UserManger\Info.cshtml" />
+    <_ContentIncludedByDefault Remove="wwwroot\js\UM_Index.js" />
   </ItemGroup>
 
   <ItemGroup>

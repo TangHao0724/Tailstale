@@ -15,15 +15,15 @@ public partial class Appointment
 
     public DateTime? registration_time { get; set; }
 
-    public int? outpatient_clinic_ID { get; set; }
+    public int? daily_outpatient_clinic_schedule_ID { get; set; }
 
-    public int? status { get; set; }
+    public int? Appointment_status { get; set; }
+
+    public virtual order_status Appointment_statusNavigation { get; set; }
+
+    public virtual daily_outpatient_clinic_schedule daily_outpatient_clinic_schedule { get; set; }
 
     public virtual keeper keeper { get; set; }
 
-    public virtual outpatient_clinic outpatient_clinic { get; set; }
-
     public virtual pet pet { get; set; }
-
-    public virtual order_status statusNavigation { get; set; }
 }

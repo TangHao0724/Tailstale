@@ -30,9 +30,6 @@ namespace Tailstale.Controllers
 
 
         //傳入Api的ID類型
-
-
-
         //傳送Index頁面上Keeper的ID 跟NAME
         [HttpGet("userInfo")]
         public async Task<JsonResult> userInfo()
@@ -60,6 +57,43 @@ namespace Tailstale.Controllers
         {
             return PartialView("_Img", input.ID); ;
         }
+
+        //根據傳入ID 傳送Pet頁面
+        [HttpGet("userPetPage")]
+        public async Task<IActionResult> userPetPage([FromQuery] ApiInputID input)
+        {
+            return PartialView("_Pet", input.ID); ;
+        }
+
+
+        //傳送Pet頁面上詳細內容
+        [HttpGet("userPetDetail")]
+        public async Task<IActionResult> userPetDetail([FromQuery] ApiInputID input)
+        {
+
+            var Pet = await _context.pets
+            .Include(k => k.pet_type)
+            .Where(t => t.keeper_ID == input.ID)
+            .Select(u => new
+            {
+                ID = u.pet_ID,
+                name = u.name,
+                pet_type = u.pet_type,
+                chip_ID = u.chip_ID,
+                gender = u.gender,
+                pet_weight = u.pet_weight,
+                neutered = u.neutered,
+                birthday = u.birthday,
+
+            })
+            .ToListAsync();
+
+            if (Pet == null)
+                return NotFound();
+
+            return Json(Pet);
+        }
+
 
         //傳送Index頁面上詳細內容
         [HttpGet("userInfoDetail")]

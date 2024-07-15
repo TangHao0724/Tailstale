@@ -22,6 +22,7 @@ namespace Tailstale.Controllers
             _context = context;
         }
         //建立相簿並存入圖片
+        //重複名稱會倒置400錯無法編碼
         [RequestFormLimits(MultipartBodyLengthLimit = 2048000)]
         [RequestSizeLimit(2048000)]
         [HttpPost("UploadsingleImg")]
