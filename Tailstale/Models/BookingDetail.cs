@@ -20,5 +20,4 @@ public partial class BookingDetail
     public virtual Booking booking { get; set; }
 
     public virtual Room room { get; set; }
-
 }

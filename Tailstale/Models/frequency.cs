@@ -5,15 +5,11 @@ using System.Collections.Generic;
 
 namespace Tailstale.Models;
 
-public partial class Store_Service
+public partial class frequency
 {
     public int id { get; set; }
 
-    public int business_ID { get; set; }
+    public string frequency_name { get; set; }
 
-    public int service_id { get; set; }
-
-    public virtual business business { get; set; }
-
-    public virtual Service service { get; set; }
+    public virtual ICollection<medicine_order_record> medicine_order_records { get; set; } = new List<medicine_order_record>();
 }

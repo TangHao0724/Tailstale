@@ -17,13 +17,15 @@ namespace Tailstale.Controllers
     [EnableCors("Fuen104Policy")]
     public class RoomsController : Controller
     {
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly TailstaleContext _context;
         private readonly IMapper _mapper;
 
-        public RoomsController(TailstaleContext context,IMapper mapper)
+        public RoomsController(TailstaleContext context,IMapper mapper, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _mapper = mapper;
+            _webHostEnvironment = webHostEnvironment;
 
         }
 
@@ -47,7 +49,8 @@ namespace Tailstale.Controllers
                 .Include(r => r.FK_roomType)
                 .Include(r => r.hotel)
                 .FirstOrDefaultAsync(m => m.roomID == id);
-            EditRoomDTO e = ConvertToEditRoomDTO(room);
+            var img = _context.business_img_types.Include(bti => bti.Rooms).Include(bti => bti.business_imgs).Where(bti => bti.ID == room.FK_roomImg_ID).SelectMany(bti => bti.business_imgs).ToList();
+            EditRoomDTO e = ConvertToEditRoomDTO(room,img);
             if (e == null)
             {
                 return NotFound();
@@ -71,10 +74,9 @@ namespace Tailstale.Controllers
             else
             {
                 var getroom = _context.Rooms.Find(id);
-                RoomDTO roomDTO = new RoomDTO
+                EditRoomDTO roomDTO = new EditRoomDTO
                 {
-                    hotelID = getroom.hotelID,
-                    
+                    hotelID = getroom.hotelID,                    
                     roomID=getroom.roomID,
                     roomSpecies=getroom.roomSpecies,
                     roomPrice= getroom.roomPrice,
@@ -82,6 +84,7 @@ namespace Tailstale.Controllers
                     roomReserve= getroom.roomReserve,
                     roomDescrep= getroom.roomDescrep,
                     roomType= getroom.FK_roomType,
+                    
                 };
 
                 return View(roomDTO);
@@ -89,42 +92,99 @@ namespace Tailstale.Controllers
                 
         }
 
-        // POST: Rooms/Create
+        // POST: Rooms/AddOrEdit
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddOrEdit( RoomDTO room)
+        public async Task<IActionResult> AddOrEdit( RoomDTO room, IList<IFormFile> files)
         {
             var hotelID = HttpContext.Session.GetInt32("hotelID11");
             if (ModelState.IsValid)
             {
                 
                 int InthotelID = Convert.ToInt32(hotelID);
-                Room Room = new Room
+              
+                //新增新Room
+                if (room.roomID == null)
                 {
-                    roomID=(int)room.roomID,
-                    hotelID = InthotelID,
-                    roomSpecies = room.roomSpecies,
-                    FK_roomType_ID = room.roomType.roomType_ID,
-                    roomPrice = room.roomPrice,
-                    roomDiscount = room.roomDiscount,
-                    roomReserve = room.roomReserve,
-                    roomDescrep = room.roomDescrep,
-                };
+                    //新增imgtype 並處存取得typeID
+                    var imgtype = new business_img_type
+                    {
+                        FK_business_id = InthotelID,
+                        typename = $"ID:{room.roomID} {room.roomSpecies}的{room.roomType.roomType1}",
+                        created_at = DateTime.Now
+                    };
+                    _context.business_img_types.Add(imgtype);
+                    _context.SaveChanges();
 
-                if (room.roomID == 0)
-                {
+                    Room RoomCreate = new Room
+                    {
+                        hotelID = InthotelID,
+                        roomSpecies = room.roomSpecies,
+                        FK_roomType_ID = room.roomType.roomType_ID,
+                        roomPrice = room.roomPrice,
+                        roomDiscount = room.roomDiscount,
+                        roomReserve = room.roomReserve,
+                        roomDescrep = room.roomDescrep,
+                        FK_roomImg_ID= imgtype.ID
+                    };
+                    _context.Rooms.Add(RoomCreate);
+                   await _context.SaveChangesAsync();
+
                     
-                    _context.Rooms.Add(Room);
+                   
+                    if (files.Count > 0)
+                    {
+                        
+                        foreach (var file in files)
+                        {
+                            newimgColAndAddImg(imgtype, RoomCreate, file);
+                        }
+
+                    }
+                   
+
+                    
                 }
                 else
                 {
-                    _context.Rooms.Update(Room);
+
+                    var isRoomImgTypeID = _context.Rooms.Where(r => r.roomID == room.roomID).Select(r=>r.FK_roomImg_ID).FirstOrDefaultAsync();
+                    var findImgType = _context.business_img_types.FindAsync(isRoomImgTypeID);
+                    var intFindImgType=Convert.ToInt32(findImgType);
+                    if(intFindImgType == null && intFindImgType <= 0)
+                    {
+                        var imgtype = new business_img_type
+                        {
+                            FK_business_id = InthotelID,
+                            typename = $"ID:{room.roomID} {room.roomSpecies}的{room.roomType.roomType1}",
+                            created_at = DateTime.Now
+                        };
+                        _context.business_img_types.Add(imgtype);
+                        _context.SaveChanges();
+                    }
+                    Room RoomEdit = new Room
+                    {
+                        roomID=(int)room.roomID,
+                        hotelID = InthotelID,
+                        roomSpecies = room.roomSpecies,
+                        FK_roomType_ID = room.roomType.roomType_ID,
+                        roomPrice = room.roomPrice,
+                        roomDiscount = room.roomDiscount,
+                        roomReserve = room.roomReserve,
+                        roomDescrep = room.roomDescrep,
+                        FK_roomImg_ID= intFindImgType,
+                    }; 
+                    _context.Rooms.Update(RoomEdit);
                 }
                     
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(ShowRoomFromHotel), new { hotelID = InthotelID });
+                // return RedirectToAction(nameof(ShowRoomFromHotel), new{ hotelID = InthotelID });
+                //  return RedirectPermanent(nameof(ShowRoomFromHotel),"Rooms", new { hotelID = InthotelID }, true, true);
+                // return RedirectToActionResult(nameof(ShowRoomFromHotel), "Rooms", new { hotelID = InthotelID }, false, true);
+                // return RedirectToActionPreserveMethod(nameof(ShowRoomFromHotel), "Rooms", new { hotelID = InthotelID });
+                return RedirectToActionPreserveMethod(nameof(ShowRoomFromHotel), "Rooms", new { id = InthotelID });
             }
             
             ViewData["FK_roomType_ID"] = new SelectList(_context.roomTypes.Where(b => b.FK_businessID == hotelID).Select(h => new {
@@ -134,8 +194,40 @@ namespace Tailstale.Controllers
             return View(room);
         }
 
+        private void newimgColAndAddImg(business_img_type imgtype, Room RoomCreate, IFormFile file)
+        {
+            var imgcol = new business_img
+            {
+                img_type_id = imgtype.ID,
+                name = (RoomCreate.roomID).ToString(),
+                created_at = DateTime.Now
+            };
 
-        private static EditRoomDTO ConvertToEditRoomDTO(Room? room)
+            string wwwRootPath = _webHostEnvironment.WebRootPath;
+
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+            string filefoldername = (string)imgcol.name;
+            string roomImgPath = $@"images\room\{filefoldername}";
+            string getPath = Path.Combine(wwwRootPath, roomImgPath);
+
+            if (!Directory.Exists(getPath))
+            {
+                Directory.CreateDirectory(getPath);
+            }
+
+            using (var fileStream = new FileStream(Path.Combine(getPath, fileName), FileMode.Create))
+            {
+                file.CopyTo(fileStream);
+            }
+
+            imgcol.URL = roomImgPath + @"\" + fileName;
+
+            _context.business_imgs.Add(imgcol);
+        }
+
+        //rooms/test
+      
+        private static EditRoomDTO ConvertToEditRoomDTO(Room room,List<business_img> img)
         {
             return new EditRoomDTO
             {
@@ -147,6 +239,8 @@ namespace Tailstale.Controllers
                 roomDescrep = room.roomDescrep,
                 roomSpecies = room.roomSpecies,
                 roomType = room.FK_roomType,
+                roomImg=img
+
 
             };
         }
@@ -175,7 +269,7 @@ namespace Tailstale.Controllers
         
         
         [HttpPost, ActionName("ShowRoomFromHotel")]
-        //[Route("Rooms/ShowRoomFromHotel/{hotelID:int}")]
+       // [Route("Rooms/ShowRoomFromHotel?hotelID={hotelID:int}")]
         public async Task<IActionResult> ShowRoomFromHotel(int id)
         {
             if (id == 0)

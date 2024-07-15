@@ -42,7 +42,7 @@
                 @Html.DisplayNameFor(model => model.created_at)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FK_status)
+                @Html.DisplayNameFor(model => model.business_status)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.type)
@@ -82,7 +82,7 @@
                 @Html.DisplayFor(modelItem => item.created_at)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FK_status.status_name)
+                @Html.DisplayFor(modelItem => item.business_statusNavigation.status_name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.type.business_type_name)

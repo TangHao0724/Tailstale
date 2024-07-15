@@ -11,6 +11,8 @@ public partial class keeper
 
     public string password { get; set; }
 
+    public string salt { get; set; }
+
     public string name { get; set; }
 
     public string phone { get; set; }
@@ -43,13 +45,15 @@ public partial class keeper
 
     public virtual ICollection<keeper_img_type> keeper_img_types { get; set; } = new List<keeper_img_type>();
 
+    public virtual ICollection<medical_record> medical_records { get; set; } = new List<medical_record>();
+
     public virtual ICollection<memo> memos { get; set; } = new List<memo>();
 
     public virtual ICollection<person_tag> person_tags { get; set; } = new List<person_tag>();
 
     public virtual ICollection<pet> pets { get; set; } = new List<pet>();
 
-    public virtual status statusNavigation { get; set; }
+    public virtual member_status statusNavigation { get; set; }
 
     public virtual ICollection<using_person_tag> using_person_tags { get; set; } = new List<using_person_tag>();
 }

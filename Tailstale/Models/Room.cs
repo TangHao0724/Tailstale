@@ -29,7 +29,7 @@ public partial class Room
 
     public virtual ICollection<CheckinDetail> CheckinDetails { get; set; } = new List<CheckinDetail>();
 
-    public virtual business_img FK_roomImg { get; set; }
+    public virtual business_img_type FK_roomImg { get; set; }
 
     public virtual roomType FK_roomType { get; set; }
 

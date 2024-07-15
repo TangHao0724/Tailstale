@@ -13,6 +13,10 @@ public partial class Business_hour
 
     public DateOnly business_day { get; set; }
 
+    public TimeOnly? open_time { get; set; }
+
+    public TimeOnly? close_time { get; set; }
+
     public int people_limit { get; set; }
 
     public virtual business business { get; set; }

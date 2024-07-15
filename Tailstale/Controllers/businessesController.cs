@@ -24,11 +24,11 @@ namespace Tailstale.Controllers
         // GET: businesses
         public async Task<IActionResult> Index()
         {
-            var tailstaleContext = _context.businesses.Include(b => b.FK_status).Include(b => b.type);
+            var tailstaleContext = _context.businesses.Include(b => b.business_statusNavigation).Include(b => b.type);
             return View(await tailstaleContext.ToListAsync());
         }
 
-        // GET: businesses/Details/5
+        // GET: businessesnew/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -37,7 +37,7 @@ namespace Tailstale.Controllers
             }
 
             var business = await _context.businesses
-                .Include(b => b.FK_status)
+                .Include(b => b.business_statusNavigation)
                 .Include(b => b.type)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (business == null)
@@ -48,14 +48,13 @@ namespace Tailstale.Controllers
             return View(business);
         }
 
-        // GET: businesses/Create
+        // GET: businessesnew/Create
         public IActionResult Create()
         {
-            ViewData["FK_status_ID"] = new SelectList(_context.statuses, "ID", "status_name");
+            ViewData["business_status"] = new SelectList(_context.member_statuses, "member_status_ID", "status_name");
             ViewData["type_ID"] = new SelectList(_context.business_types, "business_type_ID", "business_type_name");
             return View();
         }
-
         // POST: businesses/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -72,19 +71,20 @@ namespace Tailstale.Controllers
                     //string fileName = Guid.NewGuid().ToString()+Path.GetExtension(file.FileName);
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
 
-                    string businessPath=Path.Combine(wwwRootPath, @"images\business");
+                    string businessPath = Path.Combine(wwwRootPath, @"images\business");
                     using (var fileStream = new FileStream(Path.Combine(businessPath, fileName), FileMode.Create))
                     {
                         file.CopyTo(fileStream);
                     }
-                    business.photo_url=@"images\business\"+fileName;
+                    business.photo_url = @"images\business\" + fileName;
                 }
                 _context.businesses.Add(business);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["FK_status_ID"] = new SelectList(_context.statuses, "ID", "status_name", business.FK_status_ID);
+            ViewData["business_status"] = new SelectList(_context.member_statuses, "member_status_ID", "status_name", business.business_status);
             ViewData["type_ID"] = new SelectList(_context.business_types, "business_type_ID", "business_type_name", business.type_ID);
+            
             return View(business);
         }
 
@@ -101,7 +101,7 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
-            ViewData["FK_status_ID"] = new SelectList(_context.statuses, "ID", "status_name", business.FK_status_ID);
+            ViewData["business_statusNavigation"] = new SelectList(_context.member_statuses, "ID", "status_name", business.business_statusNavigation);
             ViewData["type_ID"] = new SelectList(_context.business_types, "business_type_ID", "business_type_name", business.type_ID);
             return View(business);
         }
@@ -157,7 +157,7 @@ namespace Tailstale.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["FK_status_ID"] = new SelectList(_context.statuses, "ID", "status_name", business.FK_status_ID);
+            ViewData["business_statusNavigation"] = new SelectList(_context.member_statuses, "ID", "status_name", business.business_statusNavigation);
             ViewData["type_ID"] = new SelectList(_context.business_types, "business_type_ID", "business_type_name", business.type_ID);
             return View(business);
         }
@@ -171,7 +171,7 @@ namespace Tailstale.Controllers
             }
 
             var business = await _context.businesses
-                .Include(b => b.FK_status)
+                .Include(b => b.business_status)
                 .Include(b => b.type)
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (business == null)

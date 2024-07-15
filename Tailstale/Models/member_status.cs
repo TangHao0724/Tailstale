@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace Tailstale.Models;
 
-public partial class status
+public partial class member_status
 {
-    public int ID { get; set; }
+    public int member_status_ID { get; set; }
 
     public string status_name { get; set; }
 

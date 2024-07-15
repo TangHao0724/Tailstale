@@ -9,7 +9,7 @@ public partial class biological_test
 {
     public int id { get; set; }
 
-    public int? pet_details_id { get; set; }
+    public int? pet_id { get; set; }
 
     public DateTime? created_at { get; set; }
 
@@ -19,11 +19,7 @@ public partial class biological_test
 
     public string findings { get; set; }
 
-    public virtual ICollection<medical_record> medical_records { get; set; } = new List<medical_record>();
-
-    public virtual ICollection<nursing_record> nursing_records { get; set; } = new List<nursing_record>();
-
-    public virtual pet pet_details { get; set; }
+    public virtual pet pet { get; set; }
 
     public virtual speciman specimen { get; set; }
 }

@@ -5,13 +5,11 @@ using System.Collections.Generic;
 
 namespace Tailstale.Models;
 
-public partial class medicine_order_detail
+public partial class dosage_form
 {
     public int id { get; set; }
 
-    public int? nurseimg_record_id { get; set; }
+    public string form_name { get; set; }
 
-    public string status { get; set; }
-
-    public virtual nursing_record nurseimg_record { get; set; }
+    public virtual ICollection<medicine_order_record> medicine_order_records { get; set; } = new List<medicine_order_record>();
 }

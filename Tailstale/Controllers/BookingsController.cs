@@ -356,7 +356,7 @@ namespace Tailstale.Controllers
         }
         public async Task<IActionResult> businessList()
         {
-            var tailstaleContext = _context.businesses.Include(b => b.FK_status).Include(b => b.type);
+            var tailstaleContext = _context.businesses.Include(b => b.business_status).Include(b => b.type);
             return View(await tailstaleContext.ToListAsync());
         }
         [HttpGet]
@@ -383,28 +383,28 @@ namespace Tailstale.Controllers
         }
 
 
-       //查詢所有剩餘的房間
+        //查詢所有剩餘的房間
         //Bookings/SearchRoom
-        [HttpPost]
-        public async Task<IActionResult> SearchRoom([FromBody] InputDate iD,int? Cat,int? dog)
+        [HttpGet]
+        public async Task<IActionResult> SearchRoom([FromQuery] InputDate iD, int? Cat, int? dog)
         {
+            //var result = GetBookedRoomIds(iD.startDate, iD.endDate).ToList();
+            //var tailstaleContext = _context.Rooms.ToList();
+            //var finalresult=tailstaleContext.Join(result, t => t.roomID, r => r.RoomId, (tailstaleContext, result) => new FindRoomResultDTO
+            //{
+            //    roomID = tailstaleContext.roomID,
+            //    roomPrice = (int)tailstaleContext.roomPrice,
+            //    roomDescription = tailstaleContext.roomDescrep,
+            //    roomReserve = result.AvailableCount,
+            //    roomType = tailstaleContext.FK_roomType,
+            //   hotelID=tailstaleContext.hotelID,
+            //   roomSpecies = tailstaleContext.roomSpecies,
+            //   business=tailstaleContext.hotel
 
-            var result = GetBookedRoomIds(iD.startDate, iD.endDate).ToList();
-            var tailstaleContext = _context.Rooms.ToList();
-            var finalresult=tailstaleContext.Join(result, t => t.roomID, r => r.RoomId, (tailstaleContext, result) => new FindRoomResultDTO
-            {
-                roomID = tailstaleContext.roomID,
-                roomPrice = (int)tailstaleContext.roomPrice,
-                roomDescription = tailstaleContext.roomDescrep,
-                roomReserve = result.AvailableCount,
-                roomType = tailstaleContext.FK_roomType,
-               hotelID=tailstaleContext.hotelID,
-               roomSpecies = tailstaleContext.roomSpecies,
-               business=tailstaleContext.hotel
-
-            });
+            //});
+            var result = RoomAvailabilityAndRoom(iD,Cat,dog);
           // return PartialView("_SearchRoom", finalresult);
-            return View(finalresult);
+            return View(result);
         }
         [HttpGet]
         public async Task<IActionResult>  PostDateToSearch()
@@ -426,7 +426,25 @@ namespace Tailstale.Controllers
             return RedirectToAction(nameof(PostDateToSearch));
 
         }
-      
+        //把取得的房間數量和room合併並轉型
+        public IEnumerable<FindRoomResultDTO> RoomAvailabilityAndRoom(InputDate iD, int? Cat, int? dog) {
+            var result = GetBookedRoomIds(iD.startDate, iD.endDate).ToList();
+            var tailstaleContext = _context.Rooms.ToList();
+            var finalresult = tailstaleContext.Join(result, t => t.roomID, r => r.RoomId, (tailstaleContext, result) => new FindRoomResultDTO
+            {
+                roomID = tailstaleContext.roomID,
+                roomPrice = (int)tailstaleContext.roomPrice,
+                roomDescription = tailstaleContext.roomDescrep,
+                roomReserve = result.AvailableCount,
+                roomType = tailstaleContext.FK_roomType,
+                hotelID = tailstaleContext.hotelID,
+                roomSpecies = tailstaleContext.roomSpecies,
+                business = tailstaleContext.hotel
+
+            });
+            return finalresult;
+        }
+
         //取得剩餘房間數量
         //Bookings/GetBookedRoomIds
         [HttpGet]        

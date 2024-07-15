@@ -11,6 +11,8 @@ public partial class order_status
 
     public string status_name { get; set; }
 
+    public int? business_type_ID { get; set; }
+
     public int? FK_businessType_ID { get; set; }
 
     public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
@@ -20,4 +22,6 @@ public partial class order_status
     public virtual business_type FK_businessType { get; set; }
 
     public virtual ICollection<Reserve> Reserves { get; set; } = new List<Reserve>();
+
+    public virtual business_type business_type { get; set; }
 }

@@ -17,7 +17,7 @@ namespace Tailstale.Hotel_DTO
         public int? RoomName { get; set; }
         public string roomDescrep { get; set; }
         public roomType roomType { get; set; }
-       // public List<business_img> roomImg{ get; set; }
+        public business_img roomImg{ get; set; }
 
     }
     public class EditRoomDTO
@@ -33,7 +33,7 @@ namespace Tailstale.Hotel_DTO
         public int? roomReserve { get; set; }
         public string? roomDescrep { get; set; }
         public roomType roomType { get; set; }
-        // public List<business_img> roomImg{ get; set; }
+        public List<business_img> roomImg{ get; set; }
 
     }
 }

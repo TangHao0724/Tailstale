@@ -47,7 +47,7 @@ namespace Tailstale.Controllers
         // GET: keepers/Create
         public IActionResult Create()
         {
-            ViewData["status"] = new SelectList(_context.statuses, "ID", "status_name");
+            ViewData["status"] = new SelectList(_context.member_statuses, "ID", "status_name");
             return View();
         }
 
@@ -64,7 +64,7 @@ namespace Tailstale.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["status"] = new SelectList(_context.statuses, "ID", "status_name", keeper.status);
+            ViewData["status"] = new SelectList(_context.member_statuses, "ID", "status_name", keeper.status);
             return View(keeper);
         }
 
@@ -81,7 +81,7 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
-            ViewData["status"] = new SelectList(_context.statuses, "ID", "status_name", keeper.status);
+            ViewData["status"] = new SelectList(_context.member_statuses, "ID", "status_name", keeper.status);
             return View(keeper);
         }
 
@@ -117,7 +117,7 @@ namespace Tailstale.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["status"] = new SelectList(_context.statuses, "ID", "status_name", keeper.status);
+            ViewData["status"] = new SelectList(_context.member_statuses, "ID", "status_name", keeper.status);
             return View(keeper);
         }
 
