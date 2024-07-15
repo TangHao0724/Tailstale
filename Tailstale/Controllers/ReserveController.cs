@@ -115,7 +115,7 @@ namespace Tailstale.Controllers
             return View(reserve);
         }
 
-        // GET: Reserves/Create
+        // GET: Reserve/Create
         public IActionResult Create()
         {
             var businesses = _context.businesses

@@ -33,7 +33,7 @@ public partial class business
 
     public DateTime? created_at { get; set; }
 
-    public virtual ICollection<Beautician> Beauticians { get; set; } = new List<Beautician>();
+    public virtual ICollection<Beautician> Beautician { get; set; } = new List<Beautician>();
 
     public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 
