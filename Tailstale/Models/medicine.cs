@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Tailstale.Models;
 
-public partial class medicine_generic_name
+public partial class medicine
 {
     public int id { get; set; }
 
@@ -15,7 +15,9 @@ public partial class medicine_generic_name
 
     public string route { get; set; }
 
-    public string effects { get; set; }
+    public string timing { get; set; }
+
+    public string indication { get; set; }
 
     public string side_effects { get; set; }
 

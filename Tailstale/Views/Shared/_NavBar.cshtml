@@ -18,11 +18,20 @@
                 <li class="nav-item">
                     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Keepers" asp-action="Index">Keepers</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Dropdown
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" asp-controller="LNR" asp-action="Index">普通會員登入</a></li>
+                        <li><a class="dropdown-item" asp-controller="LNR" asp-action="BLogin">商業會員登入</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Privacy">登出</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
                 </li>
             </ul>
-            <partial name="_LoginPartial" />
         </div>
     </div>
 </nav>

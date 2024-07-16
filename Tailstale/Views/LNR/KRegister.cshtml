@@ -1,0 +1,61 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="container-fluid  p-3">
+    <div class="row shadow mx-5 my-4 rounded  align-items-center">
+        <div class="col-12 bg-light rounded-start-3 container">
+            <div class="row justify-content-center mb-2">
+                <img src="/imgs/LNR_img/BigLogo.png" alt="" srcset="" class="w-25">
+
+            </div>
+            <div class="row text-center">
+                <h3 class="fw-bold">會員註冊</h3>
+
+            </div>
+            <div class="row px-5 mb-4 ">
+                <form id="register">
+                    <div class="mb-3 me-0">
+                        <label for="exampleInputEmail1" class="form-label">電子信箱：</label>
+                        <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="電子信箱">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">密碼：</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="密碼">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">使用者姓名：</label>
+                        <input type="password" class="form-control" id="name" name="name" placeholder="使用者姓名">
+                    </div>
+                    <div class="mb-3 align-content-center">
+                        <button type="submit" class="btn btn-outline-primary btn-lg ">註冊</button>
+                    </div>
+                    `
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"></script>
+    <script>
+        $("#register").submit(function () {
+            let formdata = new FormData(this);
+            axios.post("https://localhost:7112/api/LNRApi/KRegister", formdata)
+                .then(response => {
+                    console.log(response.data);
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+
+            return false;
+        });
+
+    </script>
+
+}

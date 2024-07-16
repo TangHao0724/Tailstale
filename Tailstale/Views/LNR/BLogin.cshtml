@@ -1,0 +1,51 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div class="container-fluid  p-3">
+    <div class="row shadow mx-5 my-4 rounded  align-items-center">
+        <div class="col-lg-4 col-sm-12 bg-light rounded-start-3 container">
+            <div class="row justify-content-center mb-2">
+                <img src="/imgs/LNR_img/BigLogo.png" alt="" srcset="" class="w-50">
+
+            </div>
+            <div class="row text-center">
+                <h3 class="fw-bold">商業會員登入</h3>
+
+            </div>
+            <div class="row px-5 mb-4 ">
+                <form action="" class="">
+                    <div class="mb-3 me-0">
+                        <label for="exampleInputEmail1" class="form-label">電子信箱：</label>
+                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="電子信箱">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">密碼：</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="密碼">
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                        <label class="form-check-label" for="exampleCheck1">記住我</label>
+                    </div>
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-outline-primary btn-sm ">登入</button>
+                        <a href="" class="text-decoration-none my-1">忘記密碼</a>
+                    </div>
+
+                </form>
+
+            </div>
+            <div class="row px-5 mb-3 d-flex">
+                <div class="col-md-12  col-lg-12 col-sm-12 fs-sm  ">
+                    <p>尚未註冊？<a href="" class="text-decoration-none my-1">會員註冊</a></p>
+                    <p>您是普通會員？<a class="text-decoration-none my-1" asp-controller="LNR" asp-action="Index">普通會員登入</a></p>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8 ms-0">
+            
+        </div>
+    </div>
+</div>

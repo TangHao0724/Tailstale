@@ -21,7 +21,11 @@ public partial class Reserve
 
     public DateTime? created_at { get; set; }
 
+    public int? status { get; set; }
+
     public virtual business business { get; set; }
 
     public virtual keeper keeper { get; set; }
+
+    public virtual order_status statusNavigation { get; set; }
 }

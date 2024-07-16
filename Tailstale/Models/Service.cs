@@ -21,7 +21,7 @@ public partial class Service
 
     public string price { get; set; }
 
-    public virtual ICollection<Store_Service> Store_Services { get; set; } = new List<Store_Service>();
+    public DateTime? created_at { get; set; }
 
     public virtual business business { get; set; }
 }

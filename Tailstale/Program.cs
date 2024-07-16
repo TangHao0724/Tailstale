@@ -18,6 +18,25 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddSession(options =>
+{
+    // 設定Session名稱
+    options.Cookie.Name = ".CustomersWebSite.Session";
+    // 表示Cookie很重要
+    options.Cookie.IsEssential = true;
+    // 不可以用JS取得Cookie
+    options.Cookie.HttpOnly = true;
+    // 限定只能用HTTPS傳送
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    // 設定逾時時間(分鐘)
+    options.IdleTimeout = TimeSpan.FromMinutes(10);
+});
+
+builder.Services.AddControllersWithViews(options =>//過濾器放置處
+{
+    //options.Filters.Add<>();
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

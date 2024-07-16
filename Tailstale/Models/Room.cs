@@ -13,8 +13,6 @@ public partial class Room
 
     public string roomSpecies { get; set; }
 
-    public string roomType { get; set; }
-
     public int? roomPrice { get; set; }
 
     public int? roomDiscount { get; set; }
@@ -23,9 +21,17 @@ public partial class Room
 
     public string roomDescrep { get; set; }
 
+    public int? FK_roomImg_ID { get; set; }
+
+    public int? FK_roomType_ID { get; set; }
+
     public virtual ICollection<BookingDetail> BookingDetails { get; set; } = new List<BookingDetail>();
 
     public virtual ICollection<CheckinDetail> CheckinDetails { get; set; } = new List<CheckinDetail>();
+
+    public virtual business_img_type FK_roomImg { get; set; }
+
+    public virtual roomType FK_roomType { get; set; }
 
     public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
 
