@@ -12,6 +12,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDbContext<TailstaleContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Tailstale")));
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -21,7 +22,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSession(options =>
 {
     // 設定Session名稱
-    options.Cookie.Name = ".CustomersWebSite.Session";
+    options.Cookie.Name = "LoginSession";
     // 表示Cookie很重要
     options.Cookie.IsEssential = true;
     // 不可以用JS取得Cookie
@@ -54,9 +55,11 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseRouting();
 
+app.UseRouting();
 app.UseAuthorization();
+app.UseSession();
+
 
 app.MapControllerRoute(
     name: "default",
