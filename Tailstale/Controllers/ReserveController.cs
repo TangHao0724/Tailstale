@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -169,6 +170,12 @@ namespace Tailstale.Controllers
             .Where(b => b.type_ID == 2)
             .ToList();
 
+            var pets = _context.pets
+            .Where(p => p.keeper_ID == reserve.keeper_id) // 根据 keeper_id 进行过滤
+           .ToList();
+
+            ViewData["pet_name"] = new SelectList(pets, "name", "name");
+
             ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", reserve.business_ID);
             //ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "address", reserve.keeper_id);
@@ -211,7 +218,10 @@ namespace Tailstale.Controllers
             var businesses = _context.businesses
             .Where(b => b.type_ID == 2)
             .ToList();
-
+            var pets = _context.pets
+            .Where(p => p.keeper_ID == reserve.keeper_id) // 根据 keeper_id 进行过滤
+           .ToList();
+            ViewData["pet_name"] = new SelectList(pets, "name", "name");
             ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
             ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name");
             //ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "address", reserve.keeper_id);

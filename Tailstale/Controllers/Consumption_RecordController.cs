@@ -107,6 +107,8 @@ var beauticians2 = _context.Consumption_Record
             .Where(b => b.type_ID == 2)
             .ToList();
 
+            
+
             ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
             ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "name");
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
@@ -124,6 +126,10 @@ var beauticians2 = _context.Consumption_Record
             var businesses = _context.businesses
             .Where(b => b.type_ID == 2)
             .ToList();
+
+            
+
+            
             if (ModelState.IsValid)
             {
                 // 处理第一个上传的文件（Photo）
@@ -139,6 +145,7 @@ var beauticians2 = _context.Consumption_Record
                             ModelState.AddModelError("photo", "Only image files are allowed for Photo.");
                             ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "name", consumption_Record.beautician_id);
                             ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+                            
                             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
                             ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name", consumption_Record.keeper_id);
                             return View(consumption_Record);
@@ -174,6 +181,7 @@ var beauticians2 = _context.Consumption_Record
                             ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
                             ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "name", consumption_Record.beautician_id);
                             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
+                            
                             ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name", consumption_Record.keeper_id);
                             return View(consumption_Record);
                         }
@@ -197,8 +205,8 @@ var beauticians2 = _context.Consumption_Record
                 // 将 beautician 对象添加到数据库上下文并保存更改
                 _context.Add(consumption_Record);
                 await _context.SaveChangesAsync();
-                
 
+                
                 ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
                 ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "name", consumption_Record.beautician_id);
                 //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
@@ -212,9 +220,9 @@ var beauticians2 = _context.Consumption_Record
 
 
 
-           
-            
 
+
+            
             ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
             ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "gender", consumption_Record.beautician_id);
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
@@ -251,6 +259,11 @@ var beauticians2 = _context.Consumption_Record
             .Where(b => b.type_ID == 2)
             .ToList();
 
+            var pets = _context.pets
+            .Where(p => p.keeper_ID == consumption_Record.keeper_id) // 根据 keeper_id 进行过滤
+           .ToList();
+
+            ViewData["pet_name"] = new SelectList(pets, "name", "name");
             ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
             ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "name", consumption_Record.beautician_id);
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
@@ -273,6 +286,10 @@ var beauticians2 = _context.Consumption_Record
             var businesses = _context.businesses
             .Where(b => b.type_ID == 2)
             .ToList();
+
+            var pets = _context.pets
+            .Where(p => p.keeper_ID == consumption_Record.keeper_id) // 根据 keeper_id 进行过滤
+           .ToList();
 
             if (ModelState.IsValid)
             {
@@ -351,8 +368,8 @@ var beauticians2 = _context.Consumption_Record
                         throw;
                     }
                 }
-                
 
+                ViewData["pet_name"] = new SelectList(pets, "name", "name");
                 ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
                 ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "name", consumption_Record.beautician_id);
                 //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
@@ -362,8 +379,8 @@ var beauticians2 = _context.Consumption_Record
 
 
 
-            
 
+            ViewData["pet_name"] = new SelectList(pets, "name", "name");
             ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
             ViewData["beautician_id"] = new SelectList(_context.Beautician, "id", "name", consumption_Record.beautician_id);
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);

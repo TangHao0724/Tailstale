@@ -49,7 +49,7 @@ namespace Tailstale.Controllers
         // GET: business_img/Create
         public IActionResult Create()
         {
-            ViewData["img_type_id"] = new SelectList(_context.business_img_types, "ID", "ID");
+            ViewData["img_type_id"] = new SelectList(_context.business_img_types, "ID", "typename");
             return View();
         }
 
@@ -94,7 +94,7 @@ namespace Tailstale.Controllers
             }
             
             //ViewData["img_type_id"] = new SelectList(_context.business_img_types, "ID", "ID", business_img.img_type_id);
-            ViewData["img_type_id"] = new SelectList(_context.business_img_types, "ID", "ID", business_img.img_type_id);
+            ViewData["img_type_id"] = new SelectList(_context.business_img_types, "ID", "typename", business_img.img_type_id);//預設選到我傳進來的這參數他的img_type_id
             return View(business_img);
         }
 
@@ -111,7 +111,7 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
-            ViewData["img_type_id"] = new SelectList(_context.business_img_types, "ID", "ID", business_img.img_type_id);
+            ViewData["img_type_id"] = new SelectList(_context.business_img_types, "ID", "typename", business_img.img_type_id);
             return View(business_img);
         }
 
@@ -181,10 +181,10 @@ namespace Tailstale.Controllers
                         throw;
                     }
                 }
-                ViewData["img_type_id"] = new SelectList(_context.business_img_types, "ID", "ID", business_img.img_type_id);
+                ViewData["img_type_id"] = new SelectList(_context.business_img_types, "ID", "typename", business_img.img_type_id);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["img_type_id"] = new SelectList(_context.business_img_types, "ID", "ID", business_img.img_type_id);
+            ViewData["img_type_id"] = new SelectList(_context.business_img_types, "ID", "typename", business_img.img_type_id);
             return View(business_img);
         }
 
