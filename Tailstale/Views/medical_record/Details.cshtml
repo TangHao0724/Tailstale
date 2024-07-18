@@ -7,8 +7,6 @@
 <h1>病歷資料</h1>
 
 <div>
-    <h4>medical_record</h4>
-    <hr />
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.id)
@@ -79,6 +77,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.id">修改病歷</a> |
+    <a asp-action="Edit" asp-route-id="@Model?.id">修改</a> |
     <a asp-action="Index">返回列表</a>
 </div>

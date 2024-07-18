@@ -6,7 +6,6 @@
 
 <h1>新增病歷記錄</h1>
 
-<h4>medical_record</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -25,7 +24,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="created_at" class="control-label"></label>
-                <input asp-for="created_at" class="form-control" />
+                <input asp-for="created_at" class="form-control"/>
                 <span asp-validation-for="created_at" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -64,7 +63,7 @@
                 <span asp-validation-for="fee" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="新增" class="btn btn-primary" />
             </div>
         </form>
     </div>

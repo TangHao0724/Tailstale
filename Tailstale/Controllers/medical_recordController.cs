@@ -31,7 +31,7 @@ namespace Tailstale.Controllers
                           select new MedicalRecordDTO
                           {  //DTO設的名字 = table抓出來的名字
                               id = r.id,
-                              keeper = k.name,
+                              keeper_id = k.ID,
                               pet_id = r.pet_id,
                               created_at = r.created_at,
                               outpatient_clinic_id = o.outpatient_clinic_ID,
@@ -56,7 +56,7 @@ namespace Tailstale.Controllers
                                   join o in _context.outpatient_clinics on r.outpatient_clinic_id equals o.outpatient_clinic_ID
                                   join p in _context.pets on r.pet_id equals p.pet_ID
                                   join k in _context.keepers on p.FK_keeper_ID equals k.ID
-                                  where r.id == id
+                                  where r.id == id /*鎖定id*/
                                   select new MedicalRecordDTO
                                   {
                                       id = r.id,
@@ -204,11 +204,25 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var medical_record = await _context.medical_records
-                .Include(m => m.biological_test)
-                .Include(m => m.outpatient_clinic)
-                .Include(m => m.pet)
-                .FirstOrDefaultAsync(m => m.id == id);
+            var medical_record = (from r in _context.medical_records
+                                  join o in _context.outpatient_clinics on r.outpatient_clinic_id equals o.outpatient_clinic_ID
+                                  join p in _context.pets on r.pet_id equals p.pet_ID
+                                  join k in _context.keepers on p.FK_keeper_ID equals k.ID
+                                  where r.id == id
+                                  select new MedicalRecordDTO
+                                  {
+                                      id = r.id,
+                                      keeper = k.name,
+                                      pet_id = r.pet_id,
+                                      created_at = r.created_at,
+                                      outpatient_clinic_id = o.outpatient_clinic_ID,
+                                      weight = r.weight,
+                                      admission_process = r.admission_process,
+                                      diagnosis = r.diagnosis,
+                                      treatment = r.treatment,
+                                      memo = r.memo,
+                                  }).FirstOrDefault();
+
             if (medical_record == null)
             {
                 return NotFound();

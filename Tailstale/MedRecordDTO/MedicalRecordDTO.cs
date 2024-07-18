@@ -9,7 +9,7 @@ namespace Tailstale.MedRecordDTO
         public int id { get; set; }
 
         [Display(Name = "飼主姓名")]
-        public string keeper { get; set; }
+        public string? keeper { get; set; }
 
         [Display(Name = "寵物id")]
         public int? pet_id { get; set; }
@@ -24,19 +24,19 @@ namespace Tailstale.MedRecordDTO
         public decimal? weight { get; set; }
 
         [Display(Name = "入院經過")]
-        public string admission_process { get; set; }
+        public string? admission_process { get; set; }
 
         [Display(Name = "診斷")]
-        public string diagnosis { get; set; }
+        public string? diagnosis { get; set; }
 
         [Display(Name = "處置")]
-        public string treatment { get; set; }
+        public string? treatment { get; set; }
 
         [Display(Name = "生物檢驗")]
         public int? biological_test_id { get; set; }
 
         [Display(Name = "備註")]
-        public string memo { get; set; }
+        public string? memo { get; set; }
 
         [Display(Name = "費用")]
         public int? fee { get; set; }
