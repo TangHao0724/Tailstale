@@ -16,4 +16,26 @@
 </h2>
 <h3>目前分類：@ViewBag.loginType</h3>
 
+<a id="log" class="btn btn-primary" asp-controller="Home" asp-action="Privacy">Logout</a>
+
 <p>Use this page to detail your site's privacy policy.</p>
+@section scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#log").on("click", function () {
+                alert("aa");
+                axios.delete("/api/LNRApi/Logout")
+                    .then(response => {
+                        console.log(response.data);
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+            });
+        });
+
+    </script>
+
+}

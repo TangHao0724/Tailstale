@@ -1,9 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CRUD_COREMVC;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using Tailstale.Filter;
+using Tailstale.Models;
 
 namespace Tailstale.Controllers
 {
     public class LNRController : Controller
     {
+        private readonly TailstaleContext _context;
+
+        public LNRController(TailstaleContext context)
+        {
+            _context = context;
+        }
+
         public async Task<IActionResult> Index()
         {
             return View();
@@ -18,6 +30,44 @@ namespace Tailstale.Controllers
         }
         public async Task<IActionResult> BRegister()
         {
+            return View();
+        }
+        [IsLoginFilter]
+        [IsHotelFilter]
+        public async Task<IActionResult> HotelIndex()
+        {
+            ViewBag.loginID = HttpContext.Session.GetInt32("loginID");
+            ViewBag.loginType = HttpContext.Session.GetInt32("loginType");
+            ViewBag.loginName = _context.businesses
+                                .Where(b => b.ID == HttpContext.Session.GetInt32("loginID"))
+                                .Select(b => b.name)
+                                .FirstOrDefault();
+
+            return View();
+        }
+        [IsLoginFilter]
+        [IsSalonFilter]
+        public async Task<IActionResult> SalonIndex()
+        {
+            ViewBag.loginID = HttpContext.Session.GetInt32("loginID");
+            ViewBag.loginType = HttpContext.Session.GetInt32("loginType");
+            ViewBag.loginName = _context.businesses
+                    .Where(b => b.ID == HttpContext.Session.GetInt32("loginID"))
+                    .Select(b => b.name)
+                    .FirstOrDefault();
+            return View();
+        }
+        [IsLoginFilter]
+        [IsHospitalFilter]
+        public async Task<IActionResult> HospitalIndex()
+        {
+            
+            ViewBag.loginID = HttpContext.Session.GetInt32("loginID");
+            ViewBag.loginType = HttpContext.Session.GetInt32("loginType");
+            ViewBag.loginName = _context.businesses
+                                .Where(b => b.ID == HttpContext.Session.GetInt32("loginID"))
+                                .Select(b => b.name)
+                                .FirstOrDefault();
             return View();
         }
     }

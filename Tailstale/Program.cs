@@ -33,7 +33,7 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(10);
 });
 
-builder.Services.AddControllersWithViews(options =>//過濾器放置處
+builder.Services.AddControllersWithViews(options =>//全域過濾器放置處
 {
     //options.Filters.Add<>();
 });

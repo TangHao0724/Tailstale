@@ -1,0 +1,19 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model IEnumerable<Tailstale.Models.business>
+<header>
+    <partial name="_NavBar" />
+</header>
+
+
+<h1>@ViewData["Title"]</h1>
+<h2>目前用戶ID:@ViewBag.loginID </h2>
+<h2>
+    目前用戶姓名:@ViewBag.loginName.name
+</h2>
+<h3>目前分類：@ViewBag.loginType</h3>
+
+<p>Use this page to detail your site's privacy policy.</p>

@@ -104,8 +104,8 @@ namespace Tailstale.Controllers
             //管理者登入
             if(DTO.email == "admin@admin" && DTO.password == "admin")
             {
-                HttpContext.Session.SetString("loginID", $"admin");//登入成功，建立session
-                HttpContext.Session.SetString("loginType", "99");
+                HttpContext.Session.SetInt32("loginID",99999);//登入成功，建立session
+                HttpContext.Session.SetInt32("loginType", 99);
                 return Ok(new { Message = $"登入成功，admin" });
                 //回傳OK
 
@@ -132,13 +132,13 @@ namespace Tailstale.Controllers
             }
             int selectID = await _context.keepers.Where(m => m.email == DTO.email).Select(s => s.ID).FirstOrDefaultAsync();
 
-  
-            HttpContext.Session.SetString("loginID", $"{selectID}");//登入成功，建立session
-            HttpContext.Session.SetString("loginType", "0");
+
+            HttpContext.Session.SetInt32("loginID", selectID);//登入成功，建立session
+            HttpContext.Session.SetInt32("loginType", 0);
 
 
             //return RedirectToAction("Privacy", "Home");
-            return Ok(new { Message = $"登入成功，用戶：{selectID}", LoginID = HttpContext.Session.GetString("loginID"), LoginType = HttpContext.Session.GetString("loginType") });
+            return Ok(new { Message = $"登入成功，用戶：{selectID}", LoginID = HttpContext.Session.GetInt32("loginID"), LoginType = HttpContext.Session.GetInt32("loginType") });
             //回傳OK
 
         }
@@ -149,8 +149,8 @@ namespace Tailstale.Controllers
             //管理者登入
             if (DTO.email == "admin@admin" && DTO.password == "admin")
             {
-                HttpContext.Session.SetString("loginID", $"admin");//登入成功，建立session
-                HttpContext.Session.SetString("loginType", "99");
+                HttpContext.Session.SetInt32("loginID", 99999);//登入成功，建立session
+                HttpContext.Session.SetInt32("loginType", 99);
                 return Ok(new { Message = $"登入成功，admin" });
                 //回傳OK
 
@@ -180,14 +180,15 @@ namespace Tailstale.Controllers
 
             int? bType = await _context.businesses.Where(m => m.email == DTO.email).Select(m => m.type_ID).FirstOrDefaultAsync();
 
-            HttpContext.Session.SetString("loginID", $"{selectID}");//登入成功，建立session
-            HttpContext.Session.SetString("loginType", $"{bType}");
+            HttpContext.Session.SetInt32("loginID", selectID);//登入成功，建立session
+            HttpContext.Session.SetInt32("loginType", (Int32)bType);
 
-            return Ok(new { Message = $"登入成功，用戶：{selectID}" });
+            return Ok(new { Message = $"登入成功，用戶：{selectID}", LoginID = HttpContext.Session.GetInt32("loginID"), LoginType = HttpContext.Session.GetInt32("loginType") });
             //回傳OK
 
         }
-        [HttpDelete(" Logou")]
+        //登出
+        [HttpDelete("Logout")]
         public async Task<IActionResult> Logout()
         {
             HttpContext.Session.Clear();

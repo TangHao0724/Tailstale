@@ -25,10 +25,12 @@
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <li><a class="dropdown-item" asp-controller="LNR" asp-action="Index">普通會員登入</a></li>
                         <li><a class="dropdown-item" asp-controller="LNR" asp-action="BLogin">商業會員登入</a></li>
-                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Privacy">登出</a></li>
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Privacy" id="logout">登出</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        <li><a class="dropdown-item" asp-controller="LNR" asp-action="HotelIndex">HotelIndex</a></li>
+                        <li><a class="dropdown-item" asp-controller="LNR" asp-action="SalonIndex">SalonIndex </a></li>
+                        <li><a class="dropdown-item" asp-controller="LNR" asp-action="HospitalIndex">HospitalIndex</a></li>
+                        
                     </ul>
                 </li>
             </ul>

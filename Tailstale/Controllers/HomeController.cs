@@ -24,11 +24,12 @@ namespace Tailstale.Controllers
         public IActionResult Privacy()
         {
 
-            ViewBag.loginID = HttpContext.Session.GetString("loginID");
-            ViewBag.loginType = HttpContext.Session.GetString("loginType");
-            //Âà¬°int
-            int intID = Convert.ToInt32(HttpContext.Session.GetString("loginID"));
-            ViewBag.loginName = _context.keepers.Where(m => m.ID == intID).Select(n => n.name).FirstOrDefault();
+            ViewBag.loginID = HttpContext.Session.GetInt32("loginID");
+            ViewBag.loginType = HttpContext.Session.GetInt32("loginType");
+
+            ViewBag.loginName = _context.keepers.Where(m => m.ID == HttpContext.Session.GetInt32("loginID"))
+                                .Select(n => n.name)
+                                .FirstOrDefault();
 
 
             return View();
