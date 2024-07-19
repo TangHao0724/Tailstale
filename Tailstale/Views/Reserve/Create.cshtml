@@ -27,7 +27,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="time" class="control-label"></label>
-                <input asp-for="time" class="form-control" />
+                <input asp-for="time" class="form-control meeting-time" type="datetime-local" step="3600" />
                 <span asp-validation-for="time" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -48,5 +48,15 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        
+        document.querySelector('.meeting-time').addEventListener('input', function () {
+            var inputDate = new Date(this.value);
+            inputDate.setMinutes(0);  // 将分钟部分设为 0
+            this.value = inputDate.toISOString().slice(0, 16);  // 格式化为 yyyy-MM-ddTHH:mm
+        });
+        
+    </script>
 
 }

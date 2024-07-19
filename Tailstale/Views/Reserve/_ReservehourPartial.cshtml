@@ -50,6 +50,13 @@
                 <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.id">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+                    <a asp-action="Create" asp-controller="Consumption_Record"
+                       asp-route-keeper_id="@item.keeper_id"
+                       asp-route-pet_name="@item.pet_name"
+                       asp-route-business_ID="@item.business_ID"
+                       asp-route-time="@item.time.ToString("yyyy-MM-ddTHH:mm")"
+                       asp-route-service_name="@item.service_name"
+                       class="btn btn-primary">建立消費紀錄</a>
             </td>
         </tr>
 }

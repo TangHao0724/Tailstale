@@ -101,7 +101,7 @@ var beauticians2 = _context.Consumption_Record
         }
 
         // GET: Consumption_Record/Create
-        public IActionResult Create()
+        public IActionResult Create(int? keeper_id = null, string pet_name = null, int? business_ID = null, DateTime? time = null, string service_name = null)
         {
             var businesses = _context.businesses
             .Where(b => b.type_ID == 2)

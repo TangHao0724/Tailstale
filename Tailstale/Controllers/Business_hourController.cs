@@ -117,7 +117,7 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,business_ID,business_day,people_limit")] Business_hour business_hour)
+        public async Task<IActionResult> Create([Bind("id,business_ID,business_day,open_time,close_time,people_limit")] Business_hour business_hour)
         {
             //if (ModelState.IsValid)
             //{
@@ -147,8 +147,8 @@ namespace Tailstale.Controllers
                         {
                             business_ID = business_hour.business_ID,
                             business_day = DateOnly.FromDateTime(date.Date),
-                            open_time = new TimeOnly(10, 0, 0),  // 預設開門時間，设置为早上10点
-                            close_time = new TimeOnly(19, 0, 0),
+                            open_time = business_hour.open_time,//new TimeOnly(10, 0, 0),  // 預設開門時間，设置为早上10点
+                            close_time = business_hour.close_time,//new TimeOnly(19, 0, 0),
                             people_limit = business_hour.people_limit
                         };
 
@@ -196,7 +196,7 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,business_ID,business_day,people_limit")] Business_hour business_hour)
+        public async Task<IActionResult> Edit(int id, [Bind("id,business_ID,business_day,open_time,close_time,people_limit")] Business_hour business_hour)
         {
             if (id != business_hour.id)
             {
