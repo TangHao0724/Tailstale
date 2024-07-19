@@ -60,7 +60,7 @@ namespace Tailstale.Controllers
                                   select new MedicalRecordDTO
                                   {
                                       id = r.id,
-                                      keeper = k.name,
+                                      keeper_id = k.ID,
                                       pet_id = r.pet_id,
                                       created_at = r.created_at,
                                       outpatient_clinic_id = o.outpatient_clinic_ID,
@@ -130,7 +130,7 @@ namespace Tailstale.Controllers
                                   select new MedicalRecordDTO
                                   {
                                       id = e.id,
-                                      keeper = k.name,
+                                      keeper_id = k.ID,
                                       pet_id = p.pet_ID,
                                       created_at = e.created_at,
                                       outpatient_clinic_id = e.outpatient_clinic_id,
@@ -212,7 +212,7 @@ namespace Tailstale.Controllers
                                   select new MedicalRecordDTO
                                   {
                                       id = r.id,
-                                      keeper = k.name,
+                                      keeper_id = k.ID,
                                       pet_id = r.pet_id,
                                       created_at = r.created_at,
                                       outpatient_clinic_id = o.outpatient_clinic_ID,

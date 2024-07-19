@@ -8,8 +8,8 @@ namespace Tailstale.MedRecordDTO
         [Display(Name = "病歷編號")]
         public int id { get; set; }
 
-        [Display(Name = "飼主姓名")]
-        public string? keeper { get; set; }
+        [Display(Name = "飼主id")]
+        public int? keeper_id { get; set; }
 
         [Display(Name = "寵物id")]
         public int? pet_id { get; set; }
