@@ -9,12 +9,12 @@ using Tailstale.Models;
 
 namespace Tailstale.Controllers
 {
-    public class business_imgController : Controller
+    public class Sbusiness_imgController : Controller
     {
         private readonly TailstaleContext _context;
         private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public business_imgController(TailstaleContext context, IWebHostEnvironment hostingEnvironment)
+        public Sbusiness_imgController(TailstaleContext context, IWebHostEnvironment hostingEnvironment)
         {
             _context = context;
             _hostingEnvironment = hostingEnvironment;

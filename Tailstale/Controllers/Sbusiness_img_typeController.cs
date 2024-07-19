@@ -9,11 +9,11 @@ using Tailstale.Models;
 
 namespace Tailstale.Controllers
 {
-    public class business_img_typeController : Controller
+    public class Sbusiness_img_typeController : Controller
     {
         private readonly TailstaleContext _context;
 
-        public business_img_typeController(TailstaleContext context)
+        public Sbusiness_img_typeController(TailstaleContext context)
         {
             _context = context;
         }
@@ -47,7 +47,11 @@ namespace Tailstale.Controllers
         // GET: business_img_type/Create
         public IActionResult Create()
         {
-            ViewData["FK_business_id"] = new SelectList(_context.businesses, "ID", "name");
+            var businesses3 = _context.businesses
+            .Where(b => b.type_ID == 2)
+            .ToList();
+            ViewData["FK_business_id"] = new SelectList(businesses3, "ID", "name");
+            //ViewData["FK_business_id"] = new SelectList(_context.businesses, "ID", "name");
             return View();
         }
 
@@ -64,7 +68,12 @@ namespace Tailstale.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["FK_business_id"] = new SelectList(_context.businesses, "ID", "name", business_img_type.FK_business_id);
+            var businesses3 = _context.businesses
+            .Where(b => b.type_ID == 2)
+            .ToList();
+            ViewData["FK_business_id"] = new SelectList(businesses3, "ID", "name");
+            
+            //ViewData["FK_business_id"] = new SelectList(_context.businesses, "ID", "name", business_img_type.FK_business_id);
             return View(business_img_type);
         }
 

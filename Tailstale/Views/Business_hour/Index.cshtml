@@ -11,13 +11,14 @@
 </header>
 <h1>營業日</h1>
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="btn btn-info" asp-action="Create"><i class="bi bi-hand-index-thumb"></i>Create New</a>
 </p>
 
 <div>
+    <h3><i class="bi bi-search"></i>查詢美容門市(可指定日期)</h3>
     <select id="IdInput" class="form-control" asp-items="ViewBag.business_ID"></select>
     <input type="date" class="form-control" asp-for="business_day" value="" />
-    <input id="selectday" type="submit" value="查詢" class="btn btn-primary"  />
+    <input id="selectday" type="submit" value="查詢" class="btn btn-info mt-2" />
     <div class="mb-3">
         <div id="orders"></div>@*局部顯示會在這裡*@
     </div>

@@ -1,0 +1,15 @@
+﻿form {
+    border: 5px solid rgba(255, 99, 71, 0.8);
+    border-radius: 10px;
+}
+
+.form-group {
+    padding: 5px 20px;
+    padding: 10px;
+    border-bottom: 5px solid rgba(255, 99, 71, 0.7);
+    background-color: rgba(255, 153, 71, 0.5);
+}
+
+    .form-group:last-of-type {
+        border-bottom: none; /* 移除最后一个 .form-group 的底部边框 */
+    }
