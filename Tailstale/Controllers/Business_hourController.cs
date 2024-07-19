@@ -119,19 +119,54 @@ namespace Tailstale.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("id,business_ID,business_day,people_limit")] Business_hour business_hour)
         {
+            //if (ModelState.IsValid)
+            //{
+            //    _context.Add(business_hour);
+            //    await _context.SaveChangesAsync();
+            //    return RedirectToAction(nameof(Index));
+            //}
+            //var businesses = _context.businesses
+            //.Where(b => b.type_ID == 2)
+            //.ToList();
+
+            //ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+            ////ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", business_hour.business_ID);
+            //return View(business_hour);
             if (ModelState.IsValid)
             {
-                _context.Add(business_hour);
+                DateTime startDate = new DateTime(business_hour.business_day.Year, business_hour.business_day.Month, 1);
+                DateTime endDate = startDate.AddMonths(1).AddDays(-1); // 最後一天
+
+                // 遍歷生成整個月份的營業時間資料
+                for (DateTime date = startDate; date <= endDate; date = date.AddDays(1))
+                {
+                    // 檢查是否為禮拜二到禮拜日，跳過禮拜一
+                    if (date.DayOfWeek != DayOfWeek.Monday)
+                    {
+                        var businessHour = new Business_hour
+                        {
+                            business_ID = business_hour.business_ID,
+                            business_day = DateOnly.FromDateTime(date.Date),
+                            open_time = new TimeOnly(10, 0, 0),  // 預設開門時間，设置为早上10点
+                            close_time = new TimeOnly(19, 0, 0),
+                            people_limit = business_hour.people_limit
+                        };
+
+                        _context.Add(businessHour);
+                    }
+                }
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            var businesses = _context.businesses
-            .Where(b => b.type_ID == 2)
-            .ToList();
 
-            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
-            //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", business_hour.business_ID);
-            return View(business_hour);
+            // 如果 ModelState 不合法，则需要重新加载视图
+            var businesses = _context.businesses
+                .Where(b => b.type_ID == 2)
+                .ToList();
+
+            ViewData["Business_ID"] = new SelectList(businesses, "ID", "Name", business_hour.business_ID);
+            return View();
         }
 
         // GET: Business_hour/Edit/5
