@@ -28,9 +28,21 @@ namespace Tailstale.Profiles
                 dest => dest.BookingDetailDTOs,
                 opt => opt.MapFrom(src => src.BookingDetails));
             CreateMap<Room, RoomDTO>()
+              .ForMember(
+              dest => dest.roomType,
+              opt => opt.MapFrom(src => src.FK_roomType))
+              .ForMember(
+               dest => dest.roomImg,
+               opt => opt.MapFrom(src => src.FK_roomImg.business_imgs)
+
+               );
+            CreateMap<Room, RoomDTO>()
                .ForMember(
                dest => dest.roomType,
-               opt => opt.MapFrom(src => src.FK_roomType));
+               opt => opt.MapFrom(src => src.FK_roomType))
+               .ForMember(
+                dest=>dest.roomImg,
+                opt=>opt.MapFrom(src=>src.FK_roomImg.business_imgs.Select(bi => bi).ToList()));
                
 
 

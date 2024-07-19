@@ -68,14 +68,19 @@
                     <textarea asp-for="roomDescrep" class="form-control" rows="4" cols="50"></textarea>
                     <span asp-validation-for="roomDescrep" class="text-danger"></span>
                 </div>
-                <div class="form-group">
+               @*  <div class="form-group">
                     <label asp-for="roomImg.name" class="control-label">照片</label>
                     <input asp-for="roomImg.name" type="text" class="form-control" />
-                </div>
-                <div class="form-group" style="display:non">
+                </div> *@
+               @*  <div class="form-group" style="display:none">
                     <label asp-for="roomImg.URL" class="control-label">照片</label>
                     <input asp-for="roomImg.URL" type="file" name="files" class="form-control" multiple />
-                </div>
+                </div> *@
+                  <div class="form-group" style="display:non">
+               
+                <input id="roomImg_URL" type="file" name="files" class="form-control" multiple />
+                </div> 
+
                 <div class="row mt-2">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -94,24 +99,46 @@
             </div>
             <div class="col">
                 <partial name="_DragAndDropPicture"></partial>
+                @* 側視圖片拉入上傳
+                <div class="card">
+                    <div class="top d-flex">
+                        <p>圖可拉到這裡上傳</p>
+                    </div>
+                    <div class="imgbox">
+                        <span class="inner">
+                            圖片放這裡
+                            <span class="select">瀏覽</span>
+                        </span>
+                    </div>
+                    <div class="containerbox w-100 d-flex">
+                        <div class="image" style="display:none">
+                            <img src="" alt="">
+                            <span>&times;</span>
+                        </div>
+                    </div>
+                </div>
+
+                @* 側視圖片拉入上傳*@
             </div>
 
         </div>
     </form>
 
-</div>
-@section Scripts{
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-    <script src="~/js/dragdropjs.js"></script>
-    <script>
-        var myinputfile = document.querySelector('#roomImg_URL');
-        DragDropImg(myinputfile);
-    </script>
-}
-@* @section Scripts {
+    <div>
+        
+    </div>
+
+
+
     
+
+        
+        
+  
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
  
     <script>
 
@@ -190,4 +217,3 @@
 
     </script>
 }
- *@

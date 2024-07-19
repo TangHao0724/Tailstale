@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -74,18 +75,27 @@ namespace Tailstale.Controllers
             else
             {
                 var getroom = _context.Rooms.Find(id);
-                EditRoomDTO roomDTO = new EditRoomDTO
+                //var map = _mapper.Map<IEnumerable<RoomDTO>>(getroom);
+                RoomDTO roomDTO = new RoomDTO
                 {
-                    hotelID = getroom.hotelID,                    
-                    roomID=getroom.roomID,
-                    roomSpecies=getroom.roomSpecies,
-                    roomPrice= getroom.roomPrice,
-                    roomDiscount= getroom.roomDiscount,
-                    roomReserve= getroom.roomReserve,
-                    roomDescrep= getroom.roomDescrep,
-                    roomType= getroom.FK_roomType,
-                    
+                    hotelID = getroom.hotelID,
+                    roomID = getroom.roomID,
+                    roomSpecies = getroom.roomSpecies,
+                    roomPrice = getroom.roomPrice,
+                    roomDiscount = getroom.roomDiscount,
+                    roomReserve = getroom.roomReserve,
+                    roomDescrep = getroom.roomDescrep,
+                    roomType = getroom.FK_roomType,
+                   
                 };
+                if (getroom.FK_roomImg != null)
+                {
+                    roomDTO.roomImg = getroom.FK_roomImg.business_imgs.Where(roomimage => roomimage.img_type_id == getroom.FK_roomImg_ID).Select(r => r).ToList();
+                }
+                else
+                {
+                    roomDTO.roomImg = null;
+                }
 
                 return View(roomDTO);
             }
@@ -97,101 +107,126 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddOrEdit( RoomDTO room, IList<IFormFile> files)
+        public async Task<IActionResult> AddOrEdit( RoomDTO room, IList<IFormFile>? files)
         {
             var hotelID = HttpContext.Session.GetInt32("hotelID11");
             if (ModelState.IsValid)
             {
-                
+               
                 int InthotelID = Convert.ToInt32(hotelID);
               
                 //新增新Room
                 if (room.roomID == null)
                 {
                     //新增imgtype 並處存取得typeID
-                    var imgtype = new business_img_type
-                    {
-                        FK_business_id = InthotelID,
-                        typename = $"ID:{room.roomID} {room.roomSpecies}的{room.roomType.roomType1}",
-                        created_at = DateTime.Now
-                    };
+                    business_img_type imgtype = AddBusinessImgType(InthotelID);
                     _context.business_img_types.Add(imgtype);
                     _context.SaveChanges();
 
-                    Room RoomCreate = new Room
-                    {
-                        hotelID = InthotelID,
-                        roomSpecies = room.roomSpecies,
-                        FK_roomType_ID = room.roomType.roomType_ID,
-                        roomPrice = room.roomPrice,
-                        roomDiscount = room.roomDiscount,
-                        roomReserve = room.roomReserve,
-                        roomDescrep = room.roomDescrep,
-                        FK_roomImg_ID= imgtype.ID
-                    };
+                    Room RoomCreate = RoomConvertRoomDTO(room, InthotelID);
+                    RoomCreate.FK_roomImg_ID = imgtype.ID;
+                    //FK_roomImg_ID = imgtype.ID
                     _context.Rooms.Add(RoomCreate);
-                   await _context.SaveChangesAsync();
+                    await _context.SaveChangesAsync();
 
-                    
-                   
                     if (files.Count > 0)
                     {
-                        
+
                         foreach (var file in files)
                         {
+
                             newimgColAndAddImg(imgtype, RoomCreate, file);
                         }
-
                     }
-                   
 
-                    
                 }
                 else
                 {
+                    var isRoomImgType = _context.Rooms.Where(r => r.roomID == room.roomID).Select(r => r.FK_roomImg_ID).FirstOrDefault();
+                    Room RoomEdit = RoomConvertRoomDTO(room, InthotelID);
+                    RoomEdit.roomID = (int)room.roomID;
 
-                    var isRoomImgTypeID = _context.Rooms.Where(r => r.roomID == room.roomID).Select(r=>r.FK_roomImg_ID).FirstOrDefaultAsync();
-                    var findImgType = _context.business_img_types.FindAsync(isRoomImgTypeID);
-                    var intFindImgType=Convert.ToInt32(findImgType);
-                    if(intFindImgType == null && intFindImgType <= 0)
+                    //_context.Rooms.Update(RoomEdit);
+                    //await _context.SaveChangesAsync();
+
+                    if (files != null && files.Count>0)
                     {
-                        var imgtype = new business_img_type
+                        if (isRoomImgType == null) {
+                            business_img_type imgtype = AddBusinessImgType(InthotelID);
+                            _context.business_img_types.Add(imgtype);
+                            _context.SaveChanges();
+
+                            RoomEdit.FK_roomImg_ID = imgtype.ID;
+
+                            _context.Update(RoomEdit);
+                            //await _context.SaveChangesAsync();
+
+                            foreach (var file in files)
+                            {
+                                newimgColAndAddImg(imgtype, RoomEdit, file);
+                            }
+                            await _context.SaveChangesAsync();
+                        }
+                        else
                         {
-                            FK_business_id = InthotelID,
-                            typename = $"ID:{room.roomID} {room.roomSpecies}的{room.roomType.roomType1}",
-                            created_at = DateTime.Now
-                        };
-                        _context.business_img_types.Add(imgtype);
-                        _context.SaveChanges();
+                            var imgtype = _context.business_img_types.Where(b => b.ID == isRoomImgType).FirstOrDefault();
+
+
+
+                            foreach (var file in files)
+                            {
+                                newimgColAndAddImg(imgtype, RoomEdit, file);
+                            }
+                            await _context.SaveChangesAsync();
+                        }
                     }
-                    Room RoomEdit = new Room
+                    else
                     {
-                        roomID=(int)room.roomID,
-                        hotelID = InthotelID,
-                        roomSpecies = room.roomSpecies,
-                        FK_roomType_ID = room.roomType.roomType_ID,
-                        roomPrice = room.roomPrice,
-                        roomDiscount = room.roomDiscount,
-                        roomReserve = room.roomReserve,
-                        roomDescrep = room.roomDescrep,
-                        FK_roomImg_ID= intFindImgType,
-                    }; 
-                    _context.Rooms.Update(RoomEdit);
+                        _context.Rooms.Update(RoomEdit);
+                        await _context.SaveChangesAsync();
+                    }
+                        
+                    
+                    
+                    
                 }
                     
-                await _context.SaveChangesAsync();
-                // return RedirectToAction(nameof(ShowRoomFromHotel), new{ hotelID = InthotelID });
-                //  return RedirectPermanent(nameof(ShowRoomFromHotel),"Rooms", new { hotelID = InthotelID }, true, true);
-                // return RedirectToActionResult(nameof(ShowRoomFromHotel), "Rooms", new { hotelID = InthotelID }, false, true);
-                // return RedirectToActionPreserveMethod(nameof(ShowRoomFromHotel), "Rooms", new { hotelID = InthotelID });
+              //  await _context.SaveChangesAsync();
+             
                 return RedirectToActionPreserveMethod(nameof(ShowRoomFromHotel), "Rooms", new { id = InthotelID });
             }
-            
-            ViewData["FK_roomType_ID"] = new SelectList(_context.roomTypes.Where(b => b.FK_businessID == hotelID).Select(h => new {
+
+            ViewData["FK_roomType_ID"] = new SelectList(_context.roomTypes.Where(b => b.FK_businessID == hotelID).Select(h => new
+            {
                 TypeId = h.roomType_ID,
                 Type = h.roomType1,
             }), "TypeId", "Type");
             return View(room);
+        }
+
+        private static Room RoomConvertRoomDTO(RoomDTO room, int InthotelID)
+        {
+            return new Room
+            {
+                hotelID = InthotelID,
+                roomSpecies = room.roomSpecies,
+                FK_roomType_ID = room.roomType.roomType_ID,
+                roomPrice = room.roomPrice,
+                roomDiscount = room.roomDiscount,
+                roomReserve = room.roomReserve,
+                roomDescrep = room.roomDescrep,
+
+            };
+        }
+
+        private static business_img_type AddBusinessImgType(int InthotelID)
+        {
+            return new business_img_type
+            {
+                FK_business_id = InthotelID,
+                typename = "123",
+                created_at = DateTime.Now
+            };
         }
 
         private void newimgColAndAddImg(business_img_type imgtype, Room RoomCreate, IFormFile file)
@@ -258,11 +293,34 @@ namespace Tailstale.Controllers
 
             if (room != null)
             {
-                _context.Rooms.Remove(room);
+                if (room.FK_roomImg_ID != null)
+                {
+                    var ImageTypeIDTodelete = (int)room.FK_roomImg_ID;
+                    var ImageTypeToDelete = _context.business_img_types.Find(ImageTypeIDTodelete);
+                    var ImageToDelete = _context.business_imgs.Where(img => img.img_type_id == ImageTypeIDTodelete).ToList();
+
+                    string imgFolder = ImageTypeIDTodelete.ToString();
+                    string imageFolder = @"images\room\" + imgFolder;
+
+                    var toDeleteImageFolder = Path.Combine(_webHostEnvironment.WebRootPath, imageFolder.Trim());
+                    if (Directory.Exists(toDeleteImageFolder))
+                    {
+                        Directory.Delete(toDeleteImageFolder, true);
+                    }
+                    
+                    foreach (var img in ImageToDelete)
+                    {
+                        _context.business_imgs.Remove(img);
+                    }
+
+                    _context.business_img_types.Remove(ImageTypeToDelete);
+                };
+                    _context.Rooms.Remove(room);
             }
 
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(ShowRoomFromHotel), new { hotelID = InthotelID });
+            return RedirectToActionPreserveMethod(nameof(ShowRoomFromHotel), "Rooms", new { id = InthotelID });
+          
            
         }
 
