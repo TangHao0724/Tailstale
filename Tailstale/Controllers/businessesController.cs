@@ -202,17 +202,6 @@ namespace Tailstale.Controllers
             return _context.businesses.Any(e => e.ID == id);
         }
 
-        [HttpGet]
-        [Route("businesses/businesslogin/{hotelID:int}")]
-        public async Task<IActionResult> businesslogin(int hotelID)
-        {
-            business b = _context.businesses.Where(b => b.ID == hotelID).FirstOrDefault();
-            var hotelName = _context.businesses.Where(b => b.ID == hotelID).Select(b=>b.name).FirstOrDefault();
-            ViewBag.hotelID = hotelID;
-            HttpContext.Session.SetInt32("hotelID11", hotelID);
-            HttpContext.Session.SetString("hotelName11", hotelName);
-            return View();
-        }
-
+        
     }
 }

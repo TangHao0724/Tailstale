@@ -1,0 +1,73 @@
+﻿@using Tailstale
+
+<form asp-action="SearchRoom" asp-controller="Hotels" method="post">
+    
+    @* <input placeholder="你要去哪裡" type="text" id="destination" name="destination" /> *@
+
+    <label for="checkin">Check-in:</label>
+    <input type="date" id="checkin" name="checkin" />
+
+    <label for="checkout">Check-out:</label>
+    <input type="date" id="checkout" name="checkout" />
+
+    <label for="Cat">貓咪數量:</label>
+    <input type="number" id="Cat" name="Cat" />
+    <label for="Dog">貓咪數量:</label>
+    <input type="number" id="Dog" name="Dog" />
+</form>
+<button id="bt">提交</button>
+
+@* @await Html.PartialAsync("/Bookings/SearchRoom.cshtml") *@
+<div id="result">
+
+</div>
+
+@section Scripts{
+
+    <script>
+        $("#bt").on("click", async function () {
+            var cI = document.getElementById("checkin").value;
+            var cO = document.getElementById("checkout").value;
+            var Cat = document.getElementById("Cat").value;
+            var Dog = document.getElementById("Dog").value;
+            const dtCI = new Date(cI);
+            let checkIndate = dtCI.getFullYear() + "-" +
+                String(dtCI.getMonth() + 1).padStart(2, '0') + "-" +
+                String(dtCI.getDate()).padStart(2, '0');
+
+            const dtCO = new Date(cO);
+
+            let checkOutdate = dtCO.getFullYear() + "-" +
+                String(dtCO.getMonth() + 1).padStart(2, '0') + "-" +
+                String(dtCO.getDate()).padStart(2, '0');
+
+            console.log(checkOutdate);
+            // console.log(dtCI);
+            // console.log(dtCO);
+
+            if (checkIndate <= checkOutdate && checkIndate != null && checkOutdate != null) {
+
+                if (Cat != null && Cat > 0 && Dog != null && Dog > 0) {
+                    window.location.href = `/Hotels/SearchHotels?startDate=${checkIndate}&endDate=${checkOutdate}&Cat=${Cat}&Dog=${Dog}`;
+                }
+                else if (Cat != null && Cat > 0) {
+                    window.location.href = `/Hotels/SearchHotels?startDate=${checkIndate}&endDate=${checkOutdate}&Cat=${Cat}`;
+                }
+                else if (Dog != null && Dog > 0) {
+                    window.location.href = `/Hotels/SearchHotels?startDate=${checkIndate}&endDate=${checkOutdate}&Dog=${Dog}`;
+                }
+                else{
+                    window.location.href = `/Hotels/SearchHotels?startDate=${checkIndate}&endDate=${checkOutdate}`;
+                }
+               
+            }
+            else {
+                alert("請確認輸入資料使否錯誤");
+            }
+            
+         
+
+           
+        });
+    </script>
+}

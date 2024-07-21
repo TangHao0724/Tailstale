@@ -207,38 +207,7 @@ namespace Tailstale.Controllers
             return ("123");
         }
         
-        //public class BookingViewModelConvert
-        //{
-        //    public static BookingViewModel BVM(BookingDTO dto)
-        //    {
-        //        return new BookingViewModel
-        //        {
-        //            BookingID = dto.BookingID,
-        //            HotelName = dto.HotelName,
-        //            KeeperName = dto.KeeperName,
-        //            BookingStatus = dto.BookingStatus,
-        //            CheckinDate = dto.CheckinDate.Date,
-        //            CheckoutDate = dto.CheckoutDate,
-        //            BookingDate = dto.BookingDate,
-        //            BookingTotal = dto.BookingTotal,
-        //            BDVM = ConvertBDDTOToVM(dto.BookingDetailDTOs)
-
-        //        };
-
-        //    }
-        //    private static List<BookingDetailViewModel> ConvertBDDTOToVM(List<BookingDetailDTO> BDDTO)
-        //    {
-        //        return BDDTO.Select(bd => new BookingDetailViewModel
-        //        {
-        //            bookingID = bd.bookingID,
-        //           // roomName = bd.roomName,
-        //            bdAmount = bd.bdAmount,
-        //            bdTotal = bd.bdTotal,
-        //        }).ToList();
-        //    }
-        //}
-
-        //Bookings/CreateBooking
+       
         public async Task<IActionResult> CreateBooking()
         {
             ViewBag.Hotel = new SelectList(_context.businesses.Where(b=>b.type_ID==1).Select(h => new {
@@ -270,22 +239,7 @@ namespace Tailstale.Controllers
                 return PartialView("_RoomPartial", map);
             }
         }
-        private static EditRoomDTO ConvertToEditRoomDTO(Room? room)
-        {
-            return new EditRoomDTO
-            {
-                roomID = room.roomID,
-                hotelID = room.hotelID,
-                roomPrice = room.roomPrice,
-                roomDiscount = room.roomDiscount,
-                roomReserve = room.roomReserve,
-                roomDescrep = room.roomDescrep,
-                roomSpecies = room.roomSpecies,
-                roomType = room.FK_roomType,
-
-            };
-        }
-
+       
 
         private static BookingDTO MyBookingDTO(Booking a) 
         {
@@ -388,20 +342,7 @@ namespace Tailstale.Controllers
         [HttpGet]
         public async Task<IActionResult> SearchRoom([FromQuery] InputDate iD, int? Cat, int? dog)
         {
-            //var result = GetBookedRoomIds(iD.startDate, iD.endDate).ToList();
-            //var tailstaleContext = _context.Rooms.ToList();
-            //var finalresult=tailstaleContext.Join(result, t => t.roomID, r => r.RoomId, (tailstaleContext, result) => new FindRoomResultDTO
-            //{
-            //    roomID = tailstaleContext.roomID,
-            //    roomPrice = (int)tailstaleContext.roomPrice,
-            //    roomDescription = tailstaleContext.roomDescrep,
-            //    roomReserve = result.AvailableCount,
-            //    roomType = tailstaleContext.FK_roomType,
-            //   hotelID=tailstaleContext.hotelID,
-            //   roomSpecies = tailstaleContext.roomSpecies,
-            //   business=tailstaleContext.hotel
-
-            //});
+            
             var result = RoomAvailabilityAndRoom(iD,Cat,dog);
           // return PartialView("_SearchRoom", finalresult);
             return View(result);

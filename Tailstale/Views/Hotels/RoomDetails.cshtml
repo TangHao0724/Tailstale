@@ -72,6 +72,10 @@
     
 
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.roomID">Edit</a> |
-    <a asp-action="ShowRoomFromHotel" asp-route-id="@Model.hotelID">返回到房間列表</a>
+    <a asp-action="RoomAddOrEdit" asp-route-id="@Model?.roomID">編輯</a> |
+    <form asp-action="ShowRoomFromHotel" asp-route-id="@Model.hotelID" method="post">
+        <button class="btn btn-primary">返回到房間列表</button>
+        
+         </form>
+    
 </div>
