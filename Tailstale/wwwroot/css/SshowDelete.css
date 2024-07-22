@@ -1,0 +1,33 @@
+﻿.col-sm-10 {
+    max-width: 100%;
+    /* 使用 word-wrap 属性，允许长单词或 URL 地址换行 */
+    word-wrap: break-word;
+}
+
+.row {
+    background-color: rgba(255, 153, 71, 0.4);
+    border: 5px solid rgba(255, 99, 71, 0.8);
+    border-bottom: none;
+    border-radius: 10px;
+}
+
+dt:not(:last-child),
+dl.row dd:not(:last-child) {
+    border-bottom: 5px solid rgba(255, 99, 71, 0.8);
+    padding: 20px;
+    margin: 0;
+}
+
+dt {
+    border-right: 5px solid rgba(255, 99, 71, 0.8);
+}
+
+.ddt {
+    padding: 20px;
+    border-bottom: 5px solid rgba(255, 99, 71, 0.8);
+    margin: 0px;
+}
+
+.col-sm-2 {
+    word-wrap: break-word;
+}
