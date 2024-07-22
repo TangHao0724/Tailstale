@@ -56,6 +56,28 @@
             axios.post("https://localhost:7112/api/LNRApi/BRegister", formdata)
                 .then(response => {
                     console.log(response.data);
+                    if (response.data.message === "0") {
+                        //註冊成功後，增加三個選項導向各自不同的系統，並再次呼叫登入導向該位置。
+                        Swal.fire({
+                            icon: "success",
+                            title: "註冊完成！前往登入你的帳戶！",
+                            showConfirmButton: true,
+
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.replace("/LNR/Index");
+                            }
+                        });
+
+                    } else if (response.data.message === "1") {
+
+                        Swal.fire({
+                            icon: "error",
+                            title: "已有重複的電子信箱，請換一個",
+                            showConfirmButton: true,
+
+                        })
+                    }
                 })
                 .catch(err => {
                     console.log(err);

@@ -1,0 +1,26 @@
+﻿
+@{
+    int? ID = ViewBag.userID;
+    int? userType = ViewBag.userType;
+}
+<div class="container-fluid">
+    <div class="navbar navbar-expand-lg navbar-light sticky-top  ">
+        <div class="col-4 nav-item  ">
+            <a asp-controller="Home" asp-action="Index"><img src="/imgs/LNR_img/logo2.png" width="160" height="44"></a>
+        </div>
+        <a class="col-3 nav-item nav-link" href="#">紀錄&社交</a>
+        <a class=" col-3 nav-item nav-link" href="#">服務&查詢</a>
+        <div class="col-2 nav-item align-self-end ">
+
+            @if (ID != null)
+            {
+                @await Component.InvokeAsync("LoginUTag", new { id = ID, UType = userType })
+            }
+            else
+            {
+                @await Html.PartialAsync("_UnLoginUTag")
+            }
+
+        </div>
+    </div>
+</div>

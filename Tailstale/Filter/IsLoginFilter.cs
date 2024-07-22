@@ -17,17 +17,26 @@ namespace CRUD_COREMVC
                 string actionName = context.RouteData.Values["action"].ToString();
                 string userID = context.HttpContext.Session.GetString("loginID");
 
-                //如果當前路由是登入頁面，則跳過檢查
-                //if (controllername == "login" && actionname == "login")
-                //{
-                //    return;
-                //}
+
+
+
                 //檢查登入
-                if(userID == null)
+                //如果當前路由是登入頁面，登入狀態下會跳轉回首頁
+                if (controllerName == "LNR")
+                {
+                    if (userID != null)
+                    {
+                        //導向未登入的Action，更換未登入內容的Action。
+                        context.Result = new RedirectToActionResult("Index", "Home", null);
+                    }
+                }
+                else if (userID == null)
                 {
                     //導向未登入的API，更換未登入內容的API。
                     context.Result = new RedirectToActionResult("Index", "Home", null);
-                }
+                    
+                }                
+
 
             }
 

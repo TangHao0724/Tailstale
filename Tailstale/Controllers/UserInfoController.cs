@@ -1,14 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Xml.Linq;
 
 namespace Tailstale.Controllers
 {
-    public class UserController : Controller
+    public class UserInfoController : Controller
     {
         public IActionResult Index()
         {
             return View();
         }
     }
-
 }

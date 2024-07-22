@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <Folder Include="partial\" />
+    <Folder Include="wwwroot\js\components\" />
   </ItemGroup>
 
   <ItemGroup>
