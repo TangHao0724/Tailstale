@@ -38,7 +38,7 @@ namespace Tailstale.Controllers
             if (!id.HasValue && string.IsNullOrEmpty(business_day))
             {
 
-                return PartialView("_hourPartial", new List<Reserve>());
+                return PartialView("_hourPartial", new List<Business_hour>());
             }
 
             // 準備查詢
@@ -117,7 +117,7 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,business_ID,business_day,open_time,close_time,people_limit")] Business_hour business_hour)
+        public async Task<IActionResult> Create([Bind("id,business_ID,business_day,open_time,close_time,people_limit")] Business_hourViewModel business_hour)
         {
             //if (ModelState.IsValid)
             //{
@@ -196,7 +196,7 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,business_ID,business_day,open_time,close_time,people_limit")] Business_hour business_hour)
+        public async Task<IActionResult> Edit(int id, [Bind("id,business_ID,business_day,open_time,close_time,people_limit")] Business_hourViewModel business_hour)
         {
             if (id != business_hour.id)
             {

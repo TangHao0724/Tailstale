@@ -47,7 +47,7 @@ namespace Tailstale.Controllers
             if (business == null)
             {
                 // 如果未找到符合条件的 business 记录，返回空的 PartialView
-                return PartialView("_ServicePartial", new List<Beautician>());
+                return PartialView("_ServicePartial", new List<Service>());
             }
 
             // 查询符合条件的 Beautician 记录
@@ -99,7 +99,7 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,business_ID,category,service_name,service_content,service_img,price")] Service service)
+        public async Task<IActionResult> Create([Bind("id,business_ID,category,service_name,service_content,service_img,price")] ServiceViewModel service)
         {
             if (ModelState.IsValid)
             {
@@ -167,7 +167,7 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,business_ID,category,service_name,service_content,service_img,price")] Service service)
+        public async Task<IActionResult> Edit(int id, [Bind("id,business_ID,category,service_name,service_content,service_img,price")] ServiceViewModel service)
         {
             if (id != service.id)
             {

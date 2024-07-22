@@ -15,6 +15,12 @@ namespace Tailstale.Models
         [Required(ErrorMessage = " business_day欄位未填寫")]
         public DateOnly business_day { get; set; }
 
+        [Required(ErrorMessage = " open_time欄位未填寫")]
+        public TimeOnly? open_time { get; set; }
+
+        [Required(ErrorMessage = " close_time欄位未填寫")]
+        public TimeOnly? close_time { get; set; }
+
         public int people_limit { get; set; }
 
         public virtual business business { get; set; }
