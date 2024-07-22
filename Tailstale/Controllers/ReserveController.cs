@@ -55,7 +55,8 @@ namespace Tailstale.Controllers
             // 準備查詢
             IQueryable<Reserve> query = _context.Reserve
                 .Include(bh => bh.business)
-                .Include(bh => bh.keeper);
+                .Include(bh => bh.keeper)
+            .Include(bh => bh.statusNavigation);
 
             // 根據 id 的情況添加條件
             if (id.HasValue)
@@ -107,6 +108,7 @@ namespace Tailstale.Controllers
             var reserve = await _context.Reserve
                 .Include(r => r.business)
                 .Include(r => r.keeper)
+                .Include(bh => bh.statusNavigation)
                 .FirstOrDefaultAsync(m => m.id == id);
             if (reserve == null)
             {
@@ -122,6 +124,11 @@ namespace Tailstale.Controllers
             var businesses = _context.businesses
             .Where(b => b.type_ID == 2)
             .ToList();
+            var orderstatus = _context.order_statuses
+               .Where(b => b.business_type_ID == 2)
+               .ToList();
+
+            ViewData["Orderstatus_ID"] = new SelectList(orderstatus, "ID", "status_name");
 
             ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
@@ -134,7 +141,7 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,keeper_id,pet_name,business_ID,time,service_name,created_at")] Reserve reserve)
+        public async Task<IActionResult> Create([Bind("id,keeper_id,pet_name,business_ID,time,service_name,created_at,status")] Reserve reserve)
         {
             if (ModelState.IsValid)
             {
@@ -146,6 +153,11 @@ namespace Tailstale.Controllers
             .Where(b => b.type_ID == 2)
             .ToList();
 
+            var orderstatus = _context.order_statuses
+                .Where(b => b.business_type_ID == 2)
+                .ToList();
+
+            ViewData["Orderstatus_ID"] = new SelectList(orderstatus, "ID", "status_name");
             ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", reserve.business_ID);
             //ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "address", reserve.keeper_id);
@@ -174,6 +186,12 @@ namespace Tailstale.Controllers
             .Where(p => p.keeper_ID == reserve.keeper_id) // 根据 keeper_id 进行过滤
            .ToList();
 
+            var orderstatus = _context.order_statuses
+               .Where(b => b.business_type_ID == 2)
+               .ToList();
+
+            ViewData["Orderstatus_ID"] = new SelectList(orderstatus, "ID", "status_name", reserve.status);
+
             ViewData["pet_name"] = new SelectList(pets, "name", "name");
 
             ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
@@ -188,7 +206,7 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,keeper_id,pet_name,business_ID,time,service_name,created_at")] Reserve reserve)
+        public async Task<IActionResult> Edit(int id, [Bind("id,keeper_id,pet_name,business_ID,time,service_name,created_at,status")] Reserve reserve)
         {
             if (id != reserve.id)
             {
@@ -221,6 +239,11 @@ namespace Tailstale.Controllers
             var pets = _context.pets
             .Where(p => p.keeper_ID == reserve.keeper_id) // 根据 keeper_id 进行过滤
            .ToList();
+            var orderstatus = _context.order_statuses
+               .Where(b => b.business_type_ID == 2)
+               .ToList();
+
+            ViewData["Orderstatus_ID"] = new SelectList(orderstatus, "ID", "status_name", reserve.status);
             ViewData["pet_name"] = new SelectList(pets, "name", "name");
             ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
             ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name");
@@ -239,6 +262,7 @@ namespace Tailstale.Controllers
             var reserve = await _context.Reserve
                 .Include(r => r.business)
                 .Include(r => r.keeper)
+                .Include(bh => bh.statusNavigation)
                 .FirstOrDefaultAsync(m => m.id == id);
             if (reserve == null)
             {
