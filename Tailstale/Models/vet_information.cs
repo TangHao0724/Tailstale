@@ -11,13 +11,15 @@ public partial class vet_information
 
     public string vet_name { get; set; }
 
-    public int? business_ID { get; set; }
-
     public string license_number { get; set; }
+
+    public int? business_ID { get; set; }
 
     public int? department_ID { get; set; }
 
     public string profile { get; set; }
+
+    public bool? employment_status { get; set; }
 
     public int? business_img_ID { get; set; }
 

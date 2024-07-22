@@ -18,7 +18,7 @@ namespace Tailstale.MedRecordDTO
         public decimal? weight { get; set; }
 
         [Display(Name = "備註")]
-        public string memo { get; set; }
+        public string? memo { get; set; }
 
         [Display(Name = "生命徵象")]
         public int? VS_id { get; set; }

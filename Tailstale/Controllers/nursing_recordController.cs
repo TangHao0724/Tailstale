@@ -25,7 +25,6 @@ namespace Tailstale.Controllers
             var Nursing = from n in _context.nursing_records
                           join p in _context.pets on n.pet_id equals p.pet_ID
                           join v in _context.vital_sign_records on n.vital_sign_record_id equals v.id
-                          join b in _context.biological_tests on n.biological_test_id equals b.id
                           select new NursingDTO
                           {
                               id = n.id,
@@ -34,7 +33,6 @@ namespace Tailstale.Controllers
                               weight = n.weight,
                               memo = n.memo,
                               VS_id = v.id,
-                              test_id = b.id,
                           };
             return View(Nursing);
         }
@@ -48,7 +46,6 @@ namespace Tailstale.Controllers
             }
 
             var nursing_record = await _context.nursing_records
-                .Include(n => n.biological_test)
                 .Include(n => n.pet)
                 .Include(n => n.vital_sign_record)
                 .FirstOrDefaultAsync(m => m.id == id);
@@ -82,7 +79,7 @@ namespace Tailstale.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["biological_test_id"] = new SelectList(_context.biological_tests, "id", "id", nursing_record.biological_test_id);
+            ViewData["biological_test_id"] = new SelectList(_context.biological_tests, "id", "id");
             ViewData["pet_id"] = new SelectList(_context.pets, "pet_ID", "pet_ID", nursing_record.pet_id);
             ViewData["vital_sign_record_id"] = new SelectList(_context.vital_sign_records, "id", "id", nursing_record.vital_sign_record_id);
             return View(nursing_record);
@@ -101,7 +98,7 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
-            ViewData["biological_test_id"] = new SelectList(_context.biological_tests, "id", "id", nursing_record.biological_test_id);
+            ViewData["biological_test_id"] = new SelectList(_context.biological_tests, "id", "id");
             ViewData["pet_id"] = new SelectList(_context.pets, "pet_ID", "pet_ID", nursing_record.pet_id);
             ViewData["vital_sign_record_id"] = new SelectList(_context.vital_sign_records, "id", "id", nursing_record.vital_sign_record_id);
             return View(nursing_record);
@@ -139,7 +136,7 @@ namespace Tailstale.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["biological_test_id"] = new SelectList(_context.biological_tests, "id", "id", nursing_record.biological_test_id);
+            ViewData["biological_test_id"] = new SelectList(_context.biological_tests, "id", "id");
             ViewData["pet_id"] = new SelectList(_context.pets, "pet_ID", "pet_ID", nursing_record.pet_id);
             ViewData["vital_sign_record_id"] = new SelectList(_context.vital_sign_records, "id", "id", nursing_record.vital_sign_record_id);
             return View(nursing_record);
@@ -154,7 +151,6 @@ namespace Tailstale.Controllers
             }
 
             var nursing_record = await _context.nursing_records
-                .Include(n => n.biological_test)
                 .Include(n => n.pet)
                 .Include(n => n.vital_sign_record)
                 .FirstOrDefaultAsync(m => m.id == id);

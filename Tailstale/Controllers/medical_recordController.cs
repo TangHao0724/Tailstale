@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Humanizer;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Tailstale.MedRecordDTO;
@@ -22,25 +17,23 @@ namespace Tailstale.Controllers
         }
 
         // GET: medical_record
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public async Task<IActionResult> Index([FromForm] MedicalRecordDTO medicalRecordDTO)
         { //渲染
-            var records = from r in _context.medical_records
-                          join o in _context.outpatient_clinics on r.outpatient_clinic_id equals o.outpatient_clinic_ID
-                          join p in _context.pets on r.pet_id equals p.pet_ID
-                          join k in _context.keepers on p.FK_keeper_ID equals k.ID
+            var records = from m in _context.medical_records
+                          join o in _context.outpatient_clinics on m.outpatient_clinic_id equals o.outpatient_clinic_ID
+                          join p in _context.pets on m.pet_id equals p.pet_ID
+                          join k in _context.keepers on p.keeper_ID equals k.ID
                           select new MedicalRecordDTO
                           {  //DTO設的名字 = table抓出來的名字
-                              id = r.id,
+                              id = m.id,
                               keeper_id = k.ID,
-                              pet_id = r.pet_id,
-                              created_at = r.created_at,
+                              pet_id = p.pet_ID,
+                              created_at = m.created_at,
                               outpatient_clinic_id = o.outpatient_clinic_ID,
-                              weight = r.weight,
-                              admission_process = r.admission_process,
-                              diagnosis = r.diagnosis,
-                              treatment = r.treatment,
-                              memo = r.memo,
+                              memo = m.memo,
                           };
+            //var recordsList = await records.ToListAsync();
             return View(records);
         }
 
@@ -55,13 +48,13 @@ namespace Tailstale.Controllers
             var medical_record = (from r in _context.medical_records
                                   join o in _context.outpatient_clinics on r.outpatient_clinic_id equals o.outpatient_clinic_ID
                                   join p in _context.pets on r.pet_id equals p.pet_ID
-                                  join k in _context.keepers on p.FK_keeper_ID equals k.ID
+                                  join k in _context.keepers on p.keeper_ID equals k.ID
                                   where r.id == id /*鎖定id*/
                                   select new MedicalRecordDTO
                                   {
                                       id = r.id,
                                       keeper_id = k.ID,
-                                      pet_id = r.pet_id,
+                                      pet_id = p.pet_ID,
                                       created_at = r.created_at,
                                       outpatient_clinic_id = o.outpatient_clinic_ID,
                                       weight = r.weight,
@@ -125,7 +118,7 @@ namespace Tailstale.Controllers
             var medical_record = (from e in _context.medical_records
                                   join o in _context.outpatient_clinics on e.outpatient_clinic_id equals o.outpatient_clinic_ID
                                   join p in _context.pets on e.pet_id equals p.pet_ID
-                                  join k in _context.keepers on p.FK_keeper_ID equals k.ID
+                                  join k in _context.keepers on p.keeper_ID equals k.ID
                                   where e.id == id
                                   select new MedicalRecordDTO
                                   {
@@ -133,7 +126,7 @@ namespace Tailstale.Controllers
                                       keeper_id = k.ID,
                                       pet_id = p.pet_ID,
                                       created_at = e.created_at,
-                                      outpatient_clinic_id = e.outpatient_clinic_id,
+                                      outpatient_clinic_id = o.outpatient_clinic_ID,
                                       weight = e.weight,
                                       admission_process = e.admission_process,
                                       diagnosis = e.diagnosis,
@@ -207,13 +200,13 @@ namespace Tailstale.Controllers
             var medical_record = (from r in _context.medical_records
                                   join o in _context.outpatient_clinics on r.outpatient_clinic_id equals o.outpatient_clinic_ID
                                   join p in _context.pets on r.pet_id equals p.pet_ID
-                                  join k in _context.keepers on p.FK_keeper_ID equals k.ID
+                                  join k in _context.keepers on p.keeper_ID equals k.ID
                                   where r.id == id
                                   select new MedicalRecordDTO
                                   {
                                       id = r.id,
                                       keeper_id = k.ID,
-                                      pet_id = r.pet_id,
+                                      pet_id = p.pet_ID,
                                       created_at = r.created_at,
                                       outpatient_clinic_id = o.outpatient_clinic_ID,
                                       weight = r.weight,

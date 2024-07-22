@@ -9,9 +9,11 @@ public partial class ward
 {
     public int ward_ID { get; set; }
 
+    public string ward_name { get; set; }
+
     public int? business_ID { get; set; }
 
-    public bool status { get; set; }
+    public bool ward_status { get; set; }
 
     public string memo { get; set; }
 

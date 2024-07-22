@@ -12,4 +12,8 @@ public partial class business_type
     public string business_type_name { get; set; }
 
     public virtual ICollection<business> businesses { get; set; } = new List<business>();
+
+    public virtual ICollection<order_status> order_statusFK_businessTypes { get; set; } = new List<order_status>();
+
+    public virtual ICollection<order_status> order_statusbusiness_types { get; set; } = new List<order_status>();
 }

@@ -9,27 +9,35 @@ public partial class medicine_order_record
 {
     public int id { get; set; }
 
-    public int? medical_record_id { get; set; }
+    public int? pet_id { get; set; }
 
-    public DateTime? order_datetime { get; set; }
+    public DateTime order_datetime { get; set; }
 
-    public int? medicine_generic_name_id { get; set; }
+    public int? medicine_id { get; set; }
 
-    public string dosage { get; set; }
+    public DateTime start_datetime { get; set; }
 
-    public string dosage_form { get; set; }
+    public int? frequency_id { get; set; }
+
+    public int duration { get; set; }
+
+    public decimal dosage { get; set; }
+
+    public int? dosage_form { get; set; }
 
     public string route { get; set; }
 
-    public string frequency { get; set; }
+    public int? order_status_id { get; set; }
 
-    public string duration { get; set; }
+    public virtual dosage_form dosage_formNavigation { get; set; }
 
-    public string status { get; set; }
+    public virtual frequency frequency { get; set; }
 
-    public virtual medical_record medical_record { get; set; }
+    public virtual medicine medicine { get; set; }
 
-    public virtual medicine_generic_name medicine_generic_name { get; set; }
+    public virtual medicine_order_status order_status { get; set; }
+
+    public virtual pet pet { get; set; }
 
     public virtual ICollection<surgery> surgeries { get; set; } = new List<surgery>();
 }

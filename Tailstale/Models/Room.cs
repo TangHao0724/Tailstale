@@ -2,33 +2,36 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace Tailstale.Models;
 
 public partial class Room
 {
-    
     public int roomID { get; set; }
 
-    [DisplayName("飯店ID")]
     public int hotelID { get; set; }
-    [DisplayName("房間適用物種")]
+
     public string roomSpecies { get; set; }
-    [DisplayName("房間類型")]
-    public string roomType { get; set; }
-    [DisplayName("房間價格")]
+
     public int? roomPrice { get; set; }
-    [DisplayName("優惠")]
+
     public int? roomDiscount { get; set; }
-    [DisplayName("房間數量")]
+
     public int? roomReserve { get; set; }
-    [DisplayName("房間描述")]
+
     public string roomDescrep { get; set; }
+
+    public int? FK_roomImg_ID { get; set; }
+
+    public int? FK_roomType_ID { get; set; }
 
     public virtual ICollection<BookingDetail> BookingDetails { get; set; } = new List<BookingDetail>();
 
     public virtual ICollection<CheckinDetail> CheckinDetails { get; set; } = new List<CheckinDetail>();
+
+    public virtual business_img_type FK_roomImg { get; set; }
+
+    public virtual roomType FK_roomType { get; set; }
 
     public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
 
