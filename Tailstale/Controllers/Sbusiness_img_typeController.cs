@@ -22,8 +22,48 @@ namespace Tailstale.Controllers
         public async Task<IActionResult> Index()
         {
             var tailstaleContext = _context.business_img_types.Include(b => b.FK_business);
+            var businesses3 = _context.businesses
+            .Where(b => b.type_ID == 2)
+            .ToList();
+            ViewData["FK_business_id"] = new SelectList(businesses3, "ID", "name");
             return View(await tailstaleContext.ToListAsync());
         }
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> Index(int? id)
+        {
+
+            
+
+            // 準備查詢
+            IQueryable<business_img_type> query = _context.business_img_types
+                .Include(bh => bh.FK_business);
+
+
+            // 根據 id 的情況添加條件
+            if (id.HasValue)
+            {
+                query = query.Where(bh => bh.FK_business_id == id);
+            }
+
+            
+
+            // 执行查询并返回结果
+            var S_img_type = await query.ToListAsync();
+
+            return PartialView("_Sbusiness_img_typePartial", S_img_type);
+
+
+        }
+
+
+
+
+
+
+
 
         // GET: business_img_type/Details/5
         public async Task<IActionResult> Details(int? id)

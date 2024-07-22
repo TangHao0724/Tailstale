@@ -24,8 +24,58 @@ namespace Tailstale.Controllers
         public async Task<IActionResult> Index()
         {
             var tailstaleContext = _context.business_imgs.Include(b => b.img_type);
+            var query = from business in _context.businesses
+                        join imgType in _context.business_img_types
+                        on business.ID equals imgType.FK_business_id
+                        where business.type_ID == 2
+                        select new
+                        {
+                            ImageTypeID = imgType.ID,
+                            ImageTypeName = imgType.typename
+                        };
+
+            var result = query.ToList();
+
+            ViewData["ImageTypeList"] = new SelectList(result, "ImageTypeID", "ImageTypeName");
+            
             return View(await tailstaleContext.ToListAsync());
         }
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> Index(int? id)
+        {
+
+
+
+            // 準備查詢
+            IQueryable<business_img> query = _context.business_imgs
+                .Include(bh => bh.img_type);
+
+
+            // 根據 id 的情況添加條件
+            if (id.HasValue)
+            {
+                query = query.Where(bh => bh.img_type_id == id);
+            }
+
+
+
+            // 执行查询并返回结果
+            var S_img_type = await query.ToListAsync();
+
+            return PartialView("_Sbusiness_imgPartial", S_img_type);
+
+
+        }
+
+
+
+
+
+
+
 
         // GET: business_img/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -49,6 +99,19 @@ namespace Tailstale.Controllers
         // GET: business_img/Create
         public IActionResult Create()
         {
+            var query = from business in _context.businesses
+                        join imgType in _context.business_img_types
+                        on business.ID equals imgType.FK_business_id
+                        where business.type_ID == 2
+                        select new
+                        {
+                            ImageTypeID = imgType.ID,
+                            ImageTypeName = imgType.typename
+                        };
+
+            var result =  query.ToList();
+
+            ViewData["ImageTypeList"] = new SelectList(result, "ImageTypeID", "ImageTypeName");
             ViewData["img_type_id"] = new SelectList(_context.business_img_types, "ID", "typename");
             return View();
         }
@@ -92,7 +155,22 @@ namespace Tailstale.Controllers
                 // 成功保存后重定向到 Index 页面
                 return RedirectToAction(nameof(Index));
             }
-            
+
+            var query = from business in _context.businesses
+                        join imgType in _context.business_img_types
+                        on business.ID equals imgType.FK_business_id
+                        where business.type_ID == 2
+                        select new
+                        {
+                            ImageTypeID = imgType.ID,
+                            ImageTypeName = imgType.typename
+                        };
+
+            var result = query.ToList();
+
+            ViewData["ImageTypeList"] = new SelectList(result, "ImageTypeID", "ImageTypeName");
+
+
             //ViewData["img_type_id"] = new SelectList(_context.business_img_types, "ID", "ID", business_img.img_type_id);
             ViewData["img_type_id"] = new SelectList(_context.business_img_types, "ID", "typename", business_img.img_type_id);//預設選到我傳進來的這參數他的img_type_id
             return View(business_img);
@@ -111,6 +189,21 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
+
+            var query = from business in _context.businesses
+                        join imgType in _context.business_img_types
+                        on business.ID equals imgType.FK_business_id
+                        where business.type_ID == 2
+                        select new
+                        {
+                            ImageTypeID = imgType.ID,
+                            ImageTypeName = imgType.typename
+                        };
+
+            var result = query.ToList();
+
+            ViewData["ImageTypeList"] = new SelectList(result, "ImageTypeID", "ImageTypeName");
+
             ViewData["img_type_id"] = new SelectList(_context.business_img_types, "ID", "typename", business_img.img_type_id);
             return View(business_img);
         }
@@ -181,9 +274,41 @@ namespace Tailstale.Controllers
                         throw;
                     }
                 }
+
+                var query2 = from business in _context.businesses
+                            join imgType in _context.business_img_types
+                            on business.ID equals imgType.FK_business_id
+                            where business.type_ID == 2
+                            select new
+                            {
+                                ImageTypeID = imgType.ID,
+                                ImageTypeName = imgType.typename
+                            };
+
+                var result2 = query2.ToList();
+
+                ViewData["ImageTypeList"] = new SelectList(result2, "ImageTypeID", "ImageTypeName");
+
+
                 ViewData["img_type_id"] = new SelectList(_context.business_img_types, "ID", "typename", business_img.img_type_id);
                 return RedirectToAction(nameof(Index));
             }
+
+            var query = from business in _context.businesses
+                        join imgType in _context.business_img_types
+                        on business.ID equals imgType.FK_business_id
+                        where business.type_ID == 2
+                        select new
+                        {
+                            ImageTypeID = imgType.ID,
+                            ImageTypeName = imgType.typename
+                        };
+
+            var result = query.ToList();
+
+            ViewData["ImageTypeList"] = new SelectList(result, "ImageTypeID", "ImageTypeName");
+
+
             ViewData["img_type_id"] = new SelectList(_context.business_img_types, "ID", "typename", business_img.img_type_id);
             return View(business_img);
         }
