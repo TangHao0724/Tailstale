@@ -10,9 +10,11 @@ using System.Net;
 using System.Text;
 using System.Web;
 
-namespace Console_ConvertShopAddrTo_latlng.Utilities
+namespace HotelAPI.Controllers
 {
-    public class GoogleAPIUtilities
+    [Route("api/[controller]")]
+    [ApiController]
+    public class GoogleAPIController:ControllerBase
     {
         /// <summary>  
         /// 把地址轉成Json格式，這樣回傳字串裡才有緯經度  
@@ -21,7 +23,7 @@ namespace Console_ConvertShopAddrTo_latlng.Utilities
         /// <param name="address">地址全名(含縣市)</param>  
         /// <returns></returns>  
         /// GoogleAPI/ConvertAddressToJsonString
-
+        [Route("GoogleAPI/ConvertAddressToJsonString")]
         [HttpGet("ConvertAddressToJsonString")]
         public static string ConvertAddressToJsonString()
         {
@@ -85,7 +87,6 @@ namespace Console_ConvertShopAddrTo_latlng.Utilities
         }//end method 
     }
 }
-
 
 /// <summary>
 /// Json Parse資料用

@@ -9,6 +9,8 @@ using HotelAPI.Models;
 using WebApplication1.DTO;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using System.Net;
+using System.Text;
+using System.Web;
 
 namespace HotelAPI.Controllers
 {
@@ -44,6 +46,38 @@ namespace HotelAPI.Controllers
 
             return business;
         }
+
+        
+        [HttpGet("ConvertAddressToJsonString")]
+        public async Task<string> ConvertAddressToJsonString()
+        {
+            //申請API Key，能夠呼叫的額度會多一些
+            string address = "高雄市岡山區大莊路80巷";
+            string GoogleAPIKey = System.Configuration.ConfigurationManager.AppSettings["GoogleAPIKey"];
+            string url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + HttpUtility.UrlEncode(address, Encoding.UTF8) + "&key=" + GoogleAPIKey;
+            string result = "";//回傳結果 
+            using (WebClient client = new WebClient())
+            {
+                //指定語言，否則Google預設回傳英文   
+                client.Headers[HttpRequestHeader.AcceptLanguage] = "zh-TW";
+                //不設定的話，會回傳中文亂碼
+                client.Encoding = Encoding.UTF8;
+                #region POST method才會用到
+                /*
+                client.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+                byte[] response = client.UploadValues("https://maps.googleapis.com/maps/api/geocode/json", new NameValueCollection()
+                {
+                        { "address", HttpUtility.UrlEncode(address, Encoding.UTF8)},
+                        { "key", GoogleAPIKey }
+                });
+                result = Encoding.UTF8.GetString(response);
+                */
+                #endregion
+                result = client.DownloadString(url);
+            }//end using
+
+            return result;
+        }//end method
 
         // PUT: api/Businesses/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -116,22 +150,22 @@ namespace HotelAPI.Controllers
             return _context.Businesses.Any(e => e.Id == id);
         }
 
-        [HttpPost]
-        public async Task <string> GetPosition()
-        {
-            var address = "820高雄市岡山區大莊路80巷";
-            var url = String.Format("http://maps.google.com/maps/api/geocode/json?sensor=false&address={0}", address);
+        //[HttpPost]
+        //public async Task <string> GetPosition()
+        //{
+        //    var address = "820高雄市岡山區大莊路80巷";
+        //    var url = String.Format("http://maps.google.com/maps/api/geocode/json?sensor=false&address={0}", address);
 
-            string result = String.Empty;
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
-            using (var response = request.GetResponse())
-            using (StreamReader sr = new StreamReader(response.GetResponseStream()))
-            {
-                //Json格式: 請參考http://code.google.com/intl/zh-TW/apis/maps/documentation/geocoding/
-                result = sr.ReadToEnd();
-            }
-            return result;
-        }
+        //    string result = String.Empty;
+        //    HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
+        //    using (var response = request.GetResponse())
+        //    using (StreamReader sr = new StreamReader(response.GetResponseStream()))
+        //    {
+        //        //Json格式: 請參考http://code.google.com/intl/zh-TW/apis/maps/documentation/geocoding/
+        //        result = sr.ReadToEnd();
+        //    }
+        //    return result;
+        //}
 
 
 

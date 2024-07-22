@@ -34,4 +34,11 @@
     <Folder Include="wwwroot\images\room\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\Hotels\BusinessIndex.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

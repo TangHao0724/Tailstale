@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Xml.Linq;
 using AutoMapper;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Tailstale.Hotel_DTO;
 using Tailstale.Models;
 using Tailstale.Tools;
@@ -31,8 +34,22 @@ namespace Tailstale.Controllers
             _webHostEnvironment = webHostEnvironment;
 
         }
+
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        //業主入口
+        public async Task<IActionResult> BusinessIndex()
+        {
+           
+            var tailstaleContext = _context.businesses.Include(b => b.business_statusNavigation).Include(b => b.type);
+            return View(await tailstaleContext.ToListAsync());
+        }
+
         [HttpGet]
-        [Route("businesses/businesslogin/{hotelID:int}")]
+        [Route("Hotels/businesslogin/{hotelID:int}")]
         public async Task<IActionResult> businesslogin(int hotelID)
         {
             business b = _context.businesses.Where(b => b.ID == hotelID).FirstOrDefault();
@@ -67,7 +84,7 @@ namespace Tailstale.Controllers
             return View(e);
         }
 
-        // GET: Rooms/Create
+        // GET: Hotels/RoomAddOrEdit
         public IActionResult RoomAddOrEdit(int id=0)
         {
             var hotelID = HttpContext.Session.GetInt32("hotelID11");
@@ -109,6 +126,7 @@ namespace Tailstale.Controllers
                 
         }
 
+        //新增或編輯ROOM
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RoomAddOrEdit( RoomDTO room, IList<IFormFile>? files)
@@ -354,25 +372,7 @@ namespace Tailstale.Controllers
 
         }
 
-        //Rooms/GetPosition
-
-        //public async Task<XElement> GetPosition()
-        //{
-        //    var address = "高雄市岡山區大莊路80巷";
-        //    var url = String.Format("http://maps.google.com/maps/api/geocode/json?sensor=false&address={0}", Uri.EscapeDataString(address));
-
-        //    var request = WebRequest.Create(url);
-        //    var response = request.GetResponse();
-        //    var xdoc = XDocument.Load(response.GetResponseStream());
-
-        //    var result = xdoc.Element("GeocodeResponse").Element("result");
-        //    var locationElement = result.Element("geometry").Element("location");
-        //    var lat = locationElement.Element("lat");
-        //    var lng = locationElement.Element("lng");
-
-        //    return lng;
-        //}
-
+      
 
         //booking相關
 
@@ -414,10 +414,13 @@ namespace Tailstale.Controllers
         {
             if (iD.startDate <= iD.endDate)
             {
+
                 return RedirectToAction(nameof(SearchRoom), new InputDate
                 {
                     startDate = iD.startDate,
                     endDate = iD.endDate,
+                    
+
                 });
             }
             return RedirectToAction(nameof(PostDateToSearch));
@@ -427,6 +430,7 @@ namespace Tailstale.Controllers
         public IEnumerable<FindRoomResultDTO> RoomAvailabilityAndRoom(InputDate iD, int? Cat, int? dog)
         {
             var result = GetBookedRoomIds(iD.startDate, iD.endDate).ToList();
+           
             var tailstaleContext = _context.Rooms.ToList();
             var finalresult = tailstaleContext.Join(result, t => t.roomID, r => r.RoomId, (tailstaleContext, result) => new FindRoomResultDTO
             {
@@ -440,10 +444,47 @@ namespace Tailstale.Controllers
                 business = tailstaleContext.hotel
 
             });
+
+            var getCatroom = finalresult.GroupBy(r => new
+            {
+                r.hotelID,
+                r.roomSpecies
+            }).Where(r => 
+            r.Key.roomSpecies == "貓" && r.Sum(g => g.roomReserve) >= Cat)
+            .SelectMany(g=>g.Select(g=> new { g.roomID, g.roomPrice }))
+            .ToList();
+            var getDogroom = finalresult.GroupBy(r => new
+            {
+                r.hotelID,
+                r.roomSpecies
+            }).Where(r =>          
+            r.Key.roomSpecies == "狗" && r.Sum(g => g.roomReserve) >= dog)
+           .SelectMany(g => g.Select(g => new { g.roomID,g.roomPrice }))
+           .ToList();
+
+            //計算出房間價格
+            var getCatroomPrice = 0;
+            var getDogroomPrice = 0;
+
+
+            if (Cat != null && dog != null && Cat > 0 && dog > 0)
+            {
+                finalresult = finalresult.Where(r => getCatroom.Select(c=>c.roomID).Contains(r.roomID) || getDogroom.Select(c => c.roomID).Contains(r.roomID)).ToList();
+            }
+            else if(Cat != null && dog == null && Cat > 0 ||dog==0)
+            {
+                finalresult = finalresult.Where(r => getCatroom.Select(c => c.roomID).Contains(r.roomID)).ToList();
+
+            }
+            else if(dog != null  && dog > 0 && Cat==null|| Cat==0)
+            {
+                finalresult = finalresult.Where(r => getDogroom.Select(c => c.roomID).Contains(r.roomID)).ToList();
+            }
             return finalresult;
         }
 
-        //取得剩餘房間數量
+
+        //取得剩餘房間數量 無分物種
         //Bookings/GetBookedRoomIds
         [HttpGet]
         public IEnumerable<RoomAvailability> GetBookedRoomIds(DateTime startDate, DateTime endDate)
@@ -506,5 +547,6 @@ namespace Tailstale.Controllers
             return View(map);
         }
 
+       
     }
 }
