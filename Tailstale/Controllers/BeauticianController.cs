@@ -221,6 +221,9 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
+
+            
+
             //beautician = await _context.Beautician.FirstOrDefaultAsync(b => b.id == id);
             var businesses = _context.businesses
             .Where(b => b.type_ID == 2)
