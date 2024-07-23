@@ -54,13 +54,15 @@
             </div>
             <div class="form-group">
                 <label asp-for="before_photo" class="control-label"></label>
-                <input asp-for="before_photo" type="file" accept="image/*" class="form-control" />
+                <input asp-for="before_photo" type="file" accept="image/*" class="form-control" onchange="previewImage(this, 'imgPreviewPhoto')" />
                 <span asp-validation-for="before_photo" class="text-danger"></span>
+                <img id="imgPreviewPhoto" src="~/Salon_img/111.jpg" width="300" height="200" />
             </div>
             <div class="form-group">
                 <label asp-for="after_photo" class="control-label"></label>
-                <input asp-for="after_photo" type="file" accept="image/*" class="form-control" />
+                <input asp-for="after_photo" type="file" accept="image/*" class="form-control" onchange="previewImage(this, 'imgPreviewPicture')" />
                 <span asp-validation-for="after_photo" class="text-danger"></span>
+                <img id="imgPreviewPicture" src="~/Salon_img/111.jpg" width="300" height="200" />
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -84,5 +86,18 @@
             this.value = inputDate.toISOString().slice(0, 16);  // 格式化为 yyyy-MM-ddTHH:mm
         });
 
+        function previewImage(input, imgId) {
+            var imgPreview = document.getElementById(imgId);
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    imgPreview.src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+            else {
+                imgPreview.src = "~/Salon_img/111.jpg"; // 如果没有选择文件，则显示默认图片
+            }
+        }
     </script>
 }

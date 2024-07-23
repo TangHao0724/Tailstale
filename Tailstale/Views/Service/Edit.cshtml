@@ -38,8 +38,9 @@
             </div>
             <div class="form-group">
                 <label asp-for="service_img" class="control-label"></label>
-                <input type="file" asp-for="service_img" accept="image/*" class="form-control" />
+                <input type="file" asp-for="service_img" accept="image/*" class="form-control" onchange="previewImage(this, 'imgPreviewPhoto')" />
                 <span asp-validation-for="service_img" class="text-danger"></span>
+                <img id="imgPreviewPhoto" src="~/Salon_img/@Model.service_img" width="200" height="200" />
             </div>
             <div class="form-group">
                 <label asp-for="price" class="control-label"></label>
@@ -59,4 +60,29 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        window.onload = function () {
+            var photoInput = document.getElementById('service_img');
+
+            photoInput.onchange = function () {
+                previewImage(this, 'imgPreviewPhoto', '@Url.Content("~/Salon_img/")', '@Model.service_img');
+            };
+
+            function previewImage(input, imgId, baseUrl, defaultImage) {
+                var imgPreview = document.getElementById(imgId);
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        imgPreview.src = e.target.result;
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+                else {
+                    // 如果没有选择文件，则显示默认图片
+                    imgPreview.src = baseUrl + defaultImage;
+                }
+            }
+        };
+    </script>
 }
