@@ -11,7 +11,7 @@
     border-radius: 10px;
 }
 
-dt:not(:last-child),
+dl.row dt:not(:last-child),
 dl.row dd:not(:last-child) {
     border-bottom: 5px solid rgba(255, 99, 71, 0.8);
     padding: 20px;
@@ -22,12 +22,15 @@ dt {
     border-right: 5px solid rgba(255, 99, 71, 0.8);
 }
 
-.ddt {
+dd:last-of-type {
+    border-bottom: 5px solid rgba(255, 99, 71, 0.8);
+    margin: 0;
+}
+    /*.ddt {
     padding: 20px;
     border-bottom: 5px solid rgba(255, 99, 71, 0.8);
     margin: 0px;
-}
-
-.col-sm-2 {
-    word-wrap: break-word;
-}
+}*/
+    .col-sm-2 {
+        word-wrap: break-word;
+    }

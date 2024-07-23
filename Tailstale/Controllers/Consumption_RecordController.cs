@@ -163,7 +163,7 @@ var beauticians2 = _context.Consumption_Record
                         }
 
                         // 将文件名（包含扩展名）保存到 beautician 对象的 photo 属性
-                        consumption_Record.after_photo = uniqueFileName;
+                        consumption_Record.before_photo = uniqueFileName;
                     }
                 }
 
@@ -198,7 +198,7 @@ var beauticians2 = _context.Consumption_Record
                         }
 
                         // 将文件名（包含扩展名）保存到 beautician 对象的 Highest_license 属性
-                        consumption_Record.before_photo = uniqueFileName;
+                        consumption_Record.after_photo = uniqueFileName;
                     }
                 }
 

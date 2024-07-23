@@ -2,6 +2,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Tailstale.Models;
 
@@ -11,14 +12,21 @@ public partial class Service
 
     public int business_ID { get; set; }
 
+    [StringLength(maximumLength: 10, MinimumLength = 1, ErrorMessage = "長度不合法,最多10字")]//,最多8個字,最少3個字,可以防攻擊
+    [Required(ErrorMessage = "category欄位未填寫")]
     public string category { get; set; }
 
+    [StringLength(maximumLength: 100, MinimumLength = 1, ErrorMessage = "長度不合法,最多100字")]//,最多8個字,最少3個字,可以防攻擊
+    [Required(ErrorMessage = "service_name欄位未填寫")]
     public string service_name { get; set; }
 
+    [StringLength(maximumLength: 600, MinimumLength = 1, ErrorMessage = "長度不合法,最多600字")]//,最多8個字,最少3個字,可以防攻擊
+    [Required(ErrorMessage = "service_content欄位未填寫")]
     public string service_content { get; set; }
 
     public string service_img { get; set; }
 
+    [Required(ErrorMessage = "price欄位未填寫")]
     public string price { get; set; }
 
     public DateTime? created_at { get; set; }

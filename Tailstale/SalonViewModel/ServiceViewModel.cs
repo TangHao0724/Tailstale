@@ -29,7 +29,7 @@ namespace Tailstale.Models
         [Required(ErrorMessage = "price欄位未填寫")]
         public string price { get; set; }
 
-        
+        public DateTime? created_at { get; set; }
 
         public virtual business business { get; set; }
     }
