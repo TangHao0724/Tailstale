@@ -100,7 +100,7 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,FK_business_id,typename,created_at")] Sbusiness_img_typeViewModel business_img_type)
+        public async Task<IActionResult> Create([Bind("ID,FK_business_id,typename,created_at")] business_img_type business_img_type)
         {
             if (ModelState.IsValid)
             {
@@ -139,7 +139,7 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,FK_business_id,typename,created_at")] Sbusiness_img_typeViewModel business_img_type)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,FK_business_id,typename,created_at")] business_img_type business_img_type)
         {
             if (id != business_img_type.ID)
             {

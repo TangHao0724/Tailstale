@@ -29,9 +29,12 @@
                 <span asp-validation-for="gender" class="text-danger"></span>
             </div>
             <div class="form-group">
+                
                 <label asp-for="photo" class="control-label"></label>
-                <input asp-for="photo" type="file" accept="image/*" class="form-control" />
+                <input asp-for="photo" type="file" accept="image/*" class="form-control"  />
+              @*   <img id="imgPreview" src="~/Salon_img\111.jpg" width="300" height="200" /> *@
                 <span asp-validation-for="photo" class="text-danger"></span>
+
             </div>
             <div class="form-group">
                 <label asp-for="phone" class="control-label"></label>
@@ -66,4 +69,5 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
 }

@@ -99,7 +99,7 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,business_ID,category,service_name,service_content,service_img,price")] ServiceViewModel service)
+        public async Task<IActionResult> Create([Bind("id,business_ID,category,service_name,service_content,service_img,price")] Service service)
         {
             if (ModelState.IsValid)
             {
@@ -167,7 +167,7 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,business_ID,category,service_name,service_content,service_img,price")] ServiceViewModel service)
+        public async Task<IActionResult> Edit(int id, [Bind("id,business_ID,category,service_name,service_content,service_img,price")] Service service)
         {
             if (id != service.id)
             {
