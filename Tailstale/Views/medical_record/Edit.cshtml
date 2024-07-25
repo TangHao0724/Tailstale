@@ -70,14 +70,15 @@
                 <span asp-validation-for="fee" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="儲存" class="btn btn-primary" />
+                <button id="submit" type="submit" class="btn btn-primary">儲存</button>
+                @* <input type="submit" value="儲存" class="btn btn-primary" /> *@
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">返回列表</a>
+    <a asp-action="Index">返回</a>
 </div>
 
 @section Scripts {

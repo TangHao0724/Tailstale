@@ -25,40 +25,34 @@
                 @Html.DisplayNameFor(model => model.weight)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.memo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.pet_id)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.VS_id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.memo)
             </th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.datetime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.weight)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.memo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.pet_id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.VS_id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.id">修改</a> |
-                <a asp-action="Details" asp-route-id="@item.id">記錄內容</a> |
-                <a asp-action="Delete" asp-route-id="@item.id">刪除記錄</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.datetime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.weight)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VS_id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.memo)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.id">修改</a> |
+                    <a asp-action="Delete" asp-route-id="@item.id">刪除記錄</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Tailstale.MedRecordDTO;
@@ -22,43 +18,80 @@ namespace Tailstale.Controllers
         // GET: nursing_record
         public async Task<IActionResult> Index()
         {
-            var Nursing = from n in _context.nursing_records
+            var records = from n in _context.nursing_records
                           join p in _context.pets on n.pet_id equals p.pet_ID
                           join v in _context.vital_sign_records on n.vital_sign_record_id equals v.id
+                          join h in _context.hosp_histories on n.hosp_history_id equals h.id
+                          orderby n.datetime descending
                           select new NursingDTO
                           {
                               id = n.id,
                               pet_id = p.pet_ID,
+                              hosp_history_id = h.id,
                               datetime = n.datetime,
                               weight = n.weight,
                               memo = n.memo,
                               VS_id = v.id,
                           };
-            return View(Nursing);
+            return View(records);
         }
 
+        //原先的Details GET
         // GET: nursing_record/Details/5
-        public async Task<IActionResult> Details(int? id)
+        //public async Task<IActionResult> Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var nursing_record = await _context.nursing_records
+        //        .Include(n => n.pet)
+        //        .Include(n => n.vital_sign_record)
+        //        .FirstOrDefaultAsync(m => m.id == id);
+        //    if (nursing_record == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(nursing_record);
+        //}
+
+        // GET: nursing_record/Details/5 ?GPT版
+        public async Task<IActionResult> Details(int? hosp_history_id)
         {
-            if (id == null)
+            if (hosp_history_id == null)
             {
                 return NotFound();
             }
 
-            var nursing_record = await _context.nursing_records
-                .Include(n => n.pet)
-                .Include(n => n.vital_sign_record)
-                .FirstOrDefaultAsync(m => m.id == id);
-            if (nursing_record == null)
+            var records = from n in _context.nursing_records
+                          join p in _context.pets on n.pet_id equals p.pet_ID
+                          join v in _context.vital_sign_records on n.vital_sign_record_id equals v.id
+                          join h in _context.hosp_histories on n.hosp_history_id equals h.id
+                          orderby n.datetime descending
+                          select new NursingDTO
+                          {
+                              id = n.id,
+                              pet_id = p.pet_ID,
+                              hosp_history_id = h.id,
+                              datetime = n.datetime,
+                              weight = n.weight,
+                              memo = n.memo,
+                              VS_id = v.id,
+                          };
+
+            if (records == null || !records.Any())
             {
                 return NotFound();
             }
 
-            return View(nursing_record);
+            return View(records);
         }
+ 
 
-        // GET: nursing_record/Create
-        public IActionResult Create()
+    // GET: nursing_record/Create
+    public IActionResult Create()
         {
             ViewData["biological_test_id"] = new SelectList(_context.biological_tests, "id", "id");
             ViewData["pet_id"] = new SelectList(_context.pets, "pet_ID", "pet_ID");

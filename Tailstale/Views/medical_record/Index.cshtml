@@ -4,24 +4,20 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>病歷記錄列表</h1>
+<h1>病歷記錄</h1>
 
 <span>
-    <a asp-controller="Hosp" asp-action="Index">住院紀錄</a>
-    <a asp-controller="nursing_record" asp-action="Index">護理紀錄</a>
+    <a asp-controller="Hosp" asp-action="Index">住院記錄</a>
+    <a asp-controller="nursing_record" asp-action="Index">護理記錄</a>
 </span>
 <br />
 <br />
-
 <p>
-    <a asp-action="Create"><i class="fa-solid fa-plus"></i>新增紀錄</a>
+    <a asp-action="Create"><i class="fa-solid fa-plus"></i>新增記錄</a>
 </p>
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.id)
-            </th>
             <th>
                 @Html.DisplayNameFor(model => model.created_at)
             </th>
@@ -29,7 +25,7 @@
                 @Html.DisplayNameFor(model => model.keeper_id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.pet_id)
+                @Html.DisplayNameFor(model => model.pet_name)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.weight)
@@ -46,17 +42,14 @@
         @foreach (var item in Model)
         {
             <tr>
-                <th>
-                    @Html.DisplayFor(model => item.id)
-                </th>
                 <td>
-                    @Html.DisplayFor(modelItem => item.created_at)
+                    <a href="medical_record/Details/@item.id">@item.created_at</a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.keeper_id)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.pet_id)
+                    @Html.DisplayFor(modelItem => item.pet_name)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.weight)
@@ -66,14 +59,6 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.outpatient_clinic_id)
-                </td>
-                @*<td>
-            @Html.DisplayFor(modelItem => item.biological_test.id)
-            </td>*@
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.id">詳細資料</a>
-                    <a asp-action="Edit" asp-route-id="@item.id">修改</a>
-                    <a asp-action="Delete" asp-route-id="@item.id">刪除</a>
                 </td>
             </tr>
         }

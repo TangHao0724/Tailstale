@@ -4,16 +4,13 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>住院記錄列表</h1>
+<h1>住院記錄</h1>
 <span>
-    <a asp-controller="medical_record" asp-action="Index">病歷紀錄</a>
-    <a asp-controller="nursing_record" asp-action="Index">護理紀錄</a>
+    <a asp-controller="medical_record" asp-action="Index">病歷記錄</a>
+    <a asp-controller="nursing_record" asp-action="Index">護理記錄</a>
 </span>
 <br />
 <br />
-<p>
-    <a asp-action="Create">新增記錄</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -42,28 +39,27 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.admission_date)
+                    @* 顯示：入院時間，超連結：Details *@
+                    <a href="Hosp/Details/@item.id">@item.admission_date</a>
                 </td>
                 <td>
                     @Html.DisplayFor(moitemdelItem => item.discharge_date)
                 </td>
                 <td>
-                    <a href="/medical_record/Details/@item.medical_record_id">詳細記錄</a>
+                    @*住院的看診紀錄*@
+                    <a href="/medical_record/Details/@item.medical_record_id">@item.created_at</a>
                 </td>
                 <td>
-                    <a href="/nursing_record/Details/@item.nursing_record_id">詳細記錄</a>
-                    @* @Html.DisplayFor(modelItem => item.nursing_record_id) *@
+                    @*住院的護理紀錄*@
+                    <a href="/nursing_record/Details/@item.id">詳細記錄</a>
+                <td>
+                        @Html.DisplayFor(modelItem => item.ward_id)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ward_id)
+                        @Html.DisplayFor(modelItem => item.memo)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.memo)
-                </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.id">詳細記錄</a>
                     <a asp-action="Edit" asp-route-id="@item.id">修改</a>
-                    <a asp-action="Delete" asp-route-id="@item.id">刪除</a>
                 </td>
             </tr>
         }

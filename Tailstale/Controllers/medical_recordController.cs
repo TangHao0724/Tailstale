@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Tailstale.MedRecordDTO;
 using Tailstale.Models;
 
@@ -17,20 +16,23 @@ namespace Tailstale.Controllers
         }
 
         // GET: medical_record
-        [HttpGet]
-        public async Task<IActionResult> Index([FromForm] MedicalRecordDTO medicalRecordDTO)
+        public async Task<IActionResult> Index()
         { //渲染
             var records = from m in _context.medical_records
                           join o in _context.outpatient_clinics on m.outpatient_clinic_id equals o.outpatient_clinic_ID
                           join p in _context.pets on m.pet_id equals p.pet_ID
                           join k in _context.keepers on p.keeper_ID equals k.ID
+                          orderby m.created_at descending
                           select new MedicalRecordDTO
                           {  //DTO設的名字 = table抓出來的名字
                               id = m.id,
                               keeper_id = k.ID,
+                              keeper_num = k.phone,
                               pet_id = p.pet_ID,
+                              pet_name = p.name,
                               created_at = m.created_at,
                               outpatient_clinic_id = o.outpatient_clinic_ID,
+                              weight = m.weight,
                               memo = m.memo,
                           };
             //var recordsList = await records.ToListAsync();
@@ -54,7 +56,9 @@ namespace Tailstale.Controllers
                                   {
                                       id = r.id,
                                       keeper_id = k.ID,
+                                      keeper_name = k.name,
                                       pet_id = p.pet_ID,
+                                      pet_name = p.name,
                                       created_at = r.created_at,
                                       outpatient_clinic_id = o.outpatient_clinic_ID,
                                       weight = r.weight,
@@ -62,6 +66,7 @@ namespace Tailstale.Controllers
                                       diagnosis = r.diagnosis,
                                       treatment = r.treatment,
                                       memo = r.memo,
+                                      fee = r.fee,
                                   }).FirstOrDefault();
 
             if (medical_record == null)
@@ -104,7 +109,7 @@ namespace Tailstale.Controllers
             };
             _context.Add(a);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
 
         // GET: medical_record/Edit/5
@@ -133,7 +138,7 @@ namespace Tailstale.Controllers
                                       treatment = e.treatment,
                                       memo = e.memo,
                                       fee = e.fee
-                                  }).FirstOrDefault();
+                                  }).FirstOrDefault(); //FirstOrDefault嗽嘎嘍啊
 
             if (medical_record == null)
             {
@@ -153,10 +158,10 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
-            if (ModelState.IsValid)
-            {
-                try
-                {
+            //if (ModelState.IsValid)
+            //{
+                //try
+                //{
                     var a = new medical_record
                     {
                         id = medicalRecordDTO.id,
@@ -172,21 +177,22 @@ namespace Tailstale.Controllers
                     };
                     _context.Update(a);
                     await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!medical_recordExists(medicalRecordDTO.id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(medicalRecordDTO); //沒成功
+                    return RedirectToAction("Index");
+                //}
+            //    catch (DbUpdateConcurrencyException)
+            //    {
+            //        if (!medical_recordExists(medicalRecordDTO.id))
+            //        {
+            //            return NotFound();
+            //        }
+            //        else
+            //        {
+            //            throw;
+            //        }
+            //    }
+            //    //return RedirectToAction(nameof(Index));
+            //}
+            //return View(medicalRecordDTO); //沒成功
         }
 
         // GET: medical_record/Delete/5

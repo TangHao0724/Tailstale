@@ -15,16 +15,16 @@
             @Html.DisplayFor(model => model.id)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.keeper_id)
+            @Html.DisplayNameFor(model => model.keeper_name)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.keeper_id)
+            @Html.DisplayFor(model => model.keeper_name)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.pet_id)
+            @Html.DisplayNameFor(model => model.pet_name)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.pet_id)
+            @Html.DisplayFor(model => model.pet_name)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.created_at)
@@ -77,6 +77,7 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.id">修改</a> |
-    <a asp-action="Index">返回列表</a>
+    <a asp-controller="medical_record" asp-action="Edit" asp-route-id="@Model?.id">修改</a> |
+    <a asp-controller="Hosp" asp-action="Create" asp-route-medical_record_id="@Model.id">住院</a> |
+    <a asp-action="Index">返回</a>
 </div>

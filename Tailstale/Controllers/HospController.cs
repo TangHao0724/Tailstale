@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Tailstale.MedRecordDTO;
 using Tailstale.Models;
@@ -25,15 +20,15 @@ namespace Tailstale.Controllers
         {
             var Hosp = from h in _context.hosp_histories
                        join m in _context.medical_records on h.medical_record_id equals m.id
-                       join n in _context.nursing_records on h.nursing_record_id equals n.id
                        join w in _context.wards on h.ward_id equals w.ward_ID
+                       join n in _context.nursing_records on h.id equals n.hosp_history_id
+                       orderby h.admission_date descending
                        select new HospDTO
                        {
-                           id = h.id,
                            medical_record_id = m.id,
                            admission_date = h.admission_date,
                            discharge_date = h.discharge_date,
-                           nursing_record_id = n.id,
+                           created_at = m.created_at,
                            ward_id = w.ward_ID,
                            memo = h.memo,
                        };
@@ -41,46 +36,42 @@ namespace Tailstale.Controllers
         }
 
         // GET: Hosp/Details/5
-        [HttpGet]
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //[HttpGet]
+        //public async Task<IActionResult> Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var hospDTO = (from h in _context.hosp_histories
-                          join m in _context.medical_records on h.medical_record_id equals m.id
-                          join n in _context.nursing_records on h.nursing_record_id equals n.id
-                          join w in _context.wards on h.ward_id equals w.ward_ID
-                          where h.id == id
-                          select new HospDTO
-                          {
-                              id = h.id,
-                              medical_record_id = m.id,
-                              admission_date = h.admission_date,
-                              discharge_date = h.discharge_date,
-                              nursing_record_id = h.nursing_record_id,
-                              ward_id = w.ward_ID,
-                              memo = h.memo
-                          }).FirstOrDefault(); //FirstOrDefault嗽嘎嘍啊
+        //    var hospDTO = (from h in _context.hosp_histories
+        //                   join m in _context.medical_records on h.medical_record_id equals m.id
+        //                   join w in _context.wards on h.ward_id equals w.ward_ID
+        //                   where h.id == id
+        //                   select new HospDTO
+        //                   {
+        //                       id = h.id,
+        //                       medical_record_id = m.id,
+        //                       admission_date = h.admission_date,
+        //                       discharge_date = h.discharge_date,
+        //                       ward_id = w.ward_ID,
+        //                       memo = h.memo
+        //                   }).FirstOrDefault(); 
 
-            if (hospDTO == null)
-            {
-                return NotFound();
-            }
+        //    if (hospDTO == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(hospDTO);
-        }
+        //    return View(hospDTO);
+        //}
 
         // GET: Hosp/Create
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Create(int medical_record_id)
         {
-            ViewData["medical_record_id"] = new SelectList(_context.medical_records, "id", "admission_process");
-            ViewData["nursing_record_id"] = new SelectList(_context.nursing_records, "id", "id");
-            ViewData["ward_id"] = new SelectList(_context.wards, "ward_ID", "ward_ID");
-            return View();
+            var model = new HospDTO { medical_record_id = medical_record_id };
+            return View(model);
         }
 
         // POST: Hosp/Create
@@ -90,15 +81,17 @@ namespace Tailstale.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([FromForm] HospDTO hospDTO)
         {
-            if (ModelState.IsValid)
+            var a = new hosp_history
             {
-                var h = 
-                _context.Add(hospDTO);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            
-            return View(hospDTO);
+                medical_record_id = hospDTO.medical_record_id,
+                admission_date = hospDTO.admission_date,
+                discharge_date = hospDTO.discharge_date,
+                ward_id = hospDTO.ward_id,
+                memo = hospDTO.memo
+            };
+            _context.Add(a);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
 
         // GET: Hosp/Edit/5
@@ -110,18 +103,18 @@ namespace Tailstale.Controllers
             }
 
             var hosp = (from h in _context.hosp_histories
-                       join m in _context.medical_records on h.medical_record_id equals m.id
-                       join n in _context.nursing_records on h.nursing_record_id equals n.id
-                       join w in _context.wards on h.ward_id equals w.ward_ID
-                       select new HospDTO
-                       {
-                           id = h.id,
-                           medical_record_id = m.id,
-                           admission_date = h.admission_date,
-                           discharge_date = h.discharge_date,
-                           nursing_record_id = n.id,
-                           ward_id = w.ward_ID,
-                           memo = h.memo}).FirstOrDefault();
+                        join m in _context.medical_records on h.medical_record_id equals m.id
+                        join w in _context.wards on h.ward_id equals w.ward_ID
+                        where h.id == id
+                        select new HospDTO
+                        {
+                            id = h.id,
+                            medical_record_id = m.id,
+                            admission_date = h.admission_date,
+                            discharge_date = h.discharge_date,
+                            ward_id = w.ward_ID,
+                            memo = h.memo
+                        }).FirstOrDefault();
             return View(hosp);
         }
 
@@ -136,19 +129,18 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
-                var h = new hosp_history
-                {
-                    id= hospDTO.id,
-                    medical_record_id = hospDTO.medical_record_id,
-                    admission_date = hospDTO.admission_date,
-                    discharge_date = hospDTO.discharge_date,
-                    nursing_record_id = hospDTO.nursing_record_id,
-                    ward_id = hospDTO.ward_id,
-                    memo = hospDTO.memo
-                };
-                _context.Update(h);
-                await _context.SaveChangesAsync();
-                
+            var h = new hosp_history
+            {
+                id = hospDTO.id,
+                medical_record_id = hospDTO.medical_record_id,
+                admission_date = hospDTO.admission_date,
+                discharge_date = hospDTO.discharge_date,
+                ward_id = hospDTO.ward_id,
+                memo = hospDTO.memo
+            };
+            _context.Update(h);
+            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -162,7 +154,6 @@ namespace Tailstale.Controllers
 
             var hosp_history = await _context.hosp_histories
                 .Include(h => h.medical_record)
-                .Include(h => h.nursing_record)
                 .Include(h => h.ward)
                 .FirstOrDefaultAsync(m => m.id == id);
             if (hosp_history == null)

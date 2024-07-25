@@ -1,48 +1,58 @@
-﻿@model Tailstale.Models.nursing_record
+﻿@model IEnumerable<Tailstale.MedRecordDTO.NursingDTO>
 
 @{
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1>Details?????????????????????????????????????????</h1>
 
-<div>
-    <h4>nursing_record</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.datetime)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.datetime)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.weight)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.weight)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.memo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.memo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.pet)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.pet.pet_ID)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.vital_sign_record)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.vital_sign_record.id)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+<span>
+    <a asp-controller="medical_record" asp-action="Index">病歷紀錄</a>
+    <a asp-controller="Hosp" asp-action="Index">住院紀錄</a>
+</span>
+<br />
+<br />
+<p>
+    <a asp-action="Create">新增記錄</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.datetime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.weight)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.VS_id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.memo)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.datetime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.weight)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VS_id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.memo)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.id">修改</a> |
+                    <a asp-action="Delete" asp-route-id="@item.id">刪除記錄</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
