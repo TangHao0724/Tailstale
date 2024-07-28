@@ -34,6 +34,7 @@ namespace Tailstale.Controllers
                                on v_info.business_img_ID equals b_img.ID
                                join b_img_types in _context.business_img_types
                                on b_img.img_type_id equals b_img_types.ID
+                               orderby v_info.employment_status descending
                                select new vet_information_ViewModel
                                {
                                    vet_ID = v_info.vet_ID,
@@ -48,7 +49,8 @@ namespace Tailstale.Controllers
                                    business_img= b_img,
                                    img_type_id = b_img_types.ID,
                                    URL = b_img.URL,
-                                   name = b_img.name
+                                   name = b_img.name,
+                                   employment_status=v_info.employment_status,
                                };
 
                 return View(v_Infovm);
@@ -89,27 +91,19 @@ namespace Tailstale.Controllers
                                       business_img = b_img,
                                       img_type_id = b_img_types.ID,
                                       URL = b_img.URL,
-                                      name = b_img.name
+                                      name = b_img.name,
+                                      employment_status=v_info.employment_status,
                                   }).FirstOrDefaultAsync();
-
-
-            //var vet_information = await _context.vet_informations
-            //    .Include(v => v.business)
-            //    .Include(v => v.department)
-            //    .FirstOrDefaultAsync(m => m.vet_ID == id);
-            //if (vet_information == null)
-            //{
-            //    return NotFound();
-            //}
 
             return View(v_Infovm);
         }
 
         // GET: vet_information/Create
-        public IActionResult Create()
+        public IActionResult Create(int id)
         {
-            ViewData["business_ID"] = new SelectList(_context.businesses.Where(b=>b.type_ID==3), "ID", "name");
-            ViewData["department_ID"] = new SelectList(_context.departments, "department_ID", "department_name");
+            ViewBag.typename = new SelectList(_context.business_img_types.Where(t=>t.FK_business_id==id), "ID", "typename");
+            ViewData["business_ID"] = new SelectList(_context.businesses.Where(b=>b.ID==id), "ID", "name");
+            ViewData["department_ID"] = new SelectList(_context.departments.Where(d=>d.business_ID==id), "department_ID", "department_name");
             return View();
         }
 
@@ -151,16 +145,18 @@ namespace Tailstale.Controllers
                     }
                     // 更新圖片路徑
                     v_Infovm.URL = uniqueFileName;
+                    //v_Infovm.name = uniqueFileName;
                 }
 
                 business_img business_Img = new business_img
                 {
                     URL = v_Infovm.URL,
-                    img_type_id = v_Infovm.img_type_id,
-                    name = v_Infovm.name,
+                    //name = v_Infovm.name,
+                    name = v_Infovm.URL,
+                    img_type_id=v_Infovm.img_type_id,
                 };
                 _context.Add(business_Img);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();                
 
                 vet_information vet_Information = new vet_information
                 {
@@ -170,6 +166,7 @@ namespace Tailstale.Controllers
                     department_ID = v_Infovm.department_ID,
                     profile = v_Infovm.profile,
                     business_img_ID = business_Img.ID,
+                    employment_status=v_Infovm.employment_status,
                 };
                 _context.Add(vet_Information);
                 await _context.SaveChangesAsync();
@@ -178,6 +175,7 @@ namespace Tailstale.Controllers
             {
                 return View(v_Infovm);
             }
+            ViewBag.typename= new SelectList(_context.business_img_types, "ID","typename");
             ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", v_Infovm.business_ID);
             ViewData["department_ID"] = new SelectList(_context.departments, "department_ID", "department_name", v_Infovm.department_ID);
             return RedirectToAction(nameof(Index));
@@ -211,24 +209,11 @@ namespace Tailstale.Controllers
                                business_img = b_img,
                                img_type_id = b_img_types.ID,
                                URL = b_img.URL,
-                               name = b_img.name
+                               name = b_img.name,
+                               employment_status=v_info.employment_status,
                            }).FirstOrDefaultAsync();
 
-            //if (v_Infovm==null)
-            //{
-            //    return NotFound();
-            //}
-
-            //var vet_information = await _context.vet_informations.FindAsync(v_Infovm.vet_ID);
-            //var business_img=await _context.business_imgs.FindAsync(v_Infovm.business_img_ID);
-            //if (vet_information == null || business_img==null)
-            //{
-            //    return NotFound();
-            //}
-            //var business = await _context.businesses.FindAsync(id);
-
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name",v_Infovm.business_ID);
-
+            ViewData["business_ID"] = new SelectList(_context.businesses.Where(b=>b.type_ID==3), "ID", "name");
             ViewData["department_ID"] = new SelectList(_context.departments, "department_ID", "department_name", v_Infovm.department_ID);
 
             return View(v_Infovm);
@@ -239,7 +224,7 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("vet_ID,vet_name,business_ID,license_number,department_ID,business_img_ID,profile,ID,img_type_id,URL,name")] vet_information_ViewModel v_Infovm)
+        public async Task<IActionResult> Edit(int id, [Bind("vet_ID,vet_name,business_ID,license_number,department_ID,business_img_ID,profile,ID,img_type_id,URL,name,employment_status")] vet_information_ViewModel v_Infovm)
         {
             if (id != v_Infovm.vet_ID)
             {
@@ -287,7 +272,7 @@ namespace Tailstale.Controllers
                     }
                     // 刪除舊圖片文件（如果有）
                     // 判斷是否原有圖片
-                    if (!string.IsNullOrEmpty(b_img.URL))
+                    if (Request.Form.Files["URL"] != null)
                     {
                         // 取得當前目錄,圖片存放路徑, 去掉路徑開頭的 / 符號，以防止路徑不正確
                         var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/lib/HospitalImages/Vet_Info", b_img.URL.TrimStart('/'));
@@ -307,7 +292,7 @@ namespace Tailstale.Controllers
                         ID= b_img.ID,
                         URL = v_Infovm.URL,
                         img_type_id = v_Infovm.img_type_id,
-                        name = v_Infovm.name,
+                        name = v_Infovm.URL,
                     };
                     _context.Update(business_ImgUpdate);
                     await _context.SaveChangesAsync();
@@ -320,6 +305,7 @@ namespace Tailstale.Controllers
                         license_number = v_Infovm.license_number,
                         department_ID = v_Infovm.department_ID,
                         profile = v_Infovm.profile,
+                        employment_status=v_Infovm.employment_status,
                         business_img_ID = business_ImgUpdate.ID,
                     };
                     _context.Update(vet_InformationUpdate);
@@ -340,6 +326,7 @@ namespace Tailstale.Controllers
             }
             ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", v_Infovm.business_ID);
             ViewData["department_ID"] = new SelectList(_context.departments, "department_ID", "department_name", v_Infovm.department_ID);
+            
             return RedirectToAction(nameof(Index));
         }
 

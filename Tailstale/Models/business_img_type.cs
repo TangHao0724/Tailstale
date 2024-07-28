@@ -17,5 +17,7 @@ public partial class business_img_type
 
     public virtual business FK_business { get; set; }
 
+    public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();
+
     public virtual ICollection<business_img> business_imgs { get; set; } = new List<business_img>();
 }

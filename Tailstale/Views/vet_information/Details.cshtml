@@ -1,4 +1,4 @@
-﻿@model vet_information_ViewModel
+﻿@* @model vet_information_ViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -68,14 +68,14 @@
                             <dt class="">
                                 @Html.DisplayNameFor(model => model.profile)
                             </dt>
-                            <dd class="">
-                                <textarea readonly>
+                            <dd>
+                                <pre style="height:200px;width:100%" class="border border-1 border-secondary" readonly>
                                     @Html.DisplayFor(model => model.profile)
-                            </textarea>
+                                </pre>
                             </dd>
                             <div class="text-end mt-3">
-                                <a asp-action="Edit" asp-route-id="@Model?.vet_ID" class="btn btn-outline-primary"><i class="bi bi-pencil-square"></i> 修改資料</a>
-                                <a asp-action="Index" class="btn btn-outline-primary"><i class="bi bi-card-list"></i> 返回醫師列表</a>
+                                <a asp-action="Edit" asp-route-id="@Model?.vet_ID" class="btn btn-outline-primary">修改資料</a>
+                                <a asp-action="Index" class="btn btn-outline-primary">返回醫師列表</a>
                             </div>
                         </dl>
                     </div>
@@ -85,58 +85,6 @@
     </div>
 </div>
 
-
-
-
-@* <div>
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.business)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.business.name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.department)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.department.department_name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.vet_name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.vet_name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.license_number)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.license_number)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.profile)
-        </dt>
-        <dd class = "col-sm-10">
-            <textarea>
-                @Html.DisplayFor(model =>model.profile)
-            </textarea>
-           @*  @Html.DisplayFor(model => model.profile) *@
-        @* </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.URL)
-        </dt>
-        <dd class="col-sm-10">
-            <partial name="_showimgPartial" model="Model.business_img">
-        </dd> *@
-   @*  </dl>
-</div> 
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.vet_ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
- *@
-
 @section Scripts
 {
  <script>
@@ -145,4 +93,4 @@
      });
 
  </script>
-}
+} *@

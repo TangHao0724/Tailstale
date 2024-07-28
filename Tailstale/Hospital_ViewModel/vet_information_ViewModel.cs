@@ -36,9 +36,11 @@ namespace Tailstale.Hospital_ViewModel
 
         [Display(Name = "醫師照片")]
         public string? URL { get; set; }
-        
+
         [Display(Name = "照片名稱")]
         public string? name { get; set; }
+        [Display(Name ="狀態")]        
+        public bool employment_status { get; set; }
 
     }
 
@@ -63,15 +65,14 @@ namespace Tailstale.Hospital_ViewModel
         public int? department_ID { get; set; }
 
         [Display(Name = "醫師照片")]
-        //[Required(ErrorMessage = "請上傳醫師照片")]
-        public string? URL { get; set; }
-        public int? business_img_ID { get; set; }
+        public string? URL { get; set; }   
 
-        [Display(Name = "照片名稱")]
-        [Required(ErrorMessage = "照片名稱為必填欄位")]
-        public string name { get; set; }
-
+        [Display(Name = "影像類別")]
         public int? img_type_id { get; set; }
+
+        [Display(Name = "狀態")]
+        public bool employment_status { get; set; }
+
 
     }
 }

@@ -2,6 +2,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Tailstale.Models;
 
@@ -9,13 +10,12 @@ public partial class department
 {
     public int department_ID { get; set; }
 
-    public int? business_ID { get; set; }
-
+    
     public string department_name { get; set; }
 
-    public virtual business business { get; set; }
+    public int? business_ID { get; set; }
 
-    public virtual ICollection<outpatient_clinic> outpatient_clinics { get; set; } = new List<outpatient_clinic>();
+    public virtual business business { get; set; }
 
     public virtual ICollection<vet_information> vet_informations { get; set; } = new List<vet_information>();
 }

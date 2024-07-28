@@ -18,7 +18,7 @@
 
 }
 
-<h2>編輯醫師資料</h2>
+<h3>修改醫師資料</h3>
 <hr />
 
 <div class="row">
@@ -36,38 +36,44 @@
                         </div>                        
                     </div>
                     <div class="col-12 col-md-6">
-                        <div class="form-group">
+                        <div class="form-group mb-2">
                             <label asp-for="business_ID" class="control-label"></label>
                             <select asp-for="business_ID" class="form-control" asp-items="ViewBag.business_ID"></select>
                             <span asp-validation-for="business_ID" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
+                            <div class="form-group mb-2">
                             <label asp-for="department_ID" class="control-label"></label>
                             <select asp-for="department_ID" class="form-control" asp-items="ViewBag.department_ID"></select>
                             <span asp-validation-for="department_ID" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
+                            <div class="form-group mb-2">
                             <label asp-for="vet_name" class="control-label"></label>
                             <input asp-for="vet_name" class="form-control" />
                             <span asp-validation-for="vet_name" class="text-danger"></span>
                         </div>
-                        <div class="form-group">
+                            <div class="form-group mb-2">
                             <label asp-for="license_number" class="control-label"></label>
                             <input asp-for="license_number" class="form-control" />
                             <span asp-validation-for="license_number" class="text-danger"></span>
                         </div>
-                        <div class="form-group mt-2">
-                                <input asp-for="URL" type="file" accept="image/*" class="form-control" />
-                                <span asp-validation-for="URL" class="text-danger"></span>
+                        <div class="form-group form-check mb-2">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" asp-for="employment_status" />在職
+                            </label>
+                        </div>
+                            <div class="form-group mt-2 mb-2">
+                            <label class="form-label">上傳新照片</label>
+                            <input asp-for="URL" type="file" accept="image/*" class="form-control" />
+                            <span asp-validation-for="URL" class="text-danger"></span>
                         </div>
                         <div class="form-group">
-                            <input asp-for="img_type_id" class="form-control" style="display:none" value="1" />
+                            <input asp-for="img_type_id" class="form-control" style="display:none"/>
                         </div>
-                        <div class="form-group">
+                        @* <div class="form-group">
                             <label asp-for="name" class="control-label"></label>
                             <input asp-for="name" class="form-control" />
                             <span asp-validation-for="name" class="text-danger"></span>
-                        </div>
+                        </div> *@
                     </div>
                 </div>
             </div>
@@ -80,7 +86,7 @@
                             <span asp-validation-for="profile" class="text-danger"></span>
                         </div>
                         <div class="form-group text-end mt-3">
-                            <input type="submit" value="儲存修改" class="btn btn-outline-primary" />
+                            <input type="submit" value="儲存修改" class="btn btn-outline-secondary me-1" />
                             <a asp-action="Index" class="btn btn-outline-primary">返回醫師列表</a>
                         </div>
                     </div>

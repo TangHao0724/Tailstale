@@ -1,0 +1,43 @@
+﻿@model Tailstale.Models.ward
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>新增病房</h2>
+<hr>
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group mb-3">
+                <label asp-for="business_ID" class="control-label"></label>
+                <select asp-for="business_ID" class="form-control" asp-items="ViewBag.business_ID"></select>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="ward_name" class="control-label"></label>
+                <input asp-for="ward_name" class="form-control" />
+                <span asp-validation-for="ward_name" class="text-danger"></span>
+            </div>            
+            <div class="form-group form-check mb-3">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="ward_status" />使用中
+                </label>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="memo" class="control-label"></label>
+                <input asp-for="memo" class="form-control" />
+                <span asp-validation-for="memo" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3 text-end">
+                <input type="submit" value="新增" class="btn btn-primary me-2" />
+                <a asp-action="Index" class="btn btn-outline-primary">返回病房列表</a>
+            </div>            
+        </form>
+    </div>
+</div>
+
+@section Scripts
+{
+
+}

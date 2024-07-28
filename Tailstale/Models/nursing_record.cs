@@ -19,13 +19,7 @@ public partial class nursing_record
 
     public int? vital_sign_record_id { get; set; }
 
-    public int? biological_test_id { get; set; }
-
-    public virtual biological_test biological_test { get; set; }
-
     public virtual ICollection<hosp_history> hosp_histories { get; set; } = new List<hosp_history>();
-
-    public virtual ICollection<medicine_order_detail> medicine_order_details { get; set; } = new List<medicine_order_detail>();
 
     public virtual pet pet { get; set; }
 

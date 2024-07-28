@@ -12,22 +12,16 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.name)
+            @Html.DisplayNameFor(model => model.outpatient_clinic_name)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.name)
+            @Html.DisplayFor(model => model.outpatient_clinic_name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.date)
+            @Html.DisplayNameFor(model => model.dayofweek)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.date)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.time)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.time)
+            @Html.DisplayFor(model => model.dayofweek)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.max_patients)
@@ -36,16 +30,10 @@
             @Html.DisplayFor(model => model.max_patients)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.business)
+            @Html.DisplayNameFor(model => model.outpatient_clinic_timeslot)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.business.name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.department)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.department.department_name)
+            @Html.DisplayFor(model => model.outpatient_clinic_timeslot.outpatient_clinic_timeslot_name)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.vet)

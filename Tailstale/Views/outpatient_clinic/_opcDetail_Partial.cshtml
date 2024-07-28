@@ -1,0 +1,60 @@
+﻿@model edit_outpatient_clinic_ViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container">
+<div class="row">
+    <div class="col-12">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="outpatient_clinic_ID" />
+            <div class="border border-1 border-secondary rounded py-2">
+                <div class="container mt-4">
+                    <div class="row">                        
+                        <div class="col-12">
+                            <div class="form-group mb-4" id="memo">
+                                    <h5>*看診時間如有變動，請直接將原門診停診，再建立新門診至門診列表</h5>
+                            </div>                            
+                            <div class="form-group mb-2">
+                                <label asp-for="outpatient_clinic_name" class="control-label"></label>
+                                <input asp-for="outpatient_clinic_name" class="form-control" />
+                                <span asp-validation-for="outpatient_clinic_name" class="text-danger"></span>
+                            </div>
+                            @* <div class="form-group mb-2">
+                                <label asp-for="vet_ID" class="control-label"></label>
+                                <select asp-for="vet_ID" class="form-control" asp-items="ViewBag.vet_ID"></select>
+                                <span asp-validation-for="vet_ID" class="text-danger"></span>
+                            </div> *@
+                            <div class="form-group mb-2">
+                                <label asp-for="max_patients" class="control-label"></label>
+                                <input asp-for="max_patients" class="form-control" />
+                                <span asp-validation-for="max_patients" class="text-danger"></span>
+                            </div>
+                            <div class="form-group form-check mb-2">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" asp-for="status" />停診
+                                    
+                                </label>
+                            </div>                                                 
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">                    
+                        <div class="text-end my-3">
+                            <input type="submit" value="儲存修改" class="btn btn-outline-secondary me-1" />
+                            <a asp-action="Index" class="btn btn-outline-primary">返回門診列表</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
+
+
+
