@@ -944,7 +944,7 @@ public partial class TailstaleContext : DbContext
             entity.Property(e => e.pet_weight).HasColumnType("decimal(5, 2)");
             entity.Property(e => e.vaccine)
                 .HasMaxLength(100)
-                .HasDefaultValue("無疫苗施打紀錄");
+                .HasDefaultValue("無疫苗施打記錄");
 
             entity.HasOne(d => d.keeper).WithMany(p => p.pets)
                 .HasForeignKey(d => d.keeper_ID)

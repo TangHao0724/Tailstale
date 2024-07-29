@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Tailstale.MedRecordDTO;
 using Tailstale.Models;
+using Microsoft.Extensions.Logging;
 
 namespace Tailstale.Controllers
 {
@@ -16,11 +16,12 @@ namespace Tailstale.Controllers
         }
 
         // GET: nursing_record
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Info()
         {
             var records = from n in _context.nursing_records
                           join p in _context.pets on n.pet_id equals p.pet_ID
-                          join v in _context.vital_sign_records on n.vital_sign_record_id equals v.id
+                          join v in _context.vital_sign_records on n.vital_sign_record_id equals v.id into vsrGroup
+                          from v in vsrGroup.DefaultIfEmpty()
                           join h in _context.hosp_histories on n.hosp_history_id equals h.id
                           orderby n.datetime descending
                           select new NursingDTO
@@ -31,43 +32,23 @@ namespace Tailstale.Controllers
                               datetime = n.datetime,
                               weight = n.weight,
                               memo = n.memo,
-                              VS_id = v.id,
+                              vs_id = v.id,
                           };
             return View(records);
         }
 
-        //原先的Details GET
-        // GET: nursing_record/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var nursing_record = await _context.nursing_records
-        //        .Include(n => n.pet)
-        //        .Include(n => n.vital_sign_record)
-        //        .FirstOrDefaultAsync(m => m.id == id);
-        //    if (nursing_record == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(nursing_record);
-        //}
-
         // GET: nursing_record/Details/5 ?GPT版
-        public async Task<IActionResult> Details(int? hosp_history_id)
+        public async Task<IActionResult> Details(int? id)
         {
-            if (hosp_history_id == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
             var records = from n in _context.nursing_records
                           join p in _context.pets on n.pet_id equals p.pet_ID
-                          join v in _context.vital_sign_records on n.vital_sign_record_id equals v.id
+                          join v in _context.vital_sign_records on n.vital_sign_record_id equals v.id into vsrGroup
+                          from v in vsrGroup.DefaultIfEmpty()
                           join h in _context.hosp_histories on n.hosp_history_id equals h.id
                           orderby n.datetime descending
                           select new NursingDTO
@@ -78,7 +59,7 @@ namespace Tailstale.Controllers
                               datetime = n.datetime,
                               weight = n.weight,
                               memo = n.memo,
-                              VS_id = v.id,
+                              vs_id = v.id
                           };
 
             if (records == null || !records.Any())
@@ -88,14 +69,14 @@ namespace Tailstale.Controllers
 
             return View(records);
         }
- 
 
-    // GET: nursing_record/Create
-    public IActionResult Create()
+
+        // GET: nursing_record/Create
+        public IActionResult Create()
         {
             ViewData["biological_test_id"] = new SelectList(_context.biological_tests, "id", "id");
+            ViewData["outpatient_clinic_id"] = new SelectList(_context.outpatient_clinics, "outpatient_clinic_ID", "name");
             ViewData["pet_id"] = new SelectList(_context.pets, "pet_ID", "pet_ID");
-            ViewData["vital_sign_record_id"] = new SelectList(_context.vital_sign_records, "id", "id");
             return View();
         }
 
@@ -104,18 +85,21 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,pet_id,datetime,weight,memo,vital_sign_record_id,biological_test_id")] nursing_record nursing_record)
+        public async Task<IActionResult> Create([FromForm] NursingDTO nursingDTO)
         {
-            if (ModelState.IsValid)
+            var a = new nursing_record
             {
-                _context.Add(nursing_record);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["biological_test_id"] = new SelectList(_context.biological_tests, "id", "id");
-            ViewData["pet_id"] = new SelectList(_context.pets, "pet_ID", "pet_ID", nursing_record.pet_id);
-            ViewData["vital_sign_record_id"] = new SelectList(_context.vital_sign_records, "id", "id", nursing_record.vital_sign_record_id);
-            return View(nursing_record);
+                id = nursingDTO.id,
+                pet_id = nursingDTO.pet_id,
+                hosp_history_id = nursingDTO.hosp_history_id,
+                datetime = nursingDTO.datetime,
+                weight = nursingDTO.weight,
+                memo = nursingDTO.memo,
+                vital_sign_record_id = nursingDTO.vs_id
+            };
+            _context.Add(a);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Info");
         }
 
         // GET: nursing_record/Edit/5
@@ -126,15 +110,28 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var nursing_record = await _context.nursing_records.FindAsync(id);
-            if (nursing_record == null)
+            var record = (from n in _context.nursing_records
+                          join p in _context.pets on n.pet_id equals p.pet_ID
+                          join v in _context.vital_sign_records on n.vital_sign_record_id equals v.id into vsrGroup
+                          from v in vsrGroup.DefaultIfEmpty()
+                          join h in _context.hosp_histories on n.hosp_history_id equals h.id
+                          where n.id == id
+                          select new NursingDTO
+                          {
+                              id = n.id,
+                              pet_id = p.pet_ID,
+                              hosp_history_id = h.id,
+                              datetime = n.datetime,
+                              weight = n.weight,
+                              memo = n.memo,
+                              vs_id = v.id
+                          }).FirstOrDefault();
+            if (record == null)
             {
                 return NotFound();
             }
-            ViewData["biological_test_id"] = new SelectList(_context.biological_tests, "id", "id");
-            ViewData["pet_id"] = new SelectList(_context.pets, "pet_ID", "pet_ID", nursing_record.pet_id);
-            ViewData["vital_sign_record_id"] = new SelectList(_context.vital_sign_records, "id", "id", nursing_record.vital_sign_record_id);
-            return View(nursing_record);
+
+            return View(record);
         }
 
         // POST: nursing_record/Edit/5
@@ -142,72 +139,81 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,pet_id,datetime,weight,memo,vital_sign_record_id,biological_test_id")] nursing_record nursing_record)
+        public async Task<IActionResult> Edit(int id, [FromForm] NursingDTO nursingDTO)
         {
-            if (id != nursing_record.id)
+            if (id != nursingDTO.id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var record = new nursing_record
             {
-                try
-                {
-                    _context.Update(nursing_record);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!nursing_recordExists(nursing_record.id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["biological_test_id"] = new SelectList(_context.biological_tests, "id", "id");
-            ViewData["pet_id"] = new SelectList(_context.pets, "pet_ID", "pet_ID", nursing_record.pet_id);
-            ViewData["vital_sign_record_id"] = new SelectList(_context.vital_sign_records, "id", "id", nursing_record.vital_sign_record_id);
-            return View(nursing_record);
+                id = nursingDTO.id,
+                pet_id = nursingDTO.pet_id,
+                hosp_history_id = nursingDTO.id,
+                datetime = nursingDTO.datetime,
+                weight = nursingDTO.weight,
+                memo = nursingDTO.memo,
+                vital_sign_record_id = nursingDTO.vs_id
+            };
+            _context.Update(record);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Info");
         }
 
-        // GET: nursing_record/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        ////GET: nursing_record/Delete/5
+        //public async Task<IActionResult> Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var nursing_record = await _context.nursing_records
-                .Include(n => n.pet)
-                .Include(n => n.vital_sign_record)
-                .FirstOrDefaultAsync(m => m.id == id);
-            if (nursing_record == null)
-            {
-                return NotFound();
-            }
+        //    var records = from n in _context.nursing_records
+        //                  join p in _context.pets on n.pet_id equals p.pet_ID
+        //                  join v in _context.vital_sign_records on n.vital_sign_record_id equals v.id
+        //                  join h in _context.hosp_histories on n.hosp_history_id equals h.id
+        //                  orderby n.datetime descending
+        //                  where n.id == id
+        //                  select new NursingDTO
+        //                  {
+        //                      id = n.id,
+        //                      pet_id = p.pet_ID,
+        //                      hosp_history_id = h.id,
+        //                      datetime = n.datetime,
+        //                      weight = n.weight,
+        //                      memo = n.memo,
+        //                      vs_id = v.id,
+        //                  };
+        //    if (records == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(nursing_record);
-        }
+        //    return View(records);
+        //}
 
         // POST: nursing_record/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var nursing_record = await _context.nursing_records.FindAsync(id);
-            if (nursing_record != null)
+            if (nursing_record == null)
+            {
+                return Json(new { success = false, message = "找不到記錄" });
+            }
+            try
             {
                 _context.nursing_records.Remove(nursing_record);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = "刪除成功" });
             }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            catch (Exception ex)
+            {
+                // 記錄異常
+                return Json(new { success = false, message = "刪除失敗" });
+            }
         }
 
         private bool nursing_recordExists(int id)

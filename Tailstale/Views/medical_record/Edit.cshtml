@@ -6,17 +6,16 @@
 }
 
 <h1>修改病歷</h1>
-@*順序不用跟DTO一樣*@
 
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="id" />@*藏id*@
+            <input type="hidden" asp-for="id" />
             <div class="form-group">
                 <label asp-for="id" class="control-label"></label>
-                <input asp-for="id" class="form-control" readonly />@*readonly唯獨*@
+                <input asp-for="id" class="form-control" readonly />
                 <span asp-validation-for="id" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -71,7 +70,6 @@
             </div>
             <div class="form-group">
                 <button id="submit" type="submit" class="btn btn-primary">儲存</button>
-                @* <input type="submit" value="儲存" class="btn btn-primary" /> *@
             </div>
         </form>
     </div>

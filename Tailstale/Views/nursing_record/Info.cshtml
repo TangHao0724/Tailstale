@@ -1,17 +1,20 @@
 ﻿@model IEnumerable<Tailstale.MedRecordDTO.NursingDTO>
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Info";
 }
 
-<h1>nursing record Details?????????????????????????????????????????</h1>
 
+<h1>護理記錄</h1>
 <span>
     <a asp-controller="medical_record" asp-action="Index">病歷記錄</a>
     <a asp-controller="Hosp" asp-action="Index">住院記錄</a>
 </span>
 <br />
 <br />
+<p>
+    <a asp-action="Create">新增記錄</a>
+</p>
 <table class="table">
     <thead>
         <tr>
@@ -47,9 +50,35 @@
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.id">修改</a> |
-                    <a asp-action="Delete" asp-route-id="@item.id" onclick="return confirm('確定刪除？')">刪除</a>
+                    <a href="#" onclick="deleteRecord(@item.id)">刪除</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+@Html.AntiForgeryToken()
+
+@section Scripts {
+    <script>
+        function deleteRecord(id) {
+            if (confirm('確定刪除嗎？')) {
+                $.ajax({
+                    url: '@Url.Action("Delete", "nursing_record")/' + id,
+                    type: 'POST',
+                    data: { "__RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                    success: function (result) {
+                        if (result.success) {
+                            alert(result.message);
+                            location.reload();
+                        } else {
+                            alert(result.message || '刪除失敗');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert('發生錯誤：' + (xhr.responseJSON ? xhr.responseJSON.message : error));
+                    }
+                });
+            }
+        }
+    </script>
+}

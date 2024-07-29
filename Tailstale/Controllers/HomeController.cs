@@ -7,15 +7,19 @@ namespace Tailstale.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly TailstaleContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+
+        public HomeController(ILogger<HomeController> logger, TailstaleContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var r = _context.keepers.Select(k => k).ToList();
+            return View(r);
         }
 
         public IActionResult Privacy()

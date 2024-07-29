@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Tailstale.Models;
 
 namespace Tailstale.MedRecordDTO
 {
@@ -11,7 +10,7 @@ namespace Tailstale.MedRecordDTO
         [Display(Name = "寵物id")]
         public int? pet_id { get; set; }
 
-        [Display(Name = "住院紀錄")]
+        [Display(Name = "住院記錄")]
         public int hosp_history_id { get; set; }
 
         [Display(Name = "時間")]
@@ -20,10 +19,13 @@ namespace Tailstale.MedRecordDTO
         [Display(Name = "體重")]
         public decimal? weight { get; set; }
 
-        [Display(Name = "治療項目")]
+        [Display(Name = "內容")]
         public string? memo { get; set; }
 
         [Display(Name = "生命徵象")]
-        public int? VS_id { get; set; }
+        public int? vs_id { get; set; }
+        
+        [Display(Name = "生命徵象備註")]
+        public string vs_memo { get; set; }
     }
 }

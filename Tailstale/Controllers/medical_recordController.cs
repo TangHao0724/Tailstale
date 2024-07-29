@@ -25,7 +25,7 @@ namespace Tailstale.Controllers
                           orderby m.created_at descending
                           select new MedicalRecordDTO
                           {  //DTO設的名字 = table抓出來的名字
-                              id = m.id,
+                              id=m.id,
                               keeper_id = k.ID,
                               keeper_num = k.phone,
                               pet_id = p.pet_ID,
@@ -54,7 +54,7 @@ namespace Tailstale.Controllers
                                   where r.id == id /*鎖定id*/
                                   select new MedicalRecordDTO
                                   {
-                                      id = r.id,
+                                      id=r.id,
                                       keeper_id = k.ID,
                                       keeper_name = k.name,
                                       pet_id = p.pet_ID,
@@ -96,7 +96,6 @@ namespace Tailstale.Controllers
         {
             var a = new medical_record
             {
-                id = medicalRecordDTO.id,
                 pet_id = medicalRecordDTO.pet_id,
                 created_at = medicalRecordDTO.created_at,
                 weight = medicalRecordDTO.weight,
@@ -120,7 +119,7 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var medical_record = (from e in _context.medical_records
+            var record = (from e in _context.medical_records
                                   join o in _context.outpatient_clinics on e.outpatient_clinic_id equals o.outpatient_clinic_ID
                                   join p in _context.pets on e.pet_id equals p.pet_ID
                                   join k in _context.keepers on p.keeper_ID equals k.ID
@@ -140,11 +139,11 @@ namespace Tailstale.Controllers
                                       fee = e.fee
                                   }).FirstOrDefault(); //FirstOrDefault嗽嘎嘍啊
 
-            if (medical_record == null)
+            if (record == null)
             {
                 return NotFound();
             }
-            return View(medical_record);
+            return View(record);
         }
 
         // POST: medical_record/Edit/5
@@ -164,7 +163,6 @@ namespace Tailstale.Controllers
                 //{
                     var a = new medical_record
                     {
-                        id = medicalRecordDTO.id,
                         pet_id = medicalRecordDTO.pet_id,
                         created_at = medicalRecordDTO.created_at,
                         weight = medicalRecordDTO.weight,
@@ -195,59 +193,58 @@ namespace Tailstale.Controllers
             //return View(medicalRecordDTO); //沒成功
         }
 
-        // GET: medical_record/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        // GET: medical_record/Delete/5   // medical_record不可以delete！！！
+        //public async Task<IActionResult> Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var medical_record = (from r in _context.medical_records
-                                  join o in _context.outpatient_clinics on r.outpatient_clinic_id equals o.outpatient_clinic_ID
-                                  join p in _context.pets on r.pet_id equals p.pet_ID
-                                  join k in _context.keepers on p.keeper_ID equals k.ID
-                                  where r.id == id
-                                  select new MedicalRecordDTO
-                                  {
-                                      id = r.id,
-                                      keeper_id = k.ID,
-                                      pet_id = p.pet_ID,
-                                      created_at = r.created_at,
-                                      outpatient_clinic_id = o.outpatient_clinic_ID,
-                                      weight = r.weight,
-                                      admission_process = r.admission_process,
-                                      diagnosis = r.diagnosis,
-                                      treatment = r.treatment,
-                                      memo = r.memo,
-                                  }).FirstOrDefault();
+        //    var medical_record = (from r in _context.medical_records
+        //                          join o in _context.outpatient_clinics on r.outpatient_clinic_id equals o.outpatient_clinic_ID
+        //                          join p in _context.pets on r.pet_id equals p.pet_ID
+        //                          join k in _context.keepers on p.keeper_ID equals k.ID
+        //                          where r.id == id
+        //                          select new MedicalRecordDTO
+        //                          {
+        //                              keeper_id = k.ID,
+        //                              pet_id = p.pet_ID,
+        //                              created_at = r.created_at,
+        //                              outpatient_clinic_id = o.outpatient_clinic_ID,
+        //                              weight = r.weight,
+        //                              admission_process = r.admission_process,
+        //                              diagnosis = r.diagnosis,
+        //                              treatment = r.treatment,
+        //                              memo = r.memo,
+        //                          }).FirstOrDefault();
 
-            if (medical_record == null)
-            {
-                return NotFound();
-            }
+        //    if (medical_record == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(medical_record);
-        }
+        //    return View(medical_record);
+        //}
 
-        // POST: medical_record/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var medical_record = await _context.medical_records.FindAsync(id);
-            if (medical_record != null)
-            {
-                _context.medical_records.Remove(medical_record);
-            }
+        //// POST: medical_record/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    var medical_record = await _context.medical_records.FindAsync(id);
+        //    if (medical_record != null)
+        //    {
+        //        _context.medical_records.Remove(medical_record);
+        //    }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
 
-        private bool medical_recordExists(int id)
-        {
-            return _context.medical_records.Any(e => e.id == id);
-        }
+        //private bool medical_recordExists(int id)
+        //{
+        //    return _context.medical_records.Any(e => e.id == id);
+        //}
     }
 }

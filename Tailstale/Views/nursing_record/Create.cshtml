@@ -1,4 +1,4 @@
-﻿@model Tailstale.Models.nursing_record
+﻿@model Tailstale.MedRecordDTO.NursingDTO
 
 @{
     ViewData["Title"] = "Create";
@@ -15,6 +15,12 @@
             <div class="form-group">
                 <label asp-for="pet_id" class="control-label"></label>
                 <select asp-for="pet_id" class ="form-control" asp-items="ViewBag.pet_id"></select>
+                <span asp-validation-for="pet_id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="hosp_history_id" class="control-label"></label>
+                <input asp-for="hosp_history_id" class="form-control" />
+                <span asp-validation-for="hosp_history_id" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="datetime" class="control-label"></label>
@@ -32,8 +38,8 @@
                 <span asp-validation-for="memo" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="vital_sign_record_id" class="control-label"></label>
-                <select asp-for="vital_sign_record_id" class ="form-control" asp-items="ViewBag.vital_sign_record_id"></select>
+                <label asp-for="vs_id" class="control-label"></label>
+                <select asp-for="vs_id" class="form-control" asp-items="ViewBag.vital_sign_record_id"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="新增" class="btn btn-primary" />
@@ -43,7 +49,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">返回列表</a>
+    <a asp-action="Info">返回</a>
 </div>
 
 @section Scripts {

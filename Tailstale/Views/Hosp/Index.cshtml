@@ -7,7 +7,7 @@
 <h1>住院記錄</h1>
 <span>
     <a asp-controller="medical_record" asp-action="Index">病歷記錄</a>
-    <a asp-controller="nursing_record" asp-action="Index">護理記錄</a>
+    <a asp-controller="nursing_record" asp-action="Info">護理記錄</a>
 </span>
 <br />
 <br />
@@ -24,7 +24,7 @@
                 @Html.DisplayNameFor(model => model.medical_record_id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.nursing_record_id)
+                @Html.DisplayNameFor(model => model.medical_record_id)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ward_id)
@@ -39,19 +39,18 @@
         {
             <tr>
                 <td>
-                    @* 顯示：入院時間，超連結：Details *@
-                    <a href="Hosp/Details/@item.id">@item.admission_date</a>
+                    @Html.DisplayFor(moitemdelItem => item.admission_date)
                 </td>
                 <td>
                     @Html.DisplayFor(moitemdelItem => item.discharge_date)
                 </td>
                 <td>
-                    @*住院的看診紀錄*@
-                    <a href="/medical_record/Details/@item.medical_record_id">@item.created_at</a>
+                    @Html.DisplayFor(moitemdelItem => item.medical_record_id)
                 </td>
                 <td>
-                    @*住院的護理紀錄*@
-                    <a href="/nursing_record/Details/@item.id">詳細記錄</a>
+                    @*住院的看診記錄*@
+                    <a href="/medical_record/Details/@item.medical_record_id">@item.created_at</a>
+                </td>
                 <td>
                         @Html.DisplayFor(modelItem => item.ward_id)
                 </td>
@@ -59,6 +58,7 @@
                         @Html.DisplayFor(modelItem => item.memo)
                 </td>
                 <td>
+                    <a asp-controller="nursing_record" asp-action="Info" asp-route-id="@item.id">護理記錄</a>
                     <a asp-action="Edit" asp-route-id="@item.id">修改</a>
                 </td>
             </tr>
