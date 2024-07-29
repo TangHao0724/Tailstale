@@ -69,21 +69,21 @@ namespace Tailstale.Controllers
         }
 
         // GET: ward/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> Edit(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var ward = await _context.wards.FindAsync(id);
-            if (ward == null)
-            {
-                return NotFound();
-            }
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", ward.business_ID);
-            return View(ward);
-        }
+        //    var ward = await _context.wards.FindAsync(id);
+        //    if (ward == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", ward.business_ID);
+        //    return View(ward);
+        //}
 
         // POST: ward/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -92,17 +92,26 @@ namespace Tailstale.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ward_ID,ward_name,business_ID,ward_status,memo")] ward ward)
         {
-            if (id != ward.ward_ID)
+            if (ward.ward_ID == 0)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
+                var current_ward = _context.wards.Find(ward.ward_ID);
+
+                current_ward.ward_ID = ward.ward_ID;
+                current_ward.ward_name = ward.ward_name;
+                current_ward.business_ID = ward.business_ID;
+                current_ward.ward_status = ward.ward_status;
+                current_ward.memo = ward.memo;
+
                 try
                 {
-                    _context.Update(ward);
+                    _context.Update(current_ward);
                     await _context.SaveChangesAsync();
+                    
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -117,10 +126,8 @@ namespace Tailstale.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", ward.business_ID);
-            return View(ward);
+            return NotFound();
         }
-
         // GET: ward/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {

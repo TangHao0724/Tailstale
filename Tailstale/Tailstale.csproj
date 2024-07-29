@@ -27,4 +27,11 @@
     <Folder Include="wwwroot\lib\HospitalImages\Vet_Info\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\ward\_wardEdit_Partial.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

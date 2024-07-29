@@ -232,7 +232,7 @@
 
                         cell.innerHTML = `<div class="date">${date}</div><div class="shift-content" id="${cellDate}" data-dayofweek="${j}"></div>`;
                         cell.classList.add('shift');
-                        loadShifts(cellDate); // 載入該日期的班次數據
+                        //loadShifts(cellDate); // 載入該日期的門診數據(可刪除)
                         date++;
                     }
                 }
@@ -240,8 +240,6 @@
                     break; // 如果日期超過了當月天數，退出循環
                 }
             }
-        
-
 
             // 為每個日期單元格添加點擊事件
             document.querySelectorAll('.shift').forEach(cell => {
@@ -250,7 +248,8 @@
                         return; // 如果點擊的是刪除按鈕，不執行後續操作
                     }
                     currentCell = this;
-                    shiftModal.show(); // 顯示班次選擇模態框
+                    console.log(currentCell.id);
+                    shiftModal.show(); // 顯示班次選擇彈出視窗
                     showOptionsfromOpc(e.target.dataset.dayofweek)
                 });
             });
@@ -259,61 +258,68 @@
         //生成當月門診表
         function showMonthlySchedule(opcsofselectedMonth) { 
             opcsofselectedMonth.forEach(result => {
-
                 var shiftContent = document.getElementById(result.date);
                 const shiftItem = document.createElement('div');
                 shiftItem.className = `shift-item`;
-                // 將資料庫查詢到的結果篩選需要的欄位後於該日期的單元格中顯示
+
+                //將資料庫查詢到的結果填入對應日期的單元格中
                 shiftItem.innerHTML = `
                     <span class="shift-text">[${result.outpatient_clinic_name}]<br>${result.vet_name}<br>${result.outpatient_clinic_timeslot_name}</span>                                     
                     <button class="btn-close btn-sm" aria-label="刪除"></button>
                 `;
                 shiftContent.appendChild(shiftItem);
 
-            })
+                //為刪除按鈕添加事件監聽器
+                shiftItem.querySelector('.btn-close').addEventListener('click', function (e) {
+                    e.stopPropagation(); // 阻止事件冒泡
+                    alert(e.target)
+                // localStorage.setItem('shiftData', JSON.stringify(shiftData)); // 更新本地存儲
+                });
+            });
         }
         
-        // 載入特定日期的班次
-        function loadShifts(date) {
-            const shiftContent = document.getElementById(date);
-            const shifts = shiftData[date] || [];
-            shifts.forEach(shift => {
-                addShiftToCell(shiftContent, shift, date);
-            });
-        }
+        // 載入特定日期的班次(可刪除)
+        // function loadShifts(date) {
+        //     const shiftContent = document.getElementById(date);
+        //     const shifts = shiftData[date] || [];
+        //     shifts.forEach(shift => {
+        //         addShiftToCell(shiftContent, shift, date);
+        //     });
+        // }
 
-        // 向日期單元格添加班次
-        function addShiftToCell(shiftContent, shift, date) {
-            const shiftItem = document.createElement('div');
-            shiftItem.className = `shift-item ${shift}`;
+        
+        
+        //向日期單元格添加門診
+        // function addShiftToCell(shiftContent, shift, date) {
+        //     const shiftItem = document.createElement('div');
+        //     shiftItem.className = `shift-item ${shift}`;
 
-            // 將 shift 字符串按逗號分割並用 <br> 連接
-            const shiftParts = shift.split(',');
-            const shiftText = shiftParts.join('<br>');
-            shiftItem.innerHTML = `
-                <span class="shift-text">${shiftText}</span>
-                <button class="btn-close btn-sm" aria-label="刪除"></button>
-            `;
-            shiftContent.appendChild(shiftItem);
-            
+        //     //將 shift 字符串按逗號分割並用 <br> 連接
+        //     const shiftParts = shift.split(',');
+        //     const shiftText = shiftParts.join('<br>');
+        //     shiftItem.innerHTML = `
+        //         <span class="shift-text">${shiftText}</span>
+        //         <button class="btn-close btn-sm" aria-label="刪除"></button>                
+        //     `;
+        //     shiftContent.appendChild(shiftItem);
 
-            // 為刪除按鈕添加事件監聽器
-            shiftItem.querySelector('.btn-close').addEventListener('click', function (e) {
-                e.stopPropagation(); // 阻止事件冒泡
-                shiftContent.removeChild(shiftItem);
-                const index = shiftData[date].indexOf(shift);
-                if (index > -1) {
-                    shiftData[date].splice(index, 1);
-                }
-                if (shiftData[date].length === 0) {
-                    delete shiftData[date];
-                }
-                localStorage.setItem('shiftData', JSON.stringify(shiftData)); // 更新本地存儲
-            });
-        }
+        //     //為刪除按鈕添加事件監聽器
+        //     shiftItem.querySelector('.btn-close').addEventListener('click', function (e) {
+        //         e.stopPropagation(); 阻止事件冒泡
+        //         shiftContent.removeChild(shiftItem);
+        //         const index = shiftData[date].indexOf(shift);
+        //         if (index > -1) {
+        //             shiftData[date].splice(index, 1);
+        //         }
+        //         if (shiftData[date].length === 0) {
+        //             delete shiftData[date];
+        //         }
+        //      localStorage.setItem('shiftData', JSON.stringify(shiftData)); 更新本地存儲
+        //     });
+        // }
 
        
-        // 初始化年份選擇下拉框
+        // 初始化年份月份下拉選單
         const yearSelect = document.getElementById('yearSelect');
         const monthSelect = document.getElementById('monthSelect');
 
@@ -326,8 +332,6 @@
                 option.selected = true;
             }
             yearSelect.appendChild(option);
-
-
         }
 
         // 更新日曆
@@ -339,12 +343,10 @@
             showCalenderofSelectedMonth();
         }
 
-        //從資料庫抓取被選取月份的資料
+        //從資料庫抓取所選取月份的資料
         function showCalenderofSelectedMonth() {
             const SelectedYear = document.getElementById('yearSelect').value;
             const SelectedMonth = document.getElementById('monthSelect').value;
-            //console.log(SelectedYear)
-            //console.log(SelectedMonth)
 
             const dateParam = `${SelectedYear}-${Number(SelectedMonth)+1}`;
             console.log(dateParam)
@@ -373,12 +375,32 @@
         document.addEventListener('DOMContentLoaded', function () {
             shiftModal = new bootstrap.Modal(document.getElementById('shiftModal'));
 
-            // 為添加班次按鈕添加事件監聽器
+            // 為加入門診按鈕添加事件監聽器
             document.getElementById('addShift').addEventListener('click', function () {
                 const shift = $('#shiftSelect option:selected').text();
                 if (shift && currentCell) {
-                    const date = currentCell.querySelector('.shift-content').id;
-                    const shiftContent = currentCell.querySelector('.shift-content');
+                    const date = currentCell.querySelector('.shift-content').id;                    
+                    const shiftContent = $('#shiftSelect').val();
+                    console.log(date)
+                    console.log(shiftContent)
+
+                    var opcId_date={                       
+                        outpatient_clinic_ID: Number(shiftContent),
+                        date:date,                        
+                    };
+                    console.log(opcId_date)
+
+                    $.ajax({
+                        type:'POST',
+                        url: 'daily_outpatient_clinic_schedule/Create',
+                        data: JSON.stringify(opcId_date),
+                        contentType:'application/json'
+                    }).done(data => {
+                     //alert(data)
+                        showCalenderofSelectedMonth();
+                    }).fail(err=>{
+                     alert('呼叫失敗')
+                    });
 
                     if (!shiftData[date]) {
                         shiftData[date] = [];
@@ -386,7 +408,7 @@
                     shiftData[date].push(shift);
                     localStorage.setItem('shiftData', JSON.stringify(shiftData)); // 更新本地存儲
 
-                    addShiftToCell(shiftContent, shift, date);
+                    //addShiftToCell(shiftContent, shift, date);
                     shiftModal.hide(); // 隱藏模態框
                 }
             });
@@ -414,7 +436,40 @@
             });
         }
 
+        // 向日期單元格添加門診(如無用可刪除)
+        // function addShiftToclickedCell(shiftContent, shift, date) {
+
+        //     const clickedDate = document.querySelector('.shift').id
+        //     const shiftItem = document.createElement('div');
+        //     shiftItem.className = `shift-item ${shift}`;
+
+        //     $.ajax({
+        //         type: 'POST',
+        //         url: 'daily_outpatient_clinic_schedule/Create'
+        //     }).done(data => {
+        //         alert(data)
+        //     }).fail(err => {
+        //         alert('呼叫失敗')
+        //     });
+
+        //     //將 shift 字符串按逗號分割並用 <br> 連接
+        //     const shiftParts = shift.split(',');
+        //     const shiftText = shiftParts.join('<br>');
+        //     shiftItem.innerHTML = `
+        //                 <span class="shift-text">${shiftText}</span>
+        //                 <button class="btn-close btn-sm" aria-label="刪除"></button>
+        //             `;
+        //     shiftContent.appendChild(shiftItem);
+        // }
+
         //刪除被點選的當日門診
+        function deleteOpcfromschedule() {
+            var opc = document.querySelectorAll('.btn-close')
+            opc.addEventListener('click', function (outpatient_clinic_ID) {
+                alert('btn delete clicked')
+            })
+        }
+        
 
     </script>
 }

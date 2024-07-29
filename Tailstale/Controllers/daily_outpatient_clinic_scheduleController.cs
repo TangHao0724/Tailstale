@@ -34,8 +34,6 @@ namespace Tailstale.Controllers
         [HttpGet]
         public async Task<IEnumerable<daily_outpatient_clinic_schedule_DTO>> GetSchedule(DateOnly id)
         {
-            
-            
             var targetYear = id.Year;
             var targetMonth = id.Month;
 
@@ -115,17 +113,33 @@ namespace Tailstale.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("daily_outpatient_clinic_schedule_ID,outpatient_clinic_ID,date,created_date,daily_outpatient_clinic_schedule_status")] daily_outpatient_clinic_schedule daily_outpatient_clinic_schedule)
+        public async Task<bool> Create([FromBody]create_daily_outpatient_clinic_schedule_DTO daily_outpatient_clinic_schedule)
         {
-            if (ModelState.IsValid)
+            var docs1 = _context.daily_outpatient_clinic_schedules.Where(d => d.outpatient_clinic_ID == daily_outpatient_clinic_schedule.outpatient_clinic_ID);
+            if (docs1==null)
             {
-                _context.Add(daily_outpatient_clinic_schedule);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return false;
             }
-            ViewData["outpatient_clinic_ID"] = new SelectList(_context.outpatient_clinics, "outpatient_clinic_ID", "outpatient_clinic_name", daily_outpatient_clinic_schedule.outpatient_clinic_ID);
-            return View(daily_outpatient_clinic_schedule);
+            
+            daily_outpatient_clinic_schedule docs = new daily_outpatient_clinic_schedule()
+            {
+                date = daily_outpatient_clinic_schedule.date,
+                outpatient_clinic_ID = daily_outpatient_clinic_schedule.outpatient_clinic_ID,
+                daily_outpatient_clinic_schedule_status = true
+            };
+            try
+            {
+                _context.daily_outpatient_clinic_schedules.Add(docs);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException ex)
+            {
+                return false;
+            }
+            //_context.daily_outpatient_clinic_schedules.Add(docs);
+            //await _context.SaveChangesAsync();
+            return true;
+            
         }
 
         // GET: daily_outpatient_clinic_schedule/Edit/5
