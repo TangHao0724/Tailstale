@@ -2,7 +2,7 @@
 
 <form asp-action="SearchRoom" asp-controller="Hotels" method="post">
     
-    @* <input placeholder="你要去哪裡" type="text" id="destination" name="destination" /> *@
+    <input placeholder="你要去哪裡" type="text" id="destination" name="destination" />
 
     <label for="checkin">Check-in:</label>
     <input type="date" id="checkin" name="checkin" />
@@ -30,6 +30,7 @@
             var cO = document.getElementById("checkout").value;
             var Cat = document.getElementById("Cat").value;
             var Dog = document.getElementById("Dog").value;
+            var destination = document.getElementById("destination").value;
             const dtCI = new Date(cI);
             let checkIndate = dtCI.getFullYear() + "-" +
                 String(dtCI.getMonth() + 1).padStart(2, '0') + "-" +
