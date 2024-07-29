@@ -140,9 +140,8 @@ namespace Tailstale.Controllers
                 // 遍歷生成整個月份的營業時間資料
                 for (DateTime date = startDate; date <= endDate; date = date.AddDays(1))
                 {
-                    // 檢查是否為禮拜二到禮拜日，跳過禮拜一
-                    if (date.DayOfWeek != DayOfWeek.Monday)
-                    {
+                    
+                    
                         var businessHour = new Business_hour
                         {
                             business_ID = business_hour.business_ID,
@@ -154,7 +153,7 @@ namespace Tailstale.Controllers
 
                         _context.Add(businessHour);
                     }
-                }
+                
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
