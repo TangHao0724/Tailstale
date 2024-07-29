@@ -6,6 +6,7 @@ namespace Tailstale.Controllers
     {
         public IActionResult Index()
         {
+            ViewBag.loginID = HttpContext.Session.GetInt32("loginID");
             return View();
         }
     }

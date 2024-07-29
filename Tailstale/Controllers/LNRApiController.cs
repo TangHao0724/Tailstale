@@ -110,6 +110,7 @@ namespace Tailstale.Controllers
                 //回傳OK
 
             }
+
             //確認真的有該帳號
             if (!await _context.keepers.AnyAsync(m => m.email == DTO.email))
             {

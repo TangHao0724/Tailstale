@@ -2,68 +2,276 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    
 }
+
 <header>
     @await Component.InvokeAsync("NavBar")
 </header>
 
-<div class="container">
+<div class="container" id="app">
     <!--側攔-->
-    <aside>
-        <div class="col-3 rounded-2 shadow-sm mt-4 bg-light">
-            <div class="row">
-                @await Component.InvokeAsync("LUTag")
+    <div class="row mt-4">
+            <div class="col-2 rounded-2 shadow-sm  bg-light">
+                <div class="row">
+                    @await Component.InvokeAsync("LUTag")
+                </div>
+                <hr />
+                <div class="row mt-3">
+                    <a v-for="tab in tabs"
+                       :key="tab"
+                       :class="['nav-link link-dark-hover', { active: currentTab === tab }]"
+                       @@click="currentTab = tab">
+                        {{ tab }}
+                    </a>
+                </div>
             </div>
-            <hr />
-            <div class="row mt-3">
-                <!--按鈕列表-->
+        
 
-                
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link link-dark " aria-current="page">
-                            <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
-                            會員資訊
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link link-dark">
-                            <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                            所有寵物
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link link-dark">
-                            <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-                            歷史訂單
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link link-dark">
-                            <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-                            歷史貼文
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#" class="nav-link link-dark">
-                            <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
-                            相片集
-                        </a>
-                    </li>
-                </ul>
-            </div>
+        <div class="col-9">
+            <component :is="currentTabComponent" :userID= "@ViewBag.loginID"></component>
         </div>
-    </aside>
 
-    <div class="col-9">
-        <div class="row">
-            <div class="col-12">
-            </div>
-            <div class="col-12">
-            </div>
-            <div class="col-12">
-            </div>
-        </div>
     </div>
 
 </div>
+
+<script type="text/x-template" id="tab-Main">
+    <h1>Tab-main</h1>
+</script>
+
+<script type="text/x-template" id="tab-UInfo">
+    <!-- Modal_S -->
+    <!-- UserUpdateModal S-->
+    <div class="modal fade" id="UserUpdateModal" tabindex="-1" aria-labelledby="UserUpdateModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">修改會員資料</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="UpdateUser">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="updateName" name="updateName" placeholder="名稱">
+                            <label for="updateName" class="form-label">名稱</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" id="updateEmail" name="updateEmail" placeholder="電子信箱">
+                            <label for="updateEmail" class="form-label">電子信箱</label>
+                        </div>
+                        <div class=" form-floating mb-3">
+                            <input type="text" class="form-control" id="updateAddress" name="updateAddress" placeholder="聯絡地址">
+                            <label for="updateAddress" class="form-label">聯絡地址</label>
+
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="updatePhone" name="updatePhone" placeholder="聯絡電話">
+                            <label for="updatePhone" class="form-label">聯絡電話</label>
+
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="updatePassword" name="updatePassword" placeholder="密碼">
+                            <label for="updatePassword" class="form-label">請輸入密碼確認身分</label>
+
+                        </div>
+                        <button type="submit" class="btn btn-primary justify-content-end">修改資料</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- UserUpdateModal E-->
+    <!-- Modal_E -->
+
+    <div class="container-fluid">
+        <div class="row shadow rounded-2 align-content-center mb-4">
+            <h2>使用者資訊</h2>
+        </div>
+        <div class="row shadow rounded-2 align-content-center mb-4">
+            <div class="col-7">
+                <dl class="row">
+                    <dt class="col-4 col-md-12 ">使用者編號：</dt>
+                    <dd class="col-sm-10">
+                                <span>{{userid}}</span>
+                    </dd>
+
+                    <dt class="col-4 col-md-12">姓名：</dt>
+                    <dd class="col-sm-10">
+                        <span>{{user.name}}</span>
+                    </dd>
+
+                    <dt class="col-4 col-md-12">
+                        連絡電話：
+                    </dt>
+                    <dd class="col-sm-10">
+                        <span>{{user.phone}}</span>
+                    </dd>
+                    <dt class="col-4 col-md-12">
+                        電子信箱：
+                    </dt>
+                    <dd class="col-sm-10">
+                        <span>{{user.email}}</span>
+                    </dd>
+
+                    <dt class="col-4 col-md-12">
+                        連絡住址：
+                    </dt>
+                    <dd class="col-sm-10">
+                        <span>{{user.address}}</span>
+                    </dd>
+
+                    <dt class="col-4 col-md-12">
+                        會員狀態：
+                    </dt>
+                    <dd class="col-sm-10">
+                        <span>{{ user.status }}</span>
+                            
+                    </dd>
+
+                    <dt class="col-4 col-md-12">
+                        加入時間：
+                    </dt>
+                    <dd class="col-sm-10">
+                        <span>{{ user.created_at }}</span>
+                    </dd>
+                </dl>
+                    <button class="btn btn-outline-primary btn-sm mx-3" 
+                            type="button" data-bs-toggle="modal" 
+                            data-bs-target="#UserUpdateModal">
+                    修改會員資料
+                    </button>
+            </div>
+            <div class="col-4">
+                 使用者頭像
+            </div>
+         </div>
+    </div>
+</div>
+</script>
+
+<script type="text/x-template" id="tab-PInfo">
+        <!-- PUpdateModal S-->
+    <div class="modal fade" id="PUpdateModal" tabindex="-1" aria-labelledby="PUpdateModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">新增寵物</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="UpdateUser">
+                        <div class=" form-floating mb-3">
+                            <span>寵物相片：</span>
+                            <input class="form-control form-control-sm" id="formimg" type="file">
+                        </div>
+                        <hr />
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="name" name="name" placeholder="名稱">
+                            <label for="updateName" class="form-label">名稱</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" id="chip_ID" name="chip_ID" placeholder="晶片編號">
+                            <label for="updateEmail" class="form-label">晶片編號</label>
+                        </div>
+                        <div class=" form-floating mb-3">
+                            <input type="number" class="form-control" id="age" name="age" placeholder="年齡">
+                            <label for="age" class="form-label">年齡</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                             <span>生日：</span>
+                            <br />
+                            <input type="date" id="datepicker" id="birthday" name="birthday">
+                        </div>
+                        <div class=" form-floating mb-3">
+                                <select class="form-select form-select-sm" aria-label=".form-select-sm example" name="pet_type_ID">
+                                    <option v-for="pet in pet_types" :key="pet.id" :value="pet.id">
+                                        {{ pet.id }}
+                                    </option>
+                                </select>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <span>寵物性別：</span>
+                            <br />
+                              <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="0">
+                              <label class="form-check-label" for="inlineRadio1">公</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                              <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="1">
+                              <label class="form-check-label" for="inlineRadio2">母</label>
+                            </div>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="number"  step="0.01" class="form-control" id="pet_weight" name="pet_weight" placeholder="體重">
+                            <label for="pet_weight" class="form-label">體重</label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary justify-content-end">新增</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- PUpdateModal E-->
+    <div class="container-fluid">
+        <div class="row shadow rounded-2 align-content-center mb-4">
+            <h2>寵物資訊</h2>
+        </div>
+        <!--使用V-for重複載入寵物的卡片-->
+        <div class="row shadow rounded-2 align-content-center mb-4">
+            <h2>寵物資訊</h2>
+        </div>
+        <div class="row shadow rounded-2 align-content-center mb-4">
+            <button class="btn btn-outline-primary btn-sm mx-3"
+            type="button" data-bs-toggle="modal"
+            data-bs-target="#PUpdateModal">
+            新增寵物
+            </button>
+        </div>
+
+    </div>
+</script>
+
+<script type="text/x-template" id="tab-HisOrder">
+
+<div class="container-fluid">
+    <div class="row shadow rounded-2 align-content-center mb-4">
+        <h1>tab-HisOrder</h1>
+    </div>
+    <div class="row shadow rounded-2 align-content-center mb-4">
+        <div class="col-12">
+            <div>
+                <table class="table col-12 table-striped table-hover" id="imgTypeTable">
+                    <thead>
+                        <tr>
+                            <th>訂單編號</th>
+                            <th>商店名稱</th>
+                            <th>詳細內容</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+</script>
+<script type="text/x-template" id="tab-HisPost">
+    <h1>tab-HisPos</h1>
+</script>
+<script type="text/x-template" id="tab-Imgs">
+    <h1>ttab-Imgs</h1>
+</script>
+
+@section scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.js"></script>
+    <script src="~/js/userInfo/UserInfo.js"></script>
+}   
+
