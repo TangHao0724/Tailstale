@@ -15,7 +15,7 @@ public partial class daily_outpatient_clinic_schedule
 
     public DateOnly? created_date { get; set; }
 
-    public bool? daily_outpatient_clinic_schedule_status { get; set; }
+    public bool daily_outpatient_clinic_schedule_status { get; set; }
 
     public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 

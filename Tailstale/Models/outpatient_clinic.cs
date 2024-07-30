@@ -19,6 +19,8 @@ public partial class outpatient_clinic
 
     public int max_patients { get; set; }
 
+    public bool status { get; set; }
+
     public virtual ICollection<daily_outpatient_clinic_schedule> daily_outpatient_clinic_schedules { get; set; } = new List<daily_outpatient_clinic_schedule>();
 
     public virtual ICollection<medical_record> medical_records { get; set; } = new List<medical_record>();
