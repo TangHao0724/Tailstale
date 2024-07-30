@@ -42,7 +42,7 @@
 
                                 <h5 class="card-title"> @hotel.roomPrice 元</h5>
                                 <form asp-controller="Hotels" asp-action="SearchRoom" method="get">
-                                    <button type="submit" asp-controller="Hotels" asp-action="SearchRoom" class="btn-primary">查看訂房狀態</button>
+                                    <button type="submit" asp-route-id="@hotel.businesse.ID" asp-controller="Hotels" asp-action="SearchRoom" class="btn-primary">查看訂房狀態</button>
                                 </form>
                                
                             </div>
@@ -61,7 +61,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">@hotel.businesse.name</h5>
                                 <form asp-controller="Hotels" asp-action="SearchRoom" method="get">
-                                    <button type="submit" asp-controller="Hotels" asp-action="SearchRoom" class="btn-primary">查看訂房狀態</button>
+                                    <button type="submit" asp-route-id="@hotel.businesse.ID" asp-controller="Hotels" asp-action="SearchRoom" class="btn-primary">查看訂房狀態</button>
                                 </form>
                             </div>
                         </div>

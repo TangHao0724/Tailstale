@@ -1,1 +1,37 @@
-﻿searchroom
+﻿@model IEnumerable<Tailstale.Hotel_DTO.FindRoomResultDTO>
+
+
+<div class="container">
+    <div class="row">
+        <table class="table">
+
+            <button class="btn btn-danger">123</button>
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">客房類型</th>
+                    <th scope="col">適用物種</th>
+                    <th scope="col">@ViewBag.totalDays晚房價</th>
+                    <th scope="col">房間描述</th>
+                    <th scope="col">選擇數量</th>
+                    
+                </tr>
+               
+            </thead>
+            <tbody>
+                @foreach (var room in Model)
+                {
+                    <tr>
+                    <th>@room.roomType.roomType1</th>
+                    <td>@room.roomSpecies</td>
+                    <td>@ViewBag.totalDays</td>
+                    <td>@room.roomDescription</td>
+                    <td><input type="number" value="0" min="0" max="@room.roomReserve"/></td>
+                    
+                    </tr>
+                
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>

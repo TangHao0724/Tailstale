@@ -28,6 +28,7 @@ namespace Tailstale.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly TailstaleContext _context;
         private readonly IMapper _mapper;
+        public static List<FindRoomResultDTO> getMyResult;
 
        
         public HotelsController(TailstaleContext context, IMapper mapper, IWebHostEnvironment webHostEnvironment)
@@ -392,6 +393,7 @@ namespace Tailstale.Controllers
             };
             ViewBag.Cookie = cookie;
             var result = await RoomAvailabilityAndRoom(iD, Cat, Dog, address);
+            getMyResult = result.ToList();
             var dateCount = ViewBag.totalDays;
 
             var hotels =result.GroupBy(h => h.hotelID).Select(h => h.Key).ToList();
@@ -470,9 +472,10 @@ namespace Tailstale.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> SearchRoom(int hotelID)
+        public async Task<IActionResult> SearchRoom(int ID)
         {
-            var getMyResult = ViewBag.getRoomList;
+            var useResult = getMyResult.Where(m=>m.hotelID== ID).ToList();
+            ViewBag.listCount = useResult.Count;
 
             //var result = await RoomAvailabilityAndRoom(iD, Cat, Dog, address);
             // var hotels = await result.GroupBy(h => h.hotelID).Select(h => h.Key).ToList();
@@ -481,7 +484,7 @@ namespace Tailstale.Controllers
 
             // return PartialView("_SearchRoom", finalresult);
             //return View(findhotels);
-            return null;
+            return View(useResult);
         }
         //[HttpGet]
         //public async Task<IActionResult> SearchRoom([FromQuery] InputDate iD, int? Cat, int? Dog, string? address, int hotelID)
@@ -555,9 +558,10 @@ namespace Tailstale.Controllers
 
             }).ToList();
 
+           
             if (Cat < 0 && dog < 0)
             {
-                ViewBag.getRoomList = finalresult;
+                
                 return finalresult;
             }
             else
@@ -611,6 +615,7 @@ namespace Tailstale.Controllers
                 {
                     finalresult = finalresult.Where(r => dogRoomIds.Contains(r.roomID)).ToList();
                 }
+                
                 ViewBag.getRoomList = finalresult;
                 return finalresult;
             }
