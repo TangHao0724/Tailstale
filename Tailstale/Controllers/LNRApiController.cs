@@ -30,7 +30,7 @@ namespace Tailstale.Controllers
 
             if (await _context.keepers.AnyAsync(m => m.email == DTO.email))
             {
-                return Ok (new { Message = $"有重複帳號，請重新提交" });
+                return Ok (new { Message = $"1" });
             }
 
             //生成鹽
@@ -50,7 +50,7 @@ namespace Tailstale.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new { Message = $"完成帳號；{DTO.name}的建立。" });
+            return Ok(new { Message = $"0" });
         }
         //Business會員註冊
         [HttpPost("BRegister")]
@@ -60,7 +60,7 @@ namespace Tailstale.Controllers
 
             if (await _context.businesses.AnyAsync(m => m.email == DTO.email))
             {
-                return Ok(new { Message = $"有重複帳號，請重新提交" });
+                return Ok(new { Message = $"1" });
             }
 
             //生成鹽
@@ -81,7 +81,7 @@ namespace Tailstale.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(new { Message = $"完成帳號；{DTO.name}的建立。" });
+            return Ok(new { Message = $"0" });
         }
         //生成鹽
         /*
@@ -106,14 +106,15 @@ namespace Tailstale.Controllers
             {
                 HttpContext.Session.SetInt32("loginID",99999);//登入成功，建立session
                 HttpContext.Session.SetInt32("loginType", 99);
-                return Ok(new { Message = $"登入成功，admin" });
+                return Ok(new { Message = $"99" });
                 //回傳OK
 
             }
+
             //確認真的有該帳號
             if (!await _context.keepers.AnyAsync(m => m.email == DTO.email))
             {
-                return Ok(new { Message = $"帳號有誤，請重新提交" });
+                return Ok(new { Message = $"2" });
             }
 
             //將密碼加密
@@ -128,7 +129,7 @@ namespace Tailstale.Controllers
             
             if (stringHashedPsw != pswinDB)
             {
-                return Ok(new { Message = $"密碼有誤，請重新提交" });
+                return Ok(new { Message = $"1" });
             }
             int selectID = await _context.keepers.Where(m => m.email == DTO.email).Select(s => s.ID).FirstOrDefaultAsync();
 
@@ -138,7 +139,7 @@ namespace Tailstale.Controllers
 
 
             //return RedirectToAction("Privacy", "Home");
-            return Ok(new { Message = $"登入成功，用戶：{selectID}", LoginID = HttpContext.Session.GetInt32("loginID"), LoginType = HttpContext.Session.GetInt32("loginType") });
+            return Ok(new { Message = $"0"});
             //回傳OK
 
         }
@@ -151,14 +152,14 @@ namespace Tailstale.Controllers
             {
                 HttpContext.Session.SetInt32("loginID", 99999);//登入成功，建立session
                 HttpContext.Session.SetInt32("loginType", 99);
-                return Ok(new { Message = $"登入成功，admin" });
+                return Ok(new { Message = $"99" });
                 //回傳OK
 
             }
             //確認真的有該帳號
             if (!await _context.businesses.AnyAsync(m => m.email == DTO.email))
             {
-                return Ok(new { Message = $"帳號有誤，請重新提交" });
+                return Ok(new { Message = $"2" });
             }
 
             //將密碼加密
@@ -174,7 +175,7 @@ namespace Tailstale.Controllers
 
             if (stringhashedPsw != pswinDB)
             {
-                return Ok(new { Message = $"密碼有誤，請重新提交" });
+                return Ok(new { Message = $"1" });
             }
             int selectID = await _context.businesses.Where(m => m.email == DTO.email).Select(s => s.ID).FirstOrDefaultAsync();
 
@@ -183,7 +184,7 @@ namespace Tailstale.Controllers
             HttpContext.Session.SetInt32("loginID", selectID);//登入成功，建立session
             HttpContext.Session.SetInt32("loginType", (Int32)bType);
 
-            return Ok(new { Message = $"登入成功，用戶：{selectID}", LoginID = HttpContext.Session.GetInt32("loginID"), LoginType = HttpContext.Session.GetInt32("loginType") });
+            return Ok(new { Message = $"0" });
             //回傳OK
 
         }

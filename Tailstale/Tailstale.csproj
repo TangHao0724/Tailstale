@@ -53,6 +53,8 @@
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Folder Include="wwwroot\NewFolder\NewFolder\" />
+    <Folder Include="partial\" />
+    <Folder Include="wwwroot\js\components\" />
   </ItemGroup>
 
 </Project>

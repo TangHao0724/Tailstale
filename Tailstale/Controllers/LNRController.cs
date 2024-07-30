@@ -7,6 +7,7 @@ using Tailstale.Models;
 
 namespace Tailstale.Controllers
 {
+    [IsLoginFilter]
     public class LNRController : Controller
     {
         private readonly TailstaleContext _context;
@@ -32,7 +33,6 @@ namespace Tailstale.Controllers
         {
             return View();
         }
-        [IsLoginFilter]
         [IsHotelFilter]
         public async Task<IActionResult> HotelIndex()
         {
@@ -45,7 +45,6 @@ namespace Tailstale.Controllers
 
             return View();
         }
-        [IsLoginFilter]
         [IsSalonFilter]
         public async Task<IActionResult> SalonIndex()
         {
@@ -57,7 +56,6 @@ namespace Tailstale.Controllers
                     .FirstOrDefault();
             return View();
         }
-        [IsLoginFilter]
         [IsHospitalFilter]
         public async Task<IActionResult> HospitalIndex()
         {

@@ -15,7 +15,7 @@ namespace Tailstale.Filter
                 // 獲取當前的控制器和動作名稱
                 string controllerName = context.RouteData.Values["controller"].ToString();
                 string actionName = context.RouteData.Values["action"].ToString();
-                int userType = (Int32)context.HttpContext.Session.GetInt32("loginType");
+                int? userType = (Int32)context.HttpContext.Session.GetInt32("loginType");
 
                 //如果當前路由是登入頁面，則跳過檢查
                 //if (controllername == "login" && actionname == "login")
