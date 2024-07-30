@@ -1,0 +1,50 @@
+﻿@model Tailstale.Models.ward
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+@section Styles
+{
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+}
+
+<h2>病房資訊</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ward_ID" />
+            <div class="form-group mb-3">
+                <label asp-for="business_ID" class="control-label"></label>
+                <select asp-for="business_ID" class="form-control" asp-items="ViewBag.business_ID"></select>
+                <span asp-validation-for="business_ID" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="ward_name" class="control-label"></label>
+                <input asp-for="ward_name" class="form-control" />
+                <span asp-validation-for="ward_name" class="text-danger"></span>
+            </div>            
+            <div class="form-group form-check mb-3">                
+                <input class="form-check-input" asp-for="ward_status"/>使用中                
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="memo" class="control-label"></label>
+                <textarea asp-for="memo" class="form-control"></textarea>
+                <span asp-validation-for="memo" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3 text-end">
+                <input type="submit" value="儲存" class="btn btn-primary me-2" />
+                <a asp-action="Index" class="btn btn-outline-primary">返回病房列表</a>
+            </div>            
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts
+{
+    
+}

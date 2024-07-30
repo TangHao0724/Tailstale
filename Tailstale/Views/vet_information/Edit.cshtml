@@ -1,0 +1,201 @@
+﻿@model vet_information_ViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+@section Styles
+{
+   
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <style>
+        textarea {
+            height:200px;
+            width:100%;
+        }
+    </style>
+
+}
+
+<h3>修改醫師資料</h3>
+<hr />
+
+<div class="row">
+    <div class="col-12 col-md-8 offset-md-2 ">
+        <form asp-action="Edit" enctype="multipart/form-data" >
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="vet_ID" />
+            <input type="hidden" asp-for="business_img_ID" />
+        <div class="border border-1 border-secondary rounded px-4 py-4">
+            <div class="container mt-4">
+                <div class="row">
+                    <div class="col-12 col-md-6">
+                        <div class="form-group">
+                            <partial name="_showimgPartial">                                
+                        </div>                        
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="form-group mb-2">
+                            <label asp-for="business_ID" class="control-label"></label>
+                            <select asp-for="business_ID" class="form-control" asp-items="ViewBag.business_ID"></select>
+                            <span asp-validation-for="business_ID" class="text-danger"></span>
+                        </div>
+                            <div class="form-group mb-2">
+                            <label asp-for="department_ID" class="control-label"></label>
+                            <select asp-for="department_ID" class="form-control" asp-items="ViewBag.department_ID"></select>
+                            <span asp-validation-for="department_ID" class="text-danger"></span>
+                        </div>
+                            <div class="form-group mb-2">
+                            <label asp-for="vet_name" class="control-label"></label>
+                            <input asp-for="vet_name" class="form-control" />
+                            <span asp-validation-for="vet_name" class="text-danger"></span>
+                        </div>
+                            <div class="form-group mb-2">
+                            <label asp-for="license_number" class="control-label"></label>
+                            <input asp-for="license_number" class="form-control" />
+                            <span asp-validation-for="license_number" class="text-danger"></span>
+                        </div>
+                        <div class="form-group form-check mb-2">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" asp-for="employment_status" />在職
+                            </label>
+                        </div>
+                            <div class="form-group mt-2 mb-2">
+                            <label class="form-label">上傳新照片</label>
+                            <input asp-for="URL" type="file" accept="image/*" class="form-control" />
+                            <span asp-validation-for="URL" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <input asp-for="img_type_id" class="form-control" style="display:none"/>
+                        </div>
+                        @* <div class="form-group">
+                            <label asp-for="name" class="control-label"></label>
+                            <input asp-for="name" class="form-control" />
+                            <span asp-validation-for="name" class="text-danger"></span>
+                        </div> *@
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label asp-for="profile" class="control-label"></label>
+                            <textarea asp-for="profile" class="form-control"></textarea>
+                            <span asp-validation-for="profile" class="text-danger"></span>
+                        </div>
+                        <div class="form-group text-end mt-3">
+                            <input type="submit" value="儲存修改" class="btn btn-outline-secondary me-1" />
+                            <a asp-action="Index" class="btn btn-outline-primary">返回醫師列表</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+
+@* <div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" enctype="multipart/form-data" >
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="vet_ID" />
+            <div class="form-group">
+                <label asp-for="vet_name" class="control-label"></label>
+                <input asp-for="vet_name" class="form-control" />
+                <span asp-validation-for="vet_name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="business_ID" class="control-label"></label>
+                <select asp-for="business_ID" class="form-control" asp-items="ViewBag.business_ID"></select>
+                <span asp-validation-for="business_ID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="license_number" class="control-label"></label>
+                <input asp-for="license_number" class="form-control" />
+                <span asp-validation-for="license_number" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="department_ID" class="control-label"></label>
+                <select asp-for="department_ID" class="form-control" asp-items="ViewBag.department_ID"></select>
+                <span asp-validation-for="department_ID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="profile" class="control-label"></label>
+                <textarea asp-for="profile" class="form-control"></textarea>
+                <span asp-validation-for="profile" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <partial name="_showimgPartial">
+                @* <label asp-for="URL" class="control-label" id="vet_photo"></label> *@
+                @* <partial name="_showimgPartial" model="Model.business_img"> *@
+                @* <input asp-for="URL" type="file" accept="image/*" class="form-control" />
+                <span asp-validation-for="URL" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="name" class="control-label"></label>
+                <input asp-for="name" class="form-control" />
+                <span asp-validation-for="name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form> *@
+    @* </div>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>  *@
+
+@section Scripts 
+{
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $(document).ready(function () {
+            let imageTemp;
+            $('#URL').on("change", function () {
+                //alert('photochange');
+                // 等待0.1秒
+                setTimeout(function () {
+                    console.log($('URL').val());
+                    // 判斷是否有圖片
+                    if ($('#vet_photo').val() == "") {
+                        // 更換成沒照片的圖
+                        $('#vet_photo').prev().attr("src", "wwwroot/HospitalImages/No_Image.jpg");
+                    }
+                }, 100);
+                // 允許的副檔名
+                var allowType = "image.*";
+                // 上傳的第一個檔案
+                var file = this.files[0];
+                if (file != undefined) {
+                    // 抓取檔案的型態是否為allowType的格式
+                    if (file.type.match(allowType)) {
+                        // 讀取圖片
+                        var reader = new FileReader();
+                        // 檔案讀取完成的事件
+                        reader.onload = function (e) {
+                            // 選到#vet_photo的上一個元素修改src屬性
+                            $('#vet_photo').attr("src", e.target.result);
+                            // 選到#vet_photo的上一個元素修改title屬性
+                            $('#vet_photo').attr("title", file.name);
+                            imageTemp = e.target.result;
+                        }
+                        // 用圖片的URL讀取圖片
+                        reader.readAsDataURL(file);
+                    } else {
+                        alert("不支援的檔案上傳類型");
+                        // 清空內容
+                        $('#vet_photo').val('');
+                    }
+                }
+
+            });
+        });
+    </script>
+}

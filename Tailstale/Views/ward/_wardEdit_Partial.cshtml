@@ -1,0 +1,54 @@
+﻿@model ward
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="container">
+<div class="row">
+    <div class="col-12">
+        <form asp-action="Edit" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="ward_ID" />
+                <input type="hidden" asp-for="business_ID" />
+            <div class="border border-1 border-secondary rounded py-2">
+                <div class="container mt-4">
+                    <div class="row">                        
+                        <div class="col-12">
+                            <div class="form-group mb-4" id="memo1">
+                                    <h5>*病房規格如有變動，請直接將原病房停用，再建立新病房至院內病房列表</h5>
+                            </div>
+                               
+                                <div class="form-group mb-3">
+                                    <label asp-for="ward_name" class="control-label"></label>
+                                    <input asp-for="ward_name" class="form-control" autocomplete="off"/>
+                                    <span asp-validation-for="ward_name" class="text-danger"></span>
+                                </div>
+                                <div class="form-group form-check mb-3">
+                                    <input class="form-check-input" asp-for="ward_status" />停用
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label asp-for="memo" class="control-label"></label>
+                                    <textarea asp-for="memo" class="form-control"></textarea>
+                                    <span asp-validation-for="memo" class="text-danger"></span>
+                                </div>                                
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">                    
+                        <div class="text-end my-3">
+                            <input type="submit" value="儲存修改" class="btn btn-outline-secondary me-1" />
+                            <a asp-action="Index" class="btn btn-outline-primary">返回病房列表</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
+
+
+

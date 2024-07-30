@@ -1,0 +1,52 @@
+﻿@* @model Tailstale.Models.outpatient_clinic
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>outpatient_clinic</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="outpatient_clinic_ID" />
+            <div class="form-group">
+                <label asp-for="outpatient_clinic_timeslot_ID" class="control-label"></label>
+                <select asp-for="outpatient_clinic_timeslot_ID" class="form-control" asp-items="ViewBag.outpatient_clinic_timeslot_ID"></select>
+                <span asp-validation-for="outpatient_clinic_timeslot_ID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="outpatient_clinic_name" class="control-label"></label>
+                <input asp-for="outpatient_clinic_name" class="form-control" />
+                <span asp-validation-for="outpatient_clinic_name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="vet_ID" class="control-label"></label>
+                <select asp-for="vet_ID" class="form-control" asp-items="ViewBag.vet_ID"></select>
+                <span asp-validation-for="vet_ID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="dayofweek" class="control-label"></label>
+                <input asp-for="dayofweek" class="form-control" />
+                <span asp-validation-for="dayofweek" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="max_patients" class="control-label"></label>
+                <input asp-for="max_patients" class="form-control" />
+                <span asp-validation-for="max_patients" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+ *@

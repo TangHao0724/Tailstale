@@ -1,0 +1,209 @@
+﻿@model IEnumerable<Tailstale.Hospital_ViewModel.outpatient_clinic_ViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section Styles
+{
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="~/datatables/css/jquery.datatables.min.css" rel="stylesheet" />
+
+
+    <style>
+        #memo{
+         color:red;
+        }
+    </style>
+}
+
+<h3>門診資訊管理</h3>
+<hr>
+
+<div class="container">
+    <div class="row">
+        <div class="list-group col-2 text-start">
+            <a href="#" class="list-group-item list-group-item-action sidebar-item">預約記錄管理</a>            
+            <div class="dropdown">
+                <a class="list-group-item list-group-item-action sidebar-item dropdown-toggle" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    醫療資訊管理
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li><a asp-action="Index" asp-controller="departments" class="list-group-item list-group-item-action sidebar-item">科別管理</a></li>
+                    <li><a asp-action="Index" asp-controller="outpatient_clinic" class="list-group-item list-group-item-action sidebar-item active">門診資訊管理</a></li>
+                    <li><a asp-action="Index" asp-controller="daily_outpatient_clinic_schedule" class="list-group-item list-group-item-action sidebar-item">門診表管理</a></li>
+                </ul>
+            </div>            
+            <a asp-action="Index" asp-controller="vet_information" class="list-group-item list-group-item-action sidebar-item">醫師資訊管理</a>
+            <a asp-action="Index" asp-controller="ward" class="list-group-item list-group-item-action sidebar-item">院內病房管理</a>
+            <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 6</a>
+            <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 7</a>
+            <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 8</a>
+            <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 9</a>
+            <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 10</a>
+        </div>
+
+        <div class="col-10">
+            <div class="mb-2">
+                <a asp-action="Create" class="btn btn-outline-primary"><i class="bi bi-plus-lg"></i>建立新門診</a>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.outpatient_clinic_name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.vet_name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.dayofweek)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.outpatient_clinic_timeslot_name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.startat)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.endat)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.max_patients)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.status)
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.outpatient_clinic_name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.vet_name)
+                            </td>
+                            <td>                               
+                                @switch (item.dayofweek)
+                                {
+                                    case "1":
+                                        <p>星期一</p>
+                                        break;
+                                    case "2":
+                                        <p>星期二</p>
+                                        break;
+                                    case "3":
+                                        <p>星期三</p>
+                                        break;
+                                    case "4":
+                                        <p>星期四</p>
+                                        break;
+                                    case "5":
+                                        <p>星期五</p>
+                                        break;
+                                    case "6":
+                                        <p>星期六</p>
+                                        break;
+                                    case "0":
+                                        <p>星期日</p>
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.outpatient_clinic_timeslot_name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.startat)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.endat)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.max_patients)
+                            </td>
+                            <td>                               
+                                @if (item.status == true)
+                                {
+                                    <p>停診</p>
+                                }
+                                else
+                                {
+                                    <p>開診</p>
+                                }                                
+                            </td>
+                            <td class="text-end">                                
+                                <a asp-action="Edit" asp-route-id="@item.outpatient_clinic_ID" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#opcDetail-@item.outpatient_clinic_ID">修改門診資料</a>
+                                <a asp-action="Delete" asp-route-id="@item.outpatient_clinic_ID" class="btn btn-outline-danger"><i class="bi bi-trash3"></i></a>
+                            </td>
+                        </tr>
+
+                        <!-- opcEdit_Modal Start-->
+                        <div class="modal fade" id="opcDetail-@item.outpatient_clinic_ID" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title" id="">修改門診資料</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <partial name="_opcDetail_Partial" model="new edit_outpatient_clinic_ViewModel
+                                        {
+                                            outpatient_clinic_ID = item.outpatient_clinic_ID,
+                                            outpatient_clinic_name=item.outpatient_clinic_name,                                                max_patients=(int)item.max_patients,
+                                            status=item.status}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- opcEdit_Modal End-->
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{    
+    <script src="~/datatables/js/jquery.datatables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // alert("123")            
+            // $('.table').dataTable({                
+            //     fixedHeader: {
+            //         Headers: true,
+            //     },
+            //     language: {
+            //         url: '//cdn.datatables.net/plug-ins/2.1.2/i18n/zh-HANT.json'
+            //     },
+            //     columDefs: [
+            //         {
+            //             targets: 7,
+            //             render: function (data, type, row, meta) {
+            //                 var status = $(row).data('status');
+            //                 return status == true ? '停診' : '開診';
+            //             }
+            //         }, 
+            //         {
+            //             targets: '_all',
+            //             className: 'text-center',                    
+            //         }
+            //     ]                        
+            // });
+            // alert('456')
+            // 換頁時回到最上方
+            // $('table').on('page.dt', function () {
+            //     $('html,body').animate({
+            //         scrollTop: $('.dataTables_wrapper').offset().top
+            //     }, 50);
+            // });
+        });       
+    </script>
+    
+  
+}

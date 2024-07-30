@@ -1,0 +1,115 @@
+﻿@model Tailstale.Hospital_ViewModel.outpatient_clinic_ViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+@section Clockpicker
+{
+    <link href="~/css/jquery-clockpicker.min.css" rel="stylesheet" />    
+}
+
+
+<h3>建立新門診</h3>
+<hr>
+
+<div class="col-12 col-lg-8 offset-lg-2 mt-5">
+    <div class="border border-1 border-secondary rounded px-4 py-2">
+        <div class="container my-4">
+            <div class="row">
+                <form asp-action="Create" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="row">
+                    <div class="col-12 col-lg-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="outpatient_clinic_timeslot_name" class="control-label"></label>
+                            <br>
+                            <select asp-for="outpatient_clinic_timeslot_name" class="mb-2">
+                            <option selected>選擇診別</option>
+                                <option value="上午診">上午診</option>
+                                <option value="下午診">下午診</option>
+                                <option value="晚間診">晚間診</option>
+                                <option value="夜間診">夜間診</option>
+                                <option value="急診">急診</option>
+                            </select>                           
+                           
+                            <span asp-validation-for="outpatient_clinic_timeslot_name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group clockpicker mb-3">
+                            <label asp-for="startat" class="control-label"></label>
+                            <input asp-for="startat" class="form-control" autocomplete="off" />
+                            <span asp-validation-for="startat" class="text-danger"></span>
+                        </div>
+                        <div class="form-group clockpicker mb-3">
+                            <label asp-for="endat" class="control-label"></label>
+                            <input asp-for="endat" class="form-control" autocomplete="off" />
+                            <span asp-validation-for="endat" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="dayofweek" class="control-label"></label>
+                            <br>
+                            <select asp-for="dayofweek">
+                                <option selected>選擇看診日</option>
+                                <option value="1">星期一</option>
+                                <option value="2">星期二</option>
+                                <option value="3">星期三</option>
+                                <option value="4">星期四</option>
+                                <option value="5">星期五</option>
+                                <option value="6">星期六</option>
+                                <option value="0">星期日</option>
+                            </select>                           
+                            <span asp-validation-for="dayofweek" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="outpatient_clinic_name" class="control-label"></label>
+                            <input asp-for="outpatient_clinic_name" class="form-control" placeholder="請填寫門診名稱，例：犬貓一般外科門診" autocomplete="off" />
+                            <span asp-validation-for="outpatient_clinic_name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="vet_ID" class="control-label"></label>
+                            <select asp-for="vet_ID" class="form-control" asp-items="ViewBag.vet_ID"></select>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="max_patients" class="control-label"></label>
+                            <input asp-for="max_patients" class="form-control" />
+                            <span asp-validation-for="max_patients" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <input asp-for="status" class="form-check-input" />停診
+                            @* <span asp-validation-for="max_patients" class="text-danger"></span> *@
+                        </div>
+                    </div>
+                    <div class="form-group text-end">
+                        <input type="submit" value="建立門診" class="btn btn-outline-success me-1" />
+                        <a asp-action="Index" class="btn btn-outline-primary">返回門診列表</a>
+                    </div>
+                    </div>
+                </form>                    
+            </div>
+        </div>
+    </div>
+</div>
+
+@* <div>
+    <a asp-action="Index">Back to List</a>
+</div> *@
+
+@section Scripts
+{
+    <script src="~/js/common.min.js"></script>
+    <script src="~/js/jquery-clockpicker.min.js"></script>
+
+    <script>
+        // Clock pickers
+        $('.clockpicker').clockpicker({
+            donetext: '完成',
+            twelvehour: true, // change to 12 hour AM/PM clock from 24 hour
+        }).find('input').change(function () {
+            console.log(this.value);
+        });
+    </script>
+}
+
+

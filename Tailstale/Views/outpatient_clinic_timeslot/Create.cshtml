@@ -1,0 +1,61 @@
+﻿@model Tailstale.Models.outpatient_clinic_timeslot
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+@section Styles
+{
+    <link href="~/css/jquery-clockpicker.min.css" rel="stylesheet" />
+}
+
+<h1>Create</h1>
+
+<h4>outpatient_clinic_timeslot</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="outpatient_clinic_timeslot_name" class="control-label"></label>
+                <input asp-for="outpatient_clinic_timeslot_name" class="form-control" />
+                <span asp-validation-for="outpatient_clinic_timeslot_name" class="text-danger"></span>
+            </div>
+            <div class="form-group clockpicker">
+                <label asp-for="startat" class="control-label"></label>
+                <input asp-for="startat" class="form-control" />
+                <span asp-validation-for="startat" class="text-danger"></span>
+            </div>
+            <div class="form-group clockpicker">
+                <label asp-for="endat" class="control-label"></label>
+                <input asp-for="endat" class="form-control" />
+                <span asp-validation-for="endat" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts
+{
+    <script src="~/js/common.min.js"></script>
+    <script src="~/js/jquery-clockpicker.min.js"></script>
+
+    <script>
+        // Clock pickers
+        $('.clockpicker').clockpicker({
+            donetext: '完成',
+            twelvehour: true, // change to 12 hour AM/PM clock from 24 hour
+        }).find('input').change(function () {
+            console.log(this.value);
+        });
+    </script>
+}
+
