@@ -30,7 +30,7 @@ namespace Tailstale.Controllers
             .Where(b => b.type_ID == 2)
             .ToListAsync();
 
-            ViewData["business_type"] = new SelectList(businesses, "type_ID", "name");
+            ViewData["business_type"] = new SelectList(businesses, "ID", "name");
             return View();
             //return View(await tailstaleContext.ToListAsync());
         }
@@ -39,22 +39,21 @@ namespace Tailstale.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(int aid)
         {
-            //var tailstaleContext = _context.Business_hours.Include(b => b.business);
-            //return View(await tailstaleContext.ToListAsync());
-            var business = await _context.businesses
-        .FirstOrDefaultAsync(b => b.type_ID == aid);
+            
 
-            if (business == null)
-            {
-                // 如果未找到符合条件的 business 记录，返回空的 PartialView
-                return PartialView("_ServicePartial", new List<Service>());
-            }
+            
 
             // 查询符合条件的 Beautician 记录
             var beauticians = _context.Service
                 .Include(bh => bh.business)
-                .Where(bh => bh.business_ID == business.ID)
+                .Where(bh => bh.business_ID == aid)
                 .ToList();
+
+            if (beauticians == null)
+            {
+                // 如果未找到符合条件的 business 记录，返回空的 PartialView
+                return PartialView("_ServicePartial", new List<Service>());
+            }
 
 
             // 返回到前端，假設你的 View 期望接收一段 HTML 作為結果

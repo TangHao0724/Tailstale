@@ -27,7 +27,7 @@ namespace Tailstale.Controllers
             .Where(b => b.type_ID == 2)
             .ToListAsync();
 
-            ViewData["business_type"] = new SelectList(businesses, "type_ID", "name");
+            ViewData["business_type"] = new SelectList(businesses, "ID", "name");
             return View();
             //var tailstaleContext = _context.Consumption_Record.Include(c => c.beautician).Include(c => c.business).Include(c => c.keeper);
             //return View(await tailstaleContext.ToListAsync());
@@ -36,15 +36,22 @@ namespace Tailstale.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(int aid,int uid)
         {
-            //var tailstaleContext = _context.Business_hours.Include(b => b.business);
-            //return View(await tailstaleContext.ToListAsync());
-            var business = await _context.businesses
-        .FirstOrDefaultAsync(b => b.type_ID == aid);
+            
+            //    var business = await _context.businesses
+            //.FirstOrDefaultAsync(b => b.type_ID == aid);
+            var beauticians = _context.Consumption_Record
+                    .Include(bh => bh.business)
+                    .Include(bh => bh.beautician)
+                    .Include(bh => bh.keeper)
+                    .Where(bh => bh.business_ID == aid)
+                    .ToList();
+
+
 
             var business2 = await _context.Consumption_Record
         .FirstOrDefaultAsync(b => b.keeper_id == uid);
 
-            if (business == null && business2 == null)
+            if (beauticians == null && business2 == null)
             {
                 // 如果未找到符合条件的 business 记录，返回空的 PartialView
                 return PartialView("_Consumption_RecordPartial", new List<Consumption_Record>());
@@ -55,12 +62,7 @@ namespace Tailstale.Controllers
             
             if (aid == 2)
             {
-var beauticians = _context.Consumption_Record
-                .Include(bh => bh.business)
-                .Include(bh => bh.beautician)
-                .Include(bh => bh.keeper)
-                .Where(bh => bh.business_ID == business.ID)
-                .ToList();
+
               return PartialView("_Consumption_RecordPartial", beauticians);
             }
             else
