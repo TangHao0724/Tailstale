@@ -10,8 +10,13 @@
                 aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+
+
         <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
             <ul class="navbar-nav flex-grow-1">
+
+                
+
                 <li class="nav-item">
                     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                 </li>
@@ -32,8 +37,30 @@
                         <li><a class="dropdown-item" asp-controller="LNR" asp-action="HospitalIndex">HospitalIndex</a></li>
                         
                     </ul>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Service" asp-action="Index">服務項目</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Beautician" asp-action="Index">美容師</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Business_hour" asp-action="Index">營業日</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Reserve" asp-action="Index">預約紀錄</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Consumption_Record" asp-action="Index">消費紀錄</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Sbusiness_img" asp-action="Index">作品圖片</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Sbusiness_img_type" asp-action="Index">圖片分類</a>
                 </li>
             </ul>
+
+            <partial name="_LoginPartial" />
         </div>
     </div>
 </nav>

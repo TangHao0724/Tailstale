@@ -1,0 +1,57 @@
+﻿@model IEnumerable<Tailstale.Models.Service>
+
+
+<table class="table border  table-striped">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.service_name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.service_content)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.service_img)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.business)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.category)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.service_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.service_content)
+            </td>
+            <td>
+                    <img src="~/Salon_img/@Html.DisplayFor(modelItem => item.service_img)" alt="Alternate Text" style="width:270px;height:240px" />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.business.name)
+            </td>
+            <td>
+                    <a asp-action="Edit" asp-route-id="@item.id"><i class="bi bi-highlighter"></i>Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.id"><i class="bi bi-info-circle"></i>Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Tailstale.Hospital_ViewModel.outpatient_clinic_ViewModel>
+﻿@using Tailstale.Hospital_ViewModel
+@model IEnumerable<Tailstale.Hospital_ViewModel.outpatient_clinic_ViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -153,7 +154,8 @@
                                         <partial name="_opcDetail_Partial" model="new edit_outpatient_clinic_ViewModel
                                         {
                                             outpatient_clinic_ID = item.outpatient_clinic_ID,
-                                            outpatient_clinic_name=item.outpatient_clinic_name,                                                max_patients=(int)item.max_patients,
+                                            outpatient_clinic_name=item.outpatient_clinic_name,                                               
+                                            max_patients=(int)item.max_patients,
                                             status=item.status}">
                                     </div>
                                 </div>
