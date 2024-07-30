@@ -40,7 +40,7 @@ namespace Tailstale.Hospital_ViewModel
         [Display(Name = "照片名稱")]
         public string? name { get; set; }
         [Display(Name ="狀態")]        
-        public bool employment_status { get; set; }
+        public bool? employment_status { get; set; }
 
     }
 

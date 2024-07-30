@@ -78,14 +78,14 @@
                                 @Html.DisplayFor(modelItem => item.license_number)
                             </td>
                             <td>
-                                @if (item.employment_status)
-                                {
-                                    <p>在職</p>
-                                }
-                                else
-                                {
-                                    <p>離職</p>
-                                }
+                                @if (item.employment_status == true)
+                                    {
+                                        <p>在職</p>
+                                    }
+                                    else
+                                    {
+                                        <p>離職</p>
+                                    }
                             </td>
                             <td>
                                 <div class="text-end">
