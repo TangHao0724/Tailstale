@@ -1,0 +1,54 @@
+﻿@model Tailstale.MedRecordDTO.HospDTO
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>新增住院記錄</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="id" />
+            <input type="hidden" asp-for="medical_record_id" />
+            <div class="form-group">
+                <label asp-for="medical_record_id" class="control-label"></label>
+                <input asp-for="medical_record_id" class ="form-control" readonly/>
+                <span asp-validation-for="medical_record_id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="admission_date"  class="control-label"></label>
+                <input asp-for="admission_date" class="form-control" />
+                <span asp-validation-for="admission_date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="discharge_date" class="control-label"></label>
+                <input asp-for="discharge_date" class="form-control" />
+                <span asp-validation-for="discharge_date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ward_id" class="control-label"></label>
+                <input asp-for="ward_id" class ="form-control" />
+                <span asp-validation-for="ward_id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="memo" class="control-label"></label>
+                <input asp-for="memo" class="form-control" />
+                <span asp-validation-for="memo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="新增" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">返回</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -10,16 +10,12 @@ public partial class Beautician
 {
     public int id { get; set; }
 
-    [StringLength(maximumLength: 30, MinimumLength = 1, ErrorMessage = "長度不合法,最多30字")]//,最多8個字,最少3個字,可以防攻擊
-    [Required(ErrorMessage = "name欄位未填寫")]
     public string name { get; set; }
 
     public string gender { get; set; }
 
     public string photo { get; set; }
 
-    [StringLength(maximumLength: 16, MinimumLength = 1, ErrorMessage = "長度不合法,最多16字")]//,最多8個字,最少3個字,可以防攻擊
-    [Required(ErrorMessage = "phone欄位未填寫")]
     public string phone { get; set; }
 
     [Required(ErrorMessage = "business_ID欄位未填寫")]
@@ -29,7 +25,7 @@ public partial class Beautician
 
     public string Remark { get; set; }
 
-    public virtual ICollection<Consumption_Record> Consumption_Record { get; set; } = new List<Consumption_Record>();
+    public virtual ICollection<Consumption_Record> Consumption_Records { get; set; } = new List<Consumption_Record>();
 
     public virtual business business { get; set; }
 }

@@ -260,7 +260,7 @@ public partial class TailstaleContext : DbContext
                 .HasMaxLength(100);
             entity.Property(e => e.time).HasColumnType("datetime");
 
-            entity.HasOne(d => d.beautician).WithMany(p => p.Consumption_Record)
+            entity.HasOne(d => d.beautician).WithMany(p => p.Consumption_Records)
                 .HasForeignKey(d => d.beautician_id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Consumpti__beaut__719CDDE7");
@@ -270,7 +270,7 @@ public partial class TailstaleContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Consumpti__busin__6EC0713C");
 
-            entity.HasOne(d => d.keeper).WithMany(p => p.Consumption_Record)
+            entity.HasOne(d => d.keeper).WithMany(p => p.Consumption_Records)
                 .HasForeignKey(d => d.keeper_id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Consumpti__keepe__70A8B9AE");
@@ -343,7 +343,7 @@ public partial class TailstaleContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Reserve__busines__662B2B3B");
 
-            entity.HasOne(d => d.keeper).WithMany(p => p.Reserve)
+            entity.HasOne(d => d.keeper).WithMany(p => p.Reserves)
                 .HasForeignKey(d => d.keeper_id)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Reserve__keeper___690797E6");

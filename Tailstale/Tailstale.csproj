@@ -43,6 +43,8 @@
   <ItemGroup>
     <Folder Include="wwwroot\images\business\" />
     <Folder Include="wwwroot\images\room\" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
+    <PackageReference Include="Moq" Version="4.20.70" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,6 +52,7 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+    <Folder Include="wwwroot\NewFolder\NewFolder\" />
   </ItemGroup>
 
 </Project>

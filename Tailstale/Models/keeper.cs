@@ -29,7 +29,7 @@ public partial class keeper
 
     public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 
-    public virtual ICollection<Consumption_Record> Consumption_Record { get; set; } = new List<Consumption_Record>();
+    public virtual ICollection<Consumption_Record> Consumption_Records { get; set; } = new List<Consumption_Record>();
 
     public virtual ICollection<Message> MessageFK_Targets { get; set; } = new List<Message>();
 
@@ -37,7 +37,7 @@ public partial class keeper
 
     public virtual ICollection<PaymentInfo> PaymentInfos { get; set; } = new List<PaymentInfo>();
 
-    public virtual ICollection<Reserve> Reserve { get; set; } = new List<Reserve>();
+    public virtual ICollection<Reserve> Reserves { get; set; } = new List<Reserve>();
 
     public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
 

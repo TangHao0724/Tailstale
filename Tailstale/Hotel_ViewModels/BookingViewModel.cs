@@ -1,6 +1,6 @@
 ﻿using Tailstale.Hotel_DTO;
 using Tailstale.Models;
-using WebApplication1.DTO;
+
 
 namespace Tailstale.Hotel_ViewModels
 {

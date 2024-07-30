@@ -36,9 +36,8 @@ namespace Tailstale.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(int aid,int uid)
         {
-            
-            //    var business = await _context.businesses
-            //.FirstOrDefaultAsync(b => b.type_ID == aid);
+
+
             var beauticians = _context.Consumption_Records
                     .Include(bh => bh.business)
                     .Include(bh => bh.beautician)
@@ -59,15 +58,16 @@ namespace Tailstale.Controllers
 
             // 查询符合条件的 Beautician 记录
             
-            
-            if (aid == 2)
+            var business = await _context.businesses
+            .FirstOrDefaultAsync(b => b.type_ID == 2);
+            if (aid == business.ID)
             {
 
               return PartialView("_Consumption_RecordPartial", beauticians);
             }
             else
             {
-var beauticians2 = _context.Consumption_Records
+                var beauticians2 = _context.Consumption_Records
                .Where(bh => bh.keeper_id == business2.keeper_id)
                .Include(bh => bh.business)
                .Include(bh => bh.beautician)
