@@ -75,15 +75,46 @@ app.component('tab-寵物資訊', {
         userid: Number,
     },
     methods: {
+
         async fetchPetTypes(userid) {
             try {
                 const response = await axios.get('api/UserInfoApi/GetPetTypes');
-                this.petTypes = response.data;
+                this.pet_types = response.data;
             } catch (error) {
                 console.error('Error fetching pet types:', error);
             }
+        },
+        submitForm() {
+            const formData = new FormData(this.$refs.form);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+            // 確保數字類型正確
+            data.age = parseInt(data.age, 10);
+            data.pet_type_ID = parseInt(data.pet_type_ID, 10);
+            data.gender = data.gender === '1';
+
+            // 添加 keeper_ID（如果需要的話）
+            data.keeper_ID = this.keeperId;
+            axios.post('api/UserInfoApi/PostPetInfo', data, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                console.log(response.data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         }
-    },
+    }
+
+        
+
+
+    
 });
 
 app.component('tab-歷史訂單', {
