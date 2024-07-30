@@ -1,0 +1,16 @@
+﻿@model Tailstale.Hotel_DTO.EditRoomDTO
+@if (Model.roomImg.Count == 0){
+    <img style="width:200px;height:120px" src="~/Images/NoImg.jpg" title="尚無圖片" />
+
+}
+else
+{
+    @foreach (var i in Model.roomImg)
+    {
+        <img style="max-height:200px" src="~/@i.URL" title="@i.URL" />
+
+
+    }
+    
+}
+

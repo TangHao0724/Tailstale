@@ -1,0 +1,81 @@
+﻿@model Tailstale.Hotel_DTO.EditRoomDTO
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+<h4>Room</h4>
+<hr />
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="row d-flex">
+                <dt class="col-4">
+                    @Html.DisplayNameFor(model => model.roomSpecies)
+                </dt>
+                <dd class="col-8">
+                    @Html.DisplayFor(model => model.roomSpecies)
+                </dd>
+            </div>
+            <div class="row d-flex">
+                <dt class="col-4">
+                    @Html.DisplayNameFor(model => model.roomPrice)
+                </dt>
+                <dd class="col-8">
+                    @Html.DisplayFor(model => model.roomPrice)
+                </dd>
+            </div>
+            <div class="row d-flex">
+                <dt class="col-4">
+                    @Html.DisplayNameFor(model => model.roomDiscount)
+                </dt>
+                <dd class="col-8">
+                    @Html.DisplayFor(model => model.roomDiscount)
+                </dd>
+            </div>
+            <div class="row d-flex">
+                <dt class="col-4">
+                    @Html.DisplayNameFor(model => model.roomReserve)
+                </dt>
+                <dd class="col-8">
+                    @Html.DisplayFor(model => model.roomReserve)
+                </dd>
+            </div>
+            <div class="row d-flex">
+                <dt class="col-4">
+                    @Html.DisplayNameFor(model => model.roomDescrep)
+                </dt>
+                <dd class="col-8">
+                    @Html.DisplayFor(model => model.roomDescrep)
+                </dd>
+            </div>
+            <div class="row d-flex">
+                <dt class="col-4">
+                    @Html.DisplayNameFor(model => model.roomType.roomType1)
+                </dt>
+                <dd class="col-8">
+                    @Html.DisplayFor(model => model.roomType.roomType1)
+                </dd>
+            </div>
+          
+        </div>
+        <div class="col">
+           
+            <partial name="_RoomPicturePartials" model="@Model"></partial>
+           
+            照片放這裡
+        </div>
+
+    </div>
+</div>
+    
+
+<div>
+    <a asp-action="RoomAddOrEdit" asp-route-id="@Model?.roomID">編輯</a> |
+    <form asp-action="ShowRoomFromHotel" asp-route-id="@Model.hotelID" method="post">
+        <button class="btn btn-primary">返回到房間列表</button>
+        
+         </form>
+    
+</div>

@@ -1091,6 +1091,10 @@ public partial class TailstaleContext : DbContext
                 .HasForeignKey(d => d.business_img_ID)
                 .HasConstraintName("FK__vet_infor__busin__6FE99F9F");
 
+            entity.HasOne(d => d.business_img).WithMany(p => p.vet_informations)
+                .HasForeignKey(d => d.business_img_ID)
+                .HasConstraintName("FK__vet_infor__busin__5DCAEF64");
+
             entity.HasOne(d => d.department).WithMany(p => p.vet_informations)
                 .HasForeignKey(d => d.department_ID)
                 .HasConstraintName("FK__vet_infor__depar__6EF57B66");

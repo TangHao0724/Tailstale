@@ -1,0 +1,127 @@
+﻿@using Tailstale;
+@model IEnumerable<Tailstale.Models.Room>
+
+@{
+    ViewData["Title"] = "ShowRoomFromHotel";
+}
+<div class="text-center">
+    <h1 class="justify-content-center">房間管理</h1>
+</div>
+
+<h1 id="hotelNameDisplay"></h1>
+
+
+<div>
+    <a id="create" class="btn btn-primary" asp-controller="roomTypes" asp-action="Index">管理房間類型</a>
+</div>
+
+
+<div class="container">
+    <div class="mb-3 mx-1 mx-md-3">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.roomSpecies)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.FK_roomType.roomType1)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.roomPrice)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.roomDiscount)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.roomReserve)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.roomDescrep)
+                    </th>
+
+                    <th>
+                        <a id="create" class="btn btn-primary" asp-action="RoomAddOrEdit"><i class="fa-solid fa-circle-plus"></i> 新增房間</a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.roomSpecies)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FK_roomType.roomType1)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.roomPrice)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.roomDiscount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.roomReserve)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.roomDescrep)
+                        </td>
+
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a class="btn btn-success" asp-action="RoomAddOrEdit" asp-route-id="@item.roomID"><i class="fa-solid fa-pencil"></i> 編輯</a>
+                                <a class="btn btn-outline-secondary" asp-action="RoomDetails" asp-route-id="@item.roomID"><i class="fa-solid fa-circle-info"></i> 詳細資訊</a>
+                                <form asp-action="RoomDelete" asp-route-id="@item.roomID">
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('是否要刪除該筆資料')"><i class="fa-solid fa-trash-can"></i> 刪除</button>
+                                </form>
+                            </div>
+
+                            
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+    </div>
+</div>
+
+@* @await Html.PartialAsync("/Bookings/ShowRoom.cshtml")
+ *@
+@section Scripts {
+    <script>
+
+        window.onload = function () {
+            // var heading = document.querySelector("h1");
+            // heading.textContent = "這是新的標題";
+
+            $.ajax({
+                url: '@Url.Action("GetHotelName", "Rooms")',
+                type: 'POST',
+                success: function (data) {
+                    // 將獲取到的 hotelname 值顯示在前端
+                    $('#hotelNameDisplay').text(data);
+                }
+            });
+
+            var baseAddress = "https://localhost:7112";
+
+            $("#room").on("click", async function () {
+                var hotelID = 1001;
+                await $.ajax({
+                    type: "GET",
+                    url: `${baseAddress}/Bookings/ShowRoomFromHotel/${hotelID}`,
+                })
+                    .done(data => { $("#room").html(data); })
+                    .fail(err => { alert(err) });
+            })
+        };
+
+        
+
+
+
+    </script>
+}
