@@ -29,6 +29,8 @@ public partial class business
 
     public int? business_status { get; set; }
 
+    public string description { get; set; }
+
     public string photo_url { get; set; }
 
     public DateTime? created_at { get; set; }

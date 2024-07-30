@@ -2,7 +2,6 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Tailstale.Models;
 
@@ -18,7 +17,6 @@ public partial class Beautician
 
     public string phone { get; set; }
 
-    [Required(ErrorMessage = "business_ID欄位未填寫")]
     public int business_ID { get; set; }
 
     public string Highest_license { get; set; }

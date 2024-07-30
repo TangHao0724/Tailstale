@@ -23,6 +23,8 @@ public partial class keeper
 
     public int? status { get; set; }
 
+    public string description { get; set; }
+
     public DateTime? created_at { get; set; }
 
     public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
