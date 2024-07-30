@@ -61,6 +61,37 @@ namespace Tailstale.Controllers
             var petTypes = await _context.pet_types.ToListAsync();
             return new JsonResult(petTypes);
         }
+
+        //存入初部資料PostPetInfo
+        //route api/UserInfoApi/PostPetInfo
+        [HttpPost("PostPetInfo")]
+        public async Task<IActionResult> PostPetInfo([FromBody] PostPetDTO postPetDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                pet pet = new pet
+                {
+                    pet_type_ID = postPetDTO.pet_type_ID,
+                    keeper_ID = postPetDTO.keeper_ID,
+                    name = postPetDTO.name,
+                    gender = postPetDTO.gender,
+                    birthday = postPetDTO.birthday,
+                    age = postPetDTO.age,
+
+                };
+                _context.pets.Add(pet);
+                await _context.SaveChangesAsync();
+                return Ok(new { message = $"新增成功 pet_ID = {pet.pet_ID}"  });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "內部錯誤", details = ex.Message });
+            }
+        }
         // GET: api/UserInfoApi
         [HttpGet]
         public async Task<ActionResult<IEnumerable<keeper>>> Getkeepers()
