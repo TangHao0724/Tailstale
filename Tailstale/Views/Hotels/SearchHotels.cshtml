@@ -1,26 +1,73 @@
 ﻿@model IEnumerable<Tailstale.Tools.hotelResult>
 
+
+
+<div class="container">
+    <div class="row">
+        <form asp-action="SearchRoom" asp-controller="Hotels" method="post">
+
+            <input placeholder="你要去哪裡" type="text" id="destination" name="destination" />
+
+            <label for="checkin">Check-in:</label>
+            <input type="date" id="checkin" name="checkin" value="@ViewBag.Cookie.startdate" />
+
+            <label for="checkout">Check-out:</label>
+            <input type="date" id="checkout" name="checkout" value="@ViewBag.Cookie.enddate" />
+
+            <label for="Cat">貓的數量:</label>
+            <input type="number" id="Cat" name="Cat" value="@ViewBag.Cookie.cat"/>
+            <label for="Dog">狗的數量:</label>
+            <input type="number" id="Dog" name="Dog" value="@ViewBag.Cookie.dog" />
+        </form>
+        <button  id="bt">提交</button>
+    </div>
+</div>
+
+
 <div class="container">
     <div class="row">
         @foreach (var hotel in Model)
         {
-            <div class="card mb-3" style="max-height:200px;max-width:80%" >
-                <div class="row">
-                    <div class="col-md-4">
-                        <img  style="max-width:80%;max-height:180px;border:dotted 2px" src="~/images/noimg.jpg" />
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="card-title">@hotel.businesse.name</h5>
-                            <h6>每晚房價:@hotel.onedatePrice X @hotel.date 天</h6>
+            @if (hotel.roomPrice != null)
+            {
+                <div class="card mb-3" style="max-height:200px;max-width:80%">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img style="max-width:80%;max-height:180px;border:dotted 2px" src="~/images/noimg.jpg" />
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">@hotel.businesse.name</h5>
+                                <h6>每晚房價:@hotel.onedatePrice X @hotel.date 天</h6>
 
-                            <h5 class="card-title"> @hotel.roomPrice 元</h5>
-                            
-                            <button class="btn-primary">查看訂房狀態</button>
+                                <h5 class="card-title"> @hotel.roomPrice 元</h5>
+                                <form asp-controller="Hotels" asp-action="SearchRoom" method="get">
+                                    <button type="submit" asp-controller="Hotels" asp-action="SearchRoom" class="btn-primary">查看訂房狀態</button>
+                                </form>
+                               
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            }
+            else
+            {
+                <div class="card mb-3" style="max-height:200px;max-width:80%">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img style="max-width:80%;max-height:180px;border:dotted 2px" src="~/images/noimg.jpg" />
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">@hotel.businesse.name</h5>
+                                <form asp-controller="Hotels" asp-action="SearchRoom" method="get">
+                                    <button type="submit" asp-controller="Hotels" asp-action="SearchRoom" class="btn-primary">查看訂房狀態</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
         }
     </div>
 </div>

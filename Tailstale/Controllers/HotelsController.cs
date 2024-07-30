@@ -29,7 +29,8 @@ namespace Tailstale.Controllers
         private readonly TailstaleContext _context;
         private readonly IMapper _mapper;
 
-        public HotelsController(TailstaleContext context,IMapper mapper, IWebHostEnvironment webHostEnvironment)
+       
+        public HotelsController(TailstaleContext context, IMapper mapper, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _mapper = mapper;
@@ -45,7 +46,7 @@ namespace Tailstale.Controllers
         //業主入口
         public async Task<IActionResult> BusinessIndex()
         {
-           
+
             var tailstaleContext = _context.businesses.Include(b => b.business_statusNavigation).Include(b => b.type);
             return View(await tailstaleContext.ToListAsync());
         }
@@ -77,7 +78,7 @@ namespace Tailstale.Controllers
                 .Include(r => r.hotel)
                 .FirstOrDefaultAsync(m => m.roomID == id);
             var img = _context.business_img_types.Include(bti => bti.Rooms).Include(bti => bti.business_imgs).Where(bti => bti.ID == room.FK_roomImg_ID).SelectMany(bti => bti.business_imgs).ToList();
-            EditRoomDTO e = ConvertToEditRoomDTO(room,img);
+            EditRoomDTO e = ConvertToEditRoomDTO(room, img);
             if (e == null)
             {
                 return NotFound();
@@ -87,7 +88,7 @@ namespace Tailstale.Controllers
         }
 
         // GET: Hotels/RoomAddOrEdit
-        public IActionResult RoomAddOrEdit(int id=0)
+        public IActionResult RoomAddOrEdit(int id = 0)
         {
             var hotelID = HttpContext.Session.GetInt32("hotelID11");
             //var c = _context.Rooms.Include(r => r.FK_roomType);
@@ -95,7 +96,7 @@ namespace Tailstale.Controllers
                 TypeId = h.roomType_ID,
                 Type = h.roomType1,
             }), "TypeId", "Type");
-            ViewBag.HotelID=hotelID;
+            ViewBag.HotelID = hotelID;
             if (id == 0)
                 return View(new RoomDTO());
             else
@@ -112,7 +113,7 @@ namespace Tailstale.Controllers
                     roomReserve = getroom.roomReserve,
                     roomDescrep = getroom.roomDescrep,
                     roomType = getroom.FK_roomType,
-                   
+
                 };
                 if (getroom.FK_roomImg != null)
                 {
@@ -125,20 +126,20 @@ namespace Tailstale.Controllers
 
                 return View(roomDTO);
             }
-                
+
         }
 
         //新增或編輯ROOM
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RoomAddOrEdit( RoomDTO room, IList<IFormFile>? files)
+        public async Task<IActionResult> RoomAddOrEdit(RoomDTO room, IList<IFormFile>? files)
         {
             var hotelID = HttpContext.Session.GetInt32("hotelID11");
             if (ModelState.IsValid)
             {
-               
+
                 int InthotelID = Convert.ToInt32(hotelID);
-              
+
                 //新增新Room
                 if (room.roomID == null)
                 {
@@ -173,7 +174,7 @@ namespace Tailstale.Controllers
                     //_context.Rooms.Update(RoomEdit);
                     //await _context.SaveChangesAsync();
 
-                    if (files != null && files.Count>0)
+                    if (files != null && files.Count > 0)
                     {
                         if (isRoomImgType == null) {
                             business_img_type imgtype = AddBusinessImgType(InthotelID);
@@ -209,14 +210,14 @@ namespace Tailstale.Controllers
                         _context.Rooms.Update(RoomEdit);
                         await _context.SaveChangesAsync();
                     }
-                        
-                    
-                    
-                    
+
+
+
+
                 }
-                    
-              //  await _context.SaveChangesAsync();
-             
+
+                //  await _context.SaveChangesAsync();
+
                 return RedirectToActionPreserveMethod(nameof(ShowRoomFromHotel), "Rooms", new { id = InthotelID });
             }
 
@@ -289,7 +290,7 @@ namespace Tailstale.Controllers
 
 
         //Room轉roomDTO
-        private static EditRoomDTO ConvertToEditRoomDTO(Room room,List<business_img> img)
+        private static EditRoomDTO ConvertToEditRoomDTO(Room room, List<business_img> img)
         {
             return new EditRoomDTO
             {
@@ -301,7 +302,7 @@ namespace Tailstale.Controllers
                 roomDescrep = room.roomDescrep,
                 roomSpecies = room.roomSpecies,
                 roomType = room.FK_roomType,
-                roomImg=img
+                roomImg = img
 
 
             };
@@ -332,7 +333,7 @@ namespace Tailstale.Controllers
                     {
                         Directory.Delete(toDeleteImageFolder, true);
                     }
-                    
+
                     foreach (var img in ImageToDelete)
                     {
                         _context.business_imgs.Remove(img);
@@ -340,19 +341,19 @@ namespace Tailstale.Controllers
 
                     _context.business_img_types.Remove(ImageTypeToDelete);
                 };
-                    _context.Rooms.Remove(room);
+                _context.Rooms.Remove(room);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToActionPreserveMethod(nameof(ShowRoomFromHotel), "Rooms", new { id = InthotelID });
-          
-           
+
+
         }
 
-        
+
         //顯示業者的房間
         [HttpPost, ActionName("ShowRoomFromHotel")]
-       // [Route("Rooms/ShowRoomFromHotel?hotelID={hotelID:int}")]
+        // [Route("Rooms/ShowRoomFromHotel?hotelID={hotelID:int}")]
         public async Task<IActionResult> ShowRoomFromHotel(int id)
         {
             if (id == 0)
@@ -374,7 +375,6 @@ namespace Tailstale.Controllers
 
         }
 
-      
 
         //booking相關
 
@@ -383,11 +383,21 @@ namespace Tailstale.Controllers
         [HttpGet]
         public async Task<IActionResult> SearchHotels([FromQuery] InputDate iD, int? Cat, int? Dog, string? address)
         {
-            
-            var result = RoomAvailabilityAndRoom(iD, Cat, Dog, address);
+            var cookie = new
+            {
+                startdate = iD.startDate.ToString("yyyy-MM-dd"),
+                enddate = iD.endDate.ToString("yyyy-MM-dd"),
+                cat = Cat == null ? 0 : Cat,
+                dog = Dog == null ? 0 : Dog
+            };
+            ViewBag.Cookie = cookie;
+            var result = await RoomAvailabilityAndRoom(iD, Cat, Dog, address);
             var dateCount = ViewBag.totalDays;
 
-            var hotels = result.GroupBy(h => h.hotelID).Select(h=>h.Key).ToList();
+            var hotels =result.GroupBy(h => h.hotelID).Select(h => h.Key).ToList();
+            // var hotelslist = _context.businesses.Where(h =>( result.GroupBy(h => h.hotelID).Select(h => h.Key)).Contains(h.ID)).ToList();
+
+            var hotelslist = _context.businesses.AsNoTracking().Where(h => hotels.Contains(h.ID)).ToList();
 
             //var findhotels = _context.businesses.Join(result, b => b.ID, r => r.hotelID,).ToList();
             //var findhotels = _context.businesses.Join(result, b => b.ID, r => r.hotelID, (b, r) => new hotelResult
@@ -421,42 +431,72 @@ namespace Tailstale.Controllers
             //                    })
             //                .Where(h => hotels.Contains(h.businesse.ID)) // 確保使用正確的屬性比對
             //                .ToList();
-            var resultgroupbyhotel = result.GroupBy(r => r.hotelID).Select(r => new
+
+            if(Cat!=null || Dog != null)
             {
-                hotelID = r.Key,
-                price = r.Select(r => r.priceTotal).FirstOrDefault(),
-                date=dateCount,
-                onedatePrice = r.Select(r => r.priceTotal).FirstOrDefault()/dateCount,
+                var resultgroupbyhotel = result.GroupBy(r => r.hotelID).Select(r => new
+                {
+                    hotelID = r.Key,
+                    price = r.Select(r => r.priceTotal).FirstOrDefault(),
+                    date = dateCount,
+                    onedatePrice = r.Select(r => r.priceTotal).FirstOrDefault() / dateCount ,
+                });
+                var finalresult = hotelslist.Join(resultgroupbyhotel, b => b.ID, r => r.hotelID, (b, r) => new hotelResult
+                {
+                    businesse = b,
+                    roomPrice = r.price,
+                    date = r.date,
+                    onedatePrice = r.onedatePrice 
+
+                }).ToList();
+                return View(finalresult);
+
+            }
+            var noCatDog = hotelslist.Select(h=> new hotelResult
+            {
+                businesse = h,
+                date = dateCount,
+               
             });
 
 
-            var hotelslist=_context.businesses.Where(h=>hotels.Contains(h.ID)).ToList();
+            //var hotelslist=_context.businesses.Where(h=>hotels.Contains(h.ID)).ToList();
 
 
-            var finalresult = hotelslist.Join(resultgroupbyhotel, b => b.ID, r => r.hotelID, (b, r) => new hotelResult
-            {
-                businesse = b,
-                roomPrice = (int)r.price,
-                date=r.date,
-                onedatePrice=r.onedatePrice
-
-            }).ToList();
+            
 
             // return PartialView("_SearchRoom", finalresult);
-            return View(finalresult);
+            return View(noCatDog);
         }
+
         [HttpGet]
-        public async Task<IActionResult> SearchRoom([FromQuery] InputDate iD, int? Cat, int? Dog,string? address)
+        public async Task<IActionResult> SearchRoom(int hotelID)
         {
+            var getMyResult = ViewBag.getRoomList;
 
-            var result = RoomAvailabilityAndRoom(iD, Cat, Dog,address);
-            var hotels = result.GroupBy(h => h.hotelID).Select(h => h.Key).ToList();
-            var findhotels = _context.businesses.Where(h => hotels.Contains(h.ID)).ToList();
+            //var result = await RoomAvailabilityAndRoom(iD, Cat, Dog, address);
+            // var hotels = await result.GroupBy(h => h.hotelID).Select(h => h.Key).ToList();
+            // var findhotels = _context.businesses.Where(h => hotelID==h.ID).ToList();
 
 
             // return PartialView("_SearchRoom", finalresult);
-            return View(findhotels);
+            //return View(findhotels);
+            return null;
         }
+        //[HttpGet]
+        //public async Task<IActionResult> SearchRoom([FromQuery] InputDate iD, int? Cat, int? Dog, string? address, int hotelID)
+        //{
+        //    var getMyResult = ViewBag.getRoomList;
+
+        //    //var result = await RoomAvailabilityAndRoom(iD, Cat, Dog, address);
+        //    // var hotels = await result.GroupBy(h => h.hotelID).Select(h => h.Key).ToList();
+        //    // var findhotels = _context.businesses.Where(h => hotelID==h.ID).ToList();
+
+
+        //    // return PartialView("_SearchRoom", finalresult);
+        //    //return View(findhotels);
+        //    return null;
+        //}
 
         [HttpGet]
         public async Task<IActionResult> PostDateToSearch()
@@ -474,28 +514,34 @@ namespace Tailstale.Controllers
                 {
                     startDate = iD.startDate,
                     endDate = iD.endDate,
-                    
+
 
                 });
             }
             return RedirectToAction(nameof(PostDateToSearch));
 
         }
+
         //把取得的房間數量和room合併並轉型
-        public IEnumerable<FindRoomResultDTO> RoomAvailabilityAndRoom(InputDate iD, int? Cat, int? dog, string? address)
+        public async Task<IEnumerable<FindRoomResultDTO>> RoomAvailabilityAndRoom(InputDate iD, int? Cat, int? dog, string? address)
         {
-            var result = GetBookedRoomIds(iD.startDate, iD.endDate).ToList();
-            // address = "高雄";
+            var result = await GetBookedRoomIds(iD.startDate, iD.endDate);
+
+            
 
             // 計算日期差
             TimeSpan dateCount = iD.endDate - iD.startDate;
 
             // 取得天數並轉換為整數
             int totalDays = (int)dateCount.TotalDays;
-            ViewBag.totalDays=totalDays;
+            ViewBag.totalDays = totalDays;
 
-          //  var dateCount = (iD.endDate - iD.startDate);
-            var tailstaleContext = address == null||address==""? _context.Rooms.ToList(): _context.Rooms.Include(r=>r.hotel).Where(r=>r.hotel.address.Contains(address)).ToList();
+            //  var dateCount = (iD.endDate - iD.startDate);
+            var tailstaleContext = address == null || address == ""
+                                   ? await _context.Rooms.AsNoTracking().ToListAsync()
+                                   : await _context.Rooms.AsNoTracking().Include(r => r.hotel)
+                                   .Where(r => r.hotel.address.Contains(address)).ToListAsync();
+
             var finalresult = tailstaleContext.Join(result, t => t.roomID, r => r.RoomId, (tailstaleContext, result) => new FindRoomResultDTO
             {
                 roomID = tailstaleContext.roomID,
@@ -507,84 +553,70 @@ namespace Tailstale.Controllers
                 roomSpecies = tailstaleContext.roomSpecies,
                 business = tailstaleContext.hotel
 
-            });
+            }).ToList();
 
-            List<RoomSearchResult> getCatroom = Cat == null ? null : getSpeciesRoom(Cat, finalresult, "貓");
-            List<RoomSearchResult> getDogroom = dog == null ? null : getSpeciesRoom(dog, finalresult, "狗");
-
-            var catroomPrice=getMinRoomPrice1(getCatroom, (int)Cat);
-            var dogroomPrice = getMinRoomPrice1(getDogroom, (int)dog);
-            var roomPriceTotal = catroomPrice.Concat(dogroomPrice)
-                              .GroupBy(hp => hp.HotelID)
-                              .Select(group => new HotelPrice
-                              {
-                                  HotelID = group.Key,
-                                  Price = group.Sum(hp => hp.Price)
-                              })
-                              .ToList();
-            finalresult = finalresult.Join(roomPriceTotal, f => f.hotelID, p => p.HotelID, (finalresult, roomPriceTotal) => new FindRoomResultDTO
+            if (Cat < 0 && dog < 0)
             {
-                roomID = finalresult.roomID,
-                roomPrice = finalresult.roomPrice,
-                roomDescription = finalresult.roomDescription,
-                roomReserve = finalresult.roomReserve,
-                roomType = finalresult.roomType,
-                hotelID = finalresult.hotelID,
-                roomSpecies = finalresult.roomSpecies,
-                business = finalresult.business,
-                priceTotal=roomPriceTotal.Price* totalDays
-
-
-            });
-
-
-
-            ////計算出房間價格
-            //int getCatroomPrice = getCatroom == null ? 0 : getMinRoomPrice(getCatroom, (int)Cat);
-            //int getDogroomPrice = getDogroom == null ? 0 : getMinRoomPrice(getDogroom, (int)dog);
-
-            //finalresult = finalresult.Select(f =>
-            //{
-            //    List<RoomSearchResult> getCatroom = Cat == null ? null : getSpeciesRoom(Cat, new[] { f }, "貓");
-            //    List<RoomSearchResult> getDogroom = dog == null ? null : getSpeciesRoom(dog, new[] { f }, "狗");
-
-            //    int getCatroomPrice = getCatroom == null ? 0 : getMinRoomPrice(getCatroom, (int)Cat);
-            //    int getDogroomPrice = getDogroom == null ? 0 : getMinRoomPrice(getDogroom, (int)dog);
-
-            //    return new FindRoomResultDTO
-            //    {
-            //        roomID = f.roomID,
-            //        roomPrice = f.roomPrice,
-            //        roomDescription = f.roomDescription,
-            //        roomReserve = f.roomReserve,
-            //        roomType = f.roomType,
-            //        hotelID = f.hotelID,
-            //        roomSpecies = f.roomSpecies,
-            //        business = f.business,
-            //        priceTotal = getCatroomPrice + getDogroomPrice
-            //    };
-            //}).ToList();
-
-
-
-
-            //ViewBag.GetroomPrice = getCatroomPrice+ getDogroomPrice;
-
-
-
-            if (Cat != null && dog != null && Cat > 0 && dog > 0)
-            {
-                finalresult = finalresult.Where(r => getCatroom.Select(c => c.roomID).Contains(r.roomID) || getDogroom.Select(c => c.roomID).Contains(r.roomID)).ToList();
+                ViewBag.getRoomList = finalresult;
+                return finalresult;
             }
-            else if (Cat != null && dog == null && Cat > 0 || dog == 0)
+            else
             {
-                finalresult = finalresult.Where(r => getCatroom.Select(c => c.roomID).Contains(r.roomID)).ToList();
+                List<RoomSearchResult> getCatroom = Cat == null ? null : getSpeciesRoom(Cat, finalresult, "貓");
+                List<RoomSearchResult> getDogroom = dog == null ? null : getSpeciesRoom(dog, finalresult, "狗");
+
+                if (getCatroom != null || getDogroom != null)
+                {
+                    var catroomPrice = getCatroom == null ? Enumerable.Empty<HotelPrice>() : getMinRoomPrice1(getCatroom, (int)Cat);
+                    var dogroomPrice = getDogroom == null ? Enumerable.Empty<HotelPrice>() : getMinRoomPrice1(getDogroom, (int)dog);
+                    var roomPriceTotal = catroomPrice.Concat(dogroomPrice ?? Enumerable.Empty<HotelPrice>())
+                                      .GroupBy(hp => hp.HotelID)
+                                      .Select(group => new HotelPrice
+                                      {
+                                          HotelID = group.Key,
+                                          Price = group.Sum(hp => hp.Price)
+                                      })
+                                      .ToList();
+
+
+                    var roomPriceDict = roomPriceTotal.ToDictionary(p => p.HotelID, p => p.Price);
+
+                    finalresult = finalresult.Select(f => new FindRoomResultDTO
+                    {
+                        roomID = f.roomID,
+                        roomPrice = f.roomPrice,
+                        roomDescription = f.roomDescription,
+                        roomReserve = f.roomReserve,
+                        roomType = f.roomType,
+                        hotelID = f.hotelID,
+                        roomSpecies = f.roomSpecies,
+                        business = f.business,
+                        priceTotal = roomPriceDict.TryGetValue(f.hotelID, out var price) ? price * totalDays : 0 // 使用字典查找
+                    }).ToList();
+                }
+
+
+                var catRoomIds = getCatroom == null ? null : getCatroom.Select(c => c.roomID).ToHashSet();
+                var dogRoomIds = getDogroom == null ? null : getDogroom.Select(c => c.roomID).ToHashSet();
+
+                if (Cat > 0 && dog > 0)
+                {
+                    finalresult = finalresult.Where(r => catRoomIds.Contains(r.roomID) || dogRoomIds.Contains(r.roomID)).ToList();
+                }
+                else if (Cat > 0)
+                {
+                    finalresult = finalresult.Where(r => catRoomIds.Contains(r.roomID)).ToList();
+                }
+                else if (dog > 0)
+                {
+                    finalresult = finalresult.Where(r => dogRoomIds.Contains(r.roomID)).ToList();
+                }
+                ViewBag.getRoomList = finalresult;
+                return finalresult;
             }
-            else if (dog != null && dog > 0 && Cat == null || Cat == 0)
-            {
-                finalresult = finalresult.Where(r => getDogroom.Select(c => c.roomID).Contains(r.roomID)).ToList();
-            }
-            return finalresult;
+
+
+            
         }
 
         private static List<HotelPrice> getMinRoomPrice1(List<RoomSearchResult> getRoom, int theRoomCount)
@@ -629,13 +661,7 @@ namespace Tailstale.Controllers
             return hotelPrices;
         }
 
-        // 定義一個新的類來存儲酒店ID和對應的價格
-        public class HotelPrice
-        {
-            public int HotelID { get; set; }
-            public int Price { get; set; }
-        }
-
+        
         private static int getMinRoomPrice(List<RoomSearchResult> getRoom, int theRoomCount)
         {
             int totalPrice = 0;
@@ -674,19 +700,15 @@ namespace Tailstale.Controllers
            .ToList();
         }
 
-        public async Task<int> CalculateTotalPrice()
-        {
-            return 0;
-        }
-        
+       
 
         //取得剩餘房間數量 無分物種
         //Bookings/GetBookedRoomIds
         [HttpGet]
-        public IEnumerable<RoomAvailability> GetBookedRoomIds(DateTime startDate, DateTime endDate)
+        public async  Task<IEnumerable<RoomAvailability>> GetBookedRoomIds(DateTime startDate, DateTime endDate)
         {
 
-            var bookedRoom1 = _context.BookingDetails.Include(b => b.booking)
+            var bookedRoom1 = _context.BookingDetails.AsNoTracking().Include(b => b.booking)
                 .Where(b => (b.booking.checkinDate <= endDate && b.booking.checkoutDate >= startDate) ||
                            (b.booking.checkinDate >= startDate && b.booking.checkinDate <= endDate) ||
                            (b.booking.checkoutDate >= startDate && b.booking.checkoutDate <= endDate))
@@ -705,8 +727,8 @@ namespace Tailstale.Controllers
                 });
 
             // 計算剩餘房間數量
-            var bookedRoomsList = bookedRoom1.ToList();
-            var allRoomsList = allRooms.ToList();
+            var bookedRoomsList =await bookedRoom1.ToListAsync();
+            var allRoomsList = await allRooms.ToListAsync();
 
             var availableRooms = allRoomsList.GroupJoin(
                 bookedRoomsList,
@@ -718,7 +740,7 @@ namespace Tailstale.Controllers
                     AvailableCount = r.Quantity - (b.FirstOrDefault() != null ? b.FirstOrDefault().Quantity : 0)
                 });
 
-            return availableRooms;
+            return  availableRooms;
             //return bookedRoom1;
 
         }
