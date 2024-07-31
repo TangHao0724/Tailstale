@@ -1,0 +1,48 @@
+﻿@model Tailstale.Models.Appointment
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Appointment</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.registration_time)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.registration_time)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Appointment_statusNavigation)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Appointment_statusNavigation.status_name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.daily_outpatient_clinic_schedule)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.daily_outpatient_clinic_schedule.daily_outpatient_clinic_schedule_ID)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.keeper)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.keeper.email)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.pet)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.pet.pet_ID)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Appointment_ID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

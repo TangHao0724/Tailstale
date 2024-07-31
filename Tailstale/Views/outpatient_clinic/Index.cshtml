@@ -24,17 +24,10 @@
 <div class="container">
     <div class="row">
         <div class="list-group col-2 text-start">
-            <a href="#" class="list-group-item list-group-item-action sidebar-item">預約記錄管理</a>            
-            <div class="dropdown">
-                <a class="list-group-item list-group-item-action sidebar-item dropdown-toggle" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                    醫療資訊管理
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><a asp-action="Index" asp-controller="departments" class="list-group-item list-group-item-action sidebar-item">科別管理</a></li>
-                    <li><a asp-action="Index" asp-controller="outpatient_clinic" class="list-group-item list-group-item-action sidebar-item active">門診資訊管理</a></li>
-                    <li><a asp-action="Index" asp-controller="daily_outpatient_clinic_schedule" class="list-group-item list-group-item-action sidebar-item">門診表管理</a></li>
-                </ul>
-            </div>            
+            <a asp-action="Index" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item">預約記錄管理</a>
+            <a asp-action="Index" asp-controller="daily_outpatient_clinic_schedule" class="list-group-item list-group-item-action sidebar-item">門診表管理</a>
+            <a asp-action="Index" asp-controller="outpatient_clinic" class="list-group-item list-group-item-action sidebar-item  active">門診資訊管理</a>
+            <a asp-action="Index" asp-controller="departments" class="list-group-item list-group-item-action sidebar-item">科別管理</a>
             <a asp-action="Index" asp-controller="vet_information" class="list-group-item list-group-item-action sidebar-item">醫師資訊管理</a>
             <a asp-action="Index" asp-controller="ward" class="list-group-item list-group-item-action sidebar-item">院內病房管理</a>
             <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 6</a>
@@ -153,7 +146,7 @@
                                         <partial name="_opcDetail_Partial" model="new edit_outpatient_clinic_ViewModel
                                         {
                                             outpatient_clinic_ID = item.outpatient_clinic_ID,
-                                            outpatient_clinic_name=item.outpatient_clinic_name,                                                max_patients=(int)item.max_patients,
+                                            outpatient_clinic_name=item.outpatient_clinic_name,                                              max_patients=(int)item.max_patients,
                                             status=item.status}">
                                     </div>
                                 </div>
