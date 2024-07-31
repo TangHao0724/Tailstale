@@ -9,6 +9,13 @@
 <header>
     <partial name="_NavBar" />
 </header>
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+        <li class="breadcrumb-item"> <a asp-area="" asp-controller="Salon" asp-action="Settings">美容設定</a></li>
+    <li class="breadcrumb-item active" aria-current="page">美容師</li>
+  </ol>
+</nav>
 <h1>美容師資料</h1>
 <p>
     <a class="btn btn-info" asp-action="Create"><i class="bi bi-hand-index-thumb"></i>Create New</a>
