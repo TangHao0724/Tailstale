@@ -6,33 +6,3 @@
 <header>
     <partial name="_NavBar" />
 </header>
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.name)
-            </th>
-           
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(moitemdelItem => item.name)
-                </td>
-              
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID">登入</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>

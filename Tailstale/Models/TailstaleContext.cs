@@ -29,7 +29,7 @@ public partial class TailstaleContext : DbContext
 
     public virtual DbSet<Message> Messages { get; set; }
 
-    public virtual DbSet<PaymentInfo> PaymentInfos { get; set; }
+    public virtual DbSet<PaymentIndex> PaymentIndexs { get; set; }
 
     public virtual DbSet<Reserve> Reserves { get; set; }
 
@@ -111,7 +111,7 @@ public partial class TailstaleContext : DbContext
 
     public virtual DbSet<using_tag> using_tags { get; set; }
 
-    public virtual DbSet<vet_information> vet_informations { get; set; }
+    public virtual DbSet<vet_Information> vet_Informations { get; set; }
 
     public virtual DbSet<vital_sign_record> vital_sign_records { get; set; }
 
@@ -296,11 +296,11 @@ public partial class TailstaleContext : DbContext
                 .HasConstraintName("FK__Message__FK_User__078C1F06");
         });
 
-        modelBuilder.Entity<PaymentInfo>(entity =>
+        modelBuilder.Entity<PaymentIndex>(entity =>
         {
             entity.HasKey(e => e.paymentID).HasName("PK__PaymentI__A0D9EFA67F96D256");
 
-            entity.ToTable("PaymentInfo");
+            entity.ToTable("PaymentIndex");
 
             entity.Property(e => e.cardholderName).HasMaxLength(20);
             entity.Property(e => e.paymentStatus)
@@ -308,15 +308,15 @@ public partial class TailstaleContext : DbContext
                 .IsFixedLength();
             entity.Property(e => e.paymentTimestamp).HasColumnType("datetime");
 
-            entity.HasOne(d => d.booking).WithMany(p => p.PaymentInfos)
+            entity.HasOne(d => d.booking).WithMany(p => p.PaymentIndexs)
                 .HasForeignKey(d => d.bookingID)
                 .HasConstraintName("FK__PaymentIn__booki__51300E55");
 
-            entity.HasOne(d => d.business).WithMany(p => p.PaymentInfos)
+            entity.HasOne(d => d.business).WithMany(p => p.PaymentIndexs)
                 .HasForeignKey(d => d.business_ID)
                 .HasConstraintName("FK__PaymentIn__busin__47A6A41B");
 
-            entity.HasOne(d => d.keeper).WithMany(p => p.PaymentInfos)
+            entity.HasOne(d => d.keeper).WithMany(p => p.PaymentIndexs)
                 .HasForeignKey(d => d.keeper_ID)
                 .HasConstraintName("FK__PaymentIn__keepe__503BEA1C");
         });
@@ -1075,25 +1075,25 @@ public partial class TailstaleContext : DbContext
                 .HasConstraintName("FK__using_tag__FK_ta__7D0E9093");
         });
 
-        modelBuilder.Entity<vet_information>(entity =>
+        modelBuilder.Entity<vet_Information>(entity =>
         {
-            entity.HasKey(e => e.vet_ID).HasName("PK__vet_info__D816DB2B8772DE40");
+            entity.HasKey(e => e.vet_ID).HasName("PK__vet_Index__D816DB2B8772DE40");
 
             entity.Property(e => e.license_number).HasMaxLength(50);
             entity.Property(e => e.profile).HasMaxLength(500);
             entity.Property(e => e.vet_name).HasMaxLength(100);
 
-            entity.HasOne(d => d.business).WithMany(p => p.vet_informations)
+            entity.HasOne(d => d.business).WithMany(p => p.vet_Informations)
                 .HasForeignKey(d => d.business_ID)
-                .HasConstraintName("FK__vet_infor__busin__6E01572D");
+                .HasConstraintName("FK__vet_Indexr__busin__6E01572D");
 
-            entity.HasOne(d => d.business_img).WithMany(p => p.vet_informations)
+            entity.HasOne(d => d.business_img).WithMany(p => p.vet_Informations)
                 .HasForeignKey(d => d.business_img_ID)
-                .HasConstraintName("FK__vet_infor__busin__6FE99F9F");
+                .HasConstraintName("FK__vet_Indexr__busin__6FE99F9F");
 
-            entity.HasOne(d => d.department).WithMany(p => p.vet_informations)
+            entity.HasOne(d => d.department).WithMany(p => p.vet_Informations)
                 .HasForeignKey(d => d.department_ID)
-                .HasConstraintName("FK__vet_infor__depar__6EF57B66");
+                .HasConstraintName("FK__vet_Indexr__depar__6EF57B66");
         });
 
         modelBuilder.Entity<vital_sign_record>(entity =>

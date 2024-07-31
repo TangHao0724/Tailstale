@@ -41,7 +41,7 @@ public partial class business
 
     public virtual ICollection<Consumption_Record> Consumption_Records { get; set; } = new List<Consumption_Record>();
 
-    public virtual ICollection<PaymentInfo> PaymentInfos { get; set; } = new List<PaymentInfo>();
+    public virtual ICollection<PaymentIndex> PaymentIndexs { get; set; } = new List<PaymentIndex>();
 
     public virtual ICollection<Reserve> Reserves { get; set; } = new List<Reserve>();
 
@@ -61,7 +61,7 @@ public partial class business
 
     public virtual business_type type { get; set; }
 
-    public virtual ICollection<vet_information> vet_informations { get; set; } = new List<vet_information>();
+    public virtual ICollection<vet_Information> vet_Informations { get; set; } = new List<vet_Information>();
 
     public virtual ICollection<ward> wards { get; set; } = new List<ward>();
 }

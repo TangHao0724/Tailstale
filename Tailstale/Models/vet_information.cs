@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Tailstale.Models;
 
-public partial class vet_information
+public partial class vet_Information
 {
     public int vet_ID { get; set; }
 

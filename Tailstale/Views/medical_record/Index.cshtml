@@ -8,7 +8,7 @@
 
 <span>
     <a asp-controller="Hosp" asp-action="Index">住院記錄</a>
-    <a asp-controller="nursing_record" asp-action="Info">護理記錄</a>
+    <a asp-controller="nursing_record" asp-action="Index">護理記錄</a>
 </span>
 <br />
 <br />
@@ -18,6 +18,9 @@
 <table class="table">
     <thead>
         <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.id)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.created_at)
             </th>
@@ -43,7 +46,10 @@
         {
             <tr>
                 <td>
-                    <a href="medical_record/Details/@item.id">@item.created_at</a>
+                    @Html.DisplayFor(modelItem => item.id)
+                </td>
+                <td>
+                    <a href="medical_record/Details/@item.id">@item.created_at?.ToString("yyyy-MM-dd HH:mm")</a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.keeper_id)

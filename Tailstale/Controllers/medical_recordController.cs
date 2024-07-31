@@ -163,6 +163,7 @@ namespace Tailstale.Controllers
                 //{
                     var a = new medical_record
                     {
+                        id = id,
                         pet_id = medicalRecordDTO.pet_id,
                         created_at = medicalRecordDTO.created_at,
                         weight = medicalRecordDTO.weight,

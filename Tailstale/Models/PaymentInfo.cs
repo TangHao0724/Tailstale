@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Tailstale.Models;
 
-public partial class PaymentInfo
+public partial class PaymentIndex
 {
     public int paymentID { get; set; }
 

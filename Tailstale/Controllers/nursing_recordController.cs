@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Tailstale.MedRecordDTO;
 using Tailstale.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace Tailstale.Controllers
 {
@@ -16,9 +17,9 @@ namespace Tailstale.Controllers
         }
 
         // GET: nursing_record
-        public async Task<IActionResult> Info()
+        public async Task<IActionResult> Index(int hosp_history_id)
         {
-            var records = from n in _context.nursing_records
+            var records = await (from n in _context.nursing_records
                           join p in _context.pets on n.pet_id equals p.pet_ID
                           join v in _context.vital_sign_records on n.vital_sign_record_id equals v.id into vsrGroup
                           from v in vsrGroup.DefaultIfEmpty()
@@ -33,7 +34,10 @@ namespace Tailstale.Controllers
                               weight = n.weight,
                               memo = n.memo,
                               vs_id = v.id,
-                          };
+                          })
+                        .GroupBy(h => h.id)
+                        .Select(g => g.First())
+                        .ToListAsync();
             return View(records);
         }
 
@@ -99,7 +103,7 @@ namespace Tailstale.Controllers
             };
             _context.Add(a);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Info");
+            return RedirectToAction("Index");
         }
 
         // GET: nursing_record/Edit/5
@@ -158,7 +162,7 @@ namespace Tailstale.Controllers
             };
             _context.Update(record);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Info");
+            return RedirectToAction("Index");
         }
 
         ////GET: nursing_record/Delete/5

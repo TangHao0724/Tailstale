@@ -16,37 +16,45 @@ namespace Tailstale.Controllers
 
         // GET: Hosp
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int medical_record_id)
         {
-            var Hosp = from h in _context.hosp_histories
-                       join m in _context.medical_records on h.medical_record_id equals m.id
-                       join w in _context.wards on h.ward_id equals w.ward_ID into wardGroup
-                       from w in wardGroup.DefaultIfEmpty()
-                       join n in _context.nursing_records on h.id equals n.hosp_history_id into nursingGroup
-                       from n in nursingGroup.DefaultIfEmpty()
-                       orderby h.admission_date descending
-                       select new HospDTO
-                       {
-                           id = h.id,
-                           medical_record_id = m.id,
-                           admission_date = h.admission_date,
-                           discharge_date = h.discharge_date,
-                           created_at = m.created_at,
-                           nursing_record_id = n != null ? n.id : (int?)null,
-                           nursing_record_datetime = n != null ? n.datetime : (DateTime?)null,
-                           ward_id = w != null ? w.ward_ID : null,
-                           memo = h.memo,
-                       };
-            return View(Hosp);
+            var Hosp = await (from h in _context.hosp_histories
+                              join m in _context.medical_records on h.medical_record_id equals m.id
+                              join w in _context.wards on h.ward_id equals w.ward_ID into wardGroup
+                              from w in wardGroup.DefaultIfEmpty()
+                              join n in _context.nursing_records on h.id equals n.hosp_history_id into nursingGroup
+                              from n in nursingGroup.DefaultIfEmpty()
+                              where h.medical_record_id == medical_record_id
+                              select new HospDTO
+                              {
+                                  id = h.id,
+                                  medical_record_id = m.id,
+                                  admission_date = h.admission_date,
+                                  discharge_date = h.discharge_date,
+                                  created_at = m.created_at,
+                                  nursing_record_id = n != null ? n.id : (int?)null,
+                                  nursing_record_datetime = n != null ? n.datetime : (DateTime?)null,
+                                  ward_id = w != null ? w.ward_ID : null,
+                                  memo = h.memo,
+                              })
+                        .GroupBy(h => h.id)
+                        .Select(g => g.First())
+                        .ToListAsync();
+
+            var sortedHosp = Hosp.OrderByDescending(h => h.admission_date);
+            return View(sortedHosp);
+
+            ViewBag.medical_record_id = medical_record_id; //用來傳medical_record_id給新增的記錄
         }
 
         // GET: Hosp/Create
         [HttpGet]
         public IActionResult Create(int medical_record_id)
         {
-            var model = new HospDTO { 
+            var model = new HospDTO
+            {
                 medical_record_id = medical_record_id,
-                admission_date= DateTime.Now,
+                admission_date = DateTime.Now,
             };
             return View(model);
         }

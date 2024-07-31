@@ -12,8 +12,8 @@ using Tailstale.Data;
 namespace Tailstale.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240702072202_0702修改vet_information.cs")]
-    partial class _0702修改vet_informationcs
+    [Migration("20240702072202_0702修改vet_Information.cs")]
+    partial class _0702修改vet_Informationcs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
