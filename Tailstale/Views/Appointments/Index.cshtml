@@ -1,0 +1,84 @@
+﻿@model IEnumerable<Tailstale.Models.Appointment>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h4>預約紀錄管理</h4>
+<hr>
+
+<div class="container">
+    <div class="row">
+        <div class="list-group col-2 text-start">
+            <a asp-action="Index" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item active">預約記錄管理</a>            
+            <a asp-action="Index" asp-controller="outpatient_clinic" class="list-group-item list-group-item-action sidebar-item ">門診資訊管理</a>
+            <a asp-action="Index" asp-controller="daily_outpatient_clinic_schedule" class="list-group-item list-group-item-action sidebar-item">門診表管理</a>
+            <a asp-action="Index" asp-controller="departments" class="list-group-item list-group-item-action sidebar-item">科別管理</a>
+            <a asp-action="Index" asp-controller="vet_information" class="list-group-item list-group-item-action sidebar-item">醫師資訊管理</a>
+            <a asp-action="Index" asp-controller="ward" class="list-group-item list-group-item-action sidebar-item">院內病房管理</a>
+            <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 6</a>
+            <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 7</a>
+            <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 8</a>
+            <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 9</a>
+            <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 10</a>
+        </div>
+
+        <div class="col-10">
+            <p>
+                <a asp-action="Create">Create New</a>
+            </p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.registration_time)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Appointment_statusNavigation)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.daily_outpatient_clinic_schedule)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.keeper)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.pet)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.registration_time)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Appointment_statusNavigation.status_name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.daily_outpatient_clinic_schedule.daily_outpatient_clinic_schedule_ID)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.keeper.email)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.pet.pet_ID)
+                            </td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.Appointment_ID">Edit</a> |
+                                <a asp-action="Details" asp-route-id="@item.Appointment_ID">Details</a> |
+                                <a asp-action="Delete" asp-route-id="@item.Appointment_ID">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+
