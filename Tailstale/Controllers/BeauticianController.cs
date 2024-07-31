@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CRUD_COREMVC;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis;
@@ -10,6 +11,7 @@ using Tailstale.Models;
 
 namespace Tailstale.Controllers
 {
+    [IsLoginFilter]
     public class BeauticianController : Controller
     {
         private readonly TailstaleContext _context;
