@@ -130,12 +130,19 @@ namespace Tailstale.Controllers
                .Where(b => b.business_type_ID == 2)
                .ToList();
 
+            
+
+
             ViewData["Orderstatus_ID"] = new SelectList(orderstatus, "ID", "status_name");
 
             ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
             ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name");
+
+           
+
             return View();
+
         }
 
         // POST: Reserves/Create
@@ -143,11 +150,23 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,keeper_id,pet_name,business_ID,time,service_name,created_at,status")] Reserve reserve)
+        public async Task<IActionResult> Create([Bind("id,keeper_id,pet_name,business_ID,time,service_name,created_at,status")] ReserveViewModel reserve)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(reserve);
+                Reserve a = new Reserve()
+                {
+                    keeper_id = reserve.keeper_id,
+                    pet_name = reserve.pet_name,
+                    business_ID = reserve.business_ID,
+                    time = reserve.time,
+                    service_name = reserve.service_name,
+                    status = reserve.status,
+
+                };
+
+
+                _context.Add(a);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

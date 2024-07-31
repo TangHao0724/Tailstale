@@ -119,7 +119,7 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,business_ID,business_day,open_time,close_time,people_limit")] Business_hour business_hour)
+        public async Task<IActionResult> Create([Bind("id,business_ID,business_day,open_time,close_time,people_limit")] Business_hourViewModel business_hour)
         {
             //if (ModelState.IsValid)
             //{
@@ -152,9 +152,18 @@ namespace Tailstale.Controllers
                             close_time = business_hour.close_time,//new TimeOnly(19, 0, 0),
                             people_limit = business_hour.people_limit
                         };
+                    Business_hour a = new Business_hour()
+                    {
+                        business_ID = businessHour.business_ID,
+                        business_day = businessHour.business_day,
+                        open_time = businessHour.open_time,//new TimeOnly(10, 0, 0),  // 預設開門時間，设置为早上10点
+                        close_time = businessHour.close_time,//new TimeOnly(19, 0, 0),
+                        people_limit = businessHour.people_limit
+                    };
 
-                        _context.Add(businessHour);
-                    }
+                    //_context.Add(businessHour);
+                    _context.Add(a);
+                }
                 
 
                 await _context.SaveChangesAsync();

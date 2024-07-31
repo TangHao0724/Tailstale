@@ -99,7 +99,7 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,name,gender,photo,phone,business_ID,Highest_license,Remark")] Beautician beautician)
+        public async Task<IActionResult> Create([Bind("id,name,gender,photo,phone,business_ID,Highest_license,Remark")] BeauticianViewModel beautician)
         {
             var businesses3 = _context.businesses
             .Where(b => b.type_ID == 2)
@@ -174,9 +174,20 @@ namespace Tailstale.Controllers
                         beautician.Highest_license = uniqueFileName;
                     }
                 }
-
+                Beautician a = new Beautician()
+                {
+                    
+                    name = beautician.name,
+                    gender = beautician.gender,
+                    photo = beautician.photo,
+                    phone = beautician.phone,
+                    business_ID = beautician.business_ID,
+                    Highest_license = beautician.Highest_license,
+                    Remark = beautician.Remark
+                };
                 // 将 beautician 对象添加到数据库上下文并保存更改
-                _context.Add(beautician);
+                //_context.Add(beautician);
+                _context.Add(a); //只有寫入資料庫才需要把viewmodel轉model,下面的return其實不會管型態,沒差
                 await _context.SaveChangesAsync();
                 
 
@@ -303,7 +314,7 @@ namespace Tailstale.Controllers
                             }
                         }
                     }
-                    
+                   
 
                     // 更新 Beautician 資料
                     _context.Update(beautician);

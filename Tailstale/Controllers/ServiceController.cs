@@ -100,7 +100,7 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,business_ID,category,service_name,service_content,service_img,price")] Service service)
+        public async Task<IActionResult> Create([Bind("id,business_ID,category,service_name,service_content,service_img,price")] ServiceViewModel service)
         {
             if (ModelState.IsValid)
             {
@@ -126,9 +126,18 @@ namespace Tailstale.Controllers
                         service.service_img = uniqueFileName;
                     }
                 }
+                Service a = new Service()
+                {
+                    business_ID = service.business_ID,
+                    category = service.category,
+                    service_name = service.service_name,
+                    service_content = service.service_content,
+                    service_img = service.service_img,
+                    price = service.price,
+                };
 
                 // 将 service 对象添加到数据库上下文并保存更改
-                _context.Add(service);
+                _context.Add(a);
                 await _context.SaveChangesAsync();
 
                 // 成功保存后重定向到 Index 页面

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Threading.Tasks;
 using CRUD_COREMVC;
 using Microsoft.AspNetCore.Mvc;
@@ -123,7 +124,7 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,img_type_id,URL,name,created_at")] business_img business_img)
+        public async Task<IActionResult> Create([Bind("ID,img_type_id,URL,name,created_at")] Sbusiness_imgViewModel business_img)
         {
             if (ModelState.IsValid)
             {
@@ -149,9 +150,14 @@ namespace Tailstale.Controllers
                         business_img.URL = uniqueFileName;
                     }
                 }
-
+                business_img a = new business_img()
+                {
+                    img_type_id = business_img.img_type_id,
+                    URL = business_img.URL,
+                    name = business_img.name,
+                };
                 // 将 service 对象添加到数据库上下文并保存更改
-                _context.Add(business_img);
+                _context.Add(a);
                 await _context.SaveChangesAsync();
 
                 // 成功保存后重定向到 Index 页面

@@ -6,6 +6,7 @@ using CRUD_COREMVC;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Tailstale.Models;
 
 namespace Tailstale.Controllers
@@ -102,11 +103,17 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,FK_business_id,typename,created_at")] business_img_type business_img_type)
+        public async Task<IActionResult> Create([Bind("ID,FK_business_id,typename,created_at")] Sbusiness_img_typeViewModel business_img_type)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(business_img_type);
+                business_img_type a = new business_img_type()
+                {
+                    FK_business_id = business_img_type.FK_business_id,
+                    typename = business_img_type.typename,
+
+                };
+                _context.Add(a);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

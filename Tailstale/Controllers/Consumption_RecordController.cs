@@ -123,7 +123,7 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,keeper_id,pet_name,business_ID,time,beautician_id,service_name,pet_weight,price,end_time,before_photo,after_photo")] Consumption_Record consumption_Record)
+        public async Task<IActionResult> Create([Bind("id,keeper_id,pet_name,business_ID,time,beautician_id,service_name,pet_weight,price,end_time,before_photo,after_photo")] Consumption_RecordViewModel consumption_Record)
         {
             var businesses = _context.businesses
             .Where(b => b.type_ID == 2)
@@ -203,9 +203,23 @@ namespace Tailstale.Controllers
                         consumption_Record.after_photo = uniqueFileName;
                     }
                 }
+                Consumption_Record a = new Consumption_Record()
+                {
+                    keeper_id = consumption_Record.keeper_id,
+                    pet_name = consumption_Record.pet_name,
+                    business_ID = consumption_Record.business_ID,
+                    time = consumption_Record.time,
+                    beautician_id = consumption_Record.beautician_id,
+                    service_name = consumption_Record.service_name,
+                    pet_weight = consumption_Record.pet_weight,
+                    price = consumption_Record.price,
+                    end_time = consumption_Record.end_time,
+                    before_photo = consumption_Record.before_photo,
+                    after_photo = consumption_Record.after_photo
+                };
 
                 // 将 beautician 对象添加到数据库上下文并保存更改
-                _context.Add(consumption_Record);
+                _context.Add(a);
                 await _context.SaveChangesAsync();
 
                 
