@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 
+
 namespace Tailstale.Models;
 
 public partial class Appointment

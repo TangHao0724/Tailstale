@@ -16,6 +16,33 @@
 
 
     }
+    public class GettPetDTO
+    {
+        public int? pet_type_ID { get; set; }
+
+        public string name { get; set; }
+
+        public bool gender { get; set; }
+
+        public DateOnly? birthday { get; set; }
+
+        public int? age { get; set; }
+        public IFormFile petimg { get; set; }
+
+
+
+    }
+    public class GetPetTypeDTO
+    {
+        public int ID { get; set; }
+
+        public string species { get; set; }
+
+        public string breed { get; set; }
+
+
+
+    }
     public class PetDetailDTO
     {
         public string chip_ID { get; set; }

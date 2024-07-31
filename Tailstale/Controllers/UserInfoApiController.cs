@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -55,10 +57,28 @@ namespace Tailstale.Controllers
 
         //傳送petTypes
         //route api/UserInfoApi/petTypes
+        [HttpGet("GetPet")]
+        public async Task<IActionResult> GetPet([FromQuery] ApiInputID input)
+        {
+            var pets = await _context.pets
+
+            return new JsonResult(petTypes);
+        }
+
+
+        //傳送指定用戶的pet
+        //route api/UserInfoApi/petTypes
         [HttpGet("GetPetTypes")]
         public async Task<IActionResult> GetPetTypes()
         {
-            var petTypes = await _context.pet_types.ToListAsync();
+            var petTypes = await _context.pet_types
+                .Select(pt => new GetPetTypeDTO
+                {
+                    ID = pt.ID,
+                    species = pt.species,
+                    breed = pt.breed
+                })
+                .ToListAsync();
             return new JsonResult(petTypes);
         }
 

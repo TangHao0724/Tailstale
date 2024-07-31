@@ -52,6 +52,7 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+    <Folder Include="wwwroot\imgs\keeper_img\" />
     <Folder Include="wwwroot\NewFolder\NewFolder\" />
     <Folder Include="partial\" />
     <Folder Include="wwwroot\js\components\" />
