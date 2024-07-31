@@ -1,9 +1,8 @@
 ﻿@model IEnumerable<Tailstale.MedRecordDTO.NursingDTO>
 
 @{
-    ViewData["Title"] = "Info";
+    ViewData["Title"] = "Index";
 }
-
 
 <h1>護理記錄</h1>
 <span>
@@ -20,6 +19,9 @@
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.datetime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.hosp_history_id)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.weight)
@@ -39,6 +41,9 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.datetime)
                 </td>
+                <th>
+                    @Html.DisplayFor(modelItem => item.hosp_history_id)
+                </th>
                 <td>
                     @Html.DisplayFor(modelItem => item.weight)
                 </td>

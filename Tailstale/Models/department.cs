@@ -15,5 +15,5 @@ public partial class department
 
     public virtual business business { get; set; }
 
-    public virtual ICollection<vet_information> vet_informations { get; set; } = new List<vet_information>();
+    public virtual ICollection<vet_Information> vet_Informations { get; set; } = new List<vet_Information>();
 }

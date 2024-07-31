@@ -5,7 +5,7 @@
 namespace Tailstale.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class _0702修改vet_informationcs : Migration
+    public partial class _0702修改vet_Informationcs : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

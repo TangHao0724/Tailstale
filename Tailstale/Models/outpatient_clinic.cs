@@ -27,5 +27,5 @@ public partial class outpatient_clinic
 
     public virtual outpatient_clinic_timeslot outpatient_clinic_timeslot { get; set; }
 
-    public virtual vet_information vet { get; set; }
+    public virtual vet_Information vet { get; set; }
 }

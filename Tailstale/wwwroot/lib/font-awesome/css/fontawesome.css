@@ -563,7 +563,7 @@ readers do not read off random characters that represent icons */
 .fa-comment-alt::before {
   content: "\f27a"; }
 
-.fa-info::before {
+.fa-Index::before {
   content: "\f129"; }
 
 .fa-down-left-and-up-right-to-center::before {
@@ -3872,10 +3872,10 @@ readers do not read off random characters that represent icons */
 .fa-user-md::before {
   content: "\f0f0"; }
 
-.fa-circle-info::before {
+.fa-circle-Index::before {
   content: "\f05a"; }
 
-.fa-info-circle::before {
+.fa-Index-circle::before {
   content: "\f05a"; }
 
 .fa-cloud-meatball::before {

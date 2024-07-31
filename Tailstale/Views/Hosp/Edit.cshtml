@@ -19,12 +19,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="admission_date" class="control-label"></label>
-                <input asp-for="admission_date" class="form-control" />
+                <input asp-for="admission_date" class="form-control" asp-format="{0:yyyy-MM-dd HH:mm}" />
                 <span asp-validation-for="admission_date" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="discharge_date" class="control-label"></label>
-                <input asp-for="discharge_date" class="form-control" />
+                <input asp-for="discharge_date" class="form-control" asp-format="{0:yyyy-MM-dd HH:mm}" />
                 <span asp-validation-for="discharge_date" class="text-danger"></span>
             </div>
             <div class="form-group">

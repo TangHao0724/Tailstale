@@ -151,7 +151,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[PaymentInfo]",
+         "Name": "[dbo].[PaymentIndex]",
          "ObjectType": 0
       },
       {
@@ -211,7 +211,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[vet_informations]",
+         "Name": "[dbo].[vet_Informations]",
          "ObjectType": 0
       },
       {

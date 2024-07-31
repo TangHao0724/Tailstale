@@ -37,7 +37,7 @@ public partial class keeper
 
     public virtual ICollection<Message> MessageFK_Users { get; set; } = new List<Message>();
 
-    public virtual ICollection<PaymentInfo> PaymentInfos { get; set; } = new List<PaymentInfo>();
+    public virtual ICollection<PaymentIndex> PaymentIndexs { get; set; } = new List<PaymentIndex>();
 
     public virtual ICollection<Reserve> Reserves { get; set; } = new List<Reserve>();
 

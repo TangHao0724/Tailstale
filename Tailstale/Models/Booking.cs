@@ -27,7 +27,7 @@ public partial class Booking
 
     public virtual ICollection<CheckinDetail> CheckinDetails { get; set; } = new List<CheckinDetail>();
 
-    public virtual ICollection<PaymentInfo> PaymentInfos { get; set; } = new List<PaymentInfo>();
+    public virtual ICollection<PaymentIndex> PaymentIndexs { get; set; } = new List<PaymentIndex>();
 
     public virtual order_status bookingStatusNavigation { get; set; }
 
