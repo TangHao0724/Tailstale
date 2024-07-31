@@ -24,5 +24,10 @@ namespace Tailstale.Controllers
         {
             return View();
         }
+
+        public IActionResult SalonHome()
+        {
+            return View();
+        }
     }
 }
