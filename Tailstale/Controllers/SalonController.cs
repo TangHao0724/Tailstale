@@ -1,5 +1,6 @@
 ﻿using CRUD_COREMVC;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Tailstale.Models;
 
 namespace Tailstale.Controllers
@@ -27,6 +28,9 @@ namespace Tailstale.Controllers
 
         public IActionResult SalonHome()
         {
+
+            ViewData["pet_name"] = new SelectList(_context.pets, "name", "name");
+            ViewData["keeper_ID"] = new SelectList(_context.keepers, "ID", "name");
             return View();
         }
     }
