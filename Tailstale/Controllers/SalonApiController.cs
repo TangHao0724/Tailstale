@@ -18,8 +18,8 @@ namespace Tailstale.Controllers
             _context = context;
         }
 
-        // GET: api/SalonApi
-        [HttpGet]
+        // GET: api/SalonApi/GetService
+        [HttpGet("GetService")]
         public async Task<IEnumerable<ServiceDTO>> GetService()
         {
             return _context.Services.Select(Emp => new ServiceDTO
@@ -34,6 +34,44 @@ namespace Tailstale.Controllers
                 created_at = Emp.created_at.HasValue ? Emp.created_at.Value.ToString("o") : null,
             });
         }
+
+        // GET: api/SalonApi/GetSalonbusiness
+        [HttpGet("GetSalonbusiness")]
+        public async Task<IEnumerable<SalonbusinessDTO>> GetSalonbusiness()
+        {
+            return _context.businesses.Select(Emp => new SalonbusinessDTO
+            {
+                ID = Emp.ID,
+                type_ID = Emp.type_ID,
+                name = Emp.name,
+                email = Emp.email,
+                phone = Emp.phone,
+                address = Emp.address,
+                geoJson = Emp.geoJson,
+                license_number = Emp.license_number,
+                business_status = Emp.business_status,
+                description = Emp.description,
+                photo_url = Emp.photo_url,
+                created_at = Emp.created_at.HasValue ? Emp.created_at.Value.ToString("o") : null,
+            });
+        }
+
+
+        // GET: api/SalonApi/GetBusinessHour
+        [HttpGet("GetBusinessHour")]
+        public async Task<IEnumerable<BusinessHourDTO>> GetBusinessHour()
+        {
+            return _context.Business_hours.Select(Emp => new BusinessHourDTO
+            {
+                id = Emp.id,
+                business_ID = Emp.business_ID,
+                business_day = Emp.business_day.ToString("yyyy-MM-dd"),
+                open_time = Emp.open_time.HasValue ? Emp.open_time.Value.ToString("HH:mm") : null,
+                close_time = Emp.close_time.HasValue ? Emp.close_time.Value.ToString("HH:mm") : null,
+                people_limit = Emp.people_limit,
+            });
+        }
+
 
     }
 }
