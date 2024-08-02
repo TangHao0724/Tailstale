@@ -86,10 +86,9 @@ namespace Tailstale.Controllers
         public IActionResult Create(int hosp_history_id)
         {
             var pet_id = (from h in _context.hosp_histories
-                               join m in _context.medical_records on h.medical_record_id equals m.id
-                               where h.id == hosp_history_id
-                               select m.pet_id)
-                  .FirstOrDefault();
+                          join m in _context.medical_records on h.medical_record_id equals m.id
+                          where h.id == hosp_history_id
+                          select m.pet_id).FirstOrDefault();
             var model = new NursingDTO
             {
                 hosp_history_id = hosp_history_id,
@@ -161,7 +160,7 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [FromForm]NursingDTO nursingDTO)
+        public async Task<IActionResult> Edit(int id, [FromForm] NursingDTO nursingDTO)
         {
             if (id != null)
             {

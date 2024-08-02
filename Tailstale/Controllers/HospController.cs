@@ -83,17 +83,17 @@ namespace Tailstale.Controllers
         }
 
         // GET: Hosp/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? medical_record_id,int? id)
         {
-            if (id == null)
+            if (id == null || medical_record_id == null)
             {
                 return NotFound();
             }
 
-            var hosp = (from h in _context.hosp_histories
+            var hosp = await (from h in _context.hosp_histories
                         join m in _context.medical_records on h.medical_record_id equals m.id
                         join w in _context.wards on h.ward_id equals w.ward_ID
-                        where h.id == id
+                        where h.id == id && m.id == medical_record_id
                         select new HospDTO
                         {
                             id = h.id,
@@ -102,7 +102,8 @@ namespace Tailstale.Controllers
                             discharge_date = h.discharge_date,
                             ward_id = w.ward_ID,
                             memo = h.memo
-                        }).FirstOrDefault();
+                        }).FirstOrDefaultAsync();
+
             return View(hosp);
         }
 
@@ -129,7 +130,7 @@ namespace Tailstale.Controllers
             _context.Update(h);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+            return Redirect($"https://localhost:7112/Hosp?medical_record_id={h.medical_record_id}");
         }
 
         // GET: Hosp/Delete/5   // hosp_histories不可以delete！！！

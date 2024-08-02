@@ -33,7 +33,7 @@
                 <th>
                     @Html.DisplayNameFor(model => model.memo)
                 </th>
-                <th>Actions</th>
+                <th> </th>
             </tr>
         </thead>
         <tbody>
@@ -61,7 +61,7 @@
                     </td>
                     <td>
                         <a asp-controller="nursing_record" asp-action="Index" asp-route-hosp_history_id="@item.id">護理記錄</a>
-                        <a asp-action="Edit" asp-route-id="@item.id">修改</a>
+                        <a asp-action="Edit" asp-route-medical_record_id="@item.medical_record_id" asp-route-id="@item.id">修改</a>
                     </td>
                 </tr>
             }

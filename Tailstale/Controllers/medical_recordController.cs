@@ -167,10 +167,6 @@ namespace Tailstale.Controllers
                               fee = e.fee
                           }).FirstOrDefault(); //FirstOrDefault嗽嘎嘍啊
 
-            if (record == null)
-            {
-                return NotFound();
-            }
             return View(record);
         }
 
@@ -204,7 +200,7 @@ namespace Tailstale.Controllers
             };
             _context.Update(a);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+            return Redirect($"https://localhost:7112/medical_record?pet_id={a.pet_id}");
             //}
             //    catch (DbUpdateConcurrencyException)
             //    {
