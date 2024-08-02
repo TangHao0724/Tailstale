@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using Tailstale.MedRecordDTO;
 using Tailstale.Models;
 
@@ -83,26 +84,42 @@ namespace Tailstale.Controllers
         }
 
         // GET: Hosp/Edit/5
-        public async Task<IActionResult> Edit(int? medical_record_id,int? id)
+        public async Task<IActionResult> Edit(int medical_record_id,int id)
         {
             if (id == null || medical_record_id == null)
             {
                 return NotFound();
             }
 
-            var hosp = await (from h in _context.hosp_histories
-                        join m in _context.medical_records on h.medical_record_id equals m.id
-                        join w in _context.wards on h.ward_id equals w.ward_ID
-                        where h.id == id && m.id == medical_record_id
-                        select new HospDTO
-                        {
-                            id = h.id,
-                            medical_record_id = m.id,
-                            admission_date = h.admission_date,
-                            discharge_date = h.discharge_date,
-                            ward_id = w.ward_ID,
-                            memo = h.memo
-                        }).FirstOrDefaultAsync();
+            var hosp = await _context.hosp_histories
+                .Where(h => h.id == id)
+                .Include(m => m.medical_record)
+                .Select(h => new HospDTO
+                {   
+                   id = h.id,
+                   medical_record_id=h.medical_record_id,
+                   admission_date_view=h.admission_date.ToString("yyyy-MM-dd"),
+                   discharge_date=h.discharge_date,
+                   ward_id=h.ward_id,
+                   memo = h.memo,
+                   created_at= h.discharge_date,
+                }).FirstOrDefaultAsync();
+
+
+            //var hosp = await (from h in _context.hosp_histories
+            //            join m in _context.medical_records on h.medical_record_id equals m.id
+            //            join w in _context.wards on h.ward_id equals w.ward_ID
+            //            where h.id == id && m.id == medical_record_id
+            //            select new HospDTO
+            //            {
+            //                id = h.id,
+            //                medical_record_id = m.id,
+            //                admission_date = h.admission_date,
+            //                admission_date_view= h.admission_date.ToString("yyyy-MM-dd"),
+            //                discharge_date = h.discharge_date,
+            //                ward_id = w.ward_ID,
+            //                memo = h.memo
+            //            }).FirstOrDefaultAsync();
 
             return View(hosp);
         }

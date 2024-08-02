@@ -15,6 +15,8 @@ namespace Tailstale.MedRecordDTO
 
         [Display(Name = "入院時間")]
         public DateTime admission_date { get; set; }
+        [Display(Name = "入院時間")]
+        public string? admission_date_view { get; set; }
 
         [Display(Name = "出院時間")]
         public DateTime? discharge_date { get; set; }
