@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "預約";
+}
+
+<h2>@DateTime.Today.ToString("MM-dd") 預約看診</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>飼主</th>
+            <th>寵物</th>
+            <th>預約時間</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var appointment in ViewBag.selected)
+        {
+            <tr>
+                <td>@appointment.keeper_name</td>
+                <td>@appointment.pet_name</td>
+                <td>@appointment.date.ToString("yyyy-MM-dd")</td>
+                <td><a asp-controller ="medical_record" asp-action="Index" asp-route-pet_id="@appointment.pet_ID" class="btn btn-primary">病歷資料</a>
+            </td>
+            </tr>
+        }
+    </tbody>
+</table>

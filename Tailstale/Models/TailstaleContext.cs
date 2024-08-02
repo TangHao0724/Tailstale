@@ -111,7 +111,7 @@ public partial class TailstaleContext : DbContext
 
     public virtual DbSet<using_tag> using_tags { get; set; }
 
-    public virtual DbSet<vet_information> vet_informations { get; set; }
+    public virtual DbSet<vet_Information> vet_informations { get; set; }
 
     public virtual DbSet<vital_sign_record> vital_sign_records { get; set; }
 
@@ -1077,7 +1077,7 @@ public partial class TailstaleContext : DbContext
                 .HasConstraintName("FK__using_tag__FK_ta__7D0E9093");
         });
 
-        modelBuilder.Entity<vet_information>(entity =>
+        modelBuilder.Entity<vet_Information>(entity =>
         {
             entity.HasKey(e => e.vet_ID).HasName("PK__vet_info__D816DB2B2F0C27DF");
 
@@ -1085,15 +1085,15 @@ public partial class TailstaleContext : DbContext
             entity.Property(e => e.profile).HasMaxLength(500);
             entity.Property(e => e.vet_name).HasMaxLength(100);
 
-            entity.HasOne(d => d.business).WithMany(p => p.vet_informations)
+            entity.HasOne(d => d.business).WithMany(p => p.vet_Informations)
                 .HasForeignKey(d => d.business_ID)
                 .HasConstraintName("FK__vet_infor__busin__6E01572D");
 
-            entity.HasOne(d => d.business_img).WithMany(p => p.vet_informations)
+            entity.HasOne(d => d.business_img).WithMany(p => p.vet_Informations)
                 .HasForeignKey(d => d.business_img_ID)
                 .HasConstraintName("FK__vet_infor__busin__6FE99F9F");
 
-            entity.HasOne(d => d.department).WithMany(p => p.vet_informations)
+            entity.HasOne(d => d.department).WithMany(p => p.vet_Informations)
                 .HasForeignKey(d => d.department_ID)
                 .HasConstraintName("FK__vet_infor__depar__6EF57B66");
         });

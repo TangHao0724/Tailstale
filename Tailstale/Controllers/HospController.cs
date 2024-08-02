@@ -28,7 +28,7 @@ namespace Tailstale.Controllers
                               select new HospDTO
                               {
                                   id = h.id,
-                                  medical_record_id = m.id,
+                                  medical_record_id = medical_record_id,
                                   admission_date = h.admission_date,
                                   discharge_date = h.discharge_date,
                                   created_at = m.created_at,
@@ -36,26 +36,29 @@ namespace Tailstale.Controllers
                                   nursing_record_datetime = n != null ? n.datetime : (DateTime?)null,
                                   ward_id = w != null ? w.ward_ID : null,
                                   memo = h.memo,
+                                  pet_id = m.pet_id
                               })
                         .GroupBy(h => h.id)
                         .Select(g => g.First())
                         .ToListAsync();
 
             var sortedHosp = Hosp.OrderByDescending(h => h.admission_date);
-            return View(sortedHosp);
-
             ViewBag.medical_record_id = medical_record_id; //用來傳medical_record_id給新增的記錄
+            ViewBag.pet_id = Hosp.FirstOrDefault()?.pet_id;
+
+            return View(sortedHosp);
         }
 
         // GET: Hosp/Create
         [HttpGet]
         public IActionResult Create(int medical_record_id)
-        {
+        { //初始化器
             var model = new HospDTO
             {
                 medical_record_id = medical_record_id,
                 admission_date = DateTime.Now,
             };
+            ViewBag.medical_record_id = medical_record_id;
             return View(model);
         }
 
@@ -76,7 +79,7 @@ namespace Tailstale.Controllers
             };
             _context.Add(a);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+            return Redirect($"https://localhost:7112/Hosp?medical_record_id={a.medical_record_id}");
         }
 
         // GET: Hosp/Edit/5

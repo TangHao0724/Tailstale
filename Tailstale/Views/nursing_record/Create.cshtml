@@ -4,9 +4,7 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
-<h4>nursing_record</h4>
+<h4>新增護理記錄</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -14,17 +12,17 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="pet_id" class="control-label"></label>
-                <select asp-for="pet_id" class ="form-control" asp-items="ViewBag.pet_id"></select>
+                <input asp-for="pet_id" class="form-control" value="@ViewBag.pet_id" readonly />
                 <span asp-validation-for="pet_id" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="hosp_history_id" class="control-label"></label>
-                <input asp-for="hosp_history_id" class="form-control" />
+                <input asp-for="hosp_history_id" class="form-control" asp-items="hosp_history_id" readonly />
                 <span asp-validation-for="hosp_history_id" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="datetime" class="control-label"></label>
-                <input asp-for="datetime" class="form-control" />
+                <input asp-for="datetime" class="form-control" asp-format="{0:yyyy-MM-dd HH:mm}" />
                 <span asp-validation-for="datetime" class="text-danger"></span>
             </div>
             <div class="form-group">

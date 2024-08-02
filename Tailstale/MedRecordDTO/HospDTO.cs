@@ -30,5 +30,8 @@ namespace Tailstale.MedRecordDTO
 
         [Display(Name = "備註")]
         public string? memo { get; set; }
+
+        [Display(Name = "寵物id")]
+        public int? pet_id { get; set; }
     }
 }

@@ -5,15 +5,13 @@
 }
 
 <h1>護理記錄</h1>
-<span>
-    <a asp-controller="medical_record" asp-action="Index">病歷記錄</a>
-    <a asp-controller="Hosp" asp-action="Index">住院記錄</a>
-</span>
-<br />
-<br />
-<p>
-    <a asp-action="Create">新增記錄</a>
-</p>
+
+<div>
+    <a asp-action="Create" asp-route-hosp_history_id="@ViewBag.hosp_history_id">新增護理記錄</a>
+</div>
+<br /><br />
+@if (Model.Any())
+{
 <table class="table">
     <thead>
         <tr>
@@ -61,6 +59,12 @@
         }
     </tbody>
 </table>
+}
+else
+{
+    <p>沒有相關的護理記錄</p>
+}
+
 @Html.AntiForgeryToken()
 
 @section Scripts {
