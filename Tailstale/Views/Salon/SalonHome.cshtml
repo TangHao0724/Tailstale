@@ -23,14 +23,22 @@
             width: 100% !important;
             min-height: 300px !important;
         }
+
+        .truncate-multiline {
+            display: -webkit-box; /* 使用 Flexbox 布局 */
+            -webkit-line-clamp: 3; /* 設置顯示的行數 */
+            -webkit-box-orient: vertical; /* 垂直排列 */
+            overflow: hidden; /* 隱藏超出的內容 */
+            text-overflow: ellipsis; /* 顯示省略號 */
+        }
         
     </style>
     }
 
 
-    
 
 
+<div id="app">
 
     <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
@@ -66,25 +74,21 @@
 
 
     <div class="container bg-primary my-3 Beauty_Step-1">
-    <div v-for="business in businesses" class=" row py-5 g-3">
+     <div v-for="business in businesses" class="row py-5 g-3 mb-3">
         <div v-html="business.geoJson" class="col-12 col-md-6">
-                <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7879.9895174998455!2d120.3154394168926!3d22.60785810259964!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x346e03e088a8dcd9%3A0xbafbdd695d0d8dae!2z5bCP55m95bGL5a-154mp57K-57e75rKZ6b6NL-WwiOalreearuiGmumkiuitty_kuK3jgIHlsI_lnovniqzlsIjploDlupc!5e0!3m2!1szh-TW!2stw!4v1717760714275!5m2!1szh-TW!2stw"
-                    style="border:0; height:100%;width:100%; min-height: 300px;" allowfullscreen="" loading="lazy"
-                    referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </div>
+                
+        </div>
             <div class="col-12 col-md-6">
-                <img src="https://picsum.photos/600/300" class="w-100" alt="">
-                <h3 class="text-center py-2">某某區某某店</h3>
-                <div>1. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae minima laborum iusto, dolores
-                    quisquam quod fugit quasi omnis impedit ipsum.<br>
-                    2. Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis eum dolore deserunt
-                    voluptatibus cupiditate, accusamus a similique....
-                    <div class="text-end me-5"><a href="#" class="text-white ">顯示更多</a></div>
+                <img :src="business.photo_url" class="w-100" style="height:300px;" alt="">
+                <h3 class="text-center py-2">{{business.name}}</h3>
+                <div class="truncate-multiline">
+                    {{business.description}}
                 </div>
-                <p class="m-0 pt-3">高雄市小白屋xxxxxxxxxxxxxx</p>
-                <p class="m-0 pt-3">09xxxxxxxxxx</p>
-            <div class="text-center"><button class="Beauty_btn-1" id="store_1" value="某某區某某店" v-on:click="store()">選擇此門市</button></div>
+                    <div class="text-end me-5"><a href="#" class="text-white ">顯示更多</a></div>
+                
+                 <p class="m-0 pt-3">{{business.address}}</p>
+                 <p class="m-0 pt-3">{{business.phone}}</p>
+                 <div class="text-center"><button class="Beauty_btn-1" :value="business.ID" v-on:click="store(business.ID)">選擇此門市</button></div>
 
             </div>
         </div>
@@ -336,85 +340,18 @@
             </div>
         </div>
     </div>
+</div>
 
 
     @section Scripts{
-   
+    <script src="https://unpkg.com/vue@3.4.31/dist/vue.global.js"></script>
    
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
-    <script src="https://unpkg.com/vue@3.4.31/dist/vue.global.js"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"
             integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
-
-
-    <script>
-        var vueApp = {
-            data() {
-                return {
-                    baseAddress: "https://localhost:7112",//結尾不要/
-
-                    businesses = [],
-                    business_hour: [],
-                    service: [],
-
-
-                };
-            },
-            mounted: function () {//初始化,發生呼叫函式,他需要用callback,
-                let _this = this;
-                axios.get(`${_this.baseAddress}/api/SalonApi/GetSalonbusiness`).then(response => {
-                    
-                    _this.businesses = response.data;
-                    
-                }).catch(err => {
-                    alert(err);
-                });
-
-            },
-            methods: {
-                store: function () {
-                
-                }
-                // insert: function () {
-                //     alert("insert");//新增做完再隱藏
-
-                //     let _this = this;
-                //     var form = new FormData();//準備上船的物件,把檔案上傳的內容放到form裡面,form如果要送到Server端,每一個資料都要有name(就類似input屬性的那個name,但此處獎的name是下幾行的CategoryId和CategoryName這幾個...)
-                //     //照著你函式用的型態(dto或model)欄位名稱來寫
-                //     form.append("CategoryId", 0);//append是加欄位,CategoryId是name(也可以說是屬性名稱),name的值就是model或是dto裡面的屬性名稱,要有CategoryId,但是不能給他填值
-                //     form.append("CategoryName", _this.categoryName);
-                //     form.append("Description", _this.description);
-                //     form.append("Picture", document.querySelector("#insertFile").files[0]);//抓這個元素取他的上傳的第一個檔案,editFile是檔案上傳元素,files[0]是user選中的第一個上傳檔案,目前沒接受多檔上傳,所以一定是第一個
-
-                //     axios.post(`${_this.baseAddress}/api/Categories`, form, {//新增不需要id在uri
-                //         headers: { //headers這個屬性本身是物件,設定傳給他的格式,因為要傳東西,這個東西不是json格式所以多一個物件參數
-                //             "Content-Type": "multipart/form-data"//跟服務溝通預設是json格式,因為我要送form,所以要改一下傳送格式,改成multipart/form-data才能做檔案上傳(目前DTO的picture格式是檔案上傳),如果你是送二進位vue3-4 30:05
-                //         }
-                //     }).then(response => {
-                //         alert(response.data);
-
-
-
-
-                //     }).catch(err => {
-                //         alert(err);
-                //     });
-
-                // }
-            },
-            computed: {
-                servicesForBusinessID1004() {
-                    return this.services.filter(service => service.business_ID === 1004);
-                }
-            }
-        };
-        var app = Vue.createApp(vueApp).mount("#app");
-
-
-    </script>
 
 
     <script>
@@ -443,22 +380,15 @@
                     value = this.value;
                     storeval = value;
                     console.log("按鈕的值為：" + value);
-                    document.getElementById("s_Store").value = storeval;
+                    document.getElementById("business_ID").value = storeval;
                 });
             }
-            for (var i = 0; i < type.length; i++) {
-                type[i].addEventListener("click", function () {
-                    value = this.value;
-                    typeval = value;
-                    console.log("按鈕的值為：" + value);
-                    document.getElementById("s_type").value = typeval;
-                });
-            }
+
             for (var i = 0; i < c_service.length; i++) {
                 c_service[i].addEventListener("click", function () {
                     value = this.value;
                     c_serviceval = value;
-                    document.getElementById("s_service").value = c_serviceval;
+                    document.getElementById("service_name").value = c_serviceval;
                     console.log("按鈕的值為：" + c_serviceval);
 
                 });
@@ -467,14 +397,14 @@
                 d_service[i].addEventListener("click", function () {
                     value = this.value;
                     d_serviceval = value;
-                    document.getElementById("s_service").value = d_serviceval;
+                    document.getElementById("service_name").value = d_serviceval;
                     console.log("按鈕的值為：" + d_serviceval);
 
                 });
             }
-            
 
-           
+
+
 
 
 
@@ -483,271 +413,333 @@
 
 
             //jquery---------------------------------------------------------------------------------
-
-            $(".Beauty_Step-2").hide();
-            $(".Beauty_Step-3-1").hide();
-            $(".Beauty_Step-3-2").hide();
-            $(".Beauty_Step-4").hide();
-            $(".Beauty_Step-5").hide();
-            $(".Beauty_btn-1").on("click", function () {
-                $(".Beauty_Step-1").hide();
-                $(".Beauty_Step-2").fadeIn()
-            })
-
-            $(".Beauty_btn-2-1").on("click", function () {
-                $(".Beauty_Step-2").hide();
-                $(".Beauty_Step-3-1").fadeIn()
-            })
-            $(".Beauty_btn-2-2").on("click", function () {
-                $(".Beauty_Step-2").hide();
-                $(".Beauty_Step-3-2").fadeIn()
-            })
-            $(".Beauty_btn-3-1").on("click", function () {
-                $(".Beauty_Step-3-1").hide();
-                $(".Beauty_Step-4").fadeIn()
-            })
-            $(".Beauty_btn-3-2").on("click", function () {
-                $(".Beauty_Step-3-2").hide();
-                $(".Beauty_Step-4").fadeIn()
-            })
-            $(".Beauty_btn-4").on("click", function () {
-                // 取得 Appointment 的值
-                var appointmentValue = $("#Appointment").val().trim();
-
-                // 檢查是否有值
-                if (appointmentValue !== '') {
-                    // 如果有值，執行程式碼
-                    $(".Beauty_Step-4").hide();
-                    $(".Beauty_Step-5").fadeIn();
-                } else {
-                    // 如果沒有值，可以給出提示或其他處理方式
-                    alert('請填寫預約時間');
-                    // 或者不執行任何操作
-                }
-            });
-            // $(".Beauty_btn-4").on("click", function () {
-            //     $(".Beauty_Step-3-2").hide();
-            //     $(".Beauty_Step-5").fadeIn()
-            // })
-            /////日期正則
-
-            // datetime.addEventListener("input", function () {
-            //     // 獲取輸入的值
-
-
-            //     // 檢查輸入值是否符合條件
-            //     var regex = /^(20[2-9][1-9]\/(0[1-9]|1[0-2])\/([0-2][0-9]|3[01]))$/;
-            //     var isValid = regex.test(u_datetime);
-
-            //     // 如果輸入值符合條件，啟用下一步按鈕；否則禁用下一步按鈕
-            //     if (isValid) {
-            //         Beauty_date.disabled = false;
-            //     } else {
-            //         Beauty_date.disabled = true;
-            //     }
-            // });
-
-
-            var storeval = null;
-            var typeval = null;
-            var c_serviceval = null;
-            var d_serviceval = null;
-
-            // 設定步驟按鈕的點擊事件
-            $("#stepbtn-1").on("click", function () {
+           
                 $(".Beauty_Step-2").hide();
                 $(".Beauty_Step-3-1").hide();
                 $(".Beauty_Step-3-2").hide();
                 $(".Beauty_Step-4").hide();
                 $(".Beauty_Step-5").hide();
-                $(".Beauty_Step-1").fadeIn();
-
-                // 設定 active 狀態
-                $('.nav-link').removeClass('active');
-                $('#stepbtn-1').addClass('active');
-            });
-            $(".Beauty_btn-1").on("click", function () {
-                $(".Beauty_Step-1").hide();
-                $(".Beauty_Step-3-1").hide();
-                $(".Beauty_Step-3-2").hide();
-                $(".Beauty_Step-4").hide();
-                $(".Beauty_Step-5").hide();
-                $(".Beauty_Step-2").fadeIn();
-
-                // 設定 active 狀態
-                $('.nav-link').removeClass('active');
-                $('#stepbtn-2').addClass('active');
-            });
-
-
-            $("#stepbtn-2").on("click", function () {
-                if (storeval !== null) {
+                $(".Beauty_btn-1").on("click", function () {
                     $(".Beauty_Step-1").hide();
+                    $(".Beauty_Step-2").fadeIn();
+                    $('.nav-link').removeClass('active');
+                    $('#stepbtn-2').addClass('active');
+                })
+
+                $(".Beauty_btn-2-1").on("click", function () {
+                    $(".Beauty_Step-2").hide();
+                    $(".Beauty_Step-3-1").fadeIn()
+                })
+                $(".Beauty_btn-2-2").on("click", function () {
+                    $(".Beauty_Step-2").hide();
+                    $(".Beauty_Step-3-2").fadeIn()
+                })
+                $(".Beauty_btn-3-1").on("click", function () {
+                    $(".Beauty_Step-3-1").hide();
+                    $(".Beauty_Step-4").fadeIn()
+                })
+                $(".Beauty_btn-3-2").on("click", function () {
+                    $(".Beauty_Step-3-2").hide();
+                    $(".Beauty_Step-4").fadeIn()
+                })
+                $(".Beauty_btn-4").on("click", function () {
+                    // 取得 Appointment 的值
+                    var appointmentValue = $("#Appointment").val().trim();
+
+                    // 檢查是否有值
+                    if (appointmentValue !== '') {
+                        // 如果有值，執行程式碼
+                        $(".Beauty_Step-4").hide();
+                        $(".Beauty_Step-5").fadeIn();
+                    } else {
+                        // 如果沒有值，可以給出提示或其他處理方式
+                        alert('請填寫預約時間');
+                        // 或者不執行任何操作
+                    }
+                });
+                // $(".Beauty_btn-4").on("click", function () {
+                //     $(".Beauty_Step-3-2").hide();
+                //     $(".Beauty_Step-5").fadeIn()
+                // })
+                /////日期正則
+
+                // datetime.addEventListener("input", function () {
+                //     // 獲取輸入的值
+
+
+                //     // 檢查輸入值是否符合條件
+                //     var regex = /^(20[2-9][1-9]\/(0[1-9]|1[0-2])\/([0-2][0-9]|3[01]))$/;
+                //     var isValid = regex.test(u_datetime);
+
+                //     // 如果輸入值符合條件，啟用下一步按鈕；否則禁用下一步按鈕
+                //     if (isValid) {
+                //         Beauty_date.disabled = false;
+                //     } else {
+                //         Beauty_date.disabled = true;
+                //     }
+                // });
+
+
+                var storeval = null;
+                var typeval = null;
+                var c_serviceval = null;
+                var d_serviceval = null;
+
+                // 設定步驟按鈕的點擊事件
+                $("#stepbtn-1").on("click", function () {
+                    $(".Beauty_Step-2").hide();
                     $(".Beauty_Step-3-1").hide();
                     $(".Beauty_Step-3-2").hide();
                     $(".Beauty_Step-4").hide();
                     $(".Beauty_Step-5").hide();
-                    $(".Beauty_Step-2").fadeIn();
+                    $(".Beauty_Step-1").fadeIn();
 
                     // 設定 active 狀態
                     $('.nav-link').removeClass('active');
-                    $('#stepbtn-2').addClass('active');
-                }
-            });
-            $(".pet_type").on("click", function () {
+                    $('#stepbtn-1').addClass('active');
+                });
+                // $(".Beauty_btn-1").on("click", function () {
+                //     $(".Beauty_Step-1").hide();
+                //     $(".Beauty_Step-3-1").hide();
+                //     $(".Beauty_Step-3-2").hide();
+                //     $(".Beauty_Step-4").hide();
+                //     $(".Beauty_Step-5").hide();
+                //     $(".Beauty_Step-2").fadeIn();
+
+                //     // 設定 active 狀態
+                //     $('.nav-link').removeClass('active');
+                //     $('#stepbtn-2').addClass('active');
+                // });
 
 
-                // 設定 active 狀態
-                $('.nav-link').removeClass('active');
-                $('#stepbtn-3').addClass('active');
-            });
-
-            $("#stepbtn-3").on("click", function () {
-                if (storeval !== null && typeval !== null) {
-                    $(".Beauty_Step-1").hide();
-                    $(".Beauty_Step-2").hide();
-                    $(".Beauty_Step-4").hide();
-                    $(".Beauty_Step-5").hide();
-
-                    if (typeval === "貓") {
+                $("#stepbtn-2").on("click", function () {
+                    if (storeval !== null) {
+                        $(".Beauty_Step-1").hide();
                         $(".Beauty_Step-3-1").hide();
-                        $(".Beauty_Step-3-2").fadeIn();
-                    } else {
                         $(".Beauty_Step-3-2").hide();
-                        $(".Beauty_Step-3-1").fadeIn();
+                        $(".Beauty_Step-4").hide();
+                        $(".Beauty_Step-5").hide();
+                        $(".Beauty_Step-2").fadeIn();
+
+                        // 設定 active 狀態
+                        $('.nav-link').removeClass('active');
+                        $('#stepbtn-2').addClass('active');
                     }
+                });
+                $(".pet_type").on("click", function () {
+
 
                     // 設定 active 狀態
                     $('.nav-link').removeClass('active');
                     $('#stepbtn-3').addClass('active');
-                }
-            });
-            $(".dog_service,.cat_service").on("click", function () {
+                });
 
-                // 設定 active 狀態
-                $('.nav-link').removeClass('active');
-                $('#stepbtn-4').addClass('active');
-            });
+                $("#stepbtn-3").on("click", function () {
+                    if (storeval !== null && typeval !== null) {
+                        $(".Beauty_Step-1").hide();
+                        $(".Beauty_Step-2").hide();
+                        $(".Beauty_Step-4").hide();
+                        $(".Beauty_Step-5").hide();
 
-            $("#stepbtn-4").on("click", function () {
-                if ((typeval === "貓" && c_serviceval !== null) || (typeval !== "貓" && d_serviceval !== null)) {
-                    $(".Beauty_Step-1").hide();
-                    $(".Beauty_Step-2").hide();
-                    $(".Beauty_Step-3-1").hide();
-                    $(".Beauty_Step-3-2").hide();
-                    $(".Beauty_Step-5").hide();
-                    $(".Beauty_Step-4").fadeIn();
+                        if (typeval === "貓") {
+                            $(".Beauty_Step-3-1").hide();
+                            $(".Beauty_Step-3-2").fadeIn();
+                        } else {
+                            $(".Beauty_Step-3-2").hide();
+                            $(".Beauty_Step-3-1").fadeIn();
+                        }
+
+                        // 設定 active 狀態
+                        $('.nav-link').removeClass('active');
+                        $('#stepbtn-3').addClass('active');
+                    }
+                });
+                $(".dog_service,.cat_service").on("click", function () {
 
                     // 設定 active 狀態
                     $('.nav-link').removeClass('active');
                     $('#stepbtn-4').addClass('active');
-                }
-            });
-            $("#Beauty_date").on("click", function () {
-                if ($('#Appointment').val().trim() !== '') {
-                    // 設定 active 狀態
-                    $('.nav-link').removeClass('active');
-                    $('#stepbtn-5').addClass('active');
-                }
-            });
+                });
 
-            $("#stepbtn-5").on("click", function () {
-                if ($('#Appointment').val().trim() !== '') {
-                    $(".Beauty_Step-1").hide();
-                    $(".Beauty_Step-2").hide();
-                    $(".Beauty_Step-3-1").hide();
-                    $(".Beauty_Step-3-2").hide();
-                    $(".Beauty_Step-4").hide();
+                $("#stepbtn-4").on("click", function () {
+                    if ((typeval === "貓" && c_serviceval !== null) || (typeval !== "貓" && d_serviceval !== null)) {
+                        $(".Beauty_Step-1").hide();
+                        $(".Beauty_Step-2").hide();
+                        $(".Beauty_Step-3-1").hide();
+                        $(".Beauty_Step-3-2").hide();
+                        $(".Beauty_Step-5").hide();
+                        $(".Beauty_Step-4").fadeIn();
 
-                    $(".Beauty_Step-5").fadeIn();
+                        // 設定 active 狀態
+                        $('.nav-link').removeClass('active');
+                        $('#stepbtn-4').addClass('active');
+                    }
+                });
+                $("#Beauty_date").on("click", function () {
+                    if ($('#Appointment').val().trim() !== '') {
+                        // 設定 active 狀態
+                        $('.nav-link').removeClass('active');
+                        $('#stepbtn-5').addClass('active');
+                    }
+                });
 
-                    // 設定 active 狀態
-                    $('.nav-link').removeClass('active');
-                    $('#stepbtn-5').addClass('active');
-                } else {
-                    alert('請填寫預約時間');
-                }
-            });
+                $("#stepbtn-5").on("click", function () {
+                    if ($('#Appointment').val().trim() !== '') {
+                        $(".Beauty_Step-1").hide();
+                        $(".Beauty_Step-2").hide();
+                        $(".Beauty_Step-3-1").hide();
+                        $(".Beauty_Step-3-2").hide();
+                        $(".Beauty_Step-4").hide();
 
-            // 為每個選擇按鈕添加事件，更新變量
-            $(".Beauty_btn-1").on("click", function () {
-                storeval = $(this).val();
-                $("#business_ID").val(storeval);
-            });
+                        $(".Beauty_Step-5").fadeIn();
 
-            // $(".pet_type").on("click", function () {
-            //     typeval = $(this).val();
-            //     $("#s_type").val(typeval);
-            // });
+                        // 設定 active 狀態
+                        $('.nav-link').removeClass('active');
+                        $('#stepbtn-5').addClass('active');
+                    } else {
+                        alert('請填寫預約時間');
+                    }
+                });
 
-            $(".cat_service").on("click", function () {
-                c_serviceval = $(this).val();
-                $("#service_name").val(c_serviceval);
-            });
+                // 為每個選擇按鈕添加事件，更新變量
+                $(".Beauty_btn-1").on("click", function () {
+                    storeval = $(this).val();
+                    $("#business_ID").val(storeval);
+                });
 
-            $(".dog_service").on("click", function () {
-                d_serviceval = $(this).val();
-                $("#service_name").val(d_serviceval);
-            });
+                // $(".pet_type").on("click", function () {
+                //     typeval = $(this).val();
+                //     $("#s_type").val(typeval);
+                // });
 
+                $(".cat_service").on("click", function () {
+                    c_serviceval = $(this).val();
+                    $("#service_name").val(c_serviceval);
+                });
 
-
-
-
-            ////
-            // $("#stepbtn-1").on("click", function () {
-            //     $(".Beauty_Step-2").hide()
-            //     $(".Beauty_Step-3-1").hide();
-            //     $(".Beauty_Step-3-2").hide();
-            //     $(".Beauty_Step-1").fadeIn();
-            // })
-            // $("#stepbtn-2").on("click", function () {
-            //     if (storeval === null) {
-
-            //     } else {
-            //         $(".Beauty_Step-1").hide()
-            //         $(".Beauty_Step-3-1").hide();
-            //         $(".Beauty_Step-3-2").hide();
-            //         $(".Beauty_Step-2").fadeIn();
-            //     }
-            // })
-            // $("#stepbtn-3").on("click", function () {
-            //     if (storeval === null || typeval === null) {
-
-            //     } else if (typeval === "貓") {
-            //         $(".Beauty_Step-1").hide()
-            //         $(".Beauty_Step-3-1").hide();
-            //         $(".Beauty_Step-2").hide();
-            //         $(".Beauty_Step-3-2").fadeIn();
-            //     } else {
-            //         $(".Beauty_Step-1").hide()
-            //         $(".Beauty_Step-3-2").hide();
-            //         $(".Beauty_Step-2").hide();
-            //         $(".Beauty_Step-3-1").fadeIn();
-            //     }
-            // })
-            $(".Beauty_btn-4").on("click", function () {
-                document.getElementById("time").value = datetime.value;
-                console.log(datetime.value)
-            }) //必須要不然取不到時間
-
-            // $('.nav-link').on('click', function () {
-            //     $('.nav-link').removeClass('active');
-            //     $(this).addClass('active');
-            // });
-            /////////////////////////
+                $(".dog_service").on("click", function () {
+                    d_serviceval = $(this).val();
+                    $("#service_name").val(d_serviceval);
+                });
 
 
 
 
-            $('#Appointment').datetimepicker({
-                allowTimes: ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00']
-            });
+
+                ////
+                // $("#stepbtn-1").on("click", function () {
+                //     $(".Beauty_Step-2").hide()
+                //     $(".Beauty_Step-3-1").hide();
+                //     $(".Beauty_Step-3-2").hide();
+                //     $(".Beauty_Step-1").fadeIn();
+                // })
+                // $("#stepbtn-2").on("click", function () {
+                //     if (storeval === null) {
+
+                //     } else {
+                //         $(".Beauty_Step-1").hide()
+                //         $(".Beauty_Step-3-1").hide();
+                //         $(".Beauty_Step-3-2").hide();
+                //         $(".Beauty_Step-2").fadeIn();
+                //     }
+                // })
+                // $("#stepbtn-3").on("click", function () {
+                //     if (storeval === null || typeval === null) {
+
+                //     } else if (typeval === "貓") {
+                //         $(".Beauty_Step-1").hide()
+                //         $(".Beauty_Step-3-1").hide();
+                //         $(".Beauty_Step-2").hide();
+                //         $(".Beauty_Step-3-2").fadeIn();
+                //     } else {
+                //         $(".Beauty_Step-1").hide()
+                //         $(".Beauty_Step-3-2").hide();
+                //         $(".Beauty_Step-2").hide();
+                //         $(".Beauty_Step-3-1").fadeIn();
+                //     }
+                // })
+                $(".Beauty_btn-4").on("click", function () {
+                    document.getElementById("time").value = datetime.value;
+                    console.log(datetime.value)
+                }) //必須要不然取不到時間
+
+                // $('.nav-link').on('click', function () {
+                //     $('.nav-link').removeClass('active');
+                //     $(this).addClass('active');
+                // });
+                /////////////////////////
 
 
 
+
+                $('#Appointment').datetimepicker({
+                    allowTimes: ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00']
+                });
+
+
+            
 
         })
 
     </script>
+
+
+
+    <script>
+
+
+    
+        var vueApp = {
+            data() {
+                return {
+                    baseAddress: "https://localhost:7112",//結尾不要/
+
+                    businesses : [],
+                    business_hour: [],
+                    service: [],
+
+
+                };
+            },
+            mounted: function () {//初始化,發生呼叫函式,他需要用callback,
+                let _this = this;
+                axios.get(`${_this.baseAddress}/api/SalonApi/GetSalonbusiness`).then(response => {
+                    
+                    _this.businesses = response.data;
+                    
+                }).catch(err => {
+                    alert(err);
+                });
+
+            },
+            methods: {
+                servicesForBusinessID1004(businessID) {
+                    return this.service.filter(service => service.business_ID === businessID);
+                },
+                store: function (businessID) {
+                    let _this = this;
+                    axios.get(`${_this.baseAddress}/api/SalonApi/GetService`).then(response => {
+
+                        _this.service = response.data;
+
+                    }).catch(err => {
+                        alert(err);
+                    });
+                    // servicesForBusinessID1004(businessID)
+                },
+                
+                
+            },
+            computed: {
+                
+                
+            }
+        };
+        var app = Vue.createApp(vueApp).mount("#app");
+
+
+    </script>
+
+
+    
     }

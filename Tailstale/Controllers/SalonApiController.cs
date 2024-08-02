@@ -39,7 +39,9 @@ namespace Tailstale.Controllers
         [HttpGet("GetSalonbusiness")]
         public async Task<IEnumerable<SalonbusinessDTO>> GetSalonbusiness()
         {
-            return _context.businesses.Select(Emp => new SalonbusinessDTO
+            return _context.businesses
+                .Where(Emp => Emp.type_ID == 2)
+                .Select(Emp => new SalonbusinessDTO
             {
                 ID = Emp.ID,
                 type_ID = Emp.type_ID,
