@@ -74,11 +74,11 @@
 
 
     <div class="container bg-primary my-3 Beauty_Step-1">
-     <div v-for="business in businesses" class="row py-5 g-3 mb-3">
+        <div v-for="business in businesses" :key="business.ID" class="row py-5 g-3 mb-3">
         <div v-html="business.geoJson" class="col-12 col-md-6">
                 
         </div>
-            <div class="col-12 col-md-6">
+        <div class="col-12 col-md-6">
                 <img :src="business.photo_url" class="w-100" style="height:300px;" alt="">
                 <h3 class="text-center py-2">{{business.name}}</h3>
                 <div class="truncate-multiline">
@@ -88,7 +88,7 @@
                 
                  <p class="m-0 pt-3">{{business.address}}</p>
                  <p class="m-0 pt-3">{{business.phone}}</p>
-                 <div class="text-center"><button class="Beauty_btn-1" :value="business.ID" v-on:click="store(business.ID)">選擇此門市</button></div>
+                <div class="text-center"><button class="Beauty_btn-1" :value="business.id" v-on:click="selectBusiness(business.id)">選擇此門市</button></div>
 
             </div>
         </div>
@@ -104,7 +104,7 @@
                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, quisquam laudantium.
                         Perspiciatis
                         incidunt ratione ad modi provident non fugit ipsa magnam. Facere molestiae quis ducimus.</p>
-                    <div class="text-center"><button class="Beauty_btn-2-1 pet_type" id="" value="狗">選擇</button></div>
+                    <div class="text-center"><button class="Beauty_btn-2-1 pet_type" id="" :value="dogType" v-on:click="selectPetType(dogType)">選擇</button></div>
                 </div>
 
             </div>
@@ -115,7 +115,7 @@
                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, quisquam laudantium.
                         Perspiciatis
                         incidunt ratione ad modi provident non fugit ipsa magnam. Facere molestiae quis ducimus.</p>
-                    <div class="text-center"><button class="Beauty_btn-2-2  pet_type" id="" value="貓">選擇</button></div>
+                    <div class="text-center"><button class="Beauty_btn-2-2  pet_type" id="" :value="catType" v-on:click="selectPetType(catType)">選擇</button></div>
                 </div>
             </div>
         </div>
@@ -124,124 +124,22 @@
     <!-- 3 -->
     <div class="container my-5 Beauty_Step-3-1">
         <div class="row">
-            <div class="col-12 col-md-4 p-0">
+            <div v-for="service in services" class="col-12 col-md-4 p-0">
                 <div class="border mx-3 p-3">
-                    <img src="https://picsum.photos/600/300" class="w-100" alt="">
-                    <h3>小型犬洗澡</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, quisquam laudantium.
-                        Perspiciatis
-                        incidunt ratione ad modi provident non fugit ipsa magnam. Facere molestiae quis ducimus.</p>
-                    <div class="text-center"><button class="Beauty_btn-3-1 dog_service" id="" value="小型犬洗澡">選擇</button>
+                    <img :src="`/Salon_img/${service.service_img}`" class="w-100" style="height:300px;" alt="">
+                    <h3>{{service.service_name}}</h3>
+                    <p>{{service.service_content}}</p>
+                    <p>{{service.price}}</p>
+                    <div class="text-center"><button class="Beauty_btn-3-1 dog_service"  value="service.service_name">選擇</button>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-4  p-0">
-                <div class="border mx-3 p-3">
-                    <img src="https://picsum.photos/600/300" class="w-100" alt="">
-                    <h3>小型犬半手剪</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, quisquam laudantium.
-                        Perspiciatis
-                        incidunt ratione ad modi provident non fugit ipsa magnam. Facere molestiae quis ducimus.</p>
-                    <div class="text-center"><button class="Beauty_btn-3-1 dog_service" id="" value="小型犬半手剪">選擇</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4  p-0">
-                <div class="border mx-3 p-3">
-                    <img src="https://picsum.photos/600/300" class="w-100" alt="">
-                    <h3>小型犬全手剪</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, quisquam laudantium.
-                        Perspiciatis
-                        incidunt ratione ad modi provident non fugit ipsa magnam. Facere molestiae quis ducimus.</p>
-                    <div class="text-center"><button class="Beauty_btn-3-1 dog_service" id="" value="小型犬全手剪">選擇</button>
-                    </div>
-                </div>
-            </div>
+           </div>
         </div>
-        <div class="row">
-            <div class="col-12 col-md-4 p-0">
-                <div class="border mx-3 p-3">
-                    <img src="https://picsum.photos/600/300" class="w-100" alt="">
-                    <h3>中型犬洗澡</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, quisquam laudantium.
-                        Perspiciatis
-                        incidunt ratione ad modi provident non fugit ipsa magnam. Facere molestiae quis ducimus.
-                    </p>
-                    <div class="text-center"><button class="Beauty_btn-3-1 dog_service" id="" value="中型犬洗澡">選擇</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-md-4  p-0">
-                <div class="border mx-3 p-3">
-                    <img src="https://picsum.photos/600/300" class="w-100" alt="">
-                    <h3>中型犬半手剪</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, quisquam laudantium.
-                        Perspiciatis
-                        incidunt ratione ad modi provident non fugit ipsa magnam. Facere molestiae quis ducimus.
-                    </p>
-                    <div class="text-center"><button class="Beauty_btn-3-1 dog_service" id="" value="中型犬半手剪">選擇</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4  p-0">
-                <div class="border mx-3 p-3">
-                    <img src="https://picsum.photos/600/300" class="w-100" alt="">
-                    <h3>中型犬全手剪</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, quisquam laudantium.
-                        Perspiciatis
-                        incidunt ratione ad modi provident non fugit ipsa magnam. Facere molestiae quis ducimus.
-                    </p>
-                    <div class="text-center"><button class="Beauty_btn-3-1 dog_service" id="" value="中型犬全手剪">選擇</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12 col-md-4 p-0">
-                <div class="border mx-3 p-3">
-                    <img src="https://picsum.photos/600/300" class="w-100" alt="">
-                    <h3>大型犬洗澡</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, quisquam
-                        laudantium.
-                        Perspiciatis
-                        incidunt ratione ad modi provident non fugit ipsa magnam. Facere molestiae quis
-                        ducimus.</p>
-                    <div class="text-center"><button class="Beauty_btn-3-1 dog_service" id="" value="大型犬洗澡">選擇</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4  p-0">
-                <div class="border mx-3 p-3">
-                    <img src="https://picsum.photos/600/300" class="w-100" alt="">
-                    <h3>大型犬半手剪</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, quisquam
-                        laudantium.
-                        Perspiciatis
-                        incidunt ratione ad modi provident non fugit ipsa magnam. Facere molestiae quis
-                        ducimus.</p>
-                    <div class="text-center"><button class="Beauty_btn-3-1 dog_service" id="" value="大型犬半手剪">選擇</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4  p-0">
-                <div class="border mx-3 p-3">
-                    <img src="https://picsum.photos/600/300" class="w-100" alt="">
-                    <h3>大型犬全手剪</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, quisquam
-                        laudantium.
-                        Perspiciatis
-                        incidunt ratione ad modi provident non fugit ipsa magnam. Facere molestiae quis
-                        ducimus.</p>
-                    <div class="text-center"><button class="Beauty_btn-3-1 dog_service" id="" value="大型犬全手剪">選擇</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 
 
-
+@* 
 
     <div class="container my-5 Beauty_Step-3-2">
         <div class="row">
@@ -295,7 +193,7 @@
             </div>
         </div>
     </div>
-
+ *@
 
 
     <div class="container my-5 Beauty_Step-4">
@@ -355,319 +253,41 @@
 
 
     <script>
-        $(function () {
-            var type = document.getElementsByClassName("pet_type")
-            var typeval = null;
-            var store = document.getElementsByClassName("Beauty_btn-1");
-            var storeval = null;
-            var c_service = document.getElementsByClassName("cat_service")
-            var c_serviceval = null;
-            var d_service = document.getElementsByClassName("dog_service")
-            var d_serviceval = null;
-            var stepbtn1 = document.getElementById("stepbtn-1")
-            var stepbtn2 = document.getElementById("stepbtn-2")
-            var stepbtn3 = document.getElementById("stepbtn-3")
-            var stepbtn4 = document.getElementById("stepbtn-4")
-            var datetime = document.getElementById("Appointment")
-            var Beauty_date = document.getElementById("Beauty_date");
-            const appointmentInput = document.getElementById('Appointment');
-            const beautyDateButton = document.getElementById('Beauty_date');
-            var appointmentValue = $('#Appointment').val().trim();
-
-            //因為他是NodeList不是單字串,要用迴圈給每個都加上監聽器
-            for (var i = 0; i < store.length; i++) {
-                store[i].addEventListener("click", function () {
-                    value = this.value;
-                    storeval = value;
-                    console.log("按鈕的值為：" + value);
-                    document.getElementById("business_ID").value = storeval;
-                });
-            }
-
-            for (var i = 0; i < c_service.length; i++) {
-                c_service[i].addEventListener("click", function () {
-                    value = this.value;
-                    c_serviceval = value;
-                    document.getElementById("service_name").value = c_serviceval;
-                    console.log("按鈕的值為：" + c_serviceval);
-
-                });
-            }
-            for (var i = 0; i < d_service.length; i++) {
-                d_service[i].addEventListener("click", function () {
-                    value = this.value;
-                    d_serviceval = value;
-                    document.getElementById("service_name").value = d_serviceval;
-                    console.log("按鈕的值為：" + d_serviceval);
-
-                });
-            }
 
 
 
+        var vueApp = {
+            data() {
+                return {
+                    baseAddress: "https://localhost:7112",//結尾不要/
+                    business_ID: 0,
+                    dogType: '狗',
+                    catType: '貓',
+                    pet_type:"",
+                    businesses: [],
+                    business_hour: [],
+                    services: [],
 
 
-
-
-
-
-
-            //jquery---------------------------------------------------------------------------------
-           
+                };
+            },
+            mounted: function () {//初始化,發生呼叫函式,他需要用callback,
                 $(".Beauty_Step-2").hide();
                 $(".Beauty_Step-3-1").hide();
                 $(".Beauty_Step-3-2").hide();
                 $(".Beauty_Step-4").hide();
                 $(".Beauty_Step-5").hide();
-                $(".Beauty_btn-1").on("click", function () {
-                    $(".Beauty_Step-1").hide();
-                    $(".Beauty_Step-2").fadeIn();
-                    $('.nav-link').removeClass('active');
-                    $('#stepbtn-2').addClass('active');
-                })
 
-                $(".Beauty_btn-2-1").on("click", function () {
-                    $(".Beauty_Step-2").hide();
-                    $(".Beauty_Step-3-1").fadeIn()
-                })
-                $(".Beauty_btn-2-2").on("click", function () {
-                    $(".Beauty_Step-2").hide();
-                    $(".Beauty_Step-3-2").fadeIn()
-                })
-                $(".Beauty_btn-3-1").on("click", function () {
-                    $(".Beauty_Step-3-1").hide();
-                    $(".Beauty_Step-4").fadeIn()
-                })
-                $(".Beauty_btn-3-2").on("click", function () {
-                    $(".Beauty_Step-3-2").hide();
-                    $(".Beauty_Step-4").fadeIn()
-                })
-                $(".Beauty_btn-4").on("click", function () {
-                    // 取得 Appointment 的值
-                    var appointmentValue = $("#Appointment").val().trim();
+                let _this = this;
+                axios.get(`${_this.baseAddress}/api/SalonApi/GetSalonbusiness`).then(response => {
 
-                    // 檢查是否有值
-                    if (appointmentValue !== '') {
-                        // 如果有值，執行程式碼
-                        $(".Beauty_Step-4").hide();
-                        $(".Beauty_Step-5").fadeIn();
-                    } else {
-                        // 如果沒有值，可以給出提示或其他處理方式
-                        alert('請填寫預約時間');
-                        // 或者不執行任何操作
-                    }
-                });
-                // $(".Beauty_btn-4").on("click", function () {
-                //     $(".Beauty_Step-3-2").hide();
-                //     $(".Beauty_Step-5").fadeIn()
-                // })
-                /////日期正則
+                    _this.businesses = response.data;
 
-                // datetime.addEventListener("input", function () {
-                //     // 獲取輸入的值
-
-
-                //     // 檢查輸入值是否符合條件
-                //     var regex = /^(20[2-9][1-9]\/(0[1-9]|1[0-2])\/([0-2][0-9]|3[01]))$/;
-                //     var isValid = regex.test(u_datetime);
-
-                //     // 如果輸入值符合條件，啟用下一步按鈕；否則禁用下一步按鈕
-                //     if (isValid) {
-                //         Beauty_date.disabled = false;
-                //     } else {
-                //         Beauty_date.disabled = true;
-                //     }
-                // });
-
-
-                var storeval = null;
-                var typeval = null;
-                var c_serviceval = null;
-                var d_serviceval = null;
-
-                // 設定步驟按鈕的點擊事件
-                $("#stepbtn-1").on("click", function () {
-                    $(".Beauty_Step-2").hide();
-                    $(".Beauty_Step-3-1").hide();
-                    $(".Beauty_Step-3-2").hide();
-                    $(".Beauty_Step-4").hide();
-                    $(".Beauty_Step-5").hide();
-                    $(".Beauty_Step-1").fadeIn();
-
-                    // 設定 active 狀態
-                    $('.nav-link').removeClass('active');
-                    $('#stepbtn-1').addClass('active');
-                });
-                // $(".Beauty_btn-1").on("click", function () {
-                //     $(".Beauty_Step-1").hide();
-                //     $(".Beauty_Step-3-1").hide();
-                //     $(".Beauty_Step-3-2").hide();
-                //     $(".Beauty_Step-4").hide();
-                //     $(".Beauty_Step-5").hide();
-                //     $(".Beauty_Step-2").fadeIn();
-
-                //     // 設定 active 狀態
-                //     $('.nav-link').removeClass('active');
-                //     $('#stepbtn-2').addClass('active');
-                // });
-
-
-                $("#stepbtn-2").on("click", function () {
-                    if (storeval !== null) {
-                        $(".Beauty_Step-1").hide();
-                        $(".Beauty_Step-3-1").hide();
-                        $(".Beauty_Step-3-2").hide();
-                        $(".Beauty_Step-4").hide();
-                        $(".Beauty_Step-5").hide();
-                        $(".Beauty_Step-2").fadeIn();
-
-                        // 設定 active 狀態
-                        $('.nav-link').removeClass('active');
-                        $('#stepbtn-2').addClass('active');
-                    }
-                });
-                $(".pet_type").on("click", function () {
-
-
-                    // 設定 active 狀態
-                    $('.nav-link').removeClass('active');
-                    $('#stepbtn-3').addClass('active');
-                });
-
-                $("#stepbtn-3").on("click", function () {
-                    if (storeval !== null && typeval !== null) {
-                        $(".Beauty_Step-1").hide();
-                        $(".Beauty_Step-2").hide();
-                        $(".Beauty_Step-4").hide();
-                        $(".Beauty_Step-5").hide();
-
-                        if (typeval === "貓") {
-                            $(".Beauty_Step-3-1").hide();
-                            $(".Beauty_Step-3-2").fadeIn();
-                        } else {
-                            $(".Beauty_Step-3-2").hide();
-                            $(".Beauty_Step-3-1").fadeIn();
-                        }
-
-                        // 設定 active 狀態
-                        $('.nav-link').removeClass('active');
-                        $('#stepbtn-3').addClass('active');
-                    }
-                });
-                $(".dog_service,.cat_service").on("click", function () {
-
-                    // 設定 active 狀態
-                    $('.nav-link').removeClass('active');
-                    $('#stepbtn-4').addClass('active');
-                });
-
-                $("#stepbtn-4").on("click", function () {
-                    if ((typeval === "貓" && c_serviceval !== null) || (typeval !== "貓" && d_serviceval !== null)) {
-                        $(".Beauty_Step-1").hide();
-                        $(".Beauty_Step-2").hide();
-                        $(".Beauty_Step-3-1").hide();
-                        $(".Beauty_Step-3-2").hide();
-                        $(".Beauty_Step-5").hide();
-                        $(".Beauty_Step-4").fadeIn();
-
-                        // 設定 active 狀態
-                        $('.nav-link').removeClass('active');
-                        $('#stepbtn-4').addClass('active');
-                    }
-                });
-                $("#Beauty_date").on("click", function () {
-                    if ($('#Appointment').val().trim() !== '') {
-                        // 設定 active 狀態
-                        $('.nav-link').removeClass('active');
-                        $('#stepbtn-5').addClass('active');
-                    }
-                });
-
-                $("#stepbtn-5").on("click", function () {
-                    if ($('#Appointment').val().trim() !== '') {
-                        $(".Beauty_Step-1").hide();
-                        $(".Beauty_Step-2").hide();
-                        $(".Beauty_Step-3-1").hide();
-                        $(".Beauty_Step-3-2").hide();
-                        $(".Beauty_Step-4").hide();
-
-                        $(".Beauty_Step-5").fadeIn();
-
-                        // 設定 active 狀態
-                        $('.nav-link').removeClass('active');
-                        $('#stepbtn-5').addClass('active');
-                    } else {
-                        alert('請填寫預約時間');
-                    }
-                });
-
-                // 為每個選擇按鈕添加事件，更新變量
-                $(".Beauty_btn-1").on("click", function () {
-                    storeval = $(this).val();
-                    $("#business_ID").val(storeval);
-                });
-
-                // $(".pet_type").on("click", function () {
-                //     typeval = $(this).val();
-                //     $("#s_type").val(typeval);
-                // });
-
-                $(".cat_service").on("click", function () {
-                    c_serviceval = $(this).val();
-                    $("#service_name").val(c_serviceval);
-                });
-
-                $(".dog_service").on("click", function () {
-                    d_serviceval = $(this).val();
-                    $("#service_name").val(d_serviceval);
+                }).catch(err => {
+                    alert(err);
                 });
 
 
-
-
-
-                ////
-                // $("#stepbtn-1").on("click", function () {
-                //     $(".Beauty_Step-2").hide()
-                //     $(".Beauty_Step-3-1").hide();
-                //     $(".Beauty_Step-3-2").hide();
-                //     $(".Beauty_Step-1").fadeIn();
-                // })
-                // $("#stepbtn-2").on("click", function () {
-                //     if (storeval === null) {
-
-                //     } else {
-                //         $(".Beauty_Step-1").hide()
-                //         $(".Beauty_Step-3-1").hide();
-                //         $(".Beauty_Step-3-2").hide();
-                //         $(".Beauty_Step-2").fadeIn();
-                //     }
-                // })
-                // $("#stepbtn-3").on("click", function () {
-                //     if (storeval === null || typeval === null) {
-
-                //     } else if (typeval === "貓") {
-                //         $(".Beauty_Step-1").hide()
-                //         $(".Beauty_Step-3-1").hide();
-                //         $(".Beauty_Step-2").hide();
-                //         $(".Beauty_Step-3-2").fadeIn();
-                //     } else {
-                //         $(".Beauty_Step-1").hide()
-                //         $(".Beauty_Step-3-2").hide();
-                //         $(".Beauty_Step-2").hide();
-                //         $(".Beauty_Step-3-1").fadeIn();
-                //     }
-                // })
-                $(".Beauty_btn-4").on("click", function () {
-                    document.getElementById("time").value = datetime.value;
-                    console.log(datetime.value)
-                }) //必須要不然取不到時間
-
-                // $('.nav-link').on('click', function () {
-                //     $('.nav-link').removeClass('active');
-                //     $(this).addClass('active');
-                // });
-                /////////////////////////
 
 
 
@@ -677,68 +297,69 @@
                 });
 
 
-            
-
-        })
-
-    </script>
 
 
 
-    <script>
 
 
-    
-        var vueApp = {
-            data() {
-                return {
-                    baseAddress: "https://localhost:7112",//結尾不要/
-
-                    businesses : [],
-                    business_hour: [],
-                    service: [],
-
-
-                };
-            },
-            mounted: function () {//初始化,發生呼叫函式,他需要用callback,
-                let _this = this;
-                axios.get(`${_this.baseAddress}/api/SalonApi/GetSalonbusiness`).then(response => {
-                    
-                    _this.businesses = response.data;
-                    
-                }).catch(err => {
-                    alert(err);
-                });
 
             },
             methods: {
+                selectBusiness: function (businessID){
+                    this.business_ID = businessID;
+                    console.log(businessID)
+                    $(".Beauty_Step-1").hide();
+                    $(".Beauty_Step-2").fadeIn();
+                    $('.nav-link').removeClass('active');
+                    $('#stepbtn-2').addClass('active');
+                },
                 servicesForBusinessID1004(businessID) {
                     return this.service.filter(service => service.business_ID === businessID);
                 },
-                store: function (businessID) {
+                selectService: function (businessID,petType) {
                     let _this = this;
                     axios.get(`${_this.baseAddress}/api/SalonApi/GetService`).then(response => {
 
-                        _this.service = response.data;
+                        _this.services = response.data.filter(item => item.business_ID === businessID && item.category === petType);
 
                     }).catch(err => {
                         alert(err);
                     });
                     // servicesForBusinessID1004(businessID)
                 },
-                
-                
+                selectPetType: function (petType) {
+                    this.pet_type = petType
+                    this.selectService(this.business_ID, this.pet_type)
+                    $(".Beauty_Step-2").hide();
+                    $(".Beauty_Step-3-1").fadeIn();
+                    // if (petType === '貓') {
+                    //     $(".Beauty_Step-3-2").fadeIn();
+                    // } else if (petType === '狗') {
+                    //     $(".Beauty_Step-3-1").fadeIn();
+                    // }
+                    $('.nav-link').removeClass('active');
+                    $('#stepbtn-3').addClass('active');
+                    
+                }
+
+
             },
             computed: {
-                
-                
+                catServices(petType) {
+                    return this.services.filter(item => item.type === petType);
+                }
+
             }
         };
         var app = Vue.createApp(vueApp).mount("#app");
 
 
     </script>
+
+  
+
+
+    
 
 
     
