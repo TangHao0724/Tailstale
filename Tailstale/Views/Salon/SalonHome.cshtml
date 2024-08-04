@@ -3,6 +3,7 @@
 
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
         body {
             min-height: 120vh;
@@ -59,17 +60,17 @@
         <div class="row">
             <div class="col">
                 <nav class="nav nav-pills nav-fill">
-                    <a class="nav-link hand active" id="stepbtn-1" aria-current="page">門市選擇</a>
-                    <a class="nav-link hand" id="stepbtn-2">寵物類型</a>
-                    <a class="nav-link hand" id="stepbtn-3">服務類型</a>
-                    <a class="nav-link hand" id="stepbtn-4">日期時間</a>
-                    <a class="nav-link hand" id="stepbtn-5">確認預約</a>
+                    <a class="nav-link hand active" id="stepbtn-1" aria-current="page" v-on:click="clickNav1">門市選擇</a>
+                    <a class="nav-link hand" id="stepbtn-2" v-on:click="clickNav2">寵物類型</a>
+                    <a class="nav-link hand" id="stepbtn-3" v-on:click="clickNav3">服務類型</a>
+                    <a class="nav-link hand" id="stepbtn-4" v-on:click="clickNav4">日期時間</a>
+                    <a class="nav-link hand" id="stepbtn-5" v-on:click="clickNav5">確認預約</a>
                 </nav>
             </div>
         </div>
     </div>
 
-
+    
 
 
 
@@ -79,7 +80,7 @@
                 
         </div>
         <div class="col-12 col-md-6">
-                <img :src="business.photo_url" class="w-100" style="height:300px;" alt="">
+                <img :src="`/Salon_img/${business.photo_url}`" class="w-100" style="height:300px;" alt="">
                 <h3 class="text-center py-2">{{business.name}}</h3>
                 <div class="truncate-multiline">
                     {{business.description}}
@@ -88,7 +89,7 @@
                 
                  <p class="m-0 pt-3">{{business.address}}</p>
                  <p class="m-0 pt-3">{{business.phone}}</p>
-                <div class="text-center"><button class="Beauty_btn-1" :value="business.id" v-on:click="selectBusiness(business.id)">選擇此門市</button></div>
+                <div class="text-center"><button class="Beauty_btn-1" :value="business.id" v-on:click="selectBusiness(business.id,business.name)">選擇此門市</button></div>
 
             </div>
         </div>
@@ -124,13 +125,14 @@
     <!-- 3 -->
     <div class="container my-5 Beauty_Step-3-1">
         <div class="row">
-            <div v-for="service in services" class="col-12 col-md-4 p-0">
+            <div v-for="service in services" class="col-12 col-md-4 p-0 mb-3">
                 <div class="border mx-3 p-3">
                     <img :src="`/Salon_img/${service.service_img}`" class="w-100" style="height:300px;" alt="">
                     <h3>{{service.service_name}}</h3>
-                    <p>{{service.service_content}}</p>
+                    <p class="truncate-multiline mb-0">{{service.service_content}}</p>
+                    <a href="#">顯示更多</a>
                     <p>{{service.price}}</p>
-                    <div class="text-center"><button class="Beauty_btn-3-1 dog_service"  value="service.service_name">選擇</button>
+                    <div class="text-center"><button class="Beauty_btn-3-1 dog_service"  :value="service.service_name" v-on:click="changeService(service.service_name)">選擇</button>
                     </div>
                 </div>
             </div>
@@ -139,68 +141,14 @@
     
 
 
-@* 
-
-    <div class="container my-5 Beauty_Step-3-2">
-        <div class="row">
-            <div class="col-12 col-md-4 p-0">
-                <div class="border mx-3 p-3">
-                    <img src="https://picsum.photos/600/300" class="w-100" alt="">
-                    <h3>短毛貓洗澡</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, quisquam laudantium.
-                        Perspiciatis
-                        incidunt ratione ad modi provident non fugit ipsa magnam. Facere molestiae quis ducimus.
-                    </p>
-                    <div class="text-center"><button class="Beauty_btn-3-2 cat_service" id="" value="短毛貓洗澡">選擇</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4 p-0">
-                <div class="border mx-3 p-3">
-                    <img src="https://picsum.photos/600/300" class="w-100" alt="">
-                    <h3>短毛貓美容</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, quisquam laudantium.
-                        Perspiciatis
-                        incidunt ratione ad modi provident non fugit ipsa magnam. Facere molestiae quis ducimus.
-                    </p>
-                    <div class="text-center"><button class="Beauty_btn-3-2 cat_service" id="" value="短毛貓美容">選擇</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4  p-0">
-                <div class="border mx-3 p-3">
-                    <img src="https://picsum.photos/600/300" class="w-100" alt="">
-                    <h3>長毛貓洗澡</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, quisquam laudantium.
-                        Perspiciatis
-                        incidunt ratione ad modi provident non fugit ipsa magnam. Facere molestiae quis ducimus.
-                    </p>
-                    <div class="text-center"><button class="Beauty_btn-3-2 cat_service" id="" value="長毛貓洗澡">選擇</button>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-4 p-0">
-                <div class="border mx-3 p-3">
-                    <img src="https://picsum.photos/600/300" class="w-100" alt="">
-                    <h3>短毛貓美容</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, quisquam laudantium.
-                        Perspiciatis
-                        incidunt ratione ad modi provident non fugit ipsa magnam. Facere molestiae quis ducimus.
-                    </p>
-                    <div class="text-center"><button class="Beauty_btn-3-2 cat_service" id="" value="短毛貓美容">選擇</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
- *@
 
 
     <div class="container my-5 Beauty_Step-4">
         <div class="row">
             <div class="col-12 col-md-12 p-0">
-                <p>預約時間: <input type="text" id="Appointment"></p>
-                <div class="text-center"><button class="Beauty_btn-4" id="Beauty_date">確定</button>
+                @* <p>預約時間: <input type="text" id="Appointment" value=""></p> *@
+                <p>預約時間: <input type="text" id="datetime-picker" value=""></p>
+                <div class="text-center"><button class="Beauty_btn-4" id="Beauty_date" v-on:click="selectTime()">確定</button>
                     <p class="reminder" id="reminder">請按下「確定」按鈕以完成操作</p>
                 </div>
             </div>
@@ -213,7 +161,7 @@
                 <form id="contactForm" action="" class="needs-validation" novalidate>
                     <div class="form-group">
                        <label for="keeper_id" class="form-label">會員名稱：</label>
-                       <select asp-items="ViewBag.keeper_ID" asp-for="keeper_id"></select>
+                        <select asp-items="ViewBag.keeper_ID" asp-for="keeper_id"></select>
                     </div>
                   <div class="form-group">
                     <label for="pet_name" class="form-label">寵物名稱：</label>
@@ -221,17 +169,19 @@
                   </div>
                     <div class="form-group">
                         <label for="business_ID" class="form-label">門市：</label>
-                       <input type="text" class="form-control" id="business_ID" name="business_ID" value="" readonly>
+                        <input type="text" class="form-control" v-model="business_Name" readonly>
+                        @* <input type="hidden" id="business_ID" name="business_ID" v-model="business_ID"> *@
+                       @*  <input type="text" class="form-control" id="business_ID" name="business_ID" v-model="business_ID" readonly> *@
                     </div>
                     <div class="form-group">
                         <label for="service_name" class="form-label">服務類型：</label>
-                         <input type="text" class="form-control" id="service_name" name="service_name" value="" readonly>
+                        <input type="text" class="form-control" id="service_name" name="service_name" v-model="serviceName" readonly>
                     </div>
                     <div class="form-group">
                         <label for="s_date" class="form-label">日期時間：</label>
-                    <input type="text" class="form-control" id="time" name="time" value="" readonly>
+                        <input type="text" class="form-control" id="time" name="time" :value="Usetime" readonly>
                     </div>
-                        <div class="text-center"><button type="submit" class="Beauty_btn-5">確定</button>
+                        <div class="text-center"><button class="Beauty_btn-5" v-on:click="Reserveinsert()">確定</button>
                     </div>
                 </form>
 
@@ -250,7 +200,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"
             integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <script>
 
@@ -263,11 +213,15 @@
                     business_ID: 0,
                     dogType: '狗',
                     catType: '貓',
-                    pet_type:"",
+                    pet_type: "",
+                    business_Name:"",
                     businesses: [],
                     business_hour: [],
                     services: [],
-
+                    serviceName:"",
+                    Usetime:"",
+                    keeper_id:1001,
+                    pet_name:"小黑",
 
                 };
             },
@@ -288,13 +242,20 @@
                 });
 
 
+                
+                    flatpickr("#datetime-picker", {
+                        enableTime: true, // 啟用時間選擇
+                        dateFormat: "Y-m-d H:i", // 日期和時間格式
+                        minDate: "today", // 最小日期
+                        minTime: "10:00", // 最小時間
+                        maxTime: "19:00", // 最大時間
+                        time_24hr: true // 使用24小時制
+                    });
+    
 
 
 
-
-                $('#Appointment').datetimepicker({
-                    allowTimes: ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00']
-                });
+                
 
 
 
@@ -305,7 +266,80 @@
 
             },
             methods: {
-                selectBusiness: function (businessID){
+                clickNav1:function() {
+                        $(".Beauty_Step-2").hide();
+                        $(".Beauty_Step-3-1").hide();
+                        $(".Beauty_Step-3-2").hide();
+                        $(".Beauty_Step-4").hide();
+                        $(".Beauty_Step-5").hide();
+                        $(".Beauty_Step-1").fadeIn();
+                        // 設定 active 狀態
+                        $('.nav-link').removeClass('active');
+                        $('#stepbtn-1').addClass('active');
+                },
+                clickNav2: function () {
+                    if (this.business_ID !== 0) {
+                        $(".Beauty_Step-1").hide();
+                        $(".Beauty_Step-3-1").hide();
+                        $(".Beauty_Step-3-2").hide();
+                        $(".Beauty_Step-4").hide();
+                        $(".Beauty_Step-5").hide();
+                        $(".Beauty_Step-2").fadeIn();
+
+                        // 設定 active 狀態
+                        $('.nav-link').removeClass('active');
+                        $('#stepbtn-2').addClass('active');
+                    } else {
+                        alert("請選擇門市")
+                    }
+                },
+                clickNav3: function () {
+                    if (this.pet_type !== "") {
+                        $(".Beauty_Step-1").hide();
+                        $(".Beauty_Step-2").hide();
+                        $(".Beauty_Step-4").hide();
+                        $(".Beauty_Step-5").hide();
+                        $(".Beauty_Step-3-1").fadeIn();
+
+                        // 設定 active 狀態
+                        $('.nav-link').removeClass('active');
+                        $('#stepbtn-3').addClass('active');
+                    } else {
+                        alert("請選擇寵物類型")
+                    }
+                },
+                clickNav4: function () {
+                    if (this.serviceName !== "") {
+                        $(".Beauty_Step-1").hide();
+                        $(".Beauty_Step-3-1").hide();
+                        $(".Beauty_Step-2").hide();
+                        $(".Beauty_Step-5").hide();
+                        $(".Beauty_Step-4").fadeIn();
+
+                        // 設定 active 狀態
+                        $('.nav-link').removeClass('active');
+                        $('#stepbtn-4').addClass('active');
+                    } else {
+                        alert("請選擇服務項目")
+                    }
+                },
+                clickNav5: function () {
+                    if (this.Usetime !== "") {
+                        $(".Beauty_Step-1").hide();
+                        $(".Beauty_Step-2").hide();
+                        $(".Beauty_Step-3-1").hide();
+                        $(".Beauty_Step-4").hide();
+                        $(".Beauty_Step-5").fadeIn();
+
+                        // 設定 active 狀態
+                        $('.nav-link').removeClass('active');
+                        $('#stepbtn-5').addClass('active');
+                    } else {
+                        alert("請選擇預約時間")
+                    }
+                },
+                selectBusiness: function (businessID, businessName) {
+                    this.business_Name = businessName;
                     this.business_ID = businessID;
                     console.log(businessID)
                     $(".Beauty_Step-1").hide();
@@ -313,10 +347,20 @@
                     $('.nav-link').removeClass('active');
                     $('#stepbtn-2').addClass('active');
                 },
-                servicesForBusinessID1004(businessID) {
-                    return this.service.filter(service => service.business_ID === businessID);
+                // servicesForBusinessID1004(businessID) {
+                //     return this.service.filter(service => service.business_ID === businessID);
+                // },
+                selectPetType: function (petType) {
+                    this.pet_type = petType
+                    this.selectService(this.business_ID, this.pet_type)
+                    $(".Beauty_Step-2").hide();
+                    $(".Beauty_Step-3-1").fadeIn();
+
+                    $('.nav-link').removeClass('active');
+                    $('#stepbtn-3').addClass('active');
+
                 },
-                selectService: function (businessID,petType) {
+                selectService: function (businessID, petType) {
                     let _this = this;
                     axios.get(`${_this.baseAddress}/api/SalonApi/GetService`).then(response => {
 
@@ -326,23 +370,51 @@
                         alert(err);
                     });
                     // servicesForBusinessID1004(businessID)
+
                 },
-                selectPetType: function (petType) {
-                    this.pet_type = petType
-                    this.selectService(this.business_ID, this.pet_type)
-                    $(".Beauty_Step-2").hide();
-                    $(".Beauty_Step-3-1").fadeIn();
-                    // if (petType === '貓') {
-                    //     $(".Beauty_Step-3-2").fadeIn();
-                    // } else if (petType === '狗') {
-                    //     $(".Beauty_Step-3-1").fadeIn();
-                    // }
-                    $('.nav-link').removeClass('active');
-                    $('#stepbtn-3').addClass('active');
+                changeService: function (name) {
+                    this.serviceName = name;
+                    $(".Beauty_Step-3-1").hide();
+                    $(".Beauty_Step-4").fadeIn()
+                },
+                selectTime: function () {
+                    console.log(this.Usetime);
+                    this.Usetime = document.getElementById("datetime-picker").value;
+                            
+                        // 如果有值，執行程式碼
+                        $(".Beauty_Step-4").hide();
+                        $(".Beauty_Step-5").fadeIn();
                     
-                }
-
-
+                },
+                Reserveinsert: function () {
+                    let _this = this;
+                    var form = new FormData();//準備上船的物件,把檔案上傳的內容放到form裡面,form如果要送到Server端,每一個資料都要有name(就類似input屬性的那個name,但此處獎的name是下幾行的CategoryId和CategoryName這幾個...)
+                    //照著你函式用的型態(dto或model)欄位名稱來寫
+                    form.append("id", 0);//append是加欄位,CategoryId是name(也可以說是屬性名稱),name的值就是model或是dto裡面的屬性名稱,要有CategoryId,但是不能給他填值
+                    form.append("keeper_id", _this.keeper_id);
+                    form.append("pet_name", _this.pet_name);
+                    form.append("business_ID", _this.business_ID);
+                    form.append("time", new Date(_this.Usetime).toISOString());
+                    form.append("service_name", _this.serviceName);
+                    form.append("created_at", new Date().toISOString());
+                    form.append("status", 1);
+                    //axios.put(uri, 參數, {物件參數}).then().catch()
+                    axios.post(`${_this.baseAddress}/api/SalonApi/ReserveCreate`, form, {//新增不需要id在uri
+                        headers: { "Content-Type": "multipart/form-data" }
+                    }).then(response => {
+                        alert(response.data);
+                        $(".Beauty_Step-5").hide();
+                        $(".Beauty_Step-1").fadeIn();
+                        _this.business_ID = 0;
+                        _this.pet_type = "";
+                        _this.serviceName = "";
+                        _this.Usetime= "";
+                        _this.keeper_id = 1001;
+                        _this.pet_name= "小黑";
+                    }).catch(err => {
+                        alert(err);
+                    });
+                },
             },
             computed: {
                 catServices(petType) {

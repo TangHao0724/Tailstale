@@ -75,5 +75,18 @@ namespace Tailstale.Controllers
         }
 
 
+        // Post: api/SalonApi/ReserveCreate
+        [HttpPost("ReserveCreate")]
+        public string ReserveCreate([FromForm]Reserve reserve)
+        {
+
+
+            _context.Reserves.Add(reserve);
+            _context.SaveChangesAsync();
+
+            return "預約完成!";
+        }
+
+
     }
 }
