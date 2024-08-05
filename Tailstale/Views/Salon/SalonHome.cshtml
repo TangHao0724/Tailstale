@@ -4,6 +4,7 @@
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             min-height: 120vh;
@@ -32,7 +33,21 @@
             overflow: hidden; /* 隱藏超出的內容 */
             text-overflow: ellipsis; /* 顯示省略號 */
         }
+
+        .showWidth {
+            max-width: 40%;
+        }
+
+        .firsttext {
+            
+           line-height:2;
+        }
+
         
+        .btn-closec:focus, .btn-closec:active {
+                outline: none !important; /* 去掉焦點輪廓 */
+                box-shadow: none !important; /* 去掉點擊時的圓形背景效果 */
+        }
     </style>
     }
 
@@ -85,8 +100,30 @@
                 <div class="truncate-multiline">
                     {{business.description}}
                 </div>
-                    <div class="text-end me-5"><a href="#" class="text-white ">顯示更多</a></div>
-                
+                <div class="text-end me-5">
+                    <button type="button" class="btn btn-link text-white btn-closec" data-bs-toggle="modal" data-bs-target="#staticBackdrop">顯示更多</button>
+                   
+                </div>
+                <!-- Scrollable modal -->
+                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable showWidth">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <img :src="`/Salon_img/${business.photo_url}`" class="w-100" style="height:300px;" alt="">
+                                <div v-html="business.description" class="firsttext"></div>
+                                
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
                  <p class="m-0 pt-3">{{business.address}}</p>
                  <p class="m-0 pt-3">{{business.phone}}</p>
                 <div class="text-center"><button class="Beauty_btn-1" :value="business.id" v-on:click="selectBusiness(business.id,business.name)">選擇此門市</button></div>
@@ -130,7 +167,34 @@
                     <img :src="`/Salon_img/${service.service_img}`" class="w-100" style="height:300px;" alt="">
                     <h3>{{service.service_name}}</h3>
                     <p class="truncate-multiline mb-0">{{service.service_content}}</p>
-                    <a href="#">顯示更多</a>
+                    <button type="button" class="btn btn-link text-white btn-closec" data-bs-toggle="modal" data-bs-target="#serviceBackdrop">顯示更多</button>
+
+                    <!-- Scrollable modal -->
+                    <div class="modal fade" id="serviceBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-scrollable showWidth">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel2">Modal title</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <img :src="`/Salon_img/${service.service_img}`" class="w-100" style="height:300px;" alt="">
+                                    <div v-html="service.service_content" class="firsttext my-3"></div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
                     <p>{{service.price}}</p>
                     <div class="text-center"><button class="Beauty_btn-3-1 dog_service"  :value="service.service_name" v-on:click="changeService(service.service_name)">選擇</button>
                     </div>
@@ -158,7 +222,7 @@
     <div class="container my-5 Beauty_Step-5">
         <div class="row">
             <div class="col-12 col-md-12 p-0">
-                <form id="contactForm" action="" class="needs-validation" novalidate>
+               @*  <form id="contactForm" action="" class="needs-validation" novalidate> *@
                     <div class="form-group">
                        <label for="keeper_id" class="form-label">會員名稱：</label>
                         <select asp-items="ViewBag.keeper_ID" asp-for="keeper_id"></select>
@@ -183,7 +247,7 @@
                     </div>
                         <div class="text-center"><button class="Beauty_btn-5" v-on:click="Reserveinsert()">確定</button>
                     </div>
-                </form>
+                @* </form> *@
 
             </div>
         </div>
@@ -222,6 +286,7 @@
                     Usetime:"",
                     keeper_id:1001,
                     pet_name:"小黑",
+                    BusinessHour:[],
 
                 };
             },
@@ -247,14 +312,15 @@
                         enableTime: true, // 啟用時間選擇
                         dateFormat: "Y-m-d H:i", // 日期和時間格式
                         minDate: "today", // 最小日期
+                        // disable: [disableDates],
                         minTime: "10:00", // 最小時間
                         maxTime: "19:00", // 最大時間
                         time_24hr: true // 使用24小時制
                     });
-    
 
 
-
+                
+              
                 
 
 
@@ -341,11 +407,44 @@
                 selectBusiness: function (businessID, businessName) {
                     this.business_Name = businessName;
                     this.business_ID = businessID;
+                    this.BusinessHour = [];
                     console.log(businessID)
                     $(".Beauty_Step-1").hide();
                     $(".Beauty_Step-2").fadeIn();
                     $('.nav-link').removeClass('active');
                     $('#stepbtn-2').addClass('active');
+                    axios.get(`${_this.baseAddress}/api/SalonApi/GetBusinessHour`).then(response => {
+                        this.BusinessHour = response.data.filter(item => item.business_ID === businessID);
+                    }).catch(err => {
+                        alert(err);
+                    });
+                    // const dateFormats = BusinessHour.reduce((acc, item) => {
+                    //     acc[item.business_day] = { minTime: item.open_time, maxTime: item.close_time };
+                    //     return acc;
+                    // }, {});
+
+                    // const disableDates = date => {
+                    //     const formattedDate = flatpickr.formatDate(date, "Y-m-d");
+                    //     return !dateFormats[formattedDate]; // 如果不在 dateFormats 中，返回 true 表示禁用
+                    // };
+
+                    // const picker = flatpickr("#datetime-picker", {
+                    //     enableTime: true,
+                    //     dateFormat: "Y-m-d H:i",
+                    //     minDate: "today",
+                    //     disable: [disableDates],
+                    //     onChange: function (selectedDates, dateStr, instance) {
+                    //         if (selectedDates.length > 0) {
+                    //             const selectedDate = flatpickr.formatDate(selectedDates[0], "Y-m-d");
+                    //             const times = dateFormats[selectedDate];
+                    //             if (times) {
+                    //                 instance.set('minTime', times.minTime);
+                    //                 instance.set('maxTime', times.maxTime);
+                    //             }
+                    //         }
+                    //     }
+                    // });
+                    
                 },
                 // servicesForBusinessID1004(businessID) {
                 //     return this.service.filter(service => service.business_ID === businessID);
@@ -375,7 +474,9 @@
                 changeService: function (name) {
                     this.serviceName = name;
                     $(".Beauty_Step-3-1").hide();
-                    $(".Beauty_Step-4").fadeIn()
+                    $(".Beauty_Step-4").fadeIn();
+                    $('.nav-link').removeClass('active');
+                    $('#stepbtn-4').addClass('active');
                 },
                 selectTime: function () {
                     console.log(this.Usetime);
@@ -384,6 +485,8 @@
                         // 如果有值，執行程式碼
                         $(".Beauty_Step-4").hide();
                         $(".Beauty_Step-5").fadeIn();
+                    $('.nav-link').removeClass('active');
+                    $('#stepbtn-5').addClass('active');
                     
                 },
                 Reserveinsert: function () {
