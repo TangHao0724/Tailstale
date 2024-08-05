@@ -74,6 +74,20 @@ namespace Tailstale.Controllers
             });
         }
 
+        // GET: api/SalonApi/GetSalonPicture
+        [HttpGet("GetSalonPicture")]
+        public async Task<IEnumerable<Sbusiness_imgDTO>> GetSalonPicture()
+        {
+            return _context.business_imgs.Select(Emp => new Sbusiness_imgDTO
+            {
+                ID = Emp.ID,
+                img_type_id = Emp.img_type_id,
+                URL = Emp.URL,
+                name = Emp.name,
+                created_at = Emp.created_at.HasValue ? Emp.created_at.Value.ToString("o") : null,
+            });
+        }
+
 
         // Post: api/SalonApi/ReserveCreate
         [HttpPost("ReserveCreate")]
