@@ -132,11 +132,12 @@ namespace Tailstale.Controllers
                 return Ok(new { Message = $"1" });
             }
             int selectID = await _context.keepers.Where(m => m.email == DTO.email).Select(s => s.ID).FirstOrDefaultAsync();
-
+            string selectname = await _context.keepers.Where(m => m.email == DTO.email).Select(s => s.name).FirstOrDefaultAsync();
 
             HttpContext.Session.SetInt32("loginID", selectID);//登入成功，建立session
+            HttpContext.Session.SetInt32("KloginID", selectID);//登入成功，建立session
             HttpContext.Session.SetInt32("loginType", 0);
-
+            HttpContext.Session.SetString("KloginName", selectname);//登入成功，建立session
 
             //return RedirectToAction("Privacy", "Home");
             return Ok(new { Message = $"0"});
@@ -178,10 +179,11 @@ namespace Tailstale.Controllers
                 return Ok(new { Message = $"1" });
             }
             int selectID = await _context.businesses.Where(m => m.email == DTO.email).Select(s => s.ID).FirstOrDefaultAsync();
-
+            string selectname = await _context.businesses.Where(m => m.email == DTO.email).Select(s => s.name).FirstOrDefaultAsync();
             int? bType = await _context.businesses.Where(m => m.email == DTO.email).Select(m => m.type_ID).FirstOrDefaultAsync();
 
             HttpContext.Session.SetInt32("loginID", selectID);//登入成功，建立session
+            HttpContext.Session.SetString("loginName", selectname);//登入成功，建立session
             HttpContext.Session.SetInt32("loginType", (Int32)bType);
 
             return Ok(new { Message = $"0" });

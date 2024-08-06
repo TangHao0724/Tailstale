@@ -48,6 +48,12 @@
                 outline: none !important; /* 去掉焦點輪廓 */
                 box-shadow: none !important; /* 去掉點擊時的圓形背景效果 */
         }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
     </style>
     }
 
@@ -225,11 +231,13 @@
                @*  <form id="contactForm" action="" class="needs-validation" novalidate> *@
                     <div class="form-group">
                        <label for="keeper_id" class="form-label">會員名稱：</label>
-                        <select asp-items="ViewBag.keeper_ID" asp-for="keeper_id"></select>
+                    <input type="text" value="@ViewBag.LoginName" readonly />
+                   
+                   @*      <select asp-items="ViewBag.keeper_ID" asp-for="keeper_id"></select> *@
                     </div>
                   <div class="form-group">
                     <label for="pet_name" class="form-label">寵物名稱：</label>
-                    <select asp-items="ViewBag.pet_name" asp-for="pet_name"></select>
+                    <select asp-items="ViewBag.pet_name" asp-for="pet_name" v-on:change="handleChange"></select>
                   </div>
                     <div class="form-group">
                         <label for="business_ID" class="form-label">門市：</label>
@@ -239,11 +247,11 @@
                     </div>
                     <div class="form-group">
                         <label for="service_name" class="form-label">服務類型：</label>
-                        <input type="text" class="form-control" id="service_name" name="service_name" v-model="serviceName" readonly>
+                        <input type="text" class="form-control" id="service_name"  v-model="serviceName" readonly>
                     </div>
                     <div class="form-group">
-                        <label for="s_date" class="form-label">日期時間：</label>
-                        <input type="text" class="form-control" id="time" name="time" :value="Usetime" readonly>
+                    <label for="time" class="form-label">日期時間：</label>
+                        <input type="text" class="form-control" id="time"  :value="Usetime" readonly>
                     </div>
                         <div class="text-center"><button class="Beauty_btn-5" v-on:click="Reserveinsert()">確定</button>
                     </div>
@@ -268,7 +276,7 @@
 
     <script>
 
-
+        var viewBagKeeperId = @Html.Raw(ViewBag.KLoginID);
 
         var vueApp = {
             data() {
@@ -284,8 +292,8 @@
                     services: [],
                     serviceName:"",
                     Usetime:"",
-                    keeper_id:1001,
-                    pet_name:"小黑",
+                    keeper_id: viewBagKeeperId,
+                    pet_name:"",
                     BusinessHour:[],
 
                 };
@@ -319,9 +327,9 @@
                     });
 
 
-                
-              
-                
+
+
+                this.initializeSelectedValue();
 
 
 
@@ -405,9 +413,11 @@
                     }
                 },
                 selectBusiness: function (businessID, businessName) {
+                    
                     this.business_Name = businessName;
                     this.business_ID = businessID;
                     this.BusinessHour = [];
+                    let _this = this;
                     console.log(businessID)
                     $(".Beauty_Step-1").hide();
                     $(".Beauty_Step-2").fadeIn();
@@ -493,7 +503,7 @@
                     let _this = this;
                     var form = new FormData();//準備上船的物件,把檔案上傳的內容放到form裡面,form如果要送到Server端,每一個資料都要有name(就類似input屬性的那個name,但此處獎的name是下幾行的CategoryId和CategoryName這幾個...)
                     //照著你函式用的型態(dto或model)欄位名稱來寫
-                    form.append("id", 0);//append是加欄位,CategoryId是name(也可以說是屬性名稱),name的值就是model或是dto裡面的屬性名稱,要有CategoryId,但是不能給他填值
+                    form.append("id", 0);
                     form.append("keeper_id", _this.keeper_id);
                     form.append("pet_name", _this.pet_name);
                     form.append("business_ID", _this.business_ID);
@@ -512,11 +522,22 @@
                         _this.pet_type = "";
                         _this.serviceName = "";
                         _this.Usetime= "";
-                        _this.keeper_id = 1001;
-                        _this.pet_name= "小黑";
                     }).catch(err => {
                         alert(err);
                     });
+                },
+                initializeSelectedValue() {
+                    const selectElement = document.getElementById('pet_name');;
+                    if (selectElement) {
+                        this.pet_name = selectElement.value;
+                        console.log("頁面加載時選中的值是: " + this.pet_name);
+                    }
+                },
+                handleChange(event) {
+                    // 獲取<select>元素的選中值
+                    const selectedValue = event.target.value;
+                    this.pet_name = selectedValue; // 更新 Vue 的數據
+                    console.log("選中的值是: " + selectedValue);
                 },
             },
             computed: {
