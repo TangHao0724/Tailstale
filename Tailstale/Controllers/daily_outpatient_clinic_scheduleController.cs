@@ -62,23 +62,23 @@ namespace Tailstale.Controllers
         }
 
         // GET: daily_outpatient_clinic_schedule/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var daily_outpatient_clinic_schedule = await _context.daily_outpatient_clinic_schedules
-                .Include(d => d.outpatient_clinic)
-                .FirstOrDefaultAsync(m => m.daily_outpatient_clinic_schedule_ID == id);
-            if (daily_outpatient_clinic_schedule == null)
-            {
-                return NotFound();
-            }
+        //    var daily_outpatient_clinic_schedule = await _context.daily_outpatient_clinic_schedules
+        //        .Include(d => d.outpatient_clinic)
+        //        .FirstOrDefaultAsync(m => m.daily_outpatient_clinic_schedule_ID == id);
+        //    if (daily_outpatient_clinic_schedule == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(daily_outpatient_clinic_schedule);
-        }
+        //    return View(daily_outpatient_clinic_schedule);
+        //}
 
         //GET:daily_outpatient_clinic_schedule/CreateOptions/id
         public async Task<IEnumerable> CreateOptions(string id)
@@ -104,11 +104,11 @@ namespace Tailstale.Controllers
 
 
         // GET: daily_outpatient_clinic_schedule/Create
-        public IActionResult Create()
-        {
-            ViewData["outpatient_clinic_ID"] = new SelectList(_context.outpatient_clinics, "outpatient_clinic_ID", "outpatient_clinic_name");
-            return View();
-        }
+        //public IActionResult Create()
+        //{
+        //    ViewData["outpatient_clinic_ID"] = new SelectList(_context.outpatient_clinics, "outpatient_clinic_ID", "outpatient_clinic_name");
+        //    return View();
+        //}
 
         // POST: daily_outpatient_clinic_schedule/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -144,21 +144,21 @@ namespace Tailstale.Controllers
         }
 
         // GET: daily_outpatient_clinic_schedule/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> Edit(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var daily_outpatient_clinic_schedule = await _context.daily_outpatient_clinic_schedules.FindAsync(id);
-            if (daily_outpatient_clinic_schedule == null)
-            {
-                return NotFound();
-            }
-            ViewData["outpatient_clinic_ID"] = new SelectList(_context.outpatient_clinics, "outpatient_clinic_ID", "outpatient_clinic_name", daily_outpatient_clinic_schedule.outpatient_clinic_ID);
-            return View(daily_outpatient_clinic_schedule);
-        }
+        //    var daily_outpatient_clinic_schedule = await _context.daily_outpatient_clinic_schedules.FindAsync(id);
+        //    if (daily_outpatient_clinic_schedule == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    ViewData["outpatient_clinic_ID"] = new SelectList(_context.outpatient_clinics, "outpatient_clinic_ID", "outpatient_clinic_name", daily_outpatient_clinic_schedule.outpatient_clinic_ID);
+        //    return View(daily_outpatient_clinic_schedule);
+        //}
 
         // PUT: daily_outpatient_clinic_schedule/Edit/5        
         [HttpPut]
@@ -191,23 +191,23 @@ namespace Tailstale.Controllers
         }
 
         // GET: daily_outpatient_clinic_schedule/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var daily_outpatient_clinic_schedule = await _context.daily_outpatient_clinic_schedules
-                .Include(d => d.outpatient_clinic)
-                .FirstOrDefaultAsync(m => m.daily_outpatient_clinic_schedule_ID == id);
-            if (daily_outpatient_clinic_schedule == null)
-            {
-                return NotFound();
-            }
+        //    var daily_outpatient_clinic_schedule = await _context.daily_outpatient_clinic_schedules
+        //        .Include(d => d.outpatient_clinic)
+        //        .FirstOrDefaultAsync(m => m.daily_outpatient_clinic_schedule_ID == id);
+        //    if (daily_outpatient_clinic_schedule == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(daily_outpatient_clinic_schedule);
-        }
+        //    return View(daily_outpatient_clinic_schedule);
+        //}
 
         // Delete: daily_outpatient_clinic_schedule/DeleteConfirmed
         [HttpDelete]

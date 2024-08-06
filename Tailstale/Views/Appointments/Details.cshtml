@@ -1,48 +1,95 @@
-﻿@model Tailstale.Models.Appointment
-
+﻿@using Tailstale.Hospital_ViewModel;
+@model IEnumerable<Tailstale.Hospital_ViewModel.Appointments_ViewModel>
 @{
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h4>過去預約記錄檢視</h4>
+<hr>
+@* <p>
+    <a asp-action="Create">Create New</a>
+</p> *@
+<div class="container">
+    <div class="row">
+        <div class="list-group col-2 text-start">
+            <a asp-action="Index" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item">預約記錄管理</a>
+            <a asp-action="Details" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item active">過去預約記錄檢視</a>
+            <a asp-action="Index" asp-controller="outpatient_clinic" class="list-group-item list-group-item-action sidebar-item ">門診資訊管理</a>
+            <a asp-action="Index" asp-controller="daily_outpatient_clinic_schedule" class="list-group-item list-group-item-action sidebar-item">門診表管理</a>
+            <a asp-action="Index" asp-controller="departments" class="list-group-item list-group-item-action sidebar-item">科別管理</a>
+            <a asp-action="Index" asp-controller="vet_information" class="list-group-item list-group-item-action sidebar-item">醫師資訊管理</a>
+            <a asp-action="Index" asp-controller="ward" class="list-group-item list-group-item-action sidebar-item">院內病房管理</a>
+            <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 6</a>
+            <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 7</a>
+            <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 8</a>
+            <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 9</a>
+            <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 10</a>
+        </div>
 
-<div>
-    <h4>Appointment</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.registration_time)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.registration_time)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Appointment_statusNavigation)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Appointment_statusNavigation.status_name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.daily_outpatient_clinic_schedule)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.daily_outpatient_clinic_schedule.daily_outpatient_clinic_schedule_ID)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.keeper)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.keeper.email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.pet)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.pet.pet_ID)
-        </dd>
-    </dl>
+        <div class="col-10">
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.AppointmentID)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Date)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.OutpatientClinicName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.OutpatientClinicTimeslotName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.VetName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.KeeperName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.PetName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.AppointmentStatus)
+                        </th>                        
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.AppointmentID)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Date)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.OutpatientClinicName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.OutpatientClinicTimeslotName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.VetName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.KeeperName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PetName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.AppointmentStatus)
+                            </td>                            
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Appointment_ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+

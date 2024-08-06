@@ -10,7 +10,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
-
+        #memo {
+            color: red;
+        }
     </style>
 }
 
@@ -20,7 +22,8 @@
 <div class="container">
     <div class="row">
         <div class="list-group col-2 text-start">
-            <a asp-action="Index" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item">預約記錄管理</a>            
+            <a asp-action="Index" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item">預約記錄管理</a>   
+            <a asp-action="Details" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item">過去預約記錄檢視</a>
             <a asp-action="Index" asp-controller="outpatient_clinic" class="list-group-item list-group-item-action sidebar-item ">門診資訊管理</a>
             <a asp-action="Index" asp-controller="daily_outpatient_clinic_schedule" class="list-group-item list-group-item-action sidebar-item">門診表管理</a>
             <a asp-action="Index" asp-controller="departments" class="list-group-item list-group-item-action sidebar-item active">科別管理</a>
@@ -42,11 +45,9 @@
                 <thead>
                     <tr>
                         <th>
-                            @Html.DisplayNameFor(model => model.business)
-                        </th>
-                        <th>
                             @Html.DisplayNameFor(model => model.department_name)
                         </th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -54,21 +55,85 @@
                     {
                         <tr>
                             <td>
-                                @Html.DisplayFor(modelItem => item.business.name)
-                            </td>
-
-                            <td>
                                 @Html.DisplayFor(modelItem => item.department_name)
                             </td>
-
                             <td>
-                                <a asp-action="Edit" asp-route-id="@item.department_ID" class="btn btn-outline-primary"><i class="bi bi-pencil-square"></i></a>                                
+                                <a class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#departmentEdit-@item.department_ID">修改科別資訊</a>
                                 <a asp-action="Delete" asp-route-id="@item.department_ID" class="btn btn-outline-danger"><i class="bi bi-trash3"></i></a>
                             </td>
                         </tr>
+
+                        <!-- departmentEdit_Modal Start-->
+                        <div class="modal fade" id="departmentEdit-@item.department_ID" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title" id="">修改科別資料</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <partial name="_departmentEdit_Partial"
+                                                 model=" new department{
+                                                                   department_ID=item.department_ID,
+                                                                   department_name=item.department_name,
+                                                                   business_ID=item.business_ID}">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- departmentEdit_Modal End-->
                     }
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            let ResultMessage = '@Html.Raw(TempData["ResultMessage"])';
+            //dataChangeResult();
+            //clearModal();
+
+        });
+
+        // function dataChangeResult(ResultMessage) {
+
+        //     switch (ResultMessage) {
+        //         case 'create_1':
+        //             alert('新增成功');
+        //             break;
+        //         case 'create_0':
+        //             alert('新增失敗');
+        //             break;
+        //         case 'edit_1':
+        //             alert('更新成功');
+        //             break;
+        //         case 'edit_0':
+        //             alert('更新失敗');
+        //             break;
+        //         default:
+        //             break;
+        //     }
+        // }
+
+        // function clearModal() {
+        //     //關閉modal事件
+        //     $('.modal').on('hidden.bs.modal', function (e) {
+
+        //         const form = $('.needs-validation')
+        //         $(this).find('form').get(0).reset();
+
+        //         //移除表單驗證
+        //         form.removeClass('was-validated');
+        //         //重置表單
+        //         form.trigger('reset');
+        //     });
+        // }
+    </script>
+
+}

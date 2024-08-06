@@ -26,6 +26,7 @@
     <div class="row">
         <div class="list-group col-2 text-start">
             <a asp-action="Index" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item">預約記錄管理</a>
+            <a asp-action="Index" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item">過去預約記錄檢視</a>
             <a asp-action="Index" asp-controller="daily_outpatient_clinic_schedule" class="list-group-item list-group-item-action sidebar-item">門診表管理</a>
             <a asp-action="Index" asp-controller="outpatient_clinic" class="list-group-item list-group-item-action sidebar-item  active">門診資訊管理</a>
             <a asp-action="Index" asp-controller="departments" class="list-group-item list-group-item-action sidebar-item">科別管理</a>
@@ -69,6 +70,7 @@
                         <th>
                             @Html.DisplayNameFor(model => model.status)
                         </th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -131,7 +133,7 @@
                             </td>
                             <td class="text-end">                                
                                 <a asp-action="Edit" asp-route-id="@item.outpatient_clinic_ID" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#opcDetail-@item.outpatient_clinic_ID">修改門診資料</a>
-                                <a asp-action="Delete" asp-route-id="@item.outpatient_clinic_ID" class="btn btn-outline-danger"><i class="bi bi-trash3"></i></a>
+                                @* <a asp-action="Delete" asp-route-id="@item.outpatient_clinic_ID" class="btn btn-outline-danger"><i class="bi bi-trash3"></i></a> *@
                             </td>
                         </tr>
 

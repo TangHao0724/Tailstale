@@ -107,8 +107,7 @@ namespace Tailstale.Controllers
                 await _context.SaveChangesAsync();
             }
             else
-            {
-                //ViewData["outpatient_clinic_timeslot_ID"] = new SelectList(_context.outpatient_clinic_timeslots, "outpatient_clinic_timeslot_ID", "outpatient_clinic_timeslot_name", outpatientClinic.outpatient_clinic_timeslot_ID);
+            {                
                 ViewData["vet_ID"] = new SelectList(_context.vet_informations.Where(v=>v.employment_status==true), "vet_ID", "vet_name", outpatientClinic.vet_ID);
                 return View(outpatientClinic);
 

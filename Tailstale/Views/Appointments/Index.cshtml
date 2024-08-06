@@ -1,16 +1,21 @@
-﻿@model IEnumerable<Tailstale.Models.Appointment>
+﻿@using Tailstale.Hospital_ViewModel;
+@model IEnumerable<Tailstale.Hospital_ViewModel.Appointments_ViewModel>
 
 @{
     ViewData["Title"] = "Index";
+    var statusOptions = ViewBag.StatusOptions as List<string>;
 }
 
 <h4>預約紀錄管理</h4>
 <hr>
-
+@* <p>
+    <a asp-action="Create">Create New</a>
+</p> *@
 <div class="container">
     <div class="row">
         <div class="list-group col-2 text-start">
-            <a asp-action="Index" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item active">預約記錄管理</a>            
+            <a asp-action="Index" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item active">預約記錄管理</a>    
+            <a asp-action="Details" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item">過去預約記錄檢視</a>
             <a asp-action="Index" asp-controller="outpatient_clinic" class="list-group-item list-group-item-action sidebar-item ">門診資訊管理</a>
             <a asp-action="Index" asp-controller="daily_outpatient_clinic_schedule" class="list-group-item list-group-item-action sidebar-item">門診表管理</a>
             <a asp-action="Index" asp-controller="departments" class="list-group-item list-group-item-action sidebar-item">科別管理</a>
@@ -24,26 +29,33 @@
         </div>
 
         <div class="col-10">
-            <p>
-                <a asp-action="Create">Create New</a>
-            </p>
+            
             <table class="table">
                 <thead>
                     <tr>
                         <th>
-                            @Html.DisplayNameFor(model => model.registration_time)
+                            @Html.DisplayNameFor(model => model.AppointmentID)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Appointment_statusNavigation)
+                            @Html.DisplayNameFor(model => model.Date)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.daily_outpatient_clinic_schedule)
+                            @Html.DisplayNameFor(model => model.OutpatientClinicName)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.keeper)
+                            @Html.DisplayNameFor(model => model.OutpatientClinicTimeslotName)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.pet)
+                            @Html.DisplayNameFor(model => model.VetName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.KeeperName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.PetName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.AppointmentStatus)
                         </th>
                         <th></th>
                     </tr>
@@ -53,24 +65,41 @@
                     {
                         <tr>
                             <td>
-                                @Html.DisplayFor(modelItem => item.registration_time)
+                                @Html.DisplayFor(modelItem => item.AppointmentID)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.Appointment_statusNavigation.status_name)
+                                @Html.DisplayFor(modelItem => item.Date)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.daily_outpatient_clinic_schedule.daily_outpatient_clinic_schedule_ID)
+                                @Html.DisplayFor(modelItem => item.OutpatientClinicName)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.keeper.email)
+                                @Html.DisplayFor(modelItem => item.OutpatientClinicTimeslotName)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.pet.pet_ID)
+                                @Html.DisplayFor(modelItem => item.VetName)
                             </td>
                             <td>
-                                <a asp-action="Edit" asp-route-id="@item.Appointment_ID">Edit</a> |
-                                <a asp-action="Details" asp-route-id="@item.Appointment_ID">Details</a> |
-                                <a asp-action="Delete" asp-route-id="@item.Appointment_ID">Delete</a>
+                                @Html.DisplayFor(modelItem => item.KeeperName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PetName)
+                            </td>
+                            <td>
+                                <!-- 顯示狀態，並提供下拉選單以編輯 -->
+                                <span class="appointment-status" data-id="@item.AppointmentID">@Html.DisplayFor(modelItem => item.AppointmentStatus)</span>
+                                <select class="form-select appointment-status-select d-none" data-id="@item.AppointmentID">
+                                    @foreach (var status in statusOptions)
+                                    {
+                                        <option value="@status">@status</option>
+                                    }
+                                </select>
+                            </td>
+                            <td>
+                                <!-- 編輯和保存按鈕 -->
+                                <button class="btn btn-outline-secondary edit-status" data-id="@item.AppointmentID">修改預約狀態</button>
+                                <button class="btn btn-outline-success save-status d-none" data-id="@item.AppointmentID">儲存修改</button>
+                                <button class="btn btn-outline-secondary cancel-edit d-none" data-id="@item.AppointmentID">取消修改</button>
                             </td>
                         </tr>
                     }
@@ -79,6 +108,101 @@
         </div>
     </div>
 </div>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            // 編輯按鈕點擊事件
+            $('.edit-status').click(function () {
+                var appointmentId = $(this).data('id'); // 獲取預約 ID
+                var $statusSpan = $('.appointment-status[data-id="' + appointmentId + '"]'); // 獲取顯示狀態的<span>
+                var $statusSelect = $('.appointment-status-select[data-id="' + appointmentId + '"]'); // 獲取下拉選單
+                var $saveButton = $('.save-status[data-id="' + appointmentId + '"]'); // 獲取對應的保存按鈕
+                var $cancelButton = $('.cancel-edit[data-id="' + appointmentId + '"]'); // 獲取對應的取消編輯按鈕
+
+                // 切換顯示狀態
+                $statusSpan.addClass('d-none'); // 隱藏 <span>
+                $statusSelect.removeClass('d-none'); // 顯示下拉選單
+                $(this).addClass('d-none'); // 隱藏編輯按鈕
+                $saveButton.removeClass('d-none'); // 顯示保存按鈕
+                $cancelButton.removeClass('d-none'); // 顯示取消編輯按鈕
+
+                // 禁用其他編輯按鈕
+                $('.edit-status').not(this).prop('disabled', true);
+            });
+
+            // 保存按鈕點擊事件
+            $('.save-status').click(function () {
+                var appointmentId = $(this).data('id'); // 獲取預約 ID
+                var $statusSpan = $('.appointment-status[data-id="' + appointmentId + '"]'); // 獲取顯示狀態的 <span> 元素
+                var $statusSelect = $('.appointment-status-select[data-id="' + appointmentId + '"]'); // 獲取對應的下拉選單
+                var $editButton = $('.edit-status[data-id="' + appointmentId + '"]'); // 獲取對應的編輯按鈕
+                var $cancelButton = $('.cancel-edit[data-id="' + appointmentId + '"]'); // 獲取對應的取消編輯按鈕
+
+                // 獲取新的狀態值
+                var newStatus = $statusSelect.val();
+                let newStatusId;
+                switch (newStatus) {
+                    case '完成診療':
+                        newStatusId = 14;
+                        break;
+                    case '院方取消':
+                        newStatusId = 15;
+                        break;
+                    case '預約未到':
+                        newStatusId = 17;
+                        break;
+                    default:
+                        newStatusId = 13;
+                        break;
+                }
+                $.ajax({
+                    type: 'PUT',
+                    url: 'Appointments/AppointmentStatusChange',
+                    data: {
+                        id: appointmentId,
+                        statusId: newStatusId
+                    }
+                }).done(response=>{
+                 console.log(response)
+                    $statusSpan.text(newStatus); // 更新狀態顯示
+
+                    $statusSpan.removeClass('d-none');
+                    $statusSelect.addClass('d-none');
+                    $('.save-status').addClass('d-none');
+                    $editButton.removeClass('d-none');
+                    $cancelButton.addClass('d-none');
+
+                    // 啟用所有編輯按鈕
+                    $('.edit-status').prop('disabled', false);
+                }).fail(err=>{
+                 alert('呼叫失敗')
+                })                
+            });
+
+            // 取消編輯按鈕點擊事件
+            $('.cancel-edit').click(function () {
+                var appointmentId = $(this).data('id'); // 獲取預約 ID
+                var $statusSpan = $('.appointment-status[data-id="' + appointmentId + '"]'); // 獲取顯示狀態的 <span> 元素
+                var $statusSelect = $('.appointment-status-select[data-id="' + appointmentId + '"]'); // 獲取對應的下拉選單
+                var $editButton = $('.edit-status[data-id="' + appointmentId + '"]'); // 獲取對應的編輯按鈕
+                var $saveButton = $('.save-status[data-id="' + appointmentId + '"]'); // 獲取對應的保存按鈕
+                var $cancelButton = $('.cancel-edit[data-id="' + appointmentId + '"]'); // 獲取對應的取消編輯按鈕
+
+                // 切換顯示狀態
+                $statusSpan.removeClass('d-none'); // 顯示 <span>
+                $statusSelect.addClass('d-none'); // 隱藏下拉選單
+                $saveButton.addClass('d-none'); // 隱藏保存按鈕
+                $editButton.removeClass('d-none'); // 顯示編輯按鈕
+                $cancelButton.addClass('d-none'); // 隱藏取消編輯按鈕
+
+                // 啟用所有編輯按鈕
+                $('.edit-status').prop('disabled', false);
+            });
+        });
+    </script>
+}
 
 
 

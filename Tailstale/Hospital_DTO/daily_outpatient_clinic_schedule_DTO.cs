@@ -20,8 +20,8 @@
     public class create_daily_outpatient_clinic_schedule_DTO
     {
         public DateOnly date { get; set; }
-        public int? outpatient_clinic_ID { get; set; }
-        public bool? daily_outpatient_clinic_schedule_status { get; set; }
+        public int outpatient_clinic_ID { get; set; }
+        public bool daily_outpatient_clinic_schedule_status { get; set; }
     }
 
     

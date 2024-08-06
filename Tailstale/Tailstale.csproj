@@ -48,6 +48,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Views\departments\_departmentEdit_Partial.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Update="Views\Hotels\BusinessIndex.cshtml">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

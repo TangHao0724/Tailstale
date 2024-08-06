@@ -16,18 +16,13 @@
                     <div class="row">                        
                         <div class="col-12">
                             <div class="form-group mb-4" id="memo">
-                                    <h6>*看診時間及醫師如有更動，請直接將原門診停診，再建立新門診至門診列表</h6>
+                                    <h5>*看診時間及醫師如有更動，請將原門診停診，再建立新門診至門診列表</h5>
                             </div>                            
                             <div class="form-group mb-2">
                                 <label asp-for="outpatient_clinic_name" class="control-label"></label>
                                 <input asp-for="outpatient_clinic_name" class="form-control" />
                                 <span asp-validation-for="outpatient_clinic_name" class="text-danger"></span>
-                            </div>
-                            @* <div class="form-group mb-2">
-                                <label asp-for="vet_ID" class="control-label"></label>
-                                <select asp-for="vet_ID" class="form-control" asp-items="ViewBag.vet_ID"></select>
-                                <span asp-validation-for="vet_ID" class="text-danger"></span>
-                            </div> *@
+                            </div>                            
                             <div class="form-group mb-2">
                                 <label asp-for="max_patients" class="control-label"></label>
                                 <input asp-for="max_patients" class="form-control" />
