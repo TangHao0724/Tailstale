@@ -15,18 +15,26 @@
         .imagerow {
             display: flex;
             flex-wrap: wrap;
+            
 
             /* justify-content: center; */
 
         }
 
         .petimg {
+            max-width: 240px;
+            max-height: 300px;
+            min-height: 300px;
             cursor: pointer;
             border: 10px solid #fff;
             box-shadow: 0 5px 10px rgba(0, 0, 0, .1);
             overflow: hidden;
             object-fit: cover;
             transition: .3s;
+        }
+
+        imghover{
+
         }
 
         .imghover:hover img {
@@ -69,8 +77,14 @@
             left: 50%;
             transform: translate(-50%, -50%);
             border-radius: 5px;
-            width: 750px;
+            max-height:760px;
+            max-width: 600px;
             object-fit: cover;
+        }
+
+        .petimage-group .imagerow:not(:first-of-type) {
+            border-top: 2px solid #fa0; /* 边框的样式和颜色 */
+            padding-top: 24px; /* 边框与内容的距离 */
         }
 
         
@@ -87,18 +101,20 @@
     
 
 
-    <div v-for="(images, typeId) in groupedImages" :key="typeId" class="container petimage-group p-5">
-        <div class="row imagerow my-5">
-            <h3 v-if="images.length > 0">Type ID: {{ img_type_id }}</h3>
-            <div v-for="image in images" :key="image.id" class="col-12 col-md-4 col-lg-3 mb-3 imghover">
-                <img class="w-100 petimg" :src="`/Salon_img/${URL}`" alt="" v-on:click="openPopup(image.url)">
+    
+    <div class="container petimage-group py-3 px-5">
+        <div v-for="(items, img_type_id) in groupedData" :key="img_type_id" class="row imagerow my-5">
+            <h2>{{items[0].business_name}}</h2>
+            <h4 class="mb-5">門市作品展示</h4>
+            <div v-for="item in items" :key="item.ID" class="col-12 col-md-4 col-lg-3 mb-3 imghover d-flex justify-content-center">
+                <img class="w-100 petimg" :src="`/Salon_img/${item.url}`" v-on:click="showImageClick(item.url)">
             </div>
         </div>
     </div>
 
-    <div class="popup-image" v-if="showPopup">
-        <span v-on:click="closePopup">&times;</span>
-        <img :src="selectedImage" alt="Popup Image">
+    <div class="popup-image">
+        <span v-on:click="closePopup()">&times;</span>
+        <img :src="`/Salon_img/${showPicture}`">
     </div>
 
 
@@ -125,16 +141,16 @@
             data() {
                 return {
                     baseAddress: "https://localhost:7112",//結尾不要/
-                    showPopup: false,
-                    selectedImage: ''
+                    showPicture: "",
                     SalonPicture: [],
 
                 };
             },
             mounted: function () {//初始化,發生呼叫函式,他需要用callback,
+                let _this = this;
                 axios.get(`${_this.baseAddress}/api/SalonApi/GetSalonPicture`).then(response => {
 
-                    _this.services = response.data;
+                    _this.SalonPicture = response.data;
 
                 }).catch(err => {
                     alert(err);
@@ -143,40 +159,33 @@
 
             },
             methods: {
-                openPopup(src) {
-                    this.selectedImage = src;
-                    this.showPopup = true;
+                closePopup: function () {
+                    $(".popup-image").hide();
+                    
                 },
-                closePopup() {
-                    this.showPopup = false;
+                showImageClick: function (url){
+                    this.showPicture = url,
+                    $(".popup-image").fadeIn();
+                    
+                },
             },
             computed: {
-                    groupedImages() {
-                        return this.SalonPicture.reduce((groups, image) => {
-                            if (!groups[image.img_type_id]) {
-                                groups[image.img_type_id] = [];
-                            }
-                            groups[image.img_type_id].push(image);
-                            return groups;
-                        }, {});
-                    }
+                groupedData() {
+                    const grouped = {};
+                    this.SalonPicture.forEach(item => {
+                        if (!grouped[item.img_type_id]) {
+                            grouped[item.img_type_id] = [];
+                        }
+                        grouped[item.img_type_id].push(item);
+                    });
+                    return grouped;
+                }
 
             },
         };
         var app = Vue.createApp(vueApp).mount("#app");
 
 
-
-        document.querySelectorAll(".petimage-group img").forEach(image => {
-            image.onclick = () => {
-                document.querySelector(".popup-image").style.display = "block";
-                document.querySelector(".popup-image img").src = image.getAttribute("src")
-            }
-        });
-
-        document.querySelector(".popup-image span").onclick = () => {
-            document.querySelector(".popup-image").style.display = "none";
-        }
 
     </script>
     }

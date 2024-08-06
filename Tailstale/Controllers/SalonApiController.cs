@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Tailstale.Models;
 using Tailstale.Salon_DTO;
 
@@ -78,12 +80,18 @@ namespace Tailstale.Controllers
         [HttpGet("GetSalonPicture")]
         public async Task<IEnumerable<Sbusiness_imgDTO>> GetSalonPicture()
         {
-            return _context.business_imgs.Select(Emp => new Sbusiness_imgDTO
+            return _context.business_imgs
+                .Include(Emp => Emp.img_type)
+                .Include(Emp => Emp.img_type.FK_business)
+                .Select(Emp => new Sbusiness_imgDTO
             {
                 ID = Emp.ID,
                 img_type_id = Emp.img_type_id,
                 URL = Emp.URL,
                 name = Emp.name,
+                FK_business_id= Emp.img_type.FK_business_id,
+                business_name = Emp.img_type.FK_business.name,
+                typename = Emp.img_type.typename,
                 created_at = Emp.created_at.HasValue ? Emp.created_at.Value.ToString("o") : null,
             });
         }

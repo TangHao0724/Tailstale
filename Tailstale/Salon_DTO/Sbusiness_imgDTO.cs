@@ -10,6 +10,12 @@
 
         public string name { get; set; }
 
+        public int? FK_business_id { get; set; }
+
+        public string business_name { get; set; }
+
+        public string typename { get; set; }
+
         public string? created_at { get; set; }
     }
 }
