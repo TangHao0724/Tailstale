@@ -5,21 +5,21 @@ using System.Collections.Generic;
 
 namespace Tailstale.Models;
 
-public partial class hosp_history
+public partial class hosp_record
 {
     public int id { get; set; }
-
-    public int? medical_record_id { get; set; }
 
     public DateTime admission_date { get; set; }
 
     public DateTime? discharge_date { get; set; }
 
-    public int? ward_id { get; set; }
-
     public string memo { get; set; }
 
-    public virtual medical_record medical_record { get; set; }
+    public int? medical_records_id { get; set; }
+
+    public int? ward_id { get; set; }
+
+    public virtual medical_record medical_records { get; set; }
 
     public virtual ICollection<nursing_record> nursing_records { get; set; } = new List<nursing_record>();
 

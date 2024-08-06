@@ -19,35 +19,35 @@ namespace Tailstale.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(int medical_record_id)
         {
-            var Hosp = await (from h in _context.hosp_histories
-                              join m in _context.medical_records on h.medical_record_id equals m.id
-                              join w in _context.wards on h.ward_id equals w.ward_ID into wardGroup
-                              from w in wardGroup.DefaultIfEmpty()
-                              join n in _context.nursing_records on h.id equals n.hosp_history_id into nursingGroup
-                              from n in nursingGroup.DefaultIfEmpty()
-                              where h.medical_record_id == medical_record_id
-                              select new HospDTO
-                              {
-                                  id = h.id,
-                                  medical_record_id = medical_record_id,
-                                  admission_date = h.admission_date,
-                                  discharge_date = h.discharge_date,
-                                  created_at = m.created_at,
-                                  nursing_record_id = n != null ? n.id : (int?)null,
-                                  nursing_record_datetime = n != null ? n.datetime : (DateTime?)null,
-                                  ward_id = w != null ? w.ward_ID : null,
-                                  memo = h.memo,
-                                  pet_id = m.pet_id
-                              })
-                        .GroupBy(h => h.id)
-                        .Select(g => g.First())
-                        .ToListAsync();
+            //var Hosp = await (from h in _context.hosp_histories
+            //                  join m in _context.medical_records on h.medical_record_id equals m.id
+            //                  join w in _context.wards on h.ward_id equals w.ward_ID into wardGroup
+            //                  from w in wardGroup.DefaultIfEmpty()
+            //                  join n in _context.nursing_records on h.id equals n.hosp_history_id into nursingGroup
+            //                  from n in nursingGroup.DefaultIfEmpty()
+            //                  where h.medical_record_id == medical_record_id
+            //                  select new HospDTO
+            //                  {
+            //                      id = h.id,
+            //                      medical_record_id = medical_record_id,
+            //                      admission_date = h.admission_date,
+            //                      discharge_date = h.discharge_date,
+            //                      created_at = m.created_at,
+            //                      nursing_record_id = n != null ? n.id : (int?)null,
+            //                      nursing_record_datetime = n != null ? n.datetime : (DateTime?)null,
+            //                      ward_id = w != null ? w.ward_ID : null,
+            //                      memo = h.memo,
+            //                      pet_id = m.pet_id
+            //                  })
+            //            .GroupBy(h => h.id)
+            //            .Select(g => g.First())
+            //            .ToListAsync();
 
-            var sortedHosp = Hosp.OrderByDescending(h => h.admission_date);
-            ViewBag.medical_record_id = medical_record_id; //用來傳medical_record_id給新增的記錄
-            ViewBag.pet_id = Hosp.FirstOrDefault()?.pet_id;
+            //var sortedHosp = Hosp.OrderByDescending(h => h.admission_date);
+            //ViewBag.medical_record_id = medical_record_id; //用來傳medical_record_id給新增的記錄
+            //ViewBag.pet_id = Hosp.FirstOrDefault()?.pet_id;
 
-            return View(sortedHosp);
+            return View(/*sortedHosp*/);
         }
 
         // GET: Hosp/Create
@@ -70,17 +70,19 @@ namespace Tailstale.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([FromForm] HospDTO hospDTO)
         {
-            var a = new hosp_history
-            {
-                medical_record_id = hospDTO.medical_record_id,
-                admission_date = hospDTO.admission_date,
-                discharge_date = hospDTO.discharge_date,
-                ward_id = hospDTO.ward_id,
-                memo = hospDTO.memo
-            };
-            _context.Add(a);
-            await _context.SaveChangesAsync();
-            return Redirect($"https://localhost:7112/Hosp?medical_record_id={a.medical_record_id}");
+            //var a = new hosp_history
+            //{
+            //    medical_record_id = hospDTO.medical_record_id,
+            //    admission_date = hospDTO.admission_date,
+            //    discharge_date = hospDTO.discharge_date,
+            //    ward_id = hospDTO.ward_id,
+            //    memo = hospDTO.memo
+            //};
+            //_context.Add(a);
+            //await _context.SaveChangesAsync();
+            //return Redirect($"https://localhost:7112/Hosp?medical_record_id={a.medical_record_id}");
+
+            return View();
         }
 
         // GET: Hosp/Edit/5
@@ -91,19 +93,20 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var hosp = await _context.hosp_histories
-                .Where(h => h.id == id)
-                .Include(m => m.medical_record)
-                .Select(h => new HospDTO
-                {   
-                   id = h.id,
-                   medical_record_id=h.medical_record_id,
-                   admission_date_view=h.admission_date.ToString("yyyy-MM-dd"),
-                   discharge_date=h.discharge_date,
-                   ward_id=h.ward_id,
-                   memo = h.memo,
-                   created_at= h.discharge_date,
-                }).FirstOrDefaultAsync();
+            //先解這邊
+            //var hosp = await _context.hosp_histories
+            //    .Where(h => h.id == id)
+            //    .Include(m => m.medical_record)
+            //    .Select(h => new HospDTO
+            //    {   
+            //       id = h.id,
+            //       medical_record_id=h.medical_record_id,
+            //       admission_date_view=h.admission_date.ToString("yyyy-MM-dd"),
+            //       discharge_date=h.discharge_date,
+            //       ward_id=h.ward_id,
+            //       memo = h.memo,
+            //       created_at= h.discharge_date,
+            //    }).FirstOrDefaultAsync();
 
 
             //var hosp = await (from h in _context.hosp_histories
@@ -121,7 +124,7 @@ namespace Tailstale.Controllers
             //                memo = h.memo
             //            }).FirstOrDefaultAsync();
 
-            return View(hosp);
+            return View();
         }
 
         // POST: Hosp/Edit/5
@@ -135,19 +138,21 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
-            var h = new hosp_history
-            {
-                id = hospDTO.id,
-                medical_record_id = hospDTO.medical_record_id,
-                admission_date = hospDTO.admission_date,
-                discharge_date = hospDTO.discharge_date,
-                ward_id = hospDTO.ward_id,
-                memo = hospDTO.memo
-            };
-            _context.Update(h);
-            await _context.SaveChangesAsync();
+            //var h = new hosp_history
+            //{
+            //    id = hospDTO.id,
+            //    medical_record_id = hospDTO.medical_record_id,
+            //    admission_date = hospDTO.admission_date,
+            //    discharge_date = hospDTO.discharge_date,
+            //    ward_id = hospDTO.ward_id,
+            //    memo = hospDTO.memo
+            //};
+            //_context.Update(h);
+            //await _context.SaveChangesAsync();
 
-            return Redirect($"https://localhost:7112/Hosp?medical_record_id={h.medical_record_id}");
+            //return Redirect($"https://localhost:7112/Hosp?medical_record_id={h.medical_record_id}");
+
+            return View();
         }
 
         // GET: Hosp/Delete/5   // hosp_histories不可以delete！！！

@@ -19,5 +19,5 @@ public partial class ward
 
     public virtual business business { get; set; }
 
-    public virtual ICollection<hosp_history> hosp_histories { get; set; } = new List<hosp_history>();
+    public virtual ICollection<hosp_record> hosp_records { get; set; } = new List<hosp_record>();
 }

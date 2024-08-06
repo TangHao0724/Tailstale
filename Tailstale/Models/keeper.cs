@@ -47,8 +47,6 @@ public partial class keeper
 
     public virtual ICollection<keeper_img_type> keeper_img_types { get; set; } = new List<keeper_img_type>();
 
-    public virtual ICollection<medical_record> medical_records { get; set; } = new List<medical_record>();
-
     public virtual ICollection<memo> memos { get; set; } = new List<memo>();
 
     public virtual ICollection<person_tag> person_tags { get; set; } = new List<person_tag>();

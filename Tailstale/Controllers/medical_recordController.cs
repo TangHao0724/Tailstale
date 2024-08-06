@@ -38,11 +38,12 @@ namespace Tailstale.Controllers
         // GET: medical_record
         public async Task<IActionResult> Index(int? pet_id)
         { //渲染
+
             var query = from m in _context.medical_records
                         join o in _context.outpatient_clinics on m.outpatient_clinic_id equals o.outpatient_clinic_ID
                         join p in _context.pets on m.pet_id equals p.pet_ID
                         join k in _context.keepers on p.keeper_ID equals k.ID
-                        orderby m.created_at descending
+                        //orderby m.created_at descending
                         select new MedicalRecordDTO
                         {  //DTO設的名字 = table抓出來的名字
                             id = m.id,
@@ -50,7 +51,7 @@ namespace Tailstale.Controllers
                             keeper_num = k.phone,
                             pet_id = p.pet_ID,
                             pet_name = p.name,
-                            created_at = m.created_at,
+                            //created_at = m.created_at,
                             outpatient_clinic_id = o.outpatient_clinic_ID,
                             weight = m.weight,
                             memo = m.memo,
@@ -86,10 +87,10 @@ namespace Tailstale.Controllers
                                       keeper_name = k.name,
                                       pet_id = p.pet_ID,
                                       pet_name = p.name,
-                                      created_at = r.created_at,
+                                      //created_at = r.created_at,
                                       outpatient_clinic_id = o.outpatient_clinic_ID,
                                       weight = r.weight,
-                                      admission_process = r.admission_process,
+                                      //admission_process = r.admission_process,
                                       diagnosis = r.diagnosis,
                                       treatment = r.treatment,
                                       memo = r.memo,
@@ -123,12 +124,12 @@ namespace Tailstale.Controllers
         {
             var a = new medical_record
             {
-                keeper_id = medicalRecordDTO.keeper_id,
+                //keeper_id = medicalRecordDTO.keeper_id,
                 pet_id = medicalRecordDTO.pet_id,
-                created_at = medicalRecordDTO.created_at,
+                //created_at = medicalRecordDTO.created_at,
                 weight = medicalRecordDTO.weight,
                 outpatient_clinic_id = medicalRecordDTO.outpatient_clinic_id,
-                admission_process = medicalRecordDTO.admission_process,
+                //admission_process = medicalRecordDTO.admission_process,
                 diagnosis = medicalRecordDTO.diagnosis,
                 treatment = medicalRecordDTO.treatment,
                 memo = medicalRecordDTO.memo,
@@ -157,10 +158,10 @@ namespace Tailstale.Controllers
                               id = e.id,
                               keeper_id = k.ID,
                               pet_id = p.pet_ID,
-                              created_at = e.created_at,
+                              //created_at = e.created_at,
                               outpatient_clinic_id = o.outpatient_clinic_ID,
                               weight = e.weight,
-                              admission_process = e.admission_process,
+                              //admission_process = e.admission_process,
                               diagnosis = e.diagnosis,
                               treatment = e.treatment,
                               memo = e.memo,
@@ -189,10 +190,10 @@ namespace Tailstale.Controllers
             {
                 id = id,
                 pet_id = medicalRecordDTO.pet_id,
-                created_at = medicalRecordDTO.created_at,
+                //created_at = medicalRecordDTO.created_at,
                 weight = medicalRecordDTO.weight,
                 outpatient_clinic_id = medicalRecordDTO.outpatient_clinic_id,
-                admission_process = medicalRecordDTO.admission_process,
+                //admission_process = medicalRecordDTO.admission_process,
                 diagnosis = medicalRecordDTO.diagnosis,
                 treatment = medicalRecordDTO.treatment,
                 memo = medicalRecordDTO.memo,

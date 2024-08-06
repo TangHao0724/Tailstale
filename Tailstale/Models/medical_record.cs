@@ -9,19 +9,13 @@ public partial class medical_record
 {
     public int id { get; set; }
 
-    public int? keeper_id { get; set; }
-
     public int? pet_id { get; set; }
 
-    public DateTime? created_at { get; set; }
-
-    public int? outpatient_clinic_id { get; set; }
+    public DateTime? Datetime { get; set; }
 
     public decimal? weight { get; set; }
 
-    public int? vital_sign_record_id { get; set; }
-
-    public string admission_process { get; set; }
+    public string complain { get; set; }
 
     public string diagnosis { get; set; }
 
@@ -31,15 +25,15 @@ public partial class medical_record
 
     public int? fee { get; set; }
 
-    public virtual ICollection<hosp_history> hosp_histories { get; set; } = new List<hosp_history>();
+    public int? outpatient_clinic_id { get; set; }
 
-    public virtual keeper keeper { get; set; }
+    public virtual ICollection<hosp_record> hosp_records { get; set; } = new List<hosp_record>();
+
+    public virtual ICollection<medical_order> medical_orders { get; set; } = new List<medical_order>();
 
     public virtual outpatient_clinic outpatient_clinic { get; set; }
 
     public virtual pet pet { get; set; }
 
-    public virtual ICollection<surgery> surgeries { get; set; } = new List<surgery>();
-
-    public virtual vital_sign_record vital_sign_record { get; set; }
+    public virtual ICollection<vital_sign_record> vital_sign_records { get; set; } = new List<vital_sign_record>();
 }

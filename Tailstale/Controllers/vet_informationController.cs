@@ -158,17 +158,17 @@ namespace Tailstale.Controllers
                 _context.Add(business_Img);
                 await _context.SaveChangesAsync();
 
-                vet_Information vet_Information = new vet_Information
-                {
-                    vet_name = v_Infovm.vet_name,
-                    business_ID = v_Infovm.business_ID,
-                    license_number = v_Infovm.license_number,
-                    department_ID = v_Infovm.department_ID,
-                    profile = v_Infovm.profile,
-                    business_img_ID = business_Img.ID,
-                    employment_status=v_Infovm.employment_status,
-                };
-                _context.Add(vet_Information);
+                //vet_Information vet_Information = new vet_Information
+                //{
+                //    vet_name = v_Infovm.vet_name,
+                //    business_ID = v_Infovm.business_ID,
+                //    license_number = v_Infovm.license_number,
+                //    department_ID = v_Infovm.department_ID,
+                //    profile = v_Infovm.profile,
+                //    business_img_ID = business_Img.ID,
+                //    employment_status=v_Infovm.employment_status,
+                //};
+                //_context.Add(vet_Information);
                 await _context.SaveChangesAsync();
             }
             else
@@ -297,18 +297,18 @@ namespace Tailstale.Controllers
                     _context.Update(business_ImgUpdate);
                     await _context.SaveChangesAsync();
 
-                    vet_Information vet_InformationUpdate = new vet_Information
-                    {
-                        vet_ID=v_Infovm.vet_ID,
-                        vet_name = v_Infovm.vet_name,
-                        business_ID = v_Infovm.business_ID,
-                        license_number = v_Infovm.license_number,
-                        department_ID = v_Infovm.department_ID,
-                        profile = v_Infovm.profile,
-                        employment_status=v_Infovm.employment_status,
-                        business_img_ID = business_ImgUpdate.ID,
-                    };
-                    _context.Update(vet_InformationUpdate);
+                    //vet_Information vet_InformationUpdate = new vet_Information
+                    //{
+                    //    vet_ID=v_Infovm.vet_ID,
+                    //    vet_name = v_Infovm.vet_name,
+                    //    business_ID = v_Infovm.business_ID,
+                    //    license_number = v_Infovm.license_number,
+                    //    department_ID = v_Infovm.department_ID,
+                    //    profile = v_Infovm.profile,
+                    //    employment_status=v_Infovm.employment_status,
+                    //    business_img_ID = business_ImgUpdate.ID,
+                    //};
+                    //_context.Update(vet_InformationUpdate);
                     await _context.SaveChangesAsync(); 
                 }
                 catch (DbUpdateConcurrencyException)

@@ -9,21 +9,13 @@ public partial class nursing_record
 {
     public int id { get; set; }
 
-    public int? pet_id { get; set; }
-
-    public int? hosp_history_id { get; set; }
-
     public DateTime datetime { get; set; }
 
     public decimal? weight { get; set; }
 
     public string memo { get; set; }
 
-    public int? vital_sign_record_id { get; set; }
+    public int? hosp_id { get; set; }
 
-    public virtual hosp_history hosp_history { get; set; }
-
-    public virtual pet pet { get; set; }
-
-    public virtual vital_sign_record vital_sign_record { get; set; }
+    public virtual hosp_record hosp { get; set; }
 }

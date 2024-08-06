@@ -5,19 +5,15 @@ using System.Collections.Generic;
 
 namespace Tailstale.Models;
 
-public partial class surgery
+public partial class medical_imaging_order
 {
     public int id { get; set; }
 
-    public DateTime start_time { get; set; }
+    public DateTime? examined_date { get; set; }
 
-    public string technique { get; set; }
+    public string type { get; set; }
 
-    public string anesthesia_duration { get; set; }
-
-    public string findings { get; set; }
-
-    public string op_duration { get; set; }
+    public string examined_area { get; set; }
 
     public int? medical_orders_id { get; set; }
 

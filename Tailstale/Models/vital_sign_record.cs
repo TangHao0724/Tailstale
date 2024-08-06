@@ -9,9 +9,7 @@ public partial class vital_sign_record
 {
     public int id { get; set; }
 
-    public int? pet_id { get; set; }
-
-    public DateTime? created_at { get; set; }
+    public DateTime? taketime { get; set; }
 
     public int? HR { get; set; }
 
@@ -29,11 +27,7 @@ public partial class vital_sign_record
 
     public string memo { get; set; }
 
-    public virtual ICollection<medical_record> medical_records { get; set; } = new List<medical_record>();
+    public int? medical_records_id { get; set; }
 
-    public virtual ICollection<nursing_record> nursing_records { get; set; } = new List<nursing_record>();
-
-    public virtual pet pet { get; set; }
-
-    public virtual ICollection<surgery> surgeries { get; set; } = new List<surgery>();
+    public virtual medical_record medical_records { get; set; }
 }

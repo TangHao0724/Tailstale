@@ -9,17 +9,19 @@ public partial class biological_test
 {
     public int id { get; set; }
 
-    public int? pet_id { get; set; }
+    public DateTime? test_time { get; set; }
 
-    public DateTime? created_at { get; set; }
+    public string test_name { get; set; }
 
-    public int? specimen_id { get; set; }
-
-    public int lab_data { get; set; }
+    public decimal lab_data { get; set; }
 
     public string findings { get; set; }
 
-    public virtual pet pet { get; set; }
+    public int? specimen_id { get; set; }
+
+    public int? biological_test_order_id { get; set; }
+
+    public virtual biological_test_order biological_test_order { get; set; }
 
     public virtual speciman specimen { get; set; }
 }

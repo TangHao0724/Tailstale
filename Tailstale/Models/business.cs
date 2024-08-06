@@ -63,7 +63,7 @@ public partial class business
 
     public virtual business_type type { get; set; }
 
-    public virtual ICollection<vet_Information> vet_Informations { get; set; } = new List<vet_Information>();
+    public virtual ICollection<vet_information> vet_informations { get; set; } = new List<vet_information>();
 
     public virtual ICollection<ward> wards { get; set; } = new List<ward>();
 }

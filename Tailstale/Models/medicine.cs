@@ -21,5 +21,11 @@ public partial class medicine
 
     public string side_effects { get; set; }
 
-    public virtual ICollection<medicine_order_record> medicine_order_records { get; set; } = new List<medicine_order_record>();
+    public decimal? dosage { get; set; }
+
+    public string dosage_type { get; set; }
+
+    public string frequency { get; set; }
+
+    public virtual ICollection<medicine_order> medicine_orders { get; set; } = new List<medicine_order>();
 }

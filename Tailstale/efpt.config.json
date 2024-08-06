@@ -31,6 +31,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[biological_test_order]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Booking]",
          "ObjectType": 0
       },
@@ -75,15 +79,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[dosage_form]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[frequency]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[hosp_history]",
+         "Name": "[dbo].[hosp_records]",
          "ObjectType": 0
       },
       {
@@ -107,7 +103,15 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[medical_record]",
+         "Name": "[dbo].[medical_imaging_order]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[medical_orders]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[medical_records]",
          "ObjectType": 0
       },
       {
@@ -115,11 +119,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[medicine_order_record]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[medicine_order_status]",
+         "Name": "[dbo].[medicine_orders]",
          "ObjectType": 0
       },
       {
@@ -151,7 +151,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[PaymentIndex]",
+         "Name": "[dbo].[PaymentInfo]",
          "ObjectType": 0
       },
       {
@@ -164,10 +164,6 @@
       },
       {
          "Name": "[dbo].[pet_type]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[record_type]",
          "ObjectType": 0
       },
       {
@@ -211,7 +207,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[vet_Informations]",
+         "Name": "[dbo].[vet_informations]",
          "ObjectType": 0
       },
       {
