@@ -25,42 +25,44 @@ namespace Tailstale.Controllers
         // GET: Service
         public async Task<IActionResult> Index()
         {
-            
+
             //var tailstaleContext = _context.Service.Include(s => s.business);
 
-            var businesses = await _context.businesses
-            .Where(b => b.type_ID == 2)
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            int? loginType = HttpContext.Session.GetInt32("loginType");
+
+            var Services = await _context.Services
+            .Where(b => b.business_ID == loginID)
             .ToListAsync();
 
-            ViewData["business_type"] = new SelectList(businesses, "ID", "name");
-            return View();
+            return View(Services);
             //return View(await tailstaleContext.ToListAsync());
         }
 
 
-        [HttpPost]
-        public async Task<IActionResult> Index(int aid)
-        {
+        //[HttpPost]
+        //public async Task<IActionResult> Index(int aid)
+        //{
             
 
             
 
-            // 查询符合条件的 Beautician 记录
-            var beauticians = _context.Services
-                .Include(bh => bh.business)
-                .Where(bh => bh.business_ID == aid)
-                .ToList();
+        //    // 查询符合条件的 Beautician 记录
+        //    var beauticians = _context.Services
+        //        .Include(bh => bh.business)
+        //        .Where(bh => bh.business_ID == aid)
+        //        .ToList();
 
-            if (beauticians == null)
-            {
-                // 如果未找到符合条件的 business 记录，返回空的 PartialView
-                return PartialView("_ServicePartial", new List<Service>());
-            }
+        //    if (beauticians == null)
+        //    {
+        //        // 如果未找到符合条件的 business 记录，返回空的 PartialView
+        //        return PartialView("_ServicePartial", new List<Service>());
+        //    }
 
 
-            // 返回到前端，假設你的 View 期望接收一段 HTML 作為結果
-            return PartialView("_ServicePartial", beauticians);
-        }
+        //    // 返回到前端，假設你的 View 期望接收一段 HTML 作為結果
+        //    return PartialView("_ServicePartial", beauticians);
+        //}
 
 
 
@@ -86,12 +88,13 @@ namespace Tailstale.Controllers
         // GET: Service/Create
         public IActionResult Create()
         {
-            var businesses =  _context.businesses
-            .Where(b => b.type_ID == 2)
-            .ToList();
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            var businesses = _context.businesses
+           .Where(b => b.ID == loginID)
+           .ToList();
 
             ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
-           //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
+            //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
             return View();
         }
 
@@ -144,7 +147,14 @@ namespace Tailstale.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-             ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", service.business_ID);
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            var businesses = _context.businesses
+           .Where(b => b.ID == loginID)
+           .ToList();
+
+            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+
+            //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", service.business_ID);
             // 如果模型状态无效，返回 Create 页面以显示错误信息和重新填写表单
             return View(service);//避免ModelState.IsValid 返回 false時,ViewData失效
      
@@ -163,9 +173,10 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
+            int? loginID = HttpContext.Session.GetInt32("loginID");
             var businesses = _context.businesses
-            .Where(b => b.type_ID == 2)
-            .ToList();
+           .Where(b => b.ID == loginID)
+           .ToList();
 
             ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", service.business_ID);
@@ -183,6 +194,12 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            var businesses = _context.businesses
+           .Where(b => b.ID == loginID)
+           .ToList();
+
+            
 
             if (ModelState.IsValid)
             {
@@ -238,18 +255,11 @@ namespace Tailstale.Controllers
                         throw;
                     }
                 }
-                var businesses3 = _context.businesses
-            .Where(b => b.type_ID == 2)
-            .ToList();
-
-                ViewData["business_ID"] = new SelectList(businesses3, "ID", "name");
+                
+                ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
                 //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", service.business_ID);
                 return RedirectToAction(nameof(Index));
             }
-
-            var businesses = _context.businesses
-            .Where(b => b.type_ID == 2)
-            .ToList();
 
             ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", service.business_ID);

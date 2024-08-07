@@ -90,10 +90,13 @@ namespace Tailstale.Controllers
         // GET: business_img_type/Create
         public IActionResult Create()
         {
-            var businesses3 = _context.businesses
-            .Where(b => b.type_ID == 2)
-            .ToList();
-            ViewData["FK_business_id"] = new SelectList(businesses3, "ID", "name");
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            var businesses = _context.businesses
+           .Where(b => b.ID == loginID)
+           .ToList();
+
+            
+            ViewData["FK_business_id"] = new SelectList(businesses, "ID", "name");
             //ViewData["FK_business_id"] = new SelectList(_context.businesses, "ID", "name");
             return View();
         }
@@ -117,11 +120,14 @@ namespace Tailstale.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            var businesses3 = _context.businesses
-            .Where(b => b.type_ID == 2)
-            .ToList();
-            ViewData["FK_business_id"] = new SelectList(businesses3, "ID", "name");
-            
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            var businesses = _context.businesses
+           .Where(b => b.ID == loginID)
+           .ToList();
+
+
+            ViewData["FK_business_id"] = new SelectList(businesses, "ID", "name");
+
             //ViewData["FK_business_id"] = new SelectList(_context.businesses, "ID", "name", business_img_type.FK_business_id);
             return View(business_img_type);
         }
@@ -139,7 +145,14 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
-            ViewData["FK_business_id"] = new SelectList(_context.businesses, "ID", "name", business_img_type.FK_business_id);
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            var businesses = _context.businesses
+           .Where(b => b.ID == loginID)
+           .ToList();
+
+
+           
+            ViewData["FK_business_id"] = new SelectList(businesses, "ID", "name", business_img_type.FK_business_id);
             return View(business_img_type);
         }
 
@@ -175,7 +188,14 @@ namespace Tailstale.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["FK_business_id"] = new SelectList(_context.businesses, "ID", "name", business_img_type.FK_business_id);
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            var businesses = _context.businesses
+           .Where(b => b.ID == loginID)
+           .ToList();
+
+
+            
+            ViewData["FK_business_id"] = new SelectList(businesses, "ID", "name", business_img_type.FK_business_id);
             return View(business_img_type);
         }
 
