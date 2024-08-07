@@ -115,6 +115,9 @@
                             <option value="11">12月</option>
                         </select>
                     </div>
+                    <div class="col-auto">
+                        <button id="openAllShifts" class="btn btn-outline-primary" style="display: none;">開放所有門診</button>
+                    </div>
                 </div>
                 <table id="calendar" class="table table-bordered">
                     <thead>
@@ -179,6 +182,7 @@
                 }
                 yearSelect.appendChild(option);
             }
+            
 
             // 設置初始月份為當前月份
             const currentDate = new Date();
@@ -190,6 +194,7 @@
             generateCalendar();
             showScheduleofSelectedMonth();
             addOPtionstoShiftSelect();
+            toggleOpenAllShiftsButton();
 
         })
 
@@ -241,6 +246,19 @@
             generateCalendar(selectedYear, selectedMonth);
 
             showScheduleofSelectedMonth();
+            toggleOpenAllShiftsButton();
+        }
+
+        // 切換 "開放所有門診" 按鈕的顯示
+        function toggleOpenAllShiftsButton() {
+            const selectedYear = parseInt($('#yearSelect').val());
+            const selectedMonth = parseInt($('#monthSelect').val()) + 1;
+
+            if (selectedYear > currentYear || (selectedYear === currentYear && selectedMonth > currentMonth)) {
+                $('#openAllShifts').show();
+            } else {
+                $('#openAllShifts').hide();
+            }
         }
 
         //從資料庫抓取所選月份的資料，並將資料寫入日期單元格
@@ -262,84 +280,116 @@
         }
 
         //生成當月單元格內容
-        function generateMonthlySchedule(opcsofselectedMonth) {
+        function generateMonthlySchedule(opcsofselectedMonth){
             $('.shift-content').empty();
             opcsofselectedMonth.forEach(result => {
                 var shiftContent = document.getElementById(result.date);
                 const shiftItem = document.createElement('div');
                 shiftItem.className = `shift-item`;
 
+
+                // 取得目前的年月
+                const currentYear = new Date().getFullYear();
+                const currentMonth = new Date().getMonth();
+                // 取得班表日期的年月
+                const [year, month] = result.date.split('-').map(Number);
+
+                let controls = '';
+                if (year < currentYear || (year === currentYear && month < currentMonth + 1)) {
+                    // 當班表日期小於當前年月時，不顯示任何操作選項
+                    controls = '';
+                } else if (year === currentYear && month === currentMonth + 1) {
+                    // 當班表日期等於當前年月時，只顯示休診的 checkbox
+                    controls = `
+                        <label class="form-switch-label chkEdit" for="switch-${result.daily_outpatient_clinic_schedule_ID}">
+                            <input class="form-check-input chkEdit" type="checkbox" data-edit="${result.daily_outpatient_clinic_schedule_ID}" ${result.daily_outpatient_clinic_schedule_status ? 'checked' : ''}>休診
+                        </label>
+                    `;
+                } else {
+                    // 當班表日期大於當前年月時，顯示休診及刪除選項
+                    controls = `
+                        <label class="form-switch-label chkEdit" for="switch-${result.daily_outpatient_clinic_schedule_ID}">
+                            <input class="form-check-input chkEdit" type="checkbox" data-edit="${result.daily_outpatient_clinic_schedule_ID}" ${result.daily_outpatient_clinic_schedule_status ? 'checked' : ''}>休診
+                        </label>
+                        <a class="btn-outline-danger btn-sm btnDelete" aria-label="刪除" data-delete="${result.daily_outpatient_clinic_schedule_ID}"><i class="bi bi-trash3"></i></a>
+                    `;
+                }
+
                 //將資料庫查詢到的結果填入對應日期的單元格中
-                if (result.daily_outpatient_clinic_schedule_status == true) {
-                    shiftItem.innerHTML = `
-                             <div class="shift-text"><span>[${result.outpatient_clinic_name}]<br>${result.vet_name}<br>${result.outpatient_clinic_timeslot_name}</span></div>
-
-                             <div class="text-end mt-1">
-                             <label class="form-switch-label chkEdit" for="switch-${result.daily_outpatient_clinic_schedule_ID}">
-                             <input class="form-check-input chkEdit" type="checkbox" data-edit="${result.daily_outpatient_clinic_schedule_ID}" checked>休診
-                             </label>
-
-                             <a class="btn-outline-danger btn-sm btnDelete" aria-label="刪除" data-delete="${result.daily_outpatient_clinic_schedule_ID}"><i class="bi bi-trash3"></i></a>
-                             </div>
-                         `;
-                    shiftContent.appendChild(shiftItem);
-                }
-                else {
-                    shiftItem.innerHTML = `
-                             <div class="shift-text"><span>[${result.outpatient_clinic_name}]<br>${result.vet_name}<br>${result.outpatient_clinic_timeslot_name}</span></div>
-
-                             <div class="text-end mt-1">
-                                 <label class="form-switch-label chkEdit" for="switch-${result.daily_outpatient_clinic_schedule_ID}">
-                             <input class="form-check-input chkEdit" type="checkbox" data-edit="${result.daily_outpatient_clinic_schedule_ID}">休診
-                             </label>
-
-                             <a class="btn-outline-danger btn-sm btnDelete" aria-label="刪除" data-delete="${result.daily_outpatient_clinic_schedule_ID}"><i class="bi bi-trash3"></i></a>
-                             </div>
-                         `;
-                    shiftContent.appendChild(shiftItem);
-                }
-                
-
-                // deleteOpcfromschedule();
-                // docsStatusChange();
+                shiftItem.innerHTML = `
+                    <div class="shift-text"><span>[${result.outpatient_clinic_name}]<br>${result.vet_name}<br>${result.outpatient_clinic_timeslot_name}</span></div>
+                    <div class="text-end mt-1">
+                        ${controls}
+                    </div>
+                `;
+                shiftContent.appendChild(shiftItem);
             });
+
 
             $('.shift-content').on('click', '.btnDelete', function (e) {
                 // 如果點擊的是刪除按鈕
                 e.stopPropagation(); // 防止事件冒泡，避免其他處理器處理此事件
-                let deleteConfirm = confirm('確定要刪除嗎?');               
-                if (deleteConfirm) {
-                    deleteOpcfromschedule(this);
-                } else {
-                    return false;
-                }
+                
+                Swal.fire({
+                    title: "確定刪除該筆門診嗎？",                    
+                    showCancelButton: true,
+                    confirmButtonText: "刪除",
+                    cancelButtonText:"返回門診表"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        deleteOpcfromschedule(this);
+                    } else { 
+                        return;
+                    }
+                    
+                });
                 
             });
 
             $('.shift-content').on('click', '.chkEdit', function (e) {
                 // 如果點擊的是 checkbox
                 //alert('Clicked edit checkbox');
+                //e.preventDefault();
                 e.stopPropagation(); // 防止事件冒泡，避免其他處理器處理此事件
             });
             $('.shift-content').on('change', '.chkEdit', function (e) {
                 // 如果點擊的是 checkbox
                 //alert('Clicked edit checkbox');
+                e.preventDefault();
                 e.stopPropagation(); // 防止事件冒泡，避免其他處理器處理此事件
-                let editConfirm = confirm('確定要變更門診狀態嗎?');
-                if (editConfirm) {
-                    docsStatusChange(this);
-                } else {
-                    return false;
-                }
-                
-            });
+                Swal.fire({
+                    title: "確定要變更門診狀態嗎？",
+                    showCancelButton: true,
+                    confirmButtonText: "變更",
+                    cancelButtonText: "返回門診表"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        docsStatusChange(this);
+                    } else {
+                        if (($(this).prop('checked')) == true) {
+                            $(this).prop('checked', false);
+                        } else {
+                            $(this).prop('checked', true);
+                        }
+                    }
+
+                });
+            });            
 
             // 為每個日期單元格添加點擊事件
             $('.shift-content').on('click', function (e) {
-                currentCell = $(this);
-                shiftModal.show(); // 顯示班次選擇彈出視窗
-                showOptionsfromOpc(currentCell.data('dayofweek'));
-            })
+                const currentYear = new Date().getFullYear();
+                const currentMonth = new Date().getMonth() + 1; // 月份從0開始，需要+1
+                // 取得當前單元格的日期
+                const [year, month] = this.id.split('-').map(Number);
+
+                // 檢查是否應該顯示模態框
+                if (year > currentYear || (year === currentYear && month > currentMonth)) {
+                    currentCell = $(this);
+                    shiftModal.show(); // 顯示班次選擇彈出視窗
+                    showOptionsfromOpc(currentCell.data('dayofweek'));
+                }
+            });
         }
 
         function addOPtionstoShiftSelect() {
@@ -376,9 +426,6 @@
             });
         }
 
-        
-
-        
 
         //產生被點選日當日的門診選單
         function showOptionsfromOpc(dayofweek) {
@@ -411,8 +458,14 @@
                 data: {
                     id: deleteId
                 }
-            }).done(data => {
+            }).done(result => {
                 //console.log(`deleteOpcfromschedule:${data}`)
+                if (result) {
+                    Swal.fire("刪除門診", "", "success");
+                }
+                else {
+                    Swal.fire("刪除失敗", "", "error");
+                }
                 showScheduleofSelectedMonth();
             }).fail(err => {
                 alert('刪除失敗')
@@ -433,11 +486,27 @@
                 data: {
                     id: editId
                 }
-            }).done(data => {
+            }).done(result => {
                 //console.log(`docsStatusChange:${data}`)
+                if (result) {
+                    Swal.fire("門診狀態已變更", "", "success");
+                }
+                else {
+                    Swal.fire("門診狀態變更失敗", "", "error");
+                }
                 showScheduleofSelectedMonth();
             }).fail(err => {
                 alert('修改失敗')
+            });
+
+            // "開放所有門診" 按鈕點擊事件
+            $('#openAllShifts').on('click', function () {
+                // 獲取所有 "休診checkbox"
+                $('.chkEdit').each(function () {
+                    if ($(this).prop('checked')) {
+                        $(this).prop('checked', false).change();
+                    }
+                });
             });
         }
     </script>

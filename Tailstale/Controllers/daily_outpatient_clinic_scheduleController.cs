@@ -126,7 +126,7 @@ namespace Tailstale.Controllers
             {
                 date = daily_outpatient_clinic_schedule.date,
                 outpatient_clinic_ID = daily_outpatient_clinic_schedule.outpatient_clinic_ID,
-                daily_outpatient_clinic_schedule_status = false,
+                daily_outpatient_clinic_schedule_status = true,
             };
             try
             {

@@ -138,12 +138,12 @@
                         </tr>
 
                         <!-- opcEdit_Modal Start-->
-                        <div class="modal fade" id="opcDetail-@item.outpatient_clinic_ID" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="opcDetail-@item.outpatient_clinic_ID" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static">
                             <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h4 class="modal-title" id="">修改門診資料</h4>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        @* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
                                     </div>
                                     <div class="modal-body">
                                         <partial name="_opcDetail_Partial" model="new edit_outpatient_clinic_ViewModel
