@@ -275,8 +275,9 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <script>
-
-        var viewBagKeeperId = @Html.Raw(ViewBag.KLoginID);
+        var viewBagKeeperIdStr = '@Html.Raw(ViewBag.KLoginID ?? "0")';
+        // var viewBagKeeperId = @Html.Raw(ViewBag.KLoginID);
+        var viewBagKeeperId = parseInt(viewBagKeeperIdStr, 10);
 
         var vueApp = {
             data() {
@@ -501,30 +502,35 @@
                 },
                 Reserveinsert: function () {
                     let _this = this;
-                    var form = new FormData();//準備上船的物件,把檔案上傳的內容放到form裡面,form如果要送到Server端,每一個資料都要有name(就類似input屬性的那個name,但此處獎的name是下幾行的CategoryId和CategoryName這幾個...)
-                    //照著你函式用的型態(dto或model)欄位名稱來寫
-                    form.append("id", 0);
-                    form.append("keeper_id", _this.keeper_id);
-                    form.append("pet_name", _this.pet_name);
-                    form.append("business_ID", _this.business_ID);
-                    form.append("time", new Date(_this.Usetime).toISOString());
-                    form.append("service_name", _this.serviceName);
-                    form.append("created_at", new Date().toISOString());
-                    form.append("status", 1);
-                    //axios.put(uri, 參數, {物件參數}).then().catch()
-                    axios.post(`${_this.baseAddress}/api/SalonApi/ReserveCreate`, form, {//新增不需要id在uri
-                        headers: { "Content-Type": "multipart/form-data" }
-                    }).then(response => {
-                        alert(response.data);
-                        $(".Beauty_Step-5").hide();
-                        $(".Beauty_Step-1").fadeIn();
-                        _this.business_ID = 0;
-                        _this.pet_type = "";
-                        _this.serviceName = "";
-                        _this.Usetime= "";
-                    }).catch(err => {
-                        alert(err);
-                    });
+                    if (_this.keeper_id !== 0 && _this.pet_name !== "" && _this.business_ID !== 0 && _this.Usetime !== "" && _this.serviceName !== "") {
+                       
+                        var form = new FormData();//準備上船的物件,把檔案上傳的內容放到form裡面,form如果要送到Server端,每一個資料都要有name(就類似input屬性的那個name,但此處獎的name是下幾行的CategoryId和CategoryName這幾個...)
+                        //照著你函式用的型態(dto或model)欄位名稱來寫
+                        form.append("id", 0);
+                        form.append("keeper_id", _this.keeper_id);
+                        form.append("pet_name", _this.pet_name);
+                        form.append("business_ID", _this.business_ID);
+                        form.append("time", new Date(_this.Usetime).toISOString());
+                        form.append("service_name", _this.serviceName);
+                        form.append("created_at", new Date().toISOString());
+                        form.append("status", 1);
+                        //axios.put(uri, 參數, {物件參數}).then().catch()
+                        axios.post(`${_this.baseAddress}/api/SalonApi/ReserveCreate`, form, {//新增不需要id在uri
+                            headers: { "Content-Type": "multipart/form-data" }
+                        }).then(response => {
+                            alert(response.data);
+                            $(".Beauty_Step-5").hide();
+                            $(".Beauty_Step-1").fadeIn();
+                            _this.business_ID = 0;
+                            _this.pet_type = "";
+                            _this.serviceName = "";
+                            _this.Usetime = "";
+                        }).catch(err => {
+                            alert(err);
+                        });
+                    } else {
+                        alert("請先登入在預約!");
+                    }
                 },
                 initializeSelectedValue() {
                     const selectElement = document.getElementById('pet_name');;

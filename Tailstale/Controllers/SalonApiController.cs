@@ -101,6 +101,10 @@ namespace Tailstale.Controllers
         [HttpPost("ReserveCreate")]
         public string ReserveCreate([FromForm]Reserve reserve)
         {
+            if (reserve.keeper_id == 0 || string.IsNullOrEmpty(reserve.pet_name))
+            {
+                return "預約失敗,請先登入!";
+            }
 
 
             _context.Reserves.Add(reserve);
