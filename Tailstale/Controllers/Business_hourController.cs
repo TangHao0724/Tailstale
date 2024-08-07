@@ -25,19 +25,21 @@ namespace Tailstale.Controllers
         //GET: Business_hour 
         public async Task<IActionResult> Index()
         {
-            var businesses = await _context.businesses
-       .Where(b => b.type_ID == 2)
-       .ToListAsync();
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            int? loginType = HttpContext.Session.GetInt32("loginType");
+            var Business_hours = await _context.Business_hours
+            .Where(b => b.business_ID == loginID)
+            .ToListAsync();
 
-            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
-            return View();
+           // ViewData["business_ID"] = new SelectList(Business_hours, "ID", "name");
+            return View(Business_hours);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(int? id,string business_day)
+        public async Task<IActionResult> Index(string business_day)
         {
-            
-            if (!id.HasValue && string.IsNullOrEmpty(business_day))
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            if (!loginID.HasValue && string.IsNullOrEmpty(business_day))
             {
 
                 return PartialView("_hourPartial", new List<Business_hour>());
@@ -49,9 +51,9 @@ namespace Tailstale.Controllers
                 
 
             // 根據 id 的情況添加條件
-            if (id.HasValue)
+            if (loginID.HasValue)
             {
-                query = query.Where(bh => bh.business_ID == id);
+                query = query.Where(bh => bh.business_ID == loginID);
             }
 
             // 根據 time 的情況添加條件
@@ -105,11 +107,14 @@ namespace Tailstale.Controllers
         // GET: Business_hour/Create
         public IActionResult Create()
         {
-            var businesses = _context.businesses
-            .Where(b => b.type_ID == 2)
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            int? loginType = HttpContext.Session.GetInt32("loginType");
+            var business = _context.businesses
+            .Where(b => b.ID == loginID)
             .ToList();
 
-            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+
+            ViewData["business_ID"] = new SelectList(business, "ID", "name");
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
             return View();
         }
@@ -171,11 +176,17 @@ namespace Tailstale.Controllers
             }
 
             // 如果 ModelState 不合法，则需要重新加载视图
-            var businesses = _context.businesses
-                .Where(b => b.type_ID == 2)
-                .ToList();
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            int? loginType = HttpContext.Session.GetInt32("loginType");
+            
+            var business = _context.businesses
+            .Where(b => b.ID == loginID)
+            .ToList();
 
-            ViewData["Business_ID"] = new SelectList(businesses, "ID", "Name", business_hour.business_ID);
+            
+
+
+            ViewData["business_ID"] = new SelectList(business, "ID", "name", business_hour.business_ID);
             return View();
         }
 
@@ -192,11 +203,14 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
-            var businesses = _context.businesses
-            .Where(b => b.type_ID == 2)
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            int? loginType = HttpContext.Session.GetInt32("loginType");
+            
+            var business = _context.businesses
+            .Where(b => b.ID == loginID)
             .ToList();
 
-            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+            ViewData["business_ID"] = new SelectList(business, "ID", "name");
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", business_hour.business_ID);
             return View(business_hour);
         }
@@ -233,11 +247,13 @@ namespace Tailstale.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            var businesses = _context.businesses
-            .Where(b => b.type_ID == 2)
-            .ToList();
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            int? loginType = HttpContext.Session.GetInt32("loginType");
+            var business = _context.businesses
+           .Where(b => b.ID == loginID)
+           .ToList();
 
-            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+            ViewData["business_ID"] = new SelectList(business, "ID", "name");
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", business_hour.business_ID);
             return View(business_hour);
         }

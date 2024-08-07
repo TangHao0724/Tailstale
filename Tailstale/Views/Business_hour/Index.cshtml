@@ -1,4 +1,4 @@
-﻿@model Business_hour
+﻿@model IEnumerable<Tailstale.Models.Business_hour>
 
 @{
     ViewData["Title"] = "Index";
@@ -21,12 +21,62 @@
 </p>
 
 <div>
-    <h3><i class="bi bi-search"></i>查詢美容門市(可指定日期)</h3>
-    <select id="IdInput" class="form-control" asp-items="ViewBag.business_ID"></select>
-    <input type="date" class="form-control" asp-for="business_day" value="" />
+    <h3><i class="bi bi-search"></i>查詢日期</h3>
+    <input type="date" class="form-control" name="business_day" id="business_day" value="" />
     <input id="selectday" type="submit" value="查詢" class="btn btn-info mt-2" />
     <div class="mb-3">
-        <div id="orders"></div>@*局部顯示會在這裡*@
+        <div id="orders">
+            <table class="table border table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.business_day)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.open_time)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.close_time)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.people_limit)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.business)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.business_day)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.open_time)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.close_time)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.people_limit)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.business.name)
+                            </td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.id"><i class="bi bi-highlighter"></i>Edit</a> |
+                                <a asp-action="Details" asp-route-id="@item.id"><i class="bi bi-info-circle"></i>Details</a> |
+                                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>@*局部顯示會在這裡*@
     </div>
 </div>
 
@@ -35,14 +85,14 @@
 {
     <script>
         function updateOrders() { //查詢要發送ajax呼叫,不會刷新
-            var selectedId = document.getElementById("IdInput").value;
+           
             var selectedDate = document.getElementById("business_day").value;
             $.ajax({ //ajax呼叫需要接物件當參數,物件用{},物件要填屬性
                 
                 type: "post",//動詞get
                 //url:`/Customers/Orders/${CustomerId.value}`,//``可以把變數帶進去, 這段這樣寫發行會有問題,這只能在vs用
                 url: `@Url.Action("Index", "Business_hour")`, //這是發行後可以網址正常,Url是urlhelper,負責生成網址列?的內容,這段是server端語法
-                data: { id: selectedId,
+                data: {
                     business_day: selectedDate },
             }).done(data => {  //成功要做啥,收到結果,如果收到data要拿來做甚麼用,後端送回來的data是html(因為是IActionResult),
                 $("#orders").html(data);//抓到orders把它整個內容(html)換掉換成data
