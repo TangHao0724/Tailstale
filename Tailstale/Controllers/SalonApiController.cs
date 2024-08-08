@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using System.Drawing;
 using Tailstale.Models;
 using Tailstale.Salon_DTO;
 
@@ -117,14 +119,11 @@ namespace Tailstale.Controllers
         [HttpGet("SelectKeeperId")]
         public int?  SelectKeeperId(string name)
         {
-            
-
             if (string.IsNullOrEmpty(name))
             {
                 return null;
                 
             }
-
             var Keeper = _context.keepers
             .Where(b => b.name == name)
             .Select(b => b.ID) // 假設 ID 是你需要的字段
@@ -133,7 +132,27 @@ namespace Tailstale.Controllers
                 return Keeper == 0 ? (int?)null : Keeper;
         }
 
+        // Get: api/SalonApi/SelectPetName
+        [HttpGet("SelectPetName")]
+        public IActionResult SelectPetName(int keeperid)
+        {
+            if (keeperid <= 0)
+            {
+                // 如果 keeperid 無效，返回空的 JSON 陣列
+                return Ok(new List<object>());
+            }
 
+            var Keeper = _context.pets
+         .Where(b => b.keeper_ID == keeperid)
+         .Select(b => new
+         {
+             name = b.name // 假設你的模型中的 name 欄位名稱是 name
+         })
+         .ToList(); // 將結果轉換為 List
+
+            return Ok(Keeper);
+
+        }
 
     }
 }

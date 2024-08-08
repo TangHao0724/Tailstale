@@ -18,12 +18,15 @@
                 <label asp-for="keeper_id" class="control-label"></label>
                @*  <select asp-for="keeper_id" class ="form-control" asp-items="ViewBag.keeper_id"></select> *@
                 <input class="form-control" v-on:input="callID" v-model="keeper_Name"></input>
-                <input asp-for="keeper_id" class="form-control" v-model="keeper_ID" readonly></input>
+                <input asp-for="keeper_id" class="form-control" v-model="keeper_ID" readonly ></input>
                 <span asp-validation-for="keeper_id" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="pet_name" class="control-label"></label>
-                <input asp-for="pet_name" class="form-control" />
+                @* <input asp-for="pet_name" class="form-control" /> *@
+                <select asp-for="pet_name" class="form-control">
+                    <option v-for="item in petName" value="item.name">{{item.name}}</option>
+               </select>
                 <span asp-validation-for="pet_name" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -66,6 +69,7 @@
                     baseAddress: "https://localhost:7112",//結尾不要/
                     keeper_Name : "",
                     keeper_ID : null,
+                    petName:[],
 
                 };
             },
@@ -89,6 +93,21 @@
                     }).then(response => {
 
                         _this.keeper_ID = response.data;
+                        _this.callPet(_this.keeper_ID);
+
+                    }).catch(err => {
+                        alert(err);
+                    });
+                },
+                callPet: function (id) {
+                    let _this = this;
+                    axios.get(`${_this.baseAddress}/api/SalonApi/SelectPetName`, {
+                        params: {
+                            keeperid: id // 將 keepname 作為查詢參數傳遞
+                        }
+                    }).then(response => {
+
+                        _this.petName = response.data;
 
                     }).catch(err => {
                         alert(err);
@@ -107,6 +126,9 @@
             inputDate.setMinutes(0);  // 将分钟部分设为 0
             this.value = inputDate.toISOString().slice(0, 16);  // 格式化为 yyyy-MM-ddTHH:mm
         });
+
+       
+
         
     </script>
 
