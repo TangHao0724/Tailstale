@@ -16,21 +16,16 @@
 
 
     }
-    public class GettPetDTO
+    public class GetPetDTO
     {
         public int? pet_type_ID { get; set; }
 
         public string name { get; set; }
 
-        public bool gender { get; set; }
 
         public DateOnly? birthday { get; set; }
 
         public int? age { get; set; }
-        public IFormFile petimg { get; set; }
-
-
-
     }
     public class GetPetTypeDTO
     {
@@ -43,9 +38,15 @@
 
 
     }
-    public class PetDetailDTO
+    public class PetInfoDTO
     {
+        public int ID { get; set; }
+        public string name { get; set; }
+        public int pet_type_ID { get; set; }
+        public bool gender { get; set; }
         public string chip_ID { get; set; }
+        public int? age { get; set; }
+        public DateOnly? birthday { get; set; }
         public decimal? pet_weight { get; set; }
         public string vaccine { get; set; }
 

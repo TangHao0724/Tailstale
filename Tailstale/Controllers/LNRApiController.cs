@@ -193,8 +193,12 @@ namespace Tailstale.Controllers
         public async Task<IActionResult> Logout()
         {
             HttpContext.Session.Clear();
-            return Ok(new { Message = $"完成登出" });
+            return RedirectToAction("Index","User");
         }
+
+        //驗證帳戶email
+        
+
         private byte[] CreateSalt()
         {
             var buffer = new byte[16];
