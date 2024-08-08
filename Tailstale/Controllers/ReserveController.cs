@@ -214,6 +214,10 @@ namespace Tailstale.Controllers
             .Where(p => p.keeper_ID == reserve.keeper_id) // 根据 keeper_id 进行过滤
            .ToList();
 
+            var keeper = _context.keepers
+           .Where(p => p.ID == reserve.keeper_id) // 根据 keeper_id 进行过滤
+          .ToList();
+
             var orderstatus = _context.order_statuses
                .Where(b => b.business_type_ID == 2)
                .ToList();
@@ -232,7 +236,7 @@ namespace Tailstale.Controllers
             
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", reserve.business_ID);
             //ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "address", reserve.keeper_id);
-            ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name");
+            ViewData["keeper_id"] = new SelectList(keeper, "ID", "name");
             return View(reserve);
         }
 
@@ -281,10 +285,14 @@ namespace Tailstale.Controllers
            .Where(b => b.ID == loginID)
            .ToList();
 
+            var keeper = _context.keepers
+           .Where(p => p.ID == reserve.keeper_id) // 根据 keeper_id 进行过滤
+          .ToList();
+
             ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
             ViewData["Orderstatus_ID"] = new SelectList(orderstatus, "ID", "status_name", reserve.status);
             ViewData["pet_name"] = new SelectList(pets, "name", "name");
-            ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name");
+            ViewData["keeper_id"] = new SelectList(keeper, "ID", "name");
             //ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "address", reserve.keeper_id);
             return View(reserve);
         }

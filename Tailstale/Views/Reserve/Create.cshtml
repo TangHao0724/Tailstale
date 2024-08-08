@@ -10,13 +10,16 @@
 
 <h4>Reserve</h4>
 <hr />
-<div class="row">
+<div class="row" id="app">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="keeper_id" class="control-label"></label>
-                <select asp-for="keeper_id" class ="form-control" asp-items="ViewBag.keeper_id"></select>
+               @*  <select asp-for="keeper_id" class ="form-control" asp-items="ViewBag.keeper_id"></select> *@
+                <input class="form-control" v-on:input="callID" v-model="keeper_Name"></input>
+                <input asp-for="keeper_id" class="form-control" v-model="keeper_ID" readonly></input>
+                <span asp-validation-for="keeper_id" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="pet_name" class="control-label"></label>
@@ -57,6 +60,47 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
     <script>
+        var vueApp = {
+            data() {
+                return {
+                    baseAddress: "https://localhost:7112",//結尾不要/
+                    keeper_Name : "",
+                    keeper_ID : null,
+
+                };
+            },
+            mounted: function () {//初始化,發生呼叫函式,他需要用callback,
+               
+
+
+            },
+            methods: {
+                callID: function () {
+                    let _this = this;
+                    if (!_this.keeper_Name.trim()) {
+                        // 如果為空，不發送請求
+                        _this.keeper_ID = null; // 或者其他適當的預設值
+                        return;
+                    }
+                    axios.get(`${_this.baseAddress}/api/SalonApi/SelectKeeperId`, {
+                        params: {
+                            name: _this.keeper_Name // 將 keepname 作為查詢參數傳遞
+                        }
+                    }).then(response => {
+
+                        _this.keeper_ID = response.data;
+
+                    }).catch(err => {
+                        alert(err);
+                    });
+                }
+            },
+            computed: {
+                
+
+            },
+        };
+        var app = Vue.createApp(vueApp).mount("#app");
         
         document.querySelector('.meeting-time').addEventListener('input', function () {
             var inputDate = new Date(this.value);

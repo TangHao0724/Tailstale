@@ -278,6 +278,9 @@ namespace Tailstale.Controllers
             var business = _context.businesses
             .Where(b => b.ID == loginID)
             .ToList();
+            var keeper = _context.keepers
+            .Where(p => p.ID == consumption_Record.keeper_id) // 根据 keeper_id 进行过滤
+            .ToList();
 
 
             ViewData["business_ID"] = new SelectList(business, "ID", "name");
@@ -286,7 +289,7 @@ namespace Tailstale.Controllers
             
             ViewData["beautician_id"] = new SelectList(_context.Beauticians, "id", "name", consumption_Record.beautician_id);
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
-            ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name", consumption_Record.keeper_id);
+            ViewData["keeper_id"] = new SelectList(keeper, "ID", "name", consumption_Record.keeper_id);
             return View(consumption_Record);
         }
 
@@ -310,8 +313,10 @@ namespace Tailstale.Controllers
             .Where(b => b.ID == loginID)
             .ToList();
 
+            var keeper = _context.keepers
+            .Where(p => p.ID == consumption_Record.keeper_id) // 根据 keeper_id 进行过滤
+            .ToList();
 
-            
 
             var pets = _context.pets
             .Where(p => p.keeper_ID == consumption_Record.keeper_id) // 根据 keeper_id 进行过滤
@@ -399,7 +404,7 @@ namespace Tailstale.Controllers
                 ViewData["business_ID"] = new SelectList(business, "ID", "name");
                 ViewData["beautician_id"] = new SelectList(_context.Beauticians, "id", "name", consumption_Record.beautician_id);
                 //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
-                ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name", consumption_Record.keeper_id);
+                ViewData["keeper_id"] = new SelectList(keeper, "ID", "name", consumption_Record.keeper_id);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -410,7 +415,7 @@ namespace Tailstale.Controllers
             ViewData["business_ID"] = new SelectList(business, "ID", "name");
             ViewData["beautician_id"] = new SelectList(_context.Beauticians , "id", "name", consumption_Record.beautician_id);
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
-            ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name", consumption_Record.keeper_id);
+            ViewData["keeper_id"] = new SelectList(keeper, "ID", "name", consumption_Record.keeper_id);
             return View(consumption_Record);
         }
 

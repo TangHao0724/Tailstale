@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using Tailstale.Models;
 using Tailstale.Salon_DTO;
 
@@ -112,6 +113,26 @@ namespace Tailstale.Controllers
 
             return "預約完成!";
         }
+
+        [HttpGet("SelectKeeperId")]
+        public int?  SelectKeeperId(string name)
+        {
+            
+
+            if (string.IsNullOrEmpty(name))
+            {
+                return null;
+                
+            }
+
+            var Keeper = _context.keepers
+            .Where(b => b.name == name)
+            .Select(b => b.ID) // 假設 ID 是你需要的字段
+              .FirstOrDefault(); // 返回第一筆符合條件的資料，如果找不到則返回預設值 (0)
+
+                return Keeper == 0 ? (int?)null : Keeper;
+        }
+
 
 
     }
