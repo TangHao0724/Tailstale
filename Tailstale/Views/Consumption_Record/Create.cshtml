@@ -23,8 +23,10 @@
             </div>
             <div class="form-group">
                 <label asp-for="pet_name" class="control-label"></label>
-                <input asp-for="pet_name" class="form-control" />
-                
+                @* <input asp-for="pet_name" class="form-control" /> *@
+                <select asp-for="pet_name" class="form-control">
+                    <option v-for="item in petName" :value="item">{{item}}</option>
+                </select>
                 <span asp-validation-for="pet_name" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -89,10 +91,12 @@
                     baseAddress: "https://localhost:7112",//結尾不要/
                     keeper_Name: "",
                     keeper_ID: null,
-
+                    petName: [],
+                    
                 };
             },
             mounted: function () {
+                this.setSelectedPetName();
                 //讓預約的已有的記錄的 asp-route-keeper_id="item.keeper_id"這段值可以傳到消費紀錄的keepid裡面
                 const queryParams = new URLSearchParams(window.location.search);
 
@@ -102,12 +106,18 @@
                 // 將取得的值設置到 data 屬性中
                 this.keeper_ID = keeperId ? parseInt(keeperId) : null;
 
+                const pet_name = queryParams.get('pet_name'); // 獲取 URL 參數
+                if (pet_name != "") {
+                    this.petName.push(pet_name); // 設置選中的 pet_name
+                }
 
             },
             methods: {
                 callID: function () {
                     let _this = this;
+                    
                     if (!_this.keeper_Name.trim()) {
+
                         // 如果為空，不發送請求
                         _this.keeper_ID = null; // 或者其他適當的預設值
                         return;
@@ -117,12 +127,36 @@
                             name: _this.keeper_Name // 將 keepname 作為查詢參數傳遞
                         }
                     }).then(response => {
-
+                        // _this.petName = [];
                         _this.keeper_ID = response.data;
+                        _this.callPet(_this.keeper_ID);
 
                     }).catch(err => {
                         alert(err);
                     });
+                },
+                callPet: function (id) {
+                    let _this = this;
+                    if (id == null || id === '') {
+                        // 如果 id 無效，不發送請求,不然會莫名input每次輸入值就跑一次400
+                        /* _this.petName = [] */; // 清空 petName
+                        return;
+                    }
+
+                    axios.get(`${_this.baseAddress}/api/SalonApi/SelectPetName`, {
+                        params: {
+                            keeperid: id // 將 keepname 作為查詢參數傳遞
+                        }
+                    }).then(response => {
+
+                        _this.petName = response.data;
+
+                    }).catch(err => {
+                        alert(err);
+                    });
+                },
+                setSelectedPetName() {
+                   
                 }
             },
             computed: {

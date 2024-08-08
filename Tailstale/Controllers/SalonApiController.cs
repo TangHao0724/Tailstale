@@ -136,7 +136,7 @@ namespace Tailstale.Controllers
         [HttpGet("SelectPetName")]
         public IActionResult SelectPetName(int keeperid)
         {
-            if (keeperid <= 0)
+            if (keeperid == null)
             {
                 // 如果 keeperid 無效，返回空的 JSON 陣列
                 return Ok(new List<object>());

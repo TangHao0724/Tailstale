@@ -25,7 +25,7 @@
                 <label asp-for="pet_name" class="control-label"></label>
                 @* <input asp-for="pet_name" class="form-control" /> *@
                 <select asp-for="pet_name" class="form-control">
-                    <option v-for="item in petName" value="item.name">{{item.name}}</option>
+                    <option v-for="item in petName" :value="item.name">{{item.name}}</option>
                </select>
                 <span asp-validation-for="pet_name" class="text-danger"></span>
             </div>
@@ -81,6 +81,7 @@
             methods: {
                 callID: function () {
                     let _this = this;
+                    _this.petName = [];
                     if (!_this.keeper_Name.trim()) {
                         // 如果為空，不發送請求
                         _this.keeper_ID = null; // 或者其他適當的預設值
@@ -91,16 +92,20 @@
                             name: _this.keeper_Name // 將 keepname 作為查詢參數傳遞
                         }
                     }).then(response => {
-
                         _this.keeper_ID = response.data;
-                        _this.callPet(_this.keeper_ID);
-
+                         _this.callPet(_this.keeper_ID);
                     }).catch(err => {
                         alert(err);
                     });
                 },
                 callPet: function (id) {
                     let _this = this;
+                    if (id == null || id === '') {
+                        // 如果 id 無效，不發送請求,不然會莫名input每次輸入值就跑一次400
+                        _this.petName = []; // 清空 petName
+                        return;
+                    }
+                    
                     axios.get(`${_this.baseAddress}/api/SalonApi/SelectPetName`, {
                         params: {
                             keeperid: id // 將 keepname 作為查詢參數傳遞
