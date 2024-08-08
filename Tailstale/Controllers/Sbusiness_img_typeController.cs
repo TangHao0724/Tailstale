@@ -24,42 +24,45 @@ namespace Tailstale.Controllers
         // GET: business_img_type
         public async Task<IActionResult> Index()
         {
-            var tailstaleContext = _context.business_img_types.Include(b => b.FK_business);
-            var businesses3 = _context.businesses
-            .Where(b => b.type_ID == 2)
-            .ToList();
-            ViewData["FK_business_id"] = new SelectList(businesses3, "ID", "name");
-            return View(await tailstaleContext.ToListAsync());
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            int? loginType = HttpContext.Session.GetInt32("loginType");
+
+            var business_img_type = await _context.business_img_types
+            .Where(b => b.FK_business_id == loginID)
+            .ToListAsync();
+
+           
+            return View(business_img_type);
         }
 
 
 
-        [HttpPost]
-        public async Task<IActionResult> Index(int? id)
-        {
+        //[HttpPost]
+        //public async Task<IActionResult> Index(int? id)
+        //{
 
             
 
-            // 準備查詢
-            IQueryable<business_img_type> query = _context.business_img_types
-                .Include(bh => bh.FK_business);
+        //    // 準備查詢
+        //    IQueryable<business_img_type> query = _context.business_img_types
+        //        .Include(bh => bh.FK_business);
 
 
-            // 根據 id 的情況添加條件
-            if (id.HasValue)
-            {
-                query = query.Where(bh => bh.FK_business_id == id);
-            }
+        //    // 根據 id 的情況添加條件
+        //    if (id.HasValue)
+        //    {
+        //        query = query.Where(bh => bh.FK_business_id == id);
+        //    }
 
             
 
-            // 执行查询并返回结果
-            var S_img_type = await query.ToListAsync();
+        //    // 执行查询并返回结果
+        //    var S_img_type = await query.ToListAsync();
 
-            return PartialView("_Sbusiness_img_typePartial", S_img_type);
+        //    return PartialView("_Sbusiness_img_typePartial", S_img_type);
 
 
-        }
+        //}
 
 
 

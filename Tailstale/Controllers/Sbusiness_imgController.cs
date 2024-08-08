@@ -7,6 +7,7 @@ using CRUD_COREMVC;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using Tailstale.Models;
 
 namespace Tailstale.Controllers
@@ -26,11 +27,13 @@ namespace Tailstale.Controllers
         // GET: business_img
         public async Task<IActionResult> Index()
         {
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            int? loginType = HttpContext.Session.GetInt32("loginType");
             var tailstaleContext = _context.business_imgs.Include(b => b.img_type);
             var query = from business in _context.businesses
                         join imgType in _context.business_img_types
                         on business.ID equals imgType.FK_business_id
-                        where business.type_ID == 2
+                        where business.ID == loginID
                         select new
                         {
                             ImageTypeID = imgType.ID,
@@ -40,7 +43,9 @@ namespace Tailstale.Controllers
             var result = query.ToList();
 
             ViewData["ImageTypeList"] = new SelectList(result, "ImageTypeID", "ImageTypeName");
-            
+
+
+
             return View(await tailstaleContext.ToListAsync());
         }
 
@@ -102,10 +107,11 @@ namespace Tailstale.Controllers
         // GET: business_img/Create
         public IActionResult Create()
         {
+            int? loginID = HttpContext.Session.GetInt32("loginID");
             var query = from business in _context.businesses
                         join imgType in _context.business_img_types
                         on business.ID equals imgType.FK_business_id
-                        where business.type_ID == 2
+                        where business.ID == loginID
                         select new
                         {
                             ImageTypeID = imgType.ID,
@@ -163,11 +169,11 @@ namespace Tailstale.Controllers
                 // 成功保存后重定向到 Index 页面
                 return RedirectToAction(nameof(Index));
             }
-
+            int? loginID = HttpContext.Session.GetInt32("loginID");
             var query = from business in _context.businesses
                         join imgType in _context.business_img_types
                         on business.ID equals imgType.FK_business_id
-                        where business.type_ID == 2
+                        where business.ID == loginID
                         select new
                         {
                             ImageTypeID = imgType.ID,
@@ -197,11 +203,11 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
-
+            int? loginID = HttpContext.Session.GetInt32("loginID");
             var query = from business in _context.businesses
                         join imgType in _context.business_img_types
                         on business.ID equals imgType.FK_business_id
-                        where business.type_ID == 2
+                        where business.ID == loginID
                         select new
                         {
                             ImageTypeID = imgType.ID,
@@ -282,12 +288,12 @@ namespace Tailstale.Controllers
                         throw;
                     }
                 }
-
+                int? loginID = HttpContext.Session.GetInt32("loginID");
                 var query2 = from business in _context.businesses
                             join imgType in _context.business_img_types
                             on business.ID equals imgType.FK_business_id
-                            where business.type_ID == 2
-                            select new
+                            where business.ID == loginID
+                             select new
                             {
                                 ImageTypeID = imgType.ID,
                                 ImageTypeName = imgType.typename
@@ -301,11 +307,11 @@ namespace Tailstale.Controllers
                 ViewData["img_type_id"] = new SelectList(_context.business_img_types, "ID", "typename", business_img.img_type_id);
                 return RedirectToAction(nameof(Index));
             }
-
+            int? loginID = HttpContext.Session.GetInt32("loginID");
             var query = from business in _context.businesses
                         join imgType in _context.business_img_types
                         on business.ID equals imgType.FK_business_id
-                        where business.type_ID == 2
+                        where business.ID == loginID
                         select new
                         {
                             ImageTypeID = imgType.ID,
