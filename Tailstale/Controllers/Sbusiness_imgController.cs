@@ -288,11 +288,11 @@ namespace Tailstale.Controllers
                         throw;
                     }
                 }
-                int? loginID = HttpContext.Session.GetInt32("loginID");
+                int? loginID2 = HttpContext.Session.GetInt32("loginID");
                 var query2 = from business in _context.businesses
                             join imgType in _context.business_img_types
                             on business.ID equals imgType.FK_business_id
-                            where business.ID == loginID
+                            where business.ID == loginID2
                              select new
                             {
                                 ImageTypeID = imgType.ID,
