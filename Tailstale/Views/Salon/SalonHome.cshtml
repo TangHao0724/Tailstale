@@ -47,13 +47,96 @@
         .btn-closec:focus, .btn-closec:active {
                 outline: none !important; /* 去掉焦點輪廓 */
                 box-shadow: none !important; /* 去掉點擊時的圓形背景效果 */
+
         }
+
+       
 
         input[type="number"]::-webkit-inner-spin-button,
         input[type="number"]::-webkit-outer-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
+
+
+        /* 以下是pic */
+        .petimage-group {
+            position: relative;
+            height: auto;
+            background-color: #ddd;
+        }
+
+        .imagerow {
+            display: flex;
+            flex-wrap: wrap;
+            /* justify-content: center; */
+        }
+
+        .petimg {
+            max-width: 240px;
+            max-height: 300px;
+            min-height: 300px;
+            cursor: pointer;
+            border: 10px solid #fff;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, .1);
+            overflow: hidden;
+            object-fit: cover;
+            transition: .3s;
+        }
+
+        imghover {
+        }
+
+        .imghover:hover img {
+            transform: scale(1.1);
+        }
+
+        .popup-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, .9);
+            height: 100%;
+            width: 100%;
+            z-index: 100;
+            display: none;
+        }
+
+            .popup-image span {
+                position: absolute;
+                top: 20px;
+                right: 25px;
+                font-size: 60px;
+                color: #fff;
+                cursor: pointer;
+                z-index: 100;
+            }
+
+        .storeh2 {
+            position: absolute;
+            top: 30px;
+            right: 65%;
+            background-color: #fff;
+            color: #fff;
+            font-size: 30px;
+        }
+
+        .popup-image img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 5px;
+            max-height: 760px;
+            max-width: 600px;
+            object-fit: cover;
+        }
+
+        .petimage-group .imagerow:not(:first-of-type) {
+            border-top: 2px solid #fa0; /* 边框的样式和颜色 */
+            padding-top: 24px; /* 边框与内容的距离 */
+        }
+
     </style>
     }
 
@@ -95,47 +178,70 @@
 
 
 
-    <div class="container bg-primary my-3 Beauty_Step-1">
-        <div v-for="business in businesses" :key="business.ID" class="row py-5 g-3 mb-3">
-        <div v-html="business.geoJson" class="col-12 col-md-6">
+        <div class="container  my-3 Beauty_Step-1">
+            <div v-for="business in businesses" :key="business.ID" class="row py-5 g-3 mb-3">
+              <div v-html="business.geoJson" class="col-12 col-md-6">
                 
-        </div>
-        <div class="col-12 col-md-6">
-                <img :src="`/Salon_img/${business.photo_url}`" class="w-100" style="height:300px;" alt="">
-                <h3 class="text-center py-2">{{business.name}}</h3>
-                <div class="truncate-multiline">
-                    {{business.description}}
-                </div>
-                <div class="text-end me-5">
-                    <button type="button" class="btn btn-link text-white btn-closec" data-bs-toggle="modal" data-bs-target="#staticBackdrop">顯示更多</button>
+              </div>
+              <div class="col-12 col-md-6">
+                    <img :src="`/Salon_img/${business.photo_url}`" class="w-100" style="height:300px;" alt="">
+                    <h3 class="text-center py-2">{{business.name}}</h3>
+                    <div class="truncate-multiline">
+                        {{business.description}}
+                    </div>
+                    <div class="text-end me-5">
+                    <button type="button" class="btn btn-warning text-white btn-closec" data-bs-toggle="modal" data-bs-target="#staticBackdrop">顯示更多</button>
                    
-                </div>
-                <!-- Scrollable modal -->
-                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-scrollable showWidth">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <img :src="`/Salon_img/${business.photo_url}`" class="w-100" style="height:300px;" alt="">
-                                <div v-html="business.description" class="firsttext"></div>
+                    </div>
+                    <!-- Scrollable modal -->
+                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-scrollable showWidth">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <img :src="`/Salon_img/${business.photo_url}`" class="w-100" style="height:300px;" alt="">
+                                    <div v-html="business.description" class="firsttext"></div>
                                 
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <p class="m-0 pt-3">{{business.address}}</p>
+                     <p class="m-0 pt-3">{{business.phone}}</p>
+                
+                    <div class="text-center"><button class="Beauty_btn-1" :value="business.id" v-on:click="selectBusiness(business.id,business.name)">選擇此門市</button></div>
+
+                </div> 
+
+                <div class="row">
+                <h4>顯示門市作品</h4>
+                <button class="TypePetPic col-5" value="貓" v-on:click="storePic($event,business.id)">貓</button><button class="TypePetPic col-5" value="狗" v-on:click="storePic($event,business.id)">狗</button><button class="col-2" v-on:click="hidepic()">關閉</button>
+                <div class="container petimage-group py-3 px-5">
+                    <div class="row imagerow my-5">
+                        <div v-for="item in SalonPicture" class="col-12 col-md-4 col-lg-3 mb-3">
+                            <div v-if="item.url" class="imghover d-flex justify-content-center">
+                                <img class="w-100 petimg" :src="`/Salon_img/${item.url}`" v-on:click="showImageClick(item.url)">
                             </div>
                         </div>
                     </div>
                 </div>
-                 <p class="m-0 pt-3">{{business.address}}</p>
-                 <p class="m-0 pt-3">{{business.phone}}</p>
-                <div class="text-center"><button class="Beauty_btn-1" :value="business.id" v-on:click="selectBusiness(business.id,business.name)">選擇此門市</button></div>
-
             </div>
+          </div>
         </div>
+
+
+    
+
+    <div class="popup-image">
+        <span v-on:click="closePopup()">&times;</span>
+        <img :src="`/Salon_img/${showPicture}`">
     </div>
 
 
@@ -287,15 +393,17 @@
                     dogType: '狗',
                     catType: '貓',
                     pet_type: "",
-                    business_Name:"",
+                    business_Name: "",
                     businesses: [],
                     business_hour: [],
                     services: [],
-                    serviceName:"",
-                    Usetime:"",
+                    serviceName: "",
+                    Usetime: "",
                     keeper_id: viewBagKeeperId,
-                    pet_name:"",
-                    BusinessHour:[],
+                    pet_name: "",
+                    BusinessHour: [],
+                    showPicture: "",
+                    SalonPicture: [],
 
                 };
             },
@@ -305,6 +413,14 @@
                 $(".Beauty_Step-3-2").hide();
                 $(".Beauty_Step-4").hide();
                 $(".Beauty_Step-5").hide();
+
+                // axios.get(`${_this.baseAddress}/api/SalonApi/GetSalonPicture`).then(response => {
+
+                //     _this.SalonPicture = response.data;
+
+                // }).catch(err => {
+                //     alert(err);
+                // });
 
                 let _this = this;
                 axios.get(`${_this.baseAddress}/api/SalonApi/GetSalonbusiness`).then(response => {
@@ -316,16 +432,16 @@
                 });
 
 
-                
-                    flatpickr("#datetime-picker", {
-                        enableTime: true, // 啟用時間選擇
-                        dateFormat: "Y-m-d H:i", // 日期和時間格式
-                        minDate: "today", // 最小日期
-                        // disable: [disableDates],
-                        minTime: "10:00", // 最小時間
-                        maxTime: "19:00", // 最大時間
-                        time_24hr: true // 使用24小時制
-                    });
+
+                flatpickr("#datetime-picker", {
+                    enableTime: true, // 啟用時間選擇
+                    dateFormat: "Y-m-d H:i", // 日期和時間格式
+                    minDate: "today", // 最小日期
+                    // disable: [disableDates],
+                    minTime: "10:00", // 最小時間
+                    maxTime: "19:00", // 最大時間
+                    time_24hr: true // 使用24小時制
+                });
 
 
 
@@ -341,16 +457,29 @@
 
             },
             methods: {
-                clickNav1:function() {
-                        $(".Beauty_Step-2").hide();
-                        $(".Beauty_Step-3-1").hide();
-                        $(".Beauty_Step-3-2").hide();
-                        $(".Beauty_Step-4").hide();
-                        $(".Beauty_Step-5").hide();
-                        $(".Beauty_Step-1").fadeIn();
-                        // 設定 active 狀態
-                        $('.nav-link').removeClass('active');
-                        $('#stepbtn-1').addClass('active');
+                hidepic: function () {
+                    $(".petimage-group").hide();
+
+                },
+                closePopup: function () {
+                    $(".popup-image").hide();
+
+                },
+                showImageClick: function (url) {
+                    this.showPicture = url,
+                        $(".popup-image").fadeIn();
+
+                },
+                clickNav1: function () {
+                    $(".Beauty_Step-2").hide();
+                    $(".Beauty_Step-3-1").hide();
+                    $(".Beauty_Step-3-2").hide();
+                    $(".Beauty_Step-4").hide();
+                    $(".Beauty_Step-5").hide();
+                    $(".Beauty_Step-1").fadeIn();
+                    // 設定 active 狀態
+                    $('.nav-link').removeClass('active');
+                    $('#stepbtn-1').addClass('active');
                 },
                 clickNav2: function () {
                     if (this.business_ID !== 0) {
@@ -414,7 +543,7 @@
                     }
                 },
                 selectBusiness: function (businessID, businessName) {
-                    
+
                     this.business_Name = businessName;
                     this.business_ID = businessID;
                     this.BusinessHour = [];
@@ -455,7 +584,7 @@
                     //         }
                     //     }
                     // });
-                    
+
                 },
                 // servicesForBusinessID1004(businessID) {
                 //     return this.service.filter(service => service.business_ID === businessID);
@@ -492,18 +621,18 @@
                 selectTime: function () {
                     console.log(this.Usetime);
                     this.Usetime = document.getElementById("datetime-picker").value;
-                            
-                        // 如果有值，執行程式碼
-                        $(".Beauty_Step-4").hide();
-                        $(".Beauty_Step-5").fadeIn();
+
+                    // 如果有值，執行程式碼
+                    $(".Beauty_Step-4").hide();
+                    $(".Beauty_Step-5").fadeIn();
                     $('.nav-link').removeClass('active');
                     $('#stepbtn-5').addClass('active');
-                    
+
                 },
                 Reserveinsert: function () {
                     let _this = this;
                     if (_this.keeper_id !== 0 && _this.pet_name !== "" && _this.business_ID !== 0 && _this.Usetime !== "" && _this.serviceName !== "") {
-                       
+
                         var form = new FormData();//準備上船的物件,把檔案上傳的內容放到form裡面,form如果要送到Server端,每一個資料都要有name(就類似input屬性的那個name,但此處獎的name是下幾行的CategoryId和CategoryName這幾個...)
                         //照著你函式用的型態(dto或model)欄位名稱來寫
                         form.append("id", 0);
@@ -536,7 +665,7 @@
                     const selectElement = document.getElementById('pet_name');;
                     if (selectElement) {
                         this.pet_name = selectElement.value;
-                        console.log("頁面加載時選中的值是: " + this.pet_name);
+                        // console.log("頁面加載時選中的值是: " + this.pet_name);
                     }
                 },
                 handleChange(event) {
@@ -545,11 +674,26 @@
                     this.pet_name = selectedValue; // 更新 Vue 的數據
                     console.log("選中的值是: " + selectedValue);
                 },
+                storePic: function (event,id) {
+                    $(".petimage-group").fadeIn();
+                    let _this = this;
+                    const buttonValue = event.target.value;
+                    axios.get(`${_this.baseAddress}/api/SalonApi/GetSalonPicture`).then(response => {
+
+                        _this.SalonPicture = response.data.filter(picture => picture.fK_business_id === id && picture.name.includes(buttonValue));
+
+                    }).catch(err => {
+                        alert(err);
+                    });
+                },
             },
             computed: {
                 catServices(petType) {
                     return this.services.filter(item => item.type === petType);
-                }
+                },
+                // filteredPictures() {
+                //     return this.SalonPicture.filter(picture => picture.fK_business_id === this.businessId);
+                // }
 
             }
         };
