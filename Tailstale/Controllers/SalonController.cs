@@ -40,9 +40,14 @@ namespace Tailstale.Controllers
             int? loginType = HttpContext.Session.GetInt32("loginType");
 
             string KloginName = HttpContext.Session.GetString("KloginName");
-            
 
-          
+            var addresses = _context.businesses
+           .Where(b => b.type_ID == 2 && b.address.Length >= 4)
+           .Select(b => b.address)
+           .ToList();
+
+            ViewBag.Addresses = addresses;
+
 
 
             // 將值設置到 ViewBag

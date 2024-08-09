@@ -137,6 +137,10 @@
             padding-top: 24px; /* 边框与内容的距离 */
         }
 
+        .divcheck{
+            cursor: pointer;
+        }
+
     </style>
     }
 
@@ -159,7 +163,39 @@
         </div>
     </div>
 
+    <div class="container">
+        <select v-model="selectAddress">
+            <option v-for="item in newAddress">{{item}}</option>
+        </select>
+        <select v-model="selectService">
+            <option value="幼貓">幼貓</option>
+            <option value="短毛貓">短毛貓</option>
+            <option value="長毛貓">長毛貓</option>
+            <option value="幼狗">幼狗</option>
+            <option value="小型狗">小型狗</option>
+            <option value="中型狗">中型狗</option>
+            <option value="大型狗">大型狗</option>
+        </select>
+        <button v-on:click="SelectStore()">查詢門市</button>
+    </div>
+    
 
+    <div class="container row StoreCard">
+        <div class="card col-4 mx-3 divcheck" style="width: 18rem;" v-for="Card in businessCard" v-on:click="showResvice(Card.id)">
+            <img :src="`/Salon_img/${Card.photo_url}`" class="card-img-top w-100" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">{{Card.name}}</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">{{Card.email}}</li>
+                <li class="list-group-item">{{Card.phone}}</li>
+                <li class="list-group-item">{{Card.address}}</li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="showStroe">
     <div class="container my-5 py-3">
         <div class="row">
             <div class="col">
@@ -367,7 +403,7 @@
         </div>
     </div>
 </div>
-
+</div>
 
     @section Scripts{
     <script src="https://unpkg.com/vue@3.4.31/dist/vue.global.js"></script>
@@ -384,6 +420,7 @@
         var viewBagKeeperIdStr = '@Html.Raw(ViewBag.KLoginID ?? "0")';
         // var viewBagKeeperId = @Html.Raw(ViewBag.KLoginID);
         var viewBagKeeperId = parseInt(viewBagKeeperIdStr, 10);
+        var addresses = @Html.Raw(Json.Serialize(ViewBag.Addresses));
 
         var vueApp = {
             data() {
@@ -404,15 +441,23 @@
                     BusinessHour: [],
                     showPicture: "",
                     SalonPicture: [],
-
+                    address: addresses,
+                    newAddress: [],
+                    selectService: "",
+                    selectAddress: "",
+                    businessCard: [],
                 };
             },
             mounted: function () {//初始化,發生呼叫函式,他需要用callback,
+                $(".showStroe").hide();
+               
                 $(".Beauty_Step-2").hide();
                 $(".Beauty_Step-3-1").hide();
                 $(".Beauty_Step-3-2").hide();
                 $(".Beauty_Step-4").hide();
                 $(".Beauty_Step-5").hide();
+                this.newAddress = this.processAddresses(this.address);
+
 
                 // axios.get(`${_this.baseAddress}/api/SalonApi/GetSalonPicture`).then(response => {
 
@@ -422,14 +467,7 @@
                 //     alert(err);
                 // });
 
-                let _this = this;
-                axios.get(`${_this.baseAddress}/api/SalonApi/GetSalonbusiness`).then(response => {
 
-                    _this.businesses = response.data;
-
-                }).catch(err => {
-                    alert(err);
-                });
 
 
 
@@ -457,6 +495,34 @@
 
             },
             methods: {
+                processAddresses(addresses) {
+                    // 提取地址的前面三个字符
+                    const shortAddresses = addresses.map(addr => addr.substring(0, 3));
+
+                    // 去重
+                    const uniqueAddresses = new Set(shortAddresses);
+
+                    // 转换为数组
+                    return Array.from(uniqueAddresses);
+                },
+                SelectStore: function () {
+                      $(".showStroe").hide();
+                      $(".StoreCard").fadeIn();
+                     this.businesses = [];
+                    let _this = this;
+                    axios.get(`${_this.baseAddress}/api/SalonApi/SelectStore`, {
+                        params: {
+                            address: _this.selectAddress,
+                            serve: _this.selectService
+                        }
+                    }).then(response => {
+
+                        _this.businessCard = response.data;
+
+                    }).catch(err => {
+                        alert(err);
+                    });
+                },
                 hidepic: function () {
                     $(".petimage-group").hide();
 
@@ -542,6 +608,25 @@
                         alert("請選擇預約時間")
                     }
                 },
+                showResvice:function(id){
+                     $(".showStroe").fadeIn();
+                     $(".StoreCard").hide();
+                     this.businesses = [];
+                     
+                     let _this = this;
+                      axios.get(`${_this.baseAddress}/api/SalonApi/GetSalonbusiness`, {
+                        params: {
+                            id: id,
+                        }
+                    }).then(response => {
+
+                        _this.businesses = response.data;
+
+                    }).catch(err => {
+                        alert(err);
+                    });
+
+                },
                 selectBusiness: function (businessID, businessName) {
 
                     this.business_Name = businessName;
@@ -558,32 +643,7 @@
                     }).catch(err => {
                         alert(err);
                     });
-                    // const dateFormats = BusinessHour.reduce((acc, item) => {
-                    //     acc[item.business_day] = { minTime: item.open_time, maxTime: item.close_time };
-                    //     return acc;
-                    // }, {});
-
-                    // const disableDates = date => {
-                    //     const formattedDate = flatpickr.formatDate(date, "Y-m-d");
-                    //     return !dateFormats[formattedDate]; // 如果不在 dateFormats 中，返回 true 表示禁用
-                    // };
-
-                    // const picker = flatpickr("#datetime-picker", {
-                    //     enableTime: true,
-                    //     dateFormat: "Y-m-d H:i",
-                    //     minDate: "today",
-                    //     disable: [disableDates],
-                    //     onChange: function (selectedDates, dateStr, instance) {
-                    //         if (selectedDates.length > 0) {
-                    //             const selectedDate = flatpickr.formatDate(selectedDates[0], "Y-m-d");
-                    //             const times = dateFormats[selectedDate];
-                    //             if (times) {
-                    //                 instance.set('minTime', times.minTime);
-                    //                 instance.set('maxTime', times.maxTime);
-                    //             }
-                    //         }
-                    //     }
-                    // });
+                    
 
                 },
                 // servicesForBusinessID1004(businessID) {
@@ -694,6 +754,9 @@
                 // filteredPictures() {
                 //     return this.SalonPicture.filter(picture => picture.fK_business_id === this.businessId);
                 // }
+                processedAddresses() {
+                   // return this.address.map(item => item.address.substring(0, 3));
+                }
 
             }
         };

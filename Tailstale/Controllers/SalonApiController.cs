@@ -42,25 +42,25 @@ namespace Tailstale.Controllers
 
         // GET: api/SalonApi/GetSalonbusiness
         [HttpGet("GetSalonbusiness")]
-        public async Task<IEnumerable<SalonbusinessDTO>> GetSalonbusiness()
+        public async Task<IEnumerable<SalonbusinessDTO>> GetSalonbusiness(int id)
         {
             return _context.businesses
-                .Where(Emp => Emp.type_ID == 2)
+                .Where(Emp => Emp.ID == id)
                 .Select(Emp => new SalonbusinessDTO
-            {
-                ID = Emp.ID,
-                type_ID = Emp.type_ID,
-                name = Emp.name,
-                email = Emp.email,
-                phone = Emp.phone,
-                address = Emp.address,
-                geoJson = Emp.geoJson,
-                license_number = Emp.license_number,
-                business_status = Emp.business_status,
-                description = Emp.description,
-                photo_url = Emp.photo_url,
-                created_at = Emp.created_at.HasValue ? Emp.created_at.Value.ToString("o") : null,
-            });
+                {
+                    ID = Emp.ID,
+                    type_ID = Emp.type_ID,
+                    name = Emp.name,
+                    email = Emp.email,
+                    phone = Emp.phone,
+                    address = Emp.address,
+                    geoJson = Emp.geoJson,
+                    license_number = Emp.license_number,
+                    business_status = Emp.business_status,
+                    description = Emp.description,
+                    photo_url = Emp.photo_url,
+                    created_at = Emp.created_at.HasValue ? Emp.created_at.Value.ToString("o") : null,
+                });
         }
 
 
@@ -87,22 +87,22 @@ namespace Tailstale.Controllers
                 .Include(Emp => Emp.img_type)
                 .Include(Emp => Emp.img_type.FK_business)
                 .Select(Emp => new Sbusiness_imgDTO
-            {
-                ID = Emp.ID,
-                img_type_id = Emp.img_type_id,
-                URL = Emp.URL,
-                name = Emp.name,
-                FK_business_id= Emp.img_type.FK_business_id,
-                business_name = Emp.img_type.FK_business.name,
-                typename = Emp.img_type.typename,
-                created_at = Emp.created_at.HasValue ? Emp.created_at.Value.ToString("o") : null,
-            });
+                {
+                    ID = Emp.ID,
+                    img_type_id = Emp.img_type_id,
+                    URL = Emp.URL,
+                    name = Emp.name,
+                    FK_business_id = Emp.img_type.FK_business_id,
+                    business_name = Emp.img_type.FK_business.name,
+                    typename = Emp.img_type.typename,
+                    created_at = Emp.created_at.HasValue ? Emp.created_at.Value.ToString("o") : null,
+                });
         }
 
 
         // Post: api/SalonApi/ReserveCreate
         [HttpPost("ReserveCreate")]
-        public string ReserveCreate([FromForm]Reserve reserve)
+        public string ReserveCreate([FromForm] Reserve reserve)
         {
             if (reserve.keeper_id == 0 || string.IsNullOrEmpty(reserve.pet_name))
             {
@@ -117,19 +117,19 @@ namespace Tailstale.Controllers
         }
 
         [HttpGet("SelectKeeperId")]
-        public int?  SelectKeeperId(string name)
+        public int? SelectKeeperId(string name)
         {
             if (string.IsNullOrEmpty(name))
             {
                 return null;
-                
+
             }
             var Keeper = _context.keepers
             .Where(b => b.name == name)
             .Select(b => b.ID) // 假設 ID 是你需要的字段
               .FirstOrDefault(); // 返回第一筆符合條件的資料，如果找不到則返回預設值 (0)
 
-                return Keeper == 0 ? (int?)null : Keeper;
+            return Keeper == 0 ? (int?)null : Keeper;
         }
 
         // Get: api/SalonApi/SelectPetName
@@ -153,6 +153,38 @@ namespace Tailstale.Controllers
             return Ok(Keeper);
 
         }
+
+
+        [HttpGet("SelectStore")]
+        public IActionResult SelectStore(string address, string serve)
+        {
+            if (address == null || serve == null)
+            {
+                // 如果 keeperid 無效，返回空的 JSON 陣列
+                return Ok(new List<object>());
+            }
+
+         var Keeper = _context.businesses
+         .Include(b => b.Services)
+         .Where(b => (b.address.Contains(address)) && b.Services.Any(s => s.service_name.Contains(serve)))
+         .Select(b => new
+         {
+             ID = b.ID,             
+             name = b.name,
+             email = b.email,
+             phone = b.phone,
+             address = b.address,
+             photo_url = b.photo_url,
+         })
+         .ToList(); // 將結果轉換為 List
+
+            return Ok(Keeper);
+
+        }
+
+
+
+
 
     }
 }
