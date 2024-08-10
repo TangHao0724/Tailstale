@@ -1,0 +1,250 @@
+.ctrl {
+    display: flex;
+    align-items: center;
+    border-bottom: 0.033em solid #D5DCE6;
+    background-color: #fff;
+    border-radius: 0.167em;
+    font-size: 20px; /* 基準字體大小 */
+       }
+  
+  .ctrl__counter {
+    position: relative;
+    width:100%; /* 相當於 200px / 30px */
+    height: 100%; /* 相當於 100px / 30px */
+    color: #333C48;
+    text-align: center;
+    overflow: hidden;
+  }
+  
+  .ctrl__counter.is-input .ctrl__counter-num {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 100ms ease-in;
+  }
+  
+  .ctrl__counter.is-input .ctrl__counter-input {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 100ms ease-in;
+  }
+  
+  .ctrl__counter-input {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    z-index: 2;
+    box-shadow: none;
+    outline: none;
+    border: none;
+    color: #333C48;
+    font-size: 20px;
+    line-height: 100%; /* 相當於 100px / 30px */
+    text-align: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 100ms ease-in;
+  }
+  
+  .ctrl__counter-num {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+  
+  .ctrl__button {
+    flex: 0 0 30%;
+    text-align: center;
+    padding: 0.5em 0;
+    background-color: #eee;
+    cursor: pointer;
+    user-select: none;
+    font-size: 20px;
+  }
+  
+  /* 動畫相關樣式 */
+  .is-increment-hide {
+    opacity: 0;
+    transform: translateY(-50%);
+    transition: all 0.1s ease-in;
+  }
+  
+  .is-increment-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.1s ease-out;
+  }
+  
+  .is-decrement-hide {
+    opacity: 0;
+    transform: translateY(50%);
+    transition: all 0.1s ease-in;
+  }
+  
+  .is-decrement-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: all 0.1s ease-out;
+  }
+  .ctrl__button {
+    width: 100%; /* 相當於 100px / 30px */
+    line-height: 100%; /* 相當於 100px / 30px */
+    text-align: center;
+    color: #fff;
+    cursor: pointer;
+    background-color: #8498a7;
+    transition: background-color 100ms ease-in;
+  }
+  
+  .ctrl__button:hover {
+    background-color: #90a2b0;
+    transition: background-color 100ms ease-in;
+  }
+  
+  .ctrl__button:active {
+    background-color: #778996;
+    transition: background-color 100ms ease-in;
+  }
+  
+  .ctrl__button--decrement { border-radius: 0.167em 0 0 0.167em; } /* 5px / 30px */
+  .ctrl__button--increment { border-radius: 0 0.167em 0.167em 0; } /* 5px / 30px */
+  
+  .ctrl__counter-num {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    line-height: 100%; /* 相當於 100px / 30px */
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 100ms ease-in;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .ctrl__counter-num.is-increment-hide {
+    opacity: 0;
+    transform: translateY(-1.67em); /* 相當於 -50px / 30px */
+    animation: increment-prev 100ms ease-in;
+  }
+  
+  .ctrl__counter-num.is-increment-visible {
+    opacity: 1;
+    transform: translateY(0);
+    animation: increment-next 100ms ease-out;
+  }
+  
+  .ctrl__counter-num.is-decrement-hide {
+    opacity: 0;
+    transform: translateY(1.67em); /* 相當於 50px / 30px */
+    animation: decrement-prev 100ms ease-in;
+  }
+  
+  .ctrl__counter-num.is-decrement-visible {
+    opacity: 1;
+    transform: translateY(0);
+    animation: decrement-next 100ms ease-out;
+  }
+  
+  @keyframes increment-prev {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-1.67em); /* 相當於 -50px / 30px */
+    }
+  }
+  
+  @keyframes increment-next {
+    from {
+      opacity: 0;
+      transform: translateY(1.67em); /* 相當於 50px / 30px */
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes decrement-prev {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(1.67em); /* 相當於 50px / 30px */
+    }
+  }
+  
+  @keyframes decrement-next {
+    from {
+      opacity: 0;
+      transform: translateY(-1.67em); /* 相當於 -50px / 30px */
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .ctrl__counter-num.is-decrement-visible {
+    opacity: 1;
+    transform: translateY(0);
+    animation: decrement-next 100ms ease-out;
+  }
+  
+  @keyframes decrement-prev {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(1.67em); /* 相當於 50px / 30px */
+    }
+  }
+  
+  @keyframes decrement-next {
+    from {
+      opacity: 0;
+      transform: translateY(-1.67em); /* 相當於 -50px / 30px */
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes increment-prev {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-1.67em); /* 相當於 -50px / 30px */
+    }
+  }
+  
+  @keyframes increment-next {
+    from {
+      opacity: 0;
+      transform: translateY(1.67em); /* 相當於 50px / 30px */
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }

@@ -3,21 +3,21 @@
 using System;
 using System.Collections.Generic;
 
-namespace HotelAPI.Models;
+namespace Tailstale.Models;
 
 public partial class BookingDetail
 {
-    public int BdId { get; set; }
+    public int bdID { get; set; }
 
-    public int? BookingId { get; set; }
+    public int? bookingID { get; set; }
 
-    public int? RoomId { get; set; }
+    public int? roomID { get; set; }
 
-    public int? BdAmount { get; set; }
+    public int? bdAmount { get; set; }
 
-    public int? BdTotal { get; set; }
+    public int? bdTotal { get; set; }
 
-    public virtual Booking Booking { get; set; }
+    public virtual Booking booking { get; set; }
 
-    public virtual Room Room { get; set; }
+    public virtual Room room { get; set; }
 }

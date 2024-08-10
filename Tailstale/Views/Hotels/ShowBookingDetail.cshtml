@@ -1,0 +1,218 @@
+﻿@model Tailstale.Hotel_DTO.BBDC
+
+<div class="container">
+    <div class="card">
+        <div class="card-header bg-dark text-light ml-0">
+            <div class="container row">
+                <div class="col-12 d-none d-md-block col-md-6 p-2">
+                    <i class="fas fa-shopping-cart"></i> &nbsp; 檢視預訂資料
+                </div>
+                <div class="col-12 col-md-4 offset-md-2 text-right p-2">
+                    <form hidden id="BackToAllBooking" asp-controller="Hotels" asp-action="ShowAllBooking" asp-route-id="@ViewBag.HotelID">
+                    </form>
+                    <a class="btn btn-outline-info form-control btn-sm" href="#" onclick="document.getElementById('BackToAllBooking').submit(); return false;">回預訂清單 Back to Bookings</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="container rounded p-2">
+                <div class="row">
+                    <div class="col-12 col-lg-6 pb-4">
+                        <div class="row">
+                            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-primary">預訂人資訊 :</span>
+
+                            </h4>
+                        </div>
+                        <div class="row my-1">
+                            <div class="col-5">姓名 Name</div>
+                            <div class="col-7">
+                                <input value="@ViewBag.KeeperInfo.name" type="text" class="form-control" readonly />
+                            </div>
+
+                        </div>
+                        <div class="row my-1">
+                            <div class="col-5">手機 Phone</div>
+                            <div class="col-7">
+                                <input value="@ViewBag.KeeperInfo.phone" type="phone" class="form-control" readonly />
+                                
+                            </div>
+                        </div>
+                        <div class="row my-1">
+                            <div class="col-5">信箱 Email</div>
+                            <div class="col-7">
+                                <input value="@ViewBag.KeeperInfo.email" type="email" class="form-control" readonly />
+                                
+                            </div>
+                        </div>
+                        <div class="row my-1">
+                            <div class="col-5">預訂日期 Booking Date</div>
+                            <div class="col-7">
+                                <input value="@Model.book.BookingDate" type="text" class="form-control" readonly />
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-12 col-lg-5 offset-lg-1">
+                        <h4 class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-primary">預訂內容 Booking Details</span>
+                        </h4>
+                        @if (Model.book.BookingStatus.Equals("預約確認中"))
+                        {
+                            <label class="btn btn-outline-primary form-control my-2 statusLabel">@Model.book.BookingStatus</label>
+                        }
+                        else if (Model.book.BookingStatus.Equals("預約成功"))
+                        {
+                            <label class="btn btn-success form-control my-2 statusLabel" >@Model.book.BookingStatus</label>
+                        }
+                        else if (Model.book.BookingStatus.Equals("預約成功"))
+                        {
+                            <label class="btn btn-danger form-control my-2 statusLabel" >@Model.book.BookingStatus</label>
+                        }
+
+                        <ul class="list-group mb-3">
+                            <li class="list-group-item d-flex justify-content-between p-2">
+                                <div class="row container">
+                                    <div class="col-4">
+                                        <div>入住日期</div>
+                                        <div><h6 class="text-success">@Model.book.CheckinDate</h6></div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div>退房日期</div>
+                                        <div><h6 class="text-success">@Model.book.CheckoutDate</h6></div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div>入住天數</div>
+                                        <div><h6 class="text-success">@Model.book.datecount 晚</h6></div>
+                                    </div>
+                                </div>
+
+                            </li>
+                            @foreach (var bd in Model.bookingDetails){
+                                <li class="list-group-item d-flex justify-content-between p-2">
+                                    <div class="row container">
+                                        <div class="col-8">
+
+                                            <h6 class="my-0 text-primary">房間名稱: @bd.bookingDetail.roomName</h6>
+                                            <small class="text-muted">單晚價格：@String.Format("{0:N0}",bd.bookingDetail.roomPrice ) 元</small><br />
+                                            <small class="text-muted">訂房數量：@bd.bookingDetail.bdAmount</small><br />
+                                        </div>
+                                        <div class="col-4">
+                                            <p class="text-success">@String.Format("{0:N0}", bd.bookingDetail.bdTotal) 元</p>
+                                        </div>
+                                    </div>
+
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between p-2">
+                                    
+                                    <div class="row container">
+                                        <h6 class="my-0 text-primary">入住資料</h6>
+                                      
+                                        @foreach (var cd in bd.checkInDTOs)
+                                        {
+                                            int i = 1;
+                                            <div class="col-8 border-bottom">
+                                                <div><strong>第 @i 隻寵物</strong></div>
+                                                <small class="text-muted">寵物名字: @cd.petName</small><br />
+                                                <small class="text-muted">寵物類型: @cd.petType</small><br />
+                                                <small class="text-muted">寵物生日: @cd.petBirthDay</small><br />
+                                                <small class="text-muted">晶片號碼: @cd.petChipID</small><br />
+                                            </div>
+                                            i++;
+                                        }
+                                        
+
+                                    </div>
+
+                                </li>
+                                
+                               
+                            }
+                            
+
+
+
+                            <li class="list-group-item bg-info">
+                                <div class="row container">
+                                    <div class="col-6 text-center">
+                                        <h5 class="text-white">總計 TOTAL </h5>
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <h5 class="text-white">@String.Format("{0:N0}",Model.book.BookingTotal)元</h5>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        @if (ViewBag.BookingStatus == 1)
+                        {
+                            <a class="btn btn-success form-control btn-sm btnsuccess"  href="#">確認預約</a>
+                            <a class="btn btn-danger form-control btn-sm btncancel"  href="#">取消訂單</a>
+                        }
+                        else if (ViewBag.BookingStatus == 2)
+                        {
+                            <a class="btn btn-danger form-control btn-sm btncancel" href="#">取消訂單</a>
+                        }
+                        else if (ViewBag.BookingStatus == 3)
+                        {
+                            <a class="btn btn-success form-control btn-sm btnsuccess" href="#">確認預約</a>
+                        }
+                        
+
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            var baseAddress = "https://localhost:7112/";
+            //var statusNumber = "@ViewBag.BookingStatus"
+            var btnsuccess= document.querySelectorAll(".btnsuccess");
+            var btncancel = document.querySelectorAll(".btncancel");
+            var statusLabel = document.querySelectorAll(".statusLabel").textContent;
+            var bookingID = parseInt("@ViewBag.BookingID");
+            btnsuccess.forEach(bs => function () {
+                bs.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    updateBookingStatus(bookingID, 2);
+                });
+            });
+            btncancel.forEach(bc => function () {
+                bc.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    updateBookingStatus(bookingID, 3);
+                });
+            });
+            // btnsuccess.addEventListener('click', function (event) {
+            //     event.preventDefault();
+            //     updateBookingStatus(bookingID, 2);
+            // });
+            // btncancel.addEventListener('click', function (event) {
+            //     event.preventDefault();
+            //     updateBookingStatus(bookingID, 3);
+            // });
+            function updateBookingStatus(bookingID, status) {
+                axios.put(`${baseAddress}Hotels/UpdateBookingStatus`, {
+                    bookingID: bookingID,
+                    status: status
+                })
+                    .then(response => {
+                        statusLabel = response.data
+                    })
+                    .catch(error => {
+                        console.error('錯誤:', error);
+                        alert('更新失敗！');
+                    });
+            }
+
+        });
+       
+    </script>
+}

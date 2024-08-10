@@ -3,43 +3,67 @@
 using System;
 using System.Collections.Generic;
 
-namespace HotelAPI.Models;
+namespace Tailstale.Models;
 
-public partial class Business
+public partial class business
 {
-    public int Id { get; set; }
+    public int ID { get; set; }
 
-    public string Password { get; set; }
+    public string password { get; set; }
 
-    public int? TypeId { get; set; }
+    public string salt { get; set; }
 
-    public string Name { get; set; }
+    public int? type_ID { get; set; }
 
-    public string Email { get; set; }
+    public string name { get; set; }
 
-    public string Phone { get; set; }
+    public string email { get; set; }
 
-    public string Address { get; set; }
+    public string phone { get; set; }
 
-    public string GeoJson { get; set; }
+    public string address { get; set; }
 
-    public string LicenseNumber { get; set; }
+    public string geoJson { get; set; }
 
-    public int FkStatusId { get; set; }
+    public string license_number { get; set; }
 
-    public string PhotoUrl { get; set; }
+    public int? business_status { get; set; }
 
-    public DateTime? CreatedAt { get; set; }
+    public string description { get; set; }
+
+    public string photo_url { get; set; }
+
+    public DateTime? created_at { get; set; }
+
+    public virtual ICollection<Beautician> Beauticians { get; set; } = new List<Beautician>();
 
     public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 
-    public virtual ICollection<BusinessHour> BusinessHours { get; set; } = new List<BusinessHour>();
+    public virtual ICollection<Business_hour> Business_hours { get; set; } = new List<Business_hour>();
 
-    public virtual ICollection<BusinessImgType> BusinessImgTypes { get; set; } = new List<BusinessImgType>();
+    public virtual ICollection<Consumption_Record> Consumption_Records { get; set; } = new List<Consumption_Record>();
 
     public virtual ICollection<PaymentInfo> PaymentInfos { get; set; } = new List<PaymentInfo>();
 
+    public virtual ICollection<Reserve> Reserves { get; set; } = new List<Reserve>();
+
     public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();
 
-    public virtual BusinessType Type { get; set; }
+    public virtual ICollection<Service> Services { get; set; } = new List<Service>();
+
+    public virtual ICollection<business_img_type> business_img_types { get; set; } = new List<business_img_type>();
+
+    public virtual member_status business_statusNavigation { get; set; }
+
+    public virtual ICollection<department> departments { get; set; } = new List<department>();
+
+    public virtual ICollection<memo> memos { get; set; } = new List<memo>();
+
+    public virtual ICollection<roomType> roomTypes { get; set; } = new List<roomType>();
+
+    public virtual business_type type { get; set; }
+
+    public virtual ICollection<vet_information> vet_informations { get; set; } = new List<vet_information>();
+
+    public virtual ICollection<ward> wards { get; set; } = new List<ward>();
 }

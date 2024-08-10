@@ -1,1 +1,705 @@
-﻿searchroom
+﻿@model IEnumerable<Tailstale.Hotel_DTO.FindRoomResultDTO>
+
+ @section Styles{
+    @*  <link href="~/css/newnumberspinner.min.css" rel="stylesheet" /> *@
+    <link href="~/css/newnumberspinner2.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link href="~/css/searchbar.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #f5f7fd;
+        }
+
+        th{
+            text-align: center;
+        }
+        td{
+            
+            text-align: center;
+            justify-content: center;
+            justify-items:center;
+            align-content:center;
+            align-items: center;
+        }
+        .imgblock{
+            height: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+        }
+        div img{
+            height: 100%;
+            width: auto;
+        }
+
+        .ctrl {
+            width: 100% !important;
+        }
+        
+    </style>
+   
+
+}
+
+
+@{
+    int imgCount = 0; // 預設值
+    if (ViewBag.ImageList != null)
+    {
+        imgCount = Math.Max(0, ViewBag.ImageList.Count - 5);
+    }
+}
+
+<div class="container">
+    <div class="row m-0 p-0">
+        @* <input class="form-control" placeholder="你要去哪裡" type="text" id="destination" name="destination" />
+        <input class="form-control dateRange" type="text" placeholder="日期範圍" /> *@
+        <div class="col-3">
+            <input class="form-control" placeholder="搜尋附近旅館" type="text" id="destination" name="destination" />
+        </div>
+        <div class="col-3 col-md-10">
+            <input class="form-control dateRange" style="text-align:center;" type="text" placeholder="日期範圍" value="" />
+        </div>
+        <div class="col-3 searchCookie" style="position:relative;">
+            <input type="button" id="showCatDog" class="form-control" value="@ViewBag.GetCookie.cat 貓 @ViewBag.GetCookie.dog 狗" aria-label="人數" style="width: 100%;">
+            <div class="cookie-card" style="display: none; position: absolute; background: white; border: 1px solid #ccc; padding: 10px; z-index: 10;width:100%;">
+                <div class="row mb-2">
+                    <div class="col-4 pe-2"><span>貓</span></div>
+                    <div class="roomA col-8">
+                        <div class='ctrl'>
+                            <div class='ctrl__button ctrl__button--decrement'>&ndash;</div>
+                            <div class='ctrl__counter'>
+                                <input class='ctrl__counter-input' id="Cat" maxlength='2' type='text' value='@ViewBag.GetCookie.cat' max="5">
+                                <div class='ctrl__counter-num'>@ViewBag.GetCookie.cat</div>
+                            </div>
+                            <div class='ctrl__button ctrl__button--increment'>+</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="height:1px"></div>
+                <div class="row">
+                    <div class="col-4 pe-2"><span>狗</span></div>
+                    <div class="roomA col-8">
+                        <div class='ctrl'>
+                            <div class='ctrl__button ctrl__button--decrement'>&ndash;</div>
+                            <div class='ctrl__counter'>
+                                <input class='ctrl__counter-input' value='@ViewBag.GetCookie.dog' id="Dog" maxlength='2' type='text' value='0' max="5">
+                                <div class='ctrl__counter-num'>@ViewBag.GetCookie.dog</div>
+                            </div>
+                            <div class='ctrl__button ctrl__button--increment'>+</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="actions" style="width:100%;">
+                        <button class="accept">
+                            完成
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-3">
+            <button class="btn btn-primary p-1" id="bt" style="font-size:18px;height:100%;width:50%">搜尋</button>
+        </div>
+    </div>
+
+    <!--飯店資料-->
+    <div class="row m-4 p-0" style="font-size:30px;line-height:auto;">
+        <div><i class="fa-regular fa-thumbs-up fa-lg" style="color: #64aa70;"></i></i></div>
+        <div>@ViewBag.SelectedHotel.hotelname</div>
+        <div style="font-size:18px;"><i class="fa-solid fa-location-dot"></i>@ViewBag.SelectedHotel.hotelAddress</div>
+    </div>
+
+
+
+    @if (imgCount > 0)
+    {
+        <!-- 先載入的5張圖 開始-->
+        <div class="row" style="height: 300px; position: relative;">
+                <!-- 設定行的高度 -->
+                <div class="col-6" style="height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                    <img src="~/@ViewBag.ImageList[0]" alt="" style="width: 100%; height: auto; object-fit: cover;">
+                </div>
+
+                <div class="col-3" style="height: 100%;">
+                    <div class="col imgblock" style="height: 50%; overflow: hidden;">
+                        <img src="~/@ViewBag.ImageList[1]" alt="" style="width: 100%; height: auto; object-fit: cover;">
+                    </div>
+                    <div class="col imgblock" style="height: 50%; overflow: hidden;">
+                        <img src="~/@ViewBag.ImageList[2]" alt="" style="width: 100%; height: auto; object-fit: cover;">
+                    </div>
+                </div>
+
+                <div class="col-3" style="height: 100%; position: relative;">
+                    <div class="imgblock" style="height: 50%; overflow: hidden;">
+                        <img src="~/@ViewBag.ImageList[3]" alt="" style="width: 100%; height: auto; object-fit: cover;">
+                    </div>
+                    <div class="imgblock myModal" style="height: 50%; position: relative; overflow: hidden;" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <img src="~/@ViewBag.ImageList[4]" alt="" style="width: 100%; height: auto; object-fit: cover;">
+                        <div class="bg-mask" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(161, 161, 161, 0.5); display: flex; align-items: center; justify-content: center;">
+                            <span style="color: white; font-size: 20px;">+@imgCount 相片</span>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+        <!-- 先載入的5張圖 結束-->
+        <!-- 剩下的圖用modal顯示 開始-->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-indicators">
+                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                            </div>
+                            <div class="carousel-inner">
+                                @for (int i = 5; i < ViewBag.ImageList.Count; i++)
+                                {
+                                    var activeClass = (i == 5) ? "active" : "";
+                                    <div class="carousel-item @activeClass">
+                                        <img src="~/@ViewBag.ImageList[i]" class="d-block w-100" alt="...">
+                                        <div class="carousel-caption d-none d-md-block">
+                                            <h5 style="margin: 0;">Slide @i</h5>
+                                        </div>
+                                    </div>
+                                }
+
+                            </div>
+
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- 剩下的圖用modal顯示 結束-->
+    }
+    else
+    {
+        <div>沒有足夠的圖片可顯示。</div>
+    }
+</div>
+
+
+<div style="height:20px;"></div>
+<div class="container">
+    
+    <div class="row">
+        <table class="table">
+            <div class="container mt-2">
+                <div class="d-flex flex-wrap">
+                    <div class="col-8 pe-2" style="height:100%;">
+                        <div class="card" style="height:100%;">
+                            <div class="card-header row m-0 p-0">所有可預訂的房間</div>
+                            
+                            <ul class="list-group list-group-flush">
+                                @foreach (var room in Model)
+                                {
+                                    <li class="list-group-item mycard m-0 p-0" style="height:100%;">
+                                        <div class="row " style="height:100%;">
+                                            <div class="col-5 border-end">
+                                                <div class="roomN">
+                                                    <a href="#">@room.roomType.roomType1</a>
+                                                </div>
+                                                <div class="roomSpe" style="background-color: #66b3ff; border-radius: 1px">
+                                                    適合寵物類型: @room.roomSpecies
+                                                </div>
+                                                <div>@room.roomDescription</div>
+                                                <div hidden class="roomID">@room.roomID</div>
+                                            </div>
+                                            <div class="col-2 border-end">
+                                                <div class="roomPrice">@String.Format("{0:N0}", room.roomPrice)</div>
+                                            </div>
+                                            <div class="col-2 border-end">
+                                                <div style="display: flex;align-items:center;justify-content:center" class="roomA">
+                                                    <div class="w-100 bg-danger getQuantity" style="max-width:150px;">
+                                                        <div class='ctrl'>
+                                                            <div class='ctrl__button ctrl__button--decrement'>&ndash;</div>
+                                                            <div class='ctrl__counter'>
+                                                                <input class='ctrl__counter-input myQuantity' maxlength='@room.roomReserve' type='text' value='0'>
+                                                                <div class='ctrl__counter-num'>0</div>
+                                                            </div>
+                                                            <div class='ctrl__button ctrl__button--increment'>+</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-3 ">
+
+                                                <div>@ViewBag.totalDays 晚</div>
+                                                <div class="roomPriceinCLass">0</div>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                }
+
+
+                            </ul>
+
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="card" style="font-size:30px;">
+                            <div class="card-header row m-0 p-0">總價格</div>
+                            <div class="row m-0 b-0 border-end border-bottom" style="max-height: 100%;">
+                                <div>@ViewBag.totalDays 晚</div>
+                                <div><strong class="Total">0元</strong></div>
+                                <div class="w-100" style="justify-content: center;align-items: center"><button id="btBooking" class="btn btn-primary">立即預定</button></div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/js/numberspinner.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="~/js/searchbar.min.js"></script>
+    <script>
+        // $(document).ready(function () {
+        //     // 從 ViewBag 中獲取資料
+        //     var startDate = "@ViewBag.GetCookie.startdate"; // 取得開始日期
+        //     var endDate = "@ViewBag.GetCookie.enddate"; // 取得結束日期
+
+        //     // 檢查是否有有效的日期範圍
+        //     if (startDate && endDate) {
+        //         $(".dateRange").val(startDate + " ~ " + endDate);
+        //     } else {
+        //         var today = moment().format("YYYY-MM-DD");
+        //         $(".dateRange").val(today + " ~ " + today);
+        //     }
+
+        //     // 初始化日期範圍選擇器
+        //     $("input.dateRange").daterangepicker({
+        //         opens: "left",
+        //         showDropdowns: true,
+        //         startDate: startDate ? moment(startDate) : moment(),
+        //         endDate: endDate ? moment(endDate) : moment(),
+        //         autoApply: true,
+        //         locale: {
+        //             format: "YYYY-MM-DD",
+        //             separator: " ~ ",
+        //             daysOfWeek: ["日", "一", "二", "三", "四", "五", "六"],
+        //             monthNames: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+        //             firstDay: 1
+        //         }
+        //     });
+        // });
+    </script>
+    <script>
+        $(document).ready(function () {
+            var baseAddress = "https://localhost:7112/";
+            document.querySelectorAll('.mycard .roomN').forEach(function (roomN) {
+                roomN.addEventListener('click', function () {
+                    const roomSpe = this.closest('.mycard').querySelector('.roomSpe').textContent;
+                    const roomName = this.closest('.mycard').querySelector('.roomN').textContent;
+                    // 獲取父行的 roomID
+                    const ID = this.closest('.mycard').querySelector('.roomID').textContent;
+                    var getvalue = parseInt(ID);
+                    console.log(getvalue);
+                    axios({
+                        method: 'post',
+                        url: `${baseAddress}Hotels/SearchImageByRoomID`,
+                        data: getvalue,
+                        headers: { 'Content-Type': 'application/json' }
+                    })
+                        .then(function (response) {
+                           // alert(response.data);
+                            //const imageUrls = response.data; // 根據實際回傳的資料結構調整
+                            const imageUrls = response.data.map(image => `${baseAddress}${image}`);
+                            const carouselItems = imageUrls.map((url, index) => `
+                            <div class="carousel-item ${index === 0 ? 'active' : ''}">
+                                <img src="${url}" class="d-block w-100" alt="Room Image" onerror="this.style.display='none'">
+                            </div>
+                        `).join('');
+
+                            const modalHtml = `
+                            <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                                    <h5 class="modal-title" id="imageModalLabel">${roomSpe}-${roomName}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+                                                <div class="carousel-inner">
+                                                    ${carouselItems}
+                                                </div>
+                                                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                    <span class="visually-hidden">Previous</span>
+                                                </button>
+                                                <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                    <span class="visually-hidden">Next</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+
+                           
+                            // 動態生成 modal 結構
+                        //     const modalHtml = `
+                        //     <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                        //         <div class="modal-dialog">
+                        //             <div class="modal-content">
+                        //                 <div class="modal-header">
+                        //                             <h5 class="modal-title" id="imageModalLabel">${roomSpe}-${roomName}</h5>
+                        //                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        //                 </div>
+                        //                 <div class="modal-body">
+                        //                                         ${imageUrls.map(url => `<img src="${url}" alt="" class="img-fluid mb-2" onerror="this.style.display='none'">`).join('')}
+                        //                 </div>
+                        //             </div>
+                        //         </div>
+                        //     </div>
+                        // `;
+
+                            // 將 modal 結構插入到 body 中
+                            document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+                            // 顯示 modal
+                            const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+                            modal.show();
+
+                            // 在 modal 關閉後移除它
+                            document.getElementById('imageModal').addEventListener('hidden.bs.modal', function () {
+                                this.remove();
+                            });
+                        })
+                        .catch(err => {
+                            alert(err)
+                        });
+                });
+
+            });
+            var TotalRoomPrice = document.querySelector('.Total');
+            var TotalValue = 0;
+
+            var totalDay = parseInt("@ViewBag.totalDays") || 0;
+            //計算房價開始
+
+            function formatNumber(num) {
+                return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+
+            
+            function updateAddTotalPrice() {
+                TotalValue = 0; // 重置總價格
+                document.querySelectorAll('.mycard').forEach(mycard => {
+                    const roomPrice = parseInt(mycard.querySelector('.roomPrice').textContent.replace(/,/g, ""));
+                    const input = mycard.querySelector('.ctrl__counter-input');
+                    var value = parseInt(input.value) || 0; // 使用 input.value 而非 jQuery 的 val()
+                    TotalValue += roomPrice * value * totalDay; // 累加每個房間的價格
+                });
+                var getConvertTotal = formatNumber(TotalValue);
+                TotalRoomPrice.textContent = `${getConvertTotal} 元`; // 更新總價格顯示
+            };
+
+            function updateMinusTotalPrice(num) {
+                // 重置總價格
+                TotalValue = parseInt(TotalRoomPrice.textContent.replace(/,/g, ""));
+                TotalValue -= num;
+                // document.querySelectorAll('.mycard').forEach(mycard => {
+                //     const roomPrice = parseInt(mycard.querySelector('.roomPrice').textContent);
+                //     const input = mycard.querySelector('.ctrl__counter-input');
+                //     var value = parseInt(input.value) || 0; // 使用 input.value 而非 jQuery 的 val()
+                //      // 累加每個房間的價格
+                // });
+                var getConvertTotal = formatNumber(TotalValue);
+                if (TotalValue<=0){
+                    TotalRoomPrice.textContent = "0元";
+                }
+                else{
+                    TotalRoomPrice.textContent = `${getConvertTotal} 元`; // 更新總價格顯示
+                }
+                
+            };
+            //加
+            document.querySelectorAll('.mycard .ctrl__button--increment').forEach(button => {
+                button.addEventListener('click', function () {
+                    const mycard = this.closest('.mycard');
+                  //  const result = str.replace(/,/g, "");
+                    const roomPrice = parseInt(mycard.querySelector('.roomPrice').textContent.replace(/,/g, ""));
+                    const input = mycard.querySelector('.ctrl__counter-input');
+                    var value = parseInt(input.value) || 0; // 使用 input.value 而非 jQuery 的 val()
+                    var total = 0;
+                    total = roomPrice * value * totalDay;
+                    const showRoomPrice = mycard.querySelector('.roomPriceinCLass');
+                    var getConvertTotal = formatNumber(total);
+                    showRoomPrice.textContent = `${getConvertTotal} 元`; // 更新顯示的價格
+                    updateAddTotalPrice();
+                });
+            });
+            //減
+            document.querySelectorAll('.mycard .ctrl__button--decrement').forEach(button => {
+                button.addEventListener('click', function () {
+                    const mycard = this.closest('.mycard');
+
+                    const roomPrice = parseInt(mycard.querySelector('.roomPrice').textContent.replace(/,/g, ""));
+                    const showRoomPrice = mycard.querySelector('.roomPriceinCLass');
+                    const showRoomPriceValue = parseInt(showRoomPrice.textContent.replace(/,/g, ""));
+                    const input = mycard.querySelector('.ctrl__counter-input');
+                    const value = parseInt(input.value) || 0; // 使用 input.value 而非 jQuery 的 val()
+                  
+                    if (value <= 0) {
+                       
+                        showRoomPrice.textContent = "";
+                       // showRoomPrice.style('display:none');
+                    }
+                    else{
+
+                        const total = showRoomPriceValue - (roomPrice * totalDay);
+                        var getConvertTotal = formatNumber(total);
+                        showRoomPrice.textContent = `${getConvertTotal} 元`; // 更新顯示的價格
+                       
+                    }
+                    updateMinusTotalPrice(roomPrice * totalDay);
+                    
+                });
+            });
+
+           
+            var startDate = "@ViewBag.GetCookie.startdate"; // 取得開始日期
+            var endDate = "@ViewBag.GetCookie.enddate"; // 取得結束日期
+
+            // 檢查是否有有效的日期範圍
+            if (startDate && endDate) {
+                $(".dateRange").val(startDate + " ~ " + endDate);
+            } else {
+                var today = moment().format("YYYY-MM-DD");
+                $(".dateRange").val(today + " ~ " + today);
+            }
+
+            // 初始化日期範圍選擇器
+            $("input.dateRange").daterangepicker({
+                opens: "left",
+                showDropdowns: true,
+                startDate: startDate ? moment(startDate) : moment(),
+                endDate: endDate ? moment(endDate) : moment(),
+                autoApply: true,
+                locale: {
+                    format: "YYYY-MM-DD",
+                    separator: " ~ ",
+                    daysOfWeek: ["日", "一", "二", "三", "四", "五", "六"],
+                    monthNames: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+                    firstDay: 1
+                }
+            });
+
+            $("#btBooking").on('click', function () {
+                const roomList = [];
+                const card = document.querySelectorAll(".mycard");
+                var roomCount = 0;
+
+                card.forEach(row => {
+                    const input = row.querySelector('.roomA input');
+                    var getvalue = parseInt(input.value);
+                    if (getvalue > 0) {
+                        const a = row.querySelector('.roomID').textContent;
+                        roomList.push({ "RoomId": a, "RoomQuantity": getvalue });
+                        console.log(getvalue);
+
+                        roomCount += getvalue;
+                    }
+                });
+                // console.log(roomList);
+                // console.log(roomCount);
+                if (roomCount > 0) {
+                    // axios.post(`${baseAddress}Hotels/CreateCheckinDeTails`, roomList, {
+                    //     headers: { 'Content-Type': 'application/json' }
+                    // });
+                    axios.post(`${baseAddress}Hotels/CreateCheckinDeTails`, roomList, {
+                        headers: { 'Content-Type': 'application/json' }
+                    })
+                        .then(function (response) {
+                            window.location.href = `/Hotels/CreateCheckinDeTailShow`;
+                            //window.local.href = `/Hotels/CreateCheckinDeTailShow`
+                        })
+                        .catch(err => {
+                            alert(err)
+                        });
+                } else {
+                    console.log("沒roomcount");
+                }
+
+
+
+            });
+
+        });
+       
+        
+    </script>  
+   
+
+   
+    <script>
+      //  var baseAddress = "https://localhost:7112/";
+        
+
+        // $("#bt").on('click', function () {
+        //     const roomList = [];
+        //     const card = document.querySelectorAll(".card");
+        //     var roomCount = 0;
+
+        //     card.forEach(row => {
+        //         const input = row.querySelector('.roomA input');
+        //         var getvalue = parseInt(input.value);
+        //         if (getvalue > 0) {
+        //             const a = row.querySelector('.roomID').textContent;
+        //             roomList.push({ "RoomID": a, "Quantity": getvalue });
+        //             console.log(getvalue);
+                    
+        //             roomCount += getvalue;
+        //         }
+        //     });
+        //     console.log(roomList);
+        //     console.log(roomCount);
+        //     if (roomCount > 0) {
+        //         // const form = document.createElement('form');
+        //         // form.method = 'POST';
+        //         // form.action = '/Hotels/CreateCheckinDeTails';
+        //         // for (var i = 0; i < roomList.length;i++){
+        //         //     var item = roomList[i];
+        //         //     var input = document.createElement('input');
+        //         //     var input2 = document.createElement('input');
+        //         //     input.type = 'number';
+        //         //     input.name = 'RoomId';
+        //         //     input.value = item.RoomID;
+        //         //     form.appendChild(input);
+
+        //         //     input.type = 'number';
+        //         //     input.name = 'RoomQuantity';
+        //         //     input.value = item.Quantity;
+        //         //     form.appendChild(input2);
+        //         // }
+
+           
+               
+
+        //         // // 添加需要傳遞的數據
+        //         // const roomCountInput1 = document.createElement('input');
+        //         // const roomCountInput2 = document.createElement('input');
+        //         // const roomCountInput3 = document.createElement('input');
+                
+        //         // roomCountInput1.type = 'number';
+        //         // roomCountInput1.name = 'RoomCount';
+        //         // roomCountInput1.value = roomCount;
+        //         // form.appendChild(roomCountInput1);
+
+        //         // roomCountInput2.type = 'number';
+        //         // roomCountInput2.name = 'RoomId';
+        //         // roomCountInput2.value = parseInt(roomList.RoomID);
+        //         // form.appendChild(roomCountInput2);
+
+        //         // roomCountInput3.type = 'number';
+        //         // roomCountInput3.name = 'RoomQuantity';
+        //         // roomCountInput3.value = parseInt(roomList.Quantity);
+        //         // form.appendChild(roomCountInput3);
+                
+        //         // // 將表單添加到文檔中並提交
+        //         // document.body.appendChild(form);
+        //         // form.submit();
+        //         // console.log(roomCountInput2.value);
+        //         axios.get(`${baseAddress}Hotels/CreateCheckinDeTails`, roomList, {
+        //             headers: { 'Content-Type': 'application/json' }
+        //         })
+        //             .then(function (response) {
+        //                 alert(123);
+        //                 //window.local.href = `/Hotels/CreateCheckinDeTails`
+        //             })
+        //             .catch(err => {
+        //                 alert(err)
+        //             });
+
+        //         //window.local.href = `/Hotels/CreateCheckinDeTails`;
+
+
+               
+        //     } else {
+        //         console.log("沒roomcount");
+        //     }
+
+
+
+        // });
+        // $("#bt").on('click', function () {
+        //     const roomID = [];
+        //     const card = document.querySelectorAll(".card");
+        //     var roomCount=0;
+            
+        //     card.forEach(row => function () {
+        //         const input = row.querySelector('td .roomA');
+        //         var getvalue = parseInt(input.value, 10);
+        //         if (getvalue > 0) {
+        //             const a = row.querySelector('.roomID').textContent;
+        //             roomID.push(a);
+        //             console.log(getvalue);
+        //             roomCount += getvalue;
+        //         }
+        //     });
+        //     if (roomCount > 0) {
+                // axios.post('https://localhost:7112/Hotels/CreateCheckinDeTails', roomCount, {
+                //     headers: { 'Content-Type': 'application/json' }
+                // })
+                //     .then(function (response) {
+                //         alert(123);
+                //     })
+                //     .catch(err => {
+                //         alert(err)
+                //     });
+
+        //     }
+        //     else {
+        //         console.log("沒roomcount")
+        //     }
+        //     // card.forEach(row => {
+        //     //     const input = row.querySelector('td input[type="number"]');
+        //     //     const getvalue = parseInt(input.value, 10);
+        //     //     if(getvalue>0){
+        //     //         const a = row.querySelector('.roomID').textContent;
+        //     //         roomID.push(a);
+        //     //     }
+        //     // });
+        //     //console.log(roomID);
+
+           
+            
+        // });
+    </script>
+}

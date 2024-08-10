@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace HotelAPI.Models;
+namespace Tailstale.Models;
 
 public partial class TailstaleContext : DbContext
 {
@@ -13,414 +13,1123 @@ public partial class TailstaleContext : DbContext
     {
     }
 
+    public virtual DbSet<Appointment> Appointments { get; set; }
+
+    public virtual DbSet<Beautician> Beauticians { get; set; }
+
     public virtual DbSet<Booking> Bookings { get; set; }
 
     public virtual DbSet<BookingDetail> BookingDetails { get; set; }
 
-    public virtual DbSet<Business> Businesses { get; set; }
-
-    public virtual DbSet<BusinessHour> BusinessHours { get; set; }
-
-    public virtual DbSet<BusinessImg> BusinessImgs { get; set; }
-
-    public virtual DbSet<BusinessImgType> BusinessImgTypes { get; set; }
-
-    public virtual DbSet<BusinessType> BusinessTypes { get; set; }
+    public virtual DbSet<Business_hour> Business_hours { get; set; }
 
     public virtual DbSet<CheckinDetail> CheckinDetails { get; set; }
 
-    public virtual DbSet<Keeper> Keepers { get; set; }
+    public virtual DbSet<Consumption_Record> Consumption_Records { get; set; }
 
-    public virtual DbSet<KeeperImg> KeeperImgs { get; set; }
-
-    public virtual DbSet<KeeperImgType> KeeperImgTypes { get; set; }
-
-    public virtual DbSet<OrderStatus> OrderStatuses { get; set; }
+    public virtual DbSet<Message> Messages { get; set; }
 
     public virtual DbSet<PaymentInfo> PaymentInfos { get; set; }
+
+    public virtual DbSet<Reserve> Reserves { get; set; }
 
     public virtual DbSet<Review> Reviews { get; set; }
 
     public virtual DbSet<Room> Rooms { get; set; }
 
+    public virtual DbSet<Service> Services { get; set; }
+
+    public virtual DbSet<article> articles { get; set; }
+
+    public virtual DbSet<biological_test> biological_tests { get; set; }
+
+    public virtual DbSet<business> businesses { get; set; }
+
+    public virtual DbSet<business_img> business_imgs { get; set; }
+
+    public virtual DbSet<business_img_type> business_img_types { get; set; }
+
+    public virtual DbSet<business_type> business_types { get; set; }
+
+    public virtual DbSet<daily_outpatient_clinic_schedule> daily_outpatient_clinic_schedules { get; set; }
+
+    public virtual DbSet<department> departments { get; set; }
+
+    public virtual DbSet<dosage_form> dosage_forms { get; set; }
+
+    public virtual DbSet<frequency> frequencies { get; set; }
+
+    public virtual DbSet<hosp_history> hosp_histories { get; set; }
+
+    public virtual DbSet<image_file> image_files { get; set; }
+
+    public virtual DbSet<keeper> keepers { get; set; }
+
+    public virtual DbSet<keeper_img> keeper_imgs { get; set; }
+
+    public virtual DbSet<keeper_img_type> keeper_img_types { get; set; }
+
+    public virtual DbSet<medical_imaging> medical_imagings { get; set; }
+
+    public virtual DbSet<medical_record> medical_records { get; set; }
+
+    public virtual DbSet<medicine> medicines { get; set; }
+
+    public virtual DbSet<medicine_order_record> medicine_order_records { get; set; }
+
+    public virtual DbSet<medicine_order_status> medicine_order_statuses { get; set; }
+
+    public virtual DbSet<member_status> member_statuses { get; set; }
+
+    public virtual DbSet<memo> memos { get; set; }
+
+    public virtual DbSet<nursing_record> nursing_records { get; set; }
+
+    public virtual DbSet<order_status> order_statuses { get; set; }
+
+    public virtual DbSet<outpatient_clinic> outpatient_clinics { get; set; }
+
+    public virtual DbSet<outpatient_clinic_timeslot> outpatient_clinic_timeslots { get; set; }
+
+    public virtual DbSet<person_tag> person_tags { get; set; }
+
+    public virtual DbSet<pet> pets { get; set; }
+
+    public virtual DbSet<pet_type> pet_types { get; set; }
+
+    public virtual DbSet<record_type> record_types { get; set; }
+
+    public virtual DbSet<roomType> roomTypes { get; set; }
+
+    public virtual DbSet<speciman> specimen { get; set; }
+
+    public virtual DbSet<surgery> surgeries { get; set; }
+
+    public virtual DbSet<tag> tags { get; set; }
+
+    public virtual DbSet<using_person_tag> using_person_tags { get; set; }
+
+    public virtual DbSet<using_tag> using_tags { get; set; }
+
+    public virtual DbSet<vet_information> vet_informations { get; set; }
+
+    public virtual DbSet<vital_sign_record> vital_sign_records { get; set; }
+
+    public virtual DbSet<ward> wards { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Appointment>(entity =>
+        {
+            entity.HasKey(e => e.Appointment_ID).HasName("PK__Appointm__FD01B503567D0375");
+
+            entity.ToTable("Appointment");
+
+            entity.Property(e => e.registration_time)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.Appointment_statusNavigation).WithMany(p => p.Appointments)
+                .HasForeignKey(d => d.Appointment_status)
+                .HasConstraintName("FK__Appointme__Appoi__02FC7413");
+
+            entity.HasOne(d => d.daily_outpatient_clinic_schedule).WithMany(p => p.Appointments)
+                .HasForeignKey(d => d.daily_outpatient_clinic_schedule_ID)
+                .HasConstraintName("FK__Appointme__daily__02084FDA");
+
+            entity.HasOne(d => d.keeper).WithMany(p => p.Appointments)
+                .HasForeignKey(d => d.keeper_ID)
+                .HasConstraintName("FK__Appointme__keepe__00200768");
+
+            entity.HasOne(d => d.pet).WithMany(p => p.Appointments)
+                .HasForeignKey(d => d.pet_ID)
+                .HasConstraintName("FK__Appointme__pet_I__7F2BE32F");
+        });
+
+        modelBuilder.Entity<Beautician>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("PK__Beautici__3213E83FB241909D");
+
+            entity.ToTable("Beautician");
+
+            entity.Property(e => e.Highest_license).HasMaxLength(255);
+            entity.Property(e => e.Remark).HasMaxLength(300);
+            entity.Property(e => e.gender)
+                .IsRequired()
+                .HasMaxLength(3);
+            entity.Property(e => e.name)
+                .IsRequired()
+                .HasMaxLength(30);
+            entity.Property(e => e.phone)
+                .IsRequired()
+                .HasMaxLength(16);
+            entity.Property(e => e.photo).HasMaxLength(255);
+
+            entity.HasOne(d => d.business).WithMany(p => p.Beauticians)
+                .HasForeignKey(d => d.business_ID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Beauticia__busin__6BE40491");
+        });
+
         modelBuilder.Entity<Booking>(entity =>
         {
-            entity.HasKey(e => e.BookingId).HasName("PK__Booking__C6D03BED0A0DCEB4");
+            entity.HasKey(e => e.bookingID).HasName("PK__Booking__C6D03BED589D12C2");
 
             entity.ToTable("Booking");
 
-            entity.Property(e => e.BookingId).HasColumnName("bookingID");
-            entity.Property(e => e.BookingAmountTotal).HasColumnName("bookingAmountTotal");
-            entity.Property(e => e.BookingDate)
-                .HasColumnType("datetime")
-                .HasColumnName("bookingDate");
-            entity.Property(e => e.BookingStatus)
-                .HasMaxLength(10)
-                .HasColumnName("bookingStatus");
-            entity.Property(e => e.CheckinDate)
-                .HasColumnType("datetime")
-                .HasColumnName("checkinDate");
-            entity.Property(e => e.CheckoutDate)
-                .HasColumnType("datetime")
-                .HasColumnName("checkoutDate");
-            entity.Property(e => e.HotelId).HasColumnName("hotelID");
-            entity.Property(e => e.KeeperId).HasColumnName("keeper_ID");
+            entity.Property(e => e.bookingDate).HasColumnType("datetime");
+            entity.Property(e => e.checkinDate).HasColumnType("datetime");
+            entity.Property(e => e.checkoutDate).HasColumnType("datetime");
 
-            entity.HasOne(d => d.Hotel).WithMany(p => p.Bookings)
-                .HasForeignKey(d => d.HotelId)
-                .HasConstraintName("FK__Booking__hotelID__1332DBDC");
+            entity.HasOne(d => d.bookingStatusNavigation).WithMany(p => p.Bookings)
+                .HasForeignKey(d => d.bookingStatus)
+                .HasConstraintName("FK__Booking__booking__4B7734FF");
 
-            entity.HasOne(d => d.Keeper).WithMany(p => p.Bookings)
-                .HasForeignKey(d => d.KeeperId)
-                .HasConstraintName("FK__Booking__keeper___14270015");
+            entity.HasOne(d => d.hotel).WithMany(p => p.Bookings)
+                .HasForeignKey(d => d.hotelID)
+                .HasConstraintName("FK__Booking__hotelID__498EEC8D");
+
+            entity.HasOne(d => d.keeper).WithMany(p => p.Bookings)
+                .HasForeignKey(d => d.keeper_ID)
+                .HasConstraintName("FK__Booking__keeper___4A8310C6");
         });
 
         modelBuilder.Entity<BookingDetail>(entity =>
         {
-            entity.HasKey(e => e.BdId).HasName("PK__BookingD__4E75390F72306C88");
+            entity.HasKey(e => e.bdID).HasName("PK__BookingD__4E75390F5CCC72F7");
 
-            entity.Property(e => e.BdId).HasColumnName("bdID");
-            entity.Property(e => e.BdAmount).HasColumnName("bdAmount");
-            entity.Property(e => e.BdTotal).HasColumnName("bdTotal");
-            entity.Property(e => e.BookingId).HasColumnName("bookingID");
-            entity.Property(e => e.RoomId).HasColumnName("roomID");
+            entity.HasOne(d => d.booking).WithMany(p => p.BookingDetails)
+                .HasForeignKey(d => d.bookingID)
+                .HasConstraintName("FK__BookingDe__booki__4D5F7D71");
 
-            entity.HasOne(d => d.Booking).WithMany(p => p.BookingDetails)
-                .HasForeignKey(d => d.BookingId)
-                .HasConstraintName("FK__BookingDe__booki__160F4887");
-
-            entity.HasOne(d => d.Room).WithMany(p => p.BookingDetails)
-                .HasForeignKey(d => d.RoomId)
-                .HasConstraintName("FK__BookingDe__roomI__151B244E");
+            entity.HasOne(d => d.room).WithMany(p => p.BookingDetails)
+                .HasForeignKey(d => d.roomID)
+                .HasConstraintName("FK__BookingDe__roomI__4C6B5938");
         });
 
-        modelBuilder.Entity<Business>(entity =>
+        modelBuilder.Entity<Business_hour>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__business__3214EC27F475DEA8");
+            entity.HasKey(e => e.id).HasName("PK__Business__3213E83F6CA17C7E");
 
-            entity.ToTable("business");
+            entity.ToTable("Business_hour");
 
-            entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.Address)
-                .HasMaxLength(200)
-                .HasDefaultValue("???")
-                .HasColumnName("address");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
-            entity.Property(e => e.Email)
-                .HasMaxLength(100)
-                .HasDefaultValue("???")
-                .HasColumnName("email");
-            entity.Property(e => e.FkStatusId).HasColumnName("FK_status_ID");
-            entity.Property(e => e.GeoJson)
-                .HasDefaultValue("???")
-                .HasColumnName("geoJson");
-            entity.Property(e => e.LicenseNumber)
-                .HasMaxLength(50)
-                .HasDefaultValue("???")
-                .HasColumnName("license_number");
-            entity.Property(e => e.Name)
-                .IsRequired()
-                .HasMaxLength(100)
-                .HasColumnName("name");
-            entity.Property(e => e.Password)
-                .IsRequired()
-                .HasMaxLength(100)
-                .HasColumnName("password");
-            entity.Property(e => e.Phone)
-                .HasMaxLength(30)
-                .HasDefaultValue("???")
-                .HasColumnName("phone");
-            entity.Property(e => e.PhotoUrl)
-                .HasMaxLength(200)
-                .HasColumnName("photo_url");
-            entity.Property(e => e.TypeId).HasColumnName("type_ID");
+            entity.Property(e => e.close_time).HasDefaultValue(new TimeOnly(19, 0, 0));
+            entity.Property(e => e.open_time).HasDefaultValue(new TimeOnly(10, 0, 0));
+            entity.Property(e => e.people_limit).HasDefaultValue(2);
 
-            entity.HasOne(d => d.Type).WithMany(p => p.Businesses)
-                .HasForeignKey(d => d.TypeId)
-                .HasConstraintName("FK__business__type_I__398D8EEE");
-        });
-
-        modelBuilder.Entity<BusinessHour>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Business__3213E83F3C1A26EC");
-
-            entity.ToTable("Business_hours");
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.BusinessDay).HasColumnName("business_day");
-            entity.Property(e => e.BusinessId).HasColumnName("business_ID");
-            entity.Property(e => e.PeopleLimit)
-                .HasDefaultValue(2)
-                .HasColumnName("people_limit");
-
-            entity.HasOne(d => d.Business).WithMany(p => p.BusinessHours)
-                .HasForeignKey(d => d.BusinessId)
+            entity.HasOne(d => d.business).WithMany(p => p.Business_hours)
+                .HasForeignKey(d => d.business_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Business___busin__22751F6C");
-        });
-
-        modelBuilder.Entity<BusinessImg>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__business__3214EC279F037EA7");
-
-            entity.ToTable("business_img");
-
-            entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
-            entity.Property(e => e.ImgTypeId).HasColumnName("img_type_id");
-            entity.Property(e => e.Name)
-                .HasMaxLength(256)
-                .HasDefaultValueSql("(NULL)")
-                .HasColumnName("name");
-            entity.Property(e => e.Url)
-                .HasMaxLength(512)
-                .HasColumnName("URL");
-
-            entity.HasOne(d => d.ImgType).WithMany(p => p.BusinessImgs)
-                .HasForeignKey(d => d.ImgTypeId)
-                .HasConstraintName("FK__business___img_t__5E8A0973");
-        });
-
-        modelBuilder.Entity<BusinessImgType>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__business__3214EC27F8956685");
-
-            entity.ToTable("business_img_type");
-
-            entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
-            entity.Property(e => e.FkBusinessId).HasColumnName("FK_business_id");
-            entity.Property(e => e.Typename)
-                .HasMaxLength(512)
-                .HasColumnName("typename");
-
-            entity.HasOne(d => d.FkBusiness).WithMany(p => p.BusinessImgTypes)
-                .HasForeignKey(d => d.FkBusinessId)
-                .HasConstraintName("FK__business___FK_bu__5AB9788F");
-        });
-
-        modelBuilder.Entity<BusinessType>(entity =>
-        {
-            entity.HasKey(e => e.BusinessTypeId).HasName("PK__business__2F9BFA5173791B5E");
-
-            entity.ToTable("business_type");
-
-            entity.Property(e => e.BusinessTypeId).HasColumnName("business_type_ID");
-            entity.Property(e => e.BusinessTypeName)
-                .IsRequired()
-                .HasMaxLength(20)
-                .HasColumnName("business_type_name");
+                .HasConstraintName("FK__Business___busin__607251E5");
         });
 
         modelBuilder.Entity<CheckinDetail>(entity =>
         {
-            entity.HasKey(e => e.CheckinId).HasName("PK__CheckinD__CF1A6A417A8D371A");
+            entity.HasKey(e => e.checkinID).HasName("PK__CheckinD__CF1A6A410C6C35DC");
 
-            entity.Property(e => e.CheckinId).HasColumnName("checkinID");
-            entity.Property(e => e.BookingId).HasColumnName("bookingID");
-            entity.Property(e => e.PetId).HasColumnName("pet_ID");
-            entity.Property(e => e.RoomId).HasColumnName("roomID");
+            entity.HasOne(d => d.booking).WithMany(p => p.CheckinDetails)
+                .HasForeignKey(d => d.bookingID)
+                .HasConstraintName("FK__CheckinDe__booki__5224328E");
 
-            entity.HasOne(d => d.Booking).WithMany(p => p.CheckinDetails)
-                .HasForeignKey(d => d.BookingId)
-                .HasConstraintName("FK__CheckinDe__booki__1AD3FDA4");
+            entity.HasOne(d => d.pet).WithMany(p => p.CheckinDetails)
+                .HasForeignKey(d => d.pet_ID)
+                .HasConstraintName("FK__CheckinDe__pet_I__540C7B00");
 
-            entity.HasOne(d => d.Room).WithMany(p => p.CheckinDetails)
-                .HasForeignKey(d => d.RoomId)
-                .HasConstraintName("FK__CheckinDe__roomI__1BC821DD");
+            entity.HasOne(d => d.room).WithMany(p => p.CheckinDetails)
+                .HasForeignKey(d => d.roomID)
+                .HasConstraintName("FK__CheckinDe__roomI__531856C7");
         });
 
-        modelBuilder.Entity<Keeper>(entity =>
+        modelBuilder.Entity<Consumption_Record>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__keeper__3214EC27BF12BA4B");
+            entity.HasKey(e => e.id).HasName("PK__Consumpt__3213E83F52AAC10D");
 
-            entity.ToTable("keeper");
+            entity.ToTable("Consumption_Record");
 
-            entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.Address)
-                .IsRequired()
-                .HasMaxLength(200)
-                .HasColumnName("address");
-            entity.Property(e => e.CreatedAt)
+            entity.Property(e => e.after_photo).HasMaxLength(255);
+            entity.Property(e => e.before_photo).HasMaxLength(255);
+            entity.Property(e => e.end_time)
                 .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
-            entity.Property(e => e.Email)
+                .HasColumnType("datetime");
+            entity.Property(e => e.pet_name)
                 .IsRequired()
-                .HasMaxLength(100)
-                .HasColumnName("email");
-            entity.Property(e => e.Name)
+                .HasMaxLength(10);
+            entity.Property(e => e.pet_weight).HasColumnType("decimal(4, 1)");
+            entity.Property(e => e.service_name)
                 .IsRequired()
-                .HasMaxLength(100)
-                .HasColumnName("name");
-            entity.Property(e => e.Password)
-                .IsRequired()
-                .HasMaxLength(100)
-                .HasColumnName("password");
-            entity.Property(e => e.Phone)
-                .IsRequired()
-                .HasMaxLength(15)
-                .HasColumnName("phone");
-            entity.Property(e => e.Status).HasColumnName("status");
+                .HasMaxLength(100);
+            entity.Property(e => e.time).HasColumnType("datetime");
+
+            entity.HasOne(d => d.beautician).WithMany(p => p.Consumption_Records)
+                .HasForeignKey(d => d.beautician_id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Consumpti__beaut__719CDDE7");
+
+            entity.HasOne(d => d.business).WithMany(p => p.Consumption_Records)
+                .HasForeignKey(d => d.business_ID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Consumpti__busin__6EC0713C");
+
+            entity.HasOne(d => d.keeper).WithMany(p => p.Consumption_Records)
+                .HasForeignKey(d => d.keeper_id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Consumpti__keepe__70A8B9AE");
         });
 
-        modelBuilder.Entity<KeeperImg>(entity =>
+        modelBuilder.Entity<Message>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__keeper_i__3214EC27D85AE2DB");
+            entity.HasKey(e => e.ID).HasName("PK__Message__3214EC27EA388959");
 
-            entity.ToTable("keeper_img");
+            entity.ToTable("Message");
 
-            entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.CreatedAt)
+            entity.Property(e => e.content).HasMaxLength(256);
+            entity.Property(e => e.created_at)
                 .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
-            entity.Property(e => e.ImgTypeId).HasColumnName("img_type_id");
-            entity.Property(e => e.Name)
-                .HasMaxLength(256)
-                .HasDefaultValueSql("(NULL)")
-                .HasColumnName("name");
-            entity.Property(e => e.Url)
-                .HasMaxLength(512)
-                .HasColumnName("URL");
+                .HasColumnType("datetime");
 
-            entity.HasOne(d => d.ImgType).WithMany(p => p.KeeperImgs)
-                .HasForeignKey(d => d.ImgTypeId)
-                .HasConstraintName("FK__keeper_im__img_t__55F4C372");
-        });
+            entity.HasOne(d => d.FK_Target).WithMany(p => p.MessageFK_Targets)
+                .HasForeignKey(d => d.FK_Target_ID)
+                .HasConstraintName("FK__Message__FK_Targ__0880433F");
 
-        modelBuilder.Entity<KeeperImgType>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__keeper_i__3214EC2769090E55");
-
-            entity.ToTable("keeper_img_type");
-
-            entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
-                .HasColumnName("created_at");
-            entity.Property(e => e.FkKeeperId).HasColumnName("FK_Keeper_id");
-            entity.Property(e => e.Typename)
-                .HasMaxLength(512)
-                .HasColumnName("typename");
-
-            entity.HasOne(d => d.FkKeeper).WithMany(p => p.KeeperImgTypes)
-                .HasForeignKey(d => d.FkKeeperId)
-                .HasConstraintName("FK__keeper_im__FK_Ke__5224328E");
-        });
-
-        modelBuilder.Entity<OrderStatus>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__order_st__3214EC27943F090A");
-
-            entity.ToTable("order_status");
-
-            entity.Property(e => e.Id).HasColumnName("ID");
-            entity.Property(e => e.StatusName)
-                .IsRequired()
-                .HasMaxLength(20)
-                .HasColumnName("status_name");
+            entity.HasOne(d => d.FK_User).WithMany(p => p.MessageFK_Users)
+                .HasForeignKey(d => d.FK_User_ID)
+                .HasConstraintName("FK__Message__FK_User__078C1F06");
         });
 
         modelBuilder.Entity<PaymentInfo>(entity =>
         {
-            entity.HasKey(e => e.PaymentId).HasName("PK__PaymentI__A0D9EFA617665240");
+            entity.HasKey(e => e.paymentID).HasName("PK__PaymentI__A0D9EFA60C6C22F8");
 
             entity.ToTable("PaymentInfo");
 
-            entity.Property(e => e.PaymentId).HasColumnName("paymentID");
-            entity.Property(e => e.BookingId).HasColumnName("bookingID");
-            entity.Property(e => e.BusinessId).HasColumnName("business_ID");
-            entity.Property(e => e.CardNumber).HasColumnName("cardNumber");
-            entity.Property(e => e.CardholderName)
-                .HasMaxLength(20)
-                .HasColumnName("cardholderName");
-            entity.Property(e => e.CvvNumber).HasColumnName("cvvNumber");
-            entity.Property(e => e.ExpirationDate).HasColumnName("expirationDate");
-            entity.Property(e => e.KeeperId).HasColumnName("keeper_ID");
-            entity.Property(e => e.PaymentAmount).HasColumnName("paymentAmount");
-            entity.Property(e => e.PaymentStatus)
+            entity.Property(e => e.cardholderName).HasMaxLength(20);
+            entity.Property(e => e.paymentStatus)
                 .HasMaxLength(1)
-                .IsFixedLength()
-                .HasColumnName("paymentStatus");
-            entity.Property(e => e.PaymentTimestamp)
-                .HasColumnType("datetime")
-                .HasColumnName("paymentTimestamp");
+                .IsFixedLength();
+            entity.Property(e => e.paymentTimestamp).HasColumnType("datetime");
 
-            entity.HasOne(d => d.Booking).WithMany(p => p.PaymentInfos)
-                .HasForeignKey(d => d.BookingId)
-                .HasConstraintName("FK__PaymentIn__booki__19DFD96B");
+            entity.HasOne(d => d.booking).WithMany(p => p.PaymentInfos)
+                .HasForeignKey(d => d.bookingID)
+                .HasConstraintName("FK__PaymentIn__booki__51300E55");
 
-            entity.HasOne(d => d.Business).WithMany(p => p.PaymentInfos)
-                .HasForeignKey(d => d.BusinessId)
-                .HasConstraintName("FK__PaymentIn__busin__114A936A");
+            entity.HasOne(d => d.business).WithMany(p => p.PaymentInfos)
+                .HasForeignKey(d => d.business_ID)
+                .HasConstraintName("FK__PaymentIn__busin__47A6A41B");
 
-            entity.HasOne(d => d.Keeper).WithMany(p => p.PaymentInfos)
-                .HasForeignKey(d => d.KeeperId)
-                .HasConstraintName("FK__PaymentIn__keepe__18EBB532");
+            entity.HasOne(d => d.keeper).WithMany(p => p.PaymentInfos)
+                .HasForeignKey(d => d.keeper_ID)
+                .HasConstraintName("FK__PaymentIn__keepe__503BEA1C");
+        });
+
+        modelBuilder.Entity<Reserve>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("PK__Reserve__3213E83F1C7D8962");
+
+            entity.ToTable("Reserve");
+
+            entity.Property(e => e.created_at)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.pet_name)
+                .IsRequired()
+                .HasMaxLength(10);
+            entity.Property(e => e.service_name)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.time).HasColumnType("datetime");
+
+            entity.HasOne(d => d.business).WithMany(p => p.Reserves)
+                .HasForeignKey(d => d.business_ID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Reserve__busines__662B2B3B");
+
+            entity.HasOne(d => d.keeper).WithMany(p => p.Reserves)
+                .HasForeignKey(d => d.keeper_id)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Reserve__keeper___690797E6");
+
+            entity.HasOne(d => d.statusNavigation).WithMany(p => p.Reserves)
+                .HasForeignKey(d => d.status)
+                .HasConstraintName("FK__Reserve__status__681373AD");
         });
 
         modelBuilder.Entity<Review>(entity =>
         {
-            entity.HasKey(e => e.ReviewId).HasName("PK__Review__2ECD6E245663A474");
+            entity.HasKey(e => e.reviewID).HasName("PK__Review__2ECD6E24A2E9EFA9");
 
             entity.ToTable("Review");
 
-            entity.Property(e => e.ReviewId).HasColumnName("reviewID");
-            entity.Property(e => e.KeeperId).HasColumnName("keeper_ID");
-            entity.Property(e => e.ReviewDate)
-                .HasColumnType("datetime")
-                .HasColumnName("reviewDate");
-            entity.Property(e => e.ReviewRating).HasColumnName("reviewRating");
-            entity.Property(e => e.ReviewText)
-                .HasMaxLength(255)
-                .HasColumnName("reviewText");
-            entity.Property(e => e.RoomId).HasColumnName("roomID");
+            entity.Property(e => e.reviewDate).HasColumnType("datetime");
+            entity.Property(e => e.reviewText).HasMaxLength(255);
 
-            entity.HasOne(d => d.Keeper).WithMany(p => p.Reviews)
-                .HasForeignKey(d => d.KeeperId)
-                .HasConstraintName("FK__Review__keeper_I__17F790F9");
+            entity.HasOne(d => d.keeper).WithMany(p => p.Reviews)
+                .HasForeignKey(d => d.keeper_ID)
+                .HasConstraintName("FK__Review__keeper_I__4F47C5E3");
 
-            entity.HasOne(d => d.Room).WithMany(p => p.Reviews)
-                .HasForeignKey(d => d.RoomId)
-                .HasConstraintName("FK__Review__roomID__17036CC0");
+            entity.HasOne(d => d.room).WithMany(p => p.Reviews)
+                .HasForeignKey(d => d.roomID)
+                .HasConstraintName("FK__Review__roomID__4E53A1AA");
         });
 
         modelBuilder.Entity<Room>(entity =>
         {
-            entity.HasKey(e => e.RoomId).HasName("PK__Rooms__6C3BF5DE3E520F80");
+            entity.HasKey(e => e.roomID).HasName("PK__Rooms__6C3BF5DE7F8CBFCF");
 
-            entity.Property(e => e.RoomId).HasColumnName("roomID");
-            entity.Property(e => e.HotelId).HasColumnName("hotelID");
-            entity.Property(e => e.RoomDescrep)
-                .HasMaxLength(255)
-                .HasColumnName("roomDescrep");
-            entity.Property(e => e.RoomDiscount).HasColumnName("roomDiscount");
-            entity.Property(e => e.RoomPrice).HasColumnName("roomPrice");
-            entity.Property(e => e.RoomReserve).HasColumnName("roomReserve");
-            entity.Property(e => e.RoomSpecies)
-                .HasMaxLength(10)
-                .HasColumnName("roomSpecies");
-            entity.Property(e => e.RoomType)
-                .HasMaxLength(10)
+            entity.Property(e => e.roomDescrep).HasMaxLength(255);
+            entity.Property(e => e.roomSpecies).HasMaxLength(10);
+
+            entity.HasOne(d => d.FK_roomImg).WithMany(p => p.Rooms)
+                .HasForeignKey(d => d.FK_roomImg_ID)
+                .HasConstraintName("FK_roomImg_ID");
+
+            entity.HasOne(d => d.FK_roomType).WithMany(p => p.Rooms)
+                .HasForeignKey(d => d.FK_roomType_ID)
+                .HasConstraintName("FK__Rooms__FK_roomTy__58D1301D");
+
+            entity.HasOne(d => d.hotel).WithMany(p => p.Rooms)
+                .HasForeignKey(d => d.hotelID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Rooms__hotelID__489AC854");
+        });
+
+        modelBuilder.Entity<Service>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("PK__Service__3213E83FCDBB6CCE");
+
+            entity.ToTable("Service");
+
+            entity.Property(e => e.category)
+                .IsRequired()
+                .HasMaxLength(10);
+            entity.Property(e => e.created_at)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.price)
+                .IsRequired()
+                .HasMaxLength(15);
+            entity.Property(e => e.service_content)
+                .IsRequired()
+                .HasMaxLength(600);
+            entity.Property(e => e.service_img).HasMaxLength(255);
+            entity.Property(e => e.service_name)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            entity.HasOne(d => d.business).WithMany(p => p.Services)
+                .HasForeignKey(d => d.business_ID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Service__busines__5CA1C101");
+        });
+
+        modelBuilder.Entity<article>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__article__3214EC277C1D3B2B");
+
+            entity.ToTable("article");
+
+            entity.Property(e => e.content).HasMaxLength(1024);
+            entity.Property(e => e.created_at)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.parent_ID).HasDefaultValueSql("(NULL)");
+
+            entity.HasOne(d => d.FK_Keeper).WithMany(p => p.articles)
+                .HasForeignKey(d => d.FK_Keeper_ID)
+                .HasConstraintName("FK__article__FK_Keep__74794A92");
+
+            entity.HasOne(d => d.parent).WithMany(p => p.Inverseparent)
+                .HasForeignKey(d => d.parent_ID)
+                .HasConstraintName("FK__article__parent___76619304");
+        });
+
+        modelBuilder.Entity<biological_test>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("PK__biologic__3213E83F27A99AC1");
+
+            entity.ToTable("biological_test");
+
+            entity.Property(e => e.created_at)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.findings).HasMaxLength(300);
+
+            entity.HasOne(d => d.pet).WithMany(p => p.biological_tests)
+                .HasForeignKey(d => d.pet_id)
+                .HasConstraintName("FK__biologica__pet_i__123EB7A3");
+
+            entity.HasOne(d => d.specimen).WithMany(p => p.biological_tests)
+                .HasForeignKey(d => d.specimen_id)
+                .HasConstraintName("FK__biologica__speci__14270015");
+        });
+
+        modelBuilder.Entity<business>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__business__3214EC27D137CA9C");
+
+            entity.ToTable("business");
+
+            entity.Property(e => e.address)
+                .HasMaxLength(200)
+                .HasDefaultValue("未填寫");
+            entity.Property(e => e.created_at)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.description).HasMaxLength(500);
+            entity.Property(e => e.email)
+                .HasMaxLength(100)
+                .HasDefaultValue("未填寫");
+            entity.Property(e => e.geoJson).HasDefaultValue("未填寫");
+            entity.Property(e => e.license_number)
+                .HasMaxLength(50)
+                .HasDefaultValue("未填寫");
+            entity.Property(e => e.name)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.password)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.phone)
+                .HasMaxLength(30)
+                .HasDefaultValue("未填寫");
+            entity.Property(e => e.salt)
+                .IsRequired()
+                .HasMaxLength(50);
+
+            entity.HasOne(d => d.business_statusNavigation).WithMany(p => p.businesses)
+                .HasForeignKey(d => d.business_status)
+                .HasConstraintName("FK__business__busine__5AEE82B9");
+
+            entity.HasOne(d => d.type).WithMany(p => p.businesses)
+                .HasForeignKey(d => d.type_ID)
+                .HasConstraintName("FK__business__type_I__5535A963");
+        });
+
+        modelBuilder.Entity<business_img>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__business__3214EC27C0BDB791");
+
+            entity.ToTable("business_img");
+
+            entity.Property(e => e.URL).HasMaxLength(512);
+            entity.Property(e => e.created_at)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.name)
+                .HasMaxLength(256)
+                .HasDefaultValueSql("(NULL)");
+
+            entity.HasOne(d => d.img_type).WithMany(p => p.business_imgs)
+                .HasForeignKey(d => d.img_type_id)
+                .HasConstraintName("FK__business___img_t__628FA481");
+        });
+
+        modelBuilder.Entity<business_img_type>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__business__3214EC27F2D7D3C3");
+
+            entity.ToTable("business_img_type");
+
+            entity.Property(e => e.created_at)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.typename).HasMaxLength(512);
+
+            entity.HasOne(d => d.FK_business).WithMany(p => p.business_img_types)
+                .HasForeignKey(d => d.FK_business_id)
+                .HasConstraintName("FK__business___FK_bu__5EBF139D");
+        });
+
+        modelBuilder.Entity<business_type>(entity =>
+        {
+            entity.HasKey(e => e.business_type_ID).HasName("PK__business__2F9BFA518976A86E");
+
+            entity.ToTable("business_type");
+
+            entity.Property(e => e.business_type_name)
+                .IsRequired()
+                .HasMaxLength(20);
+        });
+
+        modelBuilder.Entity<daily_outpatient_clinic_schedule>(entity =>
+        {
+            entity.HasKey(e => e.daily_outpatient_clinic_schedule_ID).HasName("PK__daily_ou__A98BAD4EB183ABC9");
+
+            entity.ToTable("daily_outpatient_clinic_schedule");
+
+            entity.Property(e => e.created_date).HasDefaultValueSql("(getdate())");
+
+            entity.HasOne(d => d.outpatient_clinic).WithMany(p => p.daily_outpatient_clinic_schedules)
+                .HasForeignKey(d => d.outpatient_clinic_ID)
+                .HasConstraintName("FK__daily_out__outpa__787EE5A0");
+        });
+
+        modelBuilder.Entity<department>(entity =>
+        {
+            entity.HasKey(e => e.department_ID).HasName("PK__departme__C22220EA1C0820E3");
+
+            entity.ToTable("department");
+
+            entity.Property(e => e.department_name)
+                .IsRequired()
+                .HasMaxLength(20);
+
+            entity.HasOne(d => d.business).WithMany(p => p.departments)
+                .HasForeignKey(d => d.business_ID)
+                .HasConstraintName("FK__departmen__busin__6B24EA82");
+        });
+
+        modelBuilder.Entity<dosage_form>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("PK__dosage_f__3213E83F2B97CA70");
+
+            entity.ToTable("dosage_form");
+
+            entity.Property(e => e.form_name).HasMaxLength(10);
+        });
+
+        modelBuilder.Entity<frequency>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("PK__frequenc__3213E83F2EEBF3DA");
+
+            entity.ToTable("frequency");
+
+            entity.Property(e => e.frequency_name).HasMaxLength(5);
+        });
+
+        modelBuilder.Entity<hosp_history>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("PK__hosp_his__3213E83F250FF490");
+
+            entity.ToTable("hosp_history");
+
+            entity.Property(e => e.admission_date).HasColumnType("datetime");
+            entity.Property(e => e.discharge_date).HasColumnType("datetime");
+            entity.Property(e => e.memo).HasMaxLength(200);
+
+            entity.HasOne(d => d.medical_record).WithMany(p => p.hosp_histories)
+                .HasForeignKey(d => d.medical_record_id)
+                .HasConstraintName("FK__hosp_hist__medic__3587F3E0");
+
+            entity.HasOne(d => d.ward).WithMany(p => p.hosp_histories)
+                .HasForeignKey(d => d.ward_id)
+                .HasConstraintName("FK__hosp_hist__ward___367C1819");
+        });
+
+        modelBuilder.Entity<image_file>(entity =>
+        {
+            entity.HasKey(e => e.image_id).HasName("PK__image_fi__DC9AC9559DF2F737");
+
+            entity.Property(e => e.file_path)
+                .IsRequired()
+                .HasMaxLength(255);
+            entity.Property(e => e.uploaded_at)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.record_type).WithMany(p => p.image_files)
+                .HasForeignKey(d => d.record_type_id)
+                .HasConstraintName("FK__image_fil__recor__07C12930");
+        });
+
+        modelBuilder.Entity<keeper>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__keeper__3214EC27FE9C9B85");
+
+            entity.ToTable("keeper");
+
+            entity.Property(e => e.address).HasMaxLength(200);
+            entity.Property(e => e.created_at)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.description).HasMaxLength(500);
+            entity.Property(e => e.email)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.name)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.password)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.phone).HasMaxLength(15);
+            entity.Property(e => e.salt)
+                .IsRequired()
+                .HasMaxLength(50);
+
+            entity.HasOne(d => d.statusNavigation).WithMany(p => p.keepers)
+                .HasForeignKey(d => d.status)
+                .HasConstraintName("FK__keeper__status__3A81B327");
+        });
+
+        modelBuilder.Entity<keeper_img>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__keeper_i__3214EC27D6EEB501");
+
+            entity.ToTable("keeper_img");
+
+            entity.Property(e => e.URL).HasMaxLength(512);
+            entity.Property(e => e.created_at)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.name)
+                .HasMaxLength(256)
+                .HasDefaultValueSql("(NULL)");
+
+            entity.HasOne(d => d.img_type).WithMany(p => p.keeper_imgs)
+                .HasForeignKey(d => d.img_type_id)
+                .HasConstraintName("FK__keeper_im__img_t__4222D4EF");
+        });
+
+        modelBuilder.Entity<keeper_img_type>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__keeper_i__3214EC276AF49396");
+
+            entity.ToTable("keeper_img_type");
+
+            entity.Property(e => e.created_at)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.typename).HasMaxLength(512);
+
+            entity.HasOne(d => d.FK_Keeper).WithMany(p => p.keeper_img_types)
+                .HasForeignKey(d => d.FK_Keeper_id)
+                .HasConstraintName("FK__keeper_im__FK_Ke__3E52440B");
+        });
+
+        modelBuilder.Entity<medical_imaging>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("PK__medical___3213E83F6B75B840");
+
+            entity.ToTable("medical_imaging");
+
+            entity.Property(e => e.examined_area).HasMaxLength(50);
+            entity.Property(e => e.examined_at)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.findings).HasMaxLength(300);
+            entity.Property(e => e.type).HasMaxLength(50);
+
+            entity.HasOne(d => d.pet).WithMany(p => p.medical_imagings)
+                .HasForeignKey(d => d.pet_id)
+                .HasConstraintName("FK__medical_i__pet_i__0B91BA14");
+        });
+
+        modelBuilder.Entity<medical_record>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("PK__medical___3213E83F9ECE8835");
+
+            entity.ToTable("medical_record");
+
+            entity.Property(e => e.admission_process)
+                .IsRequired()
+                .HasMaxLength(500);
+            entity.Property(e => e.created_at)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.diagnosis)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.memo).HasMaxLength(200);
+            entity.Property(e => e.treatment)
+                .IsRequired()
+                .HasMaxLength(500);
+            entity.Property(e => e.weight).HasColumnType("decimal(5, 2)");
+
+            entity.HasOne(d => d.keeper).WithMany(p => p.medical_records)
+                .HasForeignKey(d => d.keeper_id)
+                .HasConstraintName("FK__medical_r__keepe__1BC821DD");
+
+            entity.HasOne(d => d.outpatient_clinic).WithMany(p => p.medical_records)
+                .HasForeignKey(d => d.outpatient_clinic_id)
+                .HasConstraintName("FK__medical_r__outpa__1EA48E88");
+
+            entity.HasOne(d => d.pet).WithMany(p => p.medical_records)
+                .HasForeignKey(d => d.pet_id)
+                .HasConstraintName("FK__medical_r__pet_i__1CBC4616");
+
+            entity.HasOne(d => d.vital_sign_record).WithMany(p => p.medical_records)
+                .HasForeignKey(d => d.vital_sign_record_id)
+                .HasConstraintName("FK__medical_r__vital__1F98B2C1");
+        });
+
+        modelBuilder.Entity<medicine>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("PK__medicine__3213E83F22FA03EF");
+
+            entity.ToTable("medicine");
+
+            entity.Property(e => e.brand_name).HasMaxLength(50);
+            entity.Property(e => e.generic_name).HasMaxLength(50);
+            entity.Property(e => e.indication).HasMaxLength(200);
+            entity.Property(e => e.route).HasMaxLength(50);
+            entity.Property(e => e.side_effects).HasMaxLength(200);
+            entity.Property(e => e.timing).HasMaxLength(10);
+        });
+
+        modelBuilder.Entity<medicine_order_record>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("PK__medicine__3213E83F3F917837");
+
+            entity.ToTable("medicine_order_record");
+
+            entity.Property(e => e.dosage).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.order_datetime).HasColumnType("datetime");
+            entity.Property(e => e.route)
+                .IsRequired()
+                .HasMaxLength(50);
+            entity.Property(e => e.start_datetime).HasColumnType("datetime");
+
+            entity.HasOne(d => d.dosage_formNavigation).WithMany(p => p.medicine_order_records)
+                .HasForeignKey(d => d.dosage_form)
+                .HasConstraintName("FK__medicine___dosag__2CF2ADDF");
+
+            entity.HasOne(d => d.frequency).WithMany(p => p.medicine_order_records)
+                .HasForeignKey(d => d.frequency_id)
+                .HasConstraintName("FK__medicine___frequ__2BFE89A6");
+
+            entity.HasOne(d => d.medicine).WithMany(p => p.medicine_order_records)
+                .HasForeignKey(d => d.medicine_id)
+                .HasConstraintName("FK__medicine___medic__2B0A656D");
+
+            entity.HasOne(d => d.order_status).WithMany(p => p.medicine_order_records)
+                .HasForeignKey(d => d.order_status_id)
+                .HasConstraintName("FK__medicine___order__2DE6D218");
+
+            entity.HasOne(d => d.pet).WithMany(p => p.medicine_order_records)
+                .HasForeignKey(d => d.pet_id)
+                .HasConstraintName("FK__medicine___pet_i__2A164134");
+        });
+
+        modelBuilder.Entity<medicine_order_status>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("PK__medicine__3213E83FF60E3082");
+
+            entity.ToTable("medicine_order_status");
+
+            entity.Property(e => e.status_name).HasMaxLength(10);
+        });
+
+        modelBuilder.Entity<member_status>(entity =>
+        {
+            entity.HasKey(e => e.member_status_ID).HasName("PK__member_s__819644FEEBC0DDF7");
+
+            entity.ToTable("member_status");
+
+            entity.Property(e => e.status_name)
+                .IsRequired()
+                .HasMaxLength(20);
+        });
+
+        modelBuilder.Entity<memo>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__memo__3214EC27C0A2713A");
+
+            entity.ToTable("memo");
+
+            entity.Property(e => e.content).HasMaxLength(1000);
+
+            entity.HasOne(d => d.FK_keeper).WithMany(p => p.memos)
+                .HasForeignKey(d => d.FK_keeper_ID)
+                .HasConstraintName("FK__memo__FK_keeper___6754599E");
+
+            entity.HasOne(d => d.business).WithMany(p => p.memos)
+                .HasForeignKey(d => d.business_ID)
+                .HasConstraintName("FK__memo__business_I__68487DD7");
+        });
+
+        modelBuilder.Entity<nursing_record>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("PK__nursing___3213E83F2F07E73C");
+
+            entity.ToTable("nursing_record");
+
+            entity.Property(e => e.datetime).HasColumnType("datetime");
+            entity.Property(e => e.memo).HasMaxLength(200);
+            entity.Property(e => e.weight).HasColumnType("decimal(5, 2)");
+
+            entity.HasOne(d => d.hosp_history).WithMany(p => p.nursing_records)
+                .HasForeignKey(d => d.hosp_history_id)
+                .HasConstraintName("FK__nursing_r__hosp___3A4CA8FD");
+
+            entity.HasOne(d => d.pet).WithMany(p => p.nursing_records)
+                .HasForeignKey(d => d.pet_id)
+                .HasConstraintName("FK__nursing_r__pet_i__395884C4");
+
+            entity.HasOne(d => d.vital_sign_record).WithMany(p => p.nursing_records)
+                .HasForeignKey(d => d.vital_sign_record_id)
+                .HasConstraintName("FK__nursing_r__vital__3B40CD36");
+        });
+
+        modelBuilder.Entity<order_status>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__order_st__3214EC27E716A1CA");
+
+            entity.ToTable("order_status");
+
+            entity.Property(e => e.status_name)
+                .IsRequired()
+                .HasMaxLength(20);
+
+            entity.HasOne(d => d.FK_businessType).WithMany(p => p.order_statusFK_businessTypes)
+                .HasForeignKey(d => d.FK_businessType_ID)
+                .HasConstraintName("FK_businessType_ID");
+
+            entity.HasOne(d => d.business_type).WithMany(p => p.order_statusbusiness_types)
+                .HasForeignKey(d => d.business_type_ID)
+                .HasConstraintName("FK__order_sta__busin__52593CB8");
+        });
+
+        modelBuilder.Entity<outpatient_clinic>(entity =>
+        {
+            entity.HasKey(e => e.outpatient_clinic_ID).HasName("PK__outpatie__6AA2EF945CF461FF");
+
+            entity.ToTable("outpatient_clinic");
+
+            entity.Property(e => e.dayofweek).HasMaxLength(20);
+            entity.Property(e => e.outpatient_clinic_name)
+                .IsRequired()
+                .HasMaxLength(30);
+
+            entity.HasOne(d => d.outpatient_clinic_timeslot).WithMany(p => p.outpatient_clinics)
+                .HasForeignKey(d => d.outpatient_clinic_timeslot_ID)
+                .HasConstraintName("FK__outpatien__outpa__74AE54BC");
+
+            entity.HasOne(d => d.vet).WithMany(p => p.outpatient_clinics)
+                .HasForeignKey(d => d.vet_ID)
+                .HasConstraintName("FK__outpatien__vet_I__75A278F5");
+        });
+
+        modelBuilder.Entity<outpatient_clinic_timeslot>(entity =>
+        {
+            entity.HasKey(e => e.outpatient_clinic_timeslot_ID).HasName("PK__outpatie__C88688B903ACBF55");
+
+            entity.ToTable("outpatient_clinic_timeslot");
+
+            entity.Property(e => e.outpatient_clinic_timeslot_name)
+                .IsRequired()
+                .HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<person_tag>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__person_t__3214EC27955368D0");
+
+            entity.Property(e => e.name).HasMaxLength(128);
+
+            entity.HasOne(d => d.FK_Keeper).WithMany(p => p.person_tags)
+                .HasForeignKey(d => d.FK_Keeper_ID)
+                .HasConstraintName("FK__person_ta__FK_Ke__7FEAFD3E");
+        });
+
+        modelBuilder.Entity<pet>(entity =>
+        {
+            entity.HasKey(e => e.pet_ID).HasName("PK__pet__3913D166AC17BAF6");
+
+            entity.ToTable("pet");
+
+            entity.Property(e => e.allergy)
+                .HasMaxLength(200)
+                .HasDefaultValue("無過敏記錄");
+            entity.Property(e => e.chip_ID)
+                .HasMaxLength(50)
+                .HasDefaultValue("無晶片");
+            entity.Property(e => e.chronic_dis)
+                .HasMaxLength(200)
+                .HasDefaultValue("無慢性病史");
+            entity.Property(e => e.created_at)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.memo)
+                .HasMaxLength(200)
+                .HasDefaultValue("無備註");
+            entity.Property(e => e.name).HasMaxLength(100);
+            entity.Property(e => e.pet_weight).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.vaccine)
+                .HasMaxLength(100)
+                .HasDefaultValue("無疫苗施打紀錄");
+
+            entity.HasOne(d => d.keeper).WithMany(p => p.pets)
+                .HasForeignKey(d => d.keeper_ID)
+                .HasConstraintName("FK__pet__keeper_ID__47DBAE45");
+
+            entity.HasOne(d => d.pet_type).WithMany(p => p.pets)
+                .HasForeignKey(d => d.pet_type_ID)
+                .HasConstraintName("FK__pet__pet_type_ID__46E78A0C");
+        });
+
+        modelBuilder.Entity<pet_type>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__pet_type__3214EC27B1B7D755");
+
+            entity.ToTable("pet_type");
+
+            entity.Property(e => e.breed)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.species)
+                .IsRequired()
+                .HasMaxLength(100);
+        });
+
+        modelBuilder.Entity<record_type>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("PK__record_t__3213E83F863AEFA6");
+
+            entity.ToTable("record_type");
+
+            entity.Property(e => e.name)
+                .IsRequired()
+                .HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<roomType>(entity =>
+        {
+            entity.HasKey(e => e.roomType_ID).HasName("PK__roomType__28045B880A214113");
+
+            entity.ToTable("roomType");
+
+            entity.Property(e => e.roomType1)
+                .HasMaxLength(30)
                 .HasColumnName("roomType");
 
-            entity.HasOne(d => d.Hotel).WithMany(p => p.Rooms)
-                .HasForeignKey(d => d.HotelId)
+            entity.HasOne(d => d.FK_business).WithMany(p => p.roomTypes)
+                .HasForeignKey(d => d.FK_businessID)
+                .HasConstraintName("FK__roomType__FK_bus__57DD0BE4");
+        });
+
+        modelBuilder.Entity<speciman>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("PK__specimen__3213E83FE91555CF");
+
+            entity.Property(e => e.normal_range_max).HasColumnType("decimal(7, 3)");
+            entity.Property(e => e.normal_range_min).HasColumnType("decimal(7, 3)");
+            entity.Property(e => e.specimen_name).HasMaxLength(50);
+            entity.Property(e => e.test_name).HasMaxLength(50);
+
+            entity.HasOne(d => d.pet_typeNavigation).WithMany(p => p.specimen)
+                .HasForeignKey(d => d.pet_type)
+                .HasConstraintName("FK__specimen__pet_ty__0F624AF8");
+        });
+
+        modelBuilder.Entity<surgery>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("PK__surgery__3213E83FFC0DF5CE");
+
+            entity.ToTable("surgery");
+
+            entity.Property(e => e.anesthesia_duration).HasMaxLength(10);
+            entity.Property(e => e.findings).HasMaxLength(300);
+            entity.Property(e => e.op_duration).HasMaxLength(10);
+            entity.Property(e => e.start_time).HasColumnType("datetime");
+            entity.Property(e => e.technique).HasMaxLength(100);
+
+            entity.HasOne(d => d.medical_record).WithMany(p => p.surgeries)
+                .HasForeignKey(d => d.medical_record_id)
+                .HasConstraintName("FK__surgery__medical__30C33EC3");
+
+            entity.HasOne(d => d.medicine_order_recordNavigation).WithMany(p => p.surgeries)
+                .HasForeignKey(d => d.medicine_order_record)
+                .HasConstraintName("FK__surgery__medicin__31B762FC");
+
+            entity.HasOne(d => d.vital_sign_record).WithMany(p => p.surgeries)
+                .HasForeignKey(d => d.vital_sign_record_id)
+                .HasConstraintName("FK__surgery__vital_s__32AB8735");
+        });
+
+        modelBuilder.Entity<tag>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__tags__3214EC27EBCCCDF0");
+
+            entity.Property(e => e.name).HasMaxLength(128);
+        });
+
+        modelBuilder.Entity<using_person_tag>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__using_pe__3214EC27B8DF2571");
+
+            entity.HasOne(d => d.FK_Keeper).WithMany(p => p.using_person_tags)
+                .HasForeignKey(d => d.FK_Keeper_ID)
+                .HasConstraintName("FK__using_per__FK_Ke__02C769E9");
+
+            entity.HasOne(d => d.FK_article).WithMany(p => p.using_person_tags)
+                .HasForeignKey(d => d.FK_article_ID)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Rooms__hotelID__123EB7A3");
+                .HasConstraintName("FK__using_per__FK_ar__03BB8E22");
+
+            entity.HasOne(d => d.FK_person_tags).WithMany(p => p.using_person_tags)
+                .HasForeignKey(d => d.FK_person_tags_ID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__using_per__FK_pe__04AFB25B");
+        });
+
+        modelBuilder.Entity<using_tag>(entity =>
+        {
+            entity.HasKey(e => e.ID).HasName("PK__using_ta__3214EC272F05072C");
+
+            entity.HasOne(d => d.FK_article).WithMany(p => p.using_tags)
+                .HasForeignKey(d => d.FK_article_ID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__using_tag__FK_ar__7C1A6C5A");
+
+            entity.HasOne(d => d.FK_tags).WithMany(p => p.using_tags)
+                .HasForeignKey(d => d.FK_tags_ID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__using_tag__FK_ta__7D0E9093");
+        });
+
+        modelBuilder.Entity<vet_information>(entity =>
+        {
+            entity.HasKey(e => e.vet_ID).HasName("PK__vet_info__D816DB2B2F0C27DF");
+
+            entity.Property(e => e.license_number).HasMaxLength(50);
+            entity.Property(e => e.profile).HasMaxLength(500);
+            entity.Property(e => e.vet_name).HasMaxLength(100);
+
+            entity.HasOne(d => d.business).WithMany(p => p.vet_informations)
+                .HasForeignKey(d => d.business_ID)
+                .HasConstraintName("FK__vet_infor__busin__6E01572D");
+
+            entity.HasOne(d => d.business_img).WithMany(p => p.vet_informations)
+                .HasForeignKey(d => d.business_img_ID)
+                .HasConstraintName("FK__vet_infor__busin__6FE99F9F");
+
+            entity.HasOne(d => d.department).WithMany(p => p.vet_informations)
+                .HasForeignKey(d => d.department_ID)
+                .HasConstraintName("FK__vet_infor__depar__6EF57B66");
+        });
+
+        modelBuilder.Entity<vital_sign_record>(entity =>
+        {
+            entity.HasKey(e => e.id).HasName("PK__vital_si__3213E83F8BFD0945");
+
+            entity.ToTable("vital_sign_record");
+
+            entity.Property(e => e.BT).HasColumnType("decimal(3, 1)");
+            entity.Property(e => e.created_at)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.memo)
+                .IsRequired()
+                .HasMaxLength(30)
+                .HasDefaultValue("nil");
+
+            entity.HasOne(d => d.pet).WithMany(p => p.vital_sign_records)
+                .HasForeignKey(d => d.pet_id)
+                .HasConstraintName("FK__vital_sig__pet_i__17036CC0");
+        });
+
+        modelBuilder.Entity<ward>(entity =>
+        {
+            entity.HasKey(e => e.ward_ID).HasName("PK__ward__396CB5D598F39F88");
+
+            entity.ToTable("ward");
+
+            entity.Property(e => e.memo).HasMaxLength(100);
+            entity.Property(e => e.ward_name).HasMaxLength(100);
+
+            entity.HasOne(d => d.business).WithMany(p => p.wards)
+                .HasForeignKey(d => d.business_ID)
+                .HasConstraintName("FK__ward__business_I__7C4F7684");
         });
 
         OnModelCreatingPartial(modelBuilder);

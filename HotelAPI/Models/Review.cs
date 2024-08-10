@@ -3,23 +3,23 @@
 using System;
 using System.Collections.Generic;
 
-namespace HotelAPI.Models;
+namespace Tailstale.Models;
 
 public partial class Review
 {
-    public int ReviewId { get; set; }
+    public int reviewID { get; set; }
 
-    public int? RoomId { get; set; }
+    public int? roomID { get; set; }
 
-    public int? KeeperId { get; set; }
+    public int? keeper_ID { get; set; }
 
-    public int? ReviewRating { get; set; }
+    public int? reviewRating { get; set; }
 
-    public string ReviewText { get; set; }
+    public string reviewText { get; set; }
 
-    public DateTime? ReviewDate { get; set; }
+    public DateTime? reviewDate { get; set; }
 
-    public virtual Keeper Keeper { get; set; }
+    public virtual keeper keeper { get; set; }
 
-    public virtual Room Room { get; set; }
+    public virtual Room room { get; set; }
 }

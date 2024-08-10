@@ -1,74 +1,127 @@
 ﻿@using Tailstale
 
-<form asp-action="SearchRoom" asp-controller="Hotels" method="post">
-    
-    <input placeholder="你要去哪裡" type="text" id="destination" name="destination" />
+@section Styles{
+ 
+   @*  <link href="~/css/numberspinner.min.css" rel="stylesheet" /> *@
+    <link href="~/css/newnumberspinner2.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link href="~/css/searchbar.min.css" rel="stylesheet" />
+    <style>
+        body{
+           background-color: #f5f7fd;
+        }
+      
+    </style>
+}
 
-    <label for="checkin">Check-in:</label>
+<div >
+    
+    <div> <h1>尋找居家寵物寄宿、寵物旅館</h1> </div>
+    <div><h3>為下一趟旅程準備</h3> </div>
+    
+</div>
+<div class="container">
+    <div class="row m-0 p-0">
+        @* <input class="form-control" placeholder="你要去哪裡" type="text" id="destination" name="destination" />
+        <input class="form-control dateRange" type="text" placeholder="日期範圍" /> *@
+        <div class="col-3">
+            <input  class="form-control" placeholder="搜尋附近旅館" type="text" id="destination" name="destination" />
+        </div>
+        <div class="col-3 col-md-10">
+            <input class="form-control dateRange" style="text-align:center;" type="text" placeholder="日期範圍" />
+        </div> 
+        <div class="col-3" style="position:relative;">
+            <input type="button" id="showCatDog" class="form-control" value="請選擇寵物數量" aria-label="人數" style="width: 100%;">
+            <div class="cookie-card" style="display: none; position: absolute; background: white; border: 1px solid #ccc; padding: 10px; z-index: 10;width:100%;">
+                <div class="row mb-2" >
+                    <div class="col-4 pe-2"><span>貓</span></div>
+                    <div class="roomA col-8">
+                        <div class='ctrl'>
+                            <div class='ctrl__button ctrl__button--decrement'>&ndash;</div>
+                            <div class='ctrl__counter'>
+                                <input class='ctrl__counter-input' id="Cat" maxlength='2' type='text' value='0' max="5">
+                                <div class='ctrl__counter-num'>0</div>
+                            </div>
+                            <div class='ctrl__button ctrl__button--increment'>+</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="height:1px"></div>
+                <div class="row">
+                    <div class="col-4 pe-2"><span>狗</span></div>
+                    <div class="roomA col-8">
+                        <div class='ctrl'>
+                            <div class='ctrl__button ctrl__button--decrement'>&ndash;</div>
+                            <div class='ctrl__counter'>
+                                <input class='ctrl__counter-input' id="Dog" maxlength='2' type='text' value='0' max="5">
+                                <div class='ctrl__counter-num'>0</div>
+                            </div>
+                            <div class='ctrl__button ctrl__button--increment'>+</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="actions" style="width:100%;">
+                        <button class="accept">
+                            完成
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <div class="col-3">
+            <button class="btn btn-primary p-1" id="bt" style="font-size:18px;height:100%;width:50%">搜尋</button>
+        </div>
+    </div>
+</div>
+       
+    </div>
+</div>
+
+
+@* <form asp-action="SearchRoom" asp-controller="Hotels" method="post">
+    
+     <input placeholder="你要去哪裡" type="text" id="destination" name="destination" />
+ 
+     <label for="checkin">Check-in:</label>
     <input type="date" id="checkin" name="checkin" />
 
     <label for="checkout">Check-out:</label>
-    <input type="date" id="checkout" name="checkout" />
+    <input type="date" id="checkout" name="checkout" /> 
 
-    <label for="Cat">貓的數量:</label>
+     <label for="Cat">貓的數量:</label>
     <input type="number" id="Cat" name="Cat" />
     <label for="Dog">狗的數量:</label>
-    <input type="number" id="Dog" name="Dog" />
-</form>
+    <input type="number" id="Dog" name="Dog" /> 
+</form> 
 <button id="bt">提交</button>
 
-@* @await Html.PartialAsync("/Bookings/SearchRoom.cshtml") *@
-<div id="result">
-
-</div>
+ @await Html.PartialAsync("/Bookings/SearchRoom.cshtml")  *@
 
 @section Scripts{
-
+    <script src="~/js/numberspinner.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="~/js/searchbar.min.js"></script>
     <script>
-        $("#bt").on("click", async function () {
-            var cI = document.getElementById("checkin").value;
-            var cO = document.getElementById("checkout").value;
-            var Cat = document.getElementById("Cat").value;
-            var Dog = document.getElementById("Dog").value;
-            var destination = document.getElementById("destination").value;
-            const dtCI = new Date(cI);
-            let checkIndate = dtCI.getFullYear() + "-" +
-                String(dtCI.getMonth() + 1).padStart(2, '0') + "-" +
-                String(dtCI.getDate()).padStart(2, '0');
-
-            const dtCO = new Date(cO);
-
-            let checkOutdate = dtCO.getFullYear() + "-" +
-                String(dtCO.getMonth() + 1).padStart(2, '0') + "-" +
-                String(dtCO.getDate()).padStart(2, '0');
-
-            console.log(checkOutdate);
-            // console.log(dtCI);
-            // console.log(dtCO);
-
-            if (checkIndate <= checkOutdate && checkIndate != null && checkOutdate != null) {
-
-                if (Cat != null && Cat > 0 && Dog != null && Dog > 0) {
-                    window.location.href = `/Hotels/SearchHotels?startDate=${checkIndate}&endDate=${checkOutdate}&Cat=${Cat}&Dog=${Dog}`;
-                }
-                else if (Cat != null && Cat > 0) {
-                    window.location.href = `/Hotels/SearchHotels?startDate=${checkIndate}&endDate=${checkOutdate}&Cat=${Cat}`;
-                }
-                else if (Dog != null && Dog > 0) {
-                    window.location.href = `/Hotels/SearchHotels?startDate=${checkIndate}&endDate=${checkOutdate}&Dog=${Dog}`;
-                }
-                else{
-                    window.location.href = `/Hotels/SearchHotels?startDate=${checkIndate}&endDate=${checkOutdate}`;
-                }
-               
+        $("input.dateRange").daterangepicker({
+            opens: "left",
+            showDropdowns: true,
+            minDate: moment(),
+            startDate: moment(),
+            endDate: moment(),
+            autoApply: true,
+            locale: {
+                format: "YYYY-MM-DD",
+                separator: " ~ ",
+                daysOfWeek: ["日", "一", "二", "三", "四", "五", "六"],
+                monthNames: ["1月", "2月", "3月", "4月", "5月", "6月",
+                    "7月", "8月", "9月", "10月", "11月", "12月"
+                ],
+                firstDay: 1
             }
-            else {
-                alert("請確認輸入資料使否錯誤");
-            }
-            
-         
-
-           
         });
     </script>
 }

@@ -1,0 +1,109 @@
+﻿@model Tailstale.Hotel_DTO.BookingAndCheckinDTO
+
+@section Styles{
+
+    <style>
+        body {
+            background-color: #f5f7fd;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            justify-items: center;
+        }
+
+        img {
+            max-height: 200px;
+        }
+
+        .card {
+            padding: 1% 5% 5% 8%;
+            display: flex;
+            justify-content: center;
+            justify-items: center;
+        }
+
+        .centerrow {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+    
+
+}
+
+<div class="container">
+    <div class="row" style="width: 80%;">
+        <div class="centerrow">
+            <img src="~/images/tickcirclelinear_106244.png" />
+           </div>
+        <div class="centerrow"><h3>
+                <strong>預定成功</strong>
+        </h3>
+            </div>
+        <div class="centerrow"><strong>
+            <h5>
+                    <a href="#">訂單編號: @Model.booking.bookingID</a>
+            </h5>
+           
+            </strong></div>
+        <div class="card" style="width: 100%">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <div style="display: flex;align-items: center;justify-content: center;"><h4>預定資料</h4></div>
+
+                    <h5 class="card-title" style="display: flex;align-items: center;justify-content: center;"><strong>旅館名稱:@ViewBag.hotelName</strong></h5>
+                    <div class="row centerrow" style="width: 100%;padding-left: 5%;">
+                        <div class="col-6 left" style="width: 50%;">
+                            <div>訂購人姓名: 黃00</div>
+                            <div>總價格:@Model.booking.bookingAmountTotal</div>
+                            <div>付款方式:信用卡</div>
+                            <div>入住日期</div>
+                            <div>@Model.booking.checkinDate</div>
+                        </div>
+                        <div class="col-6" style="width: 50%;">
+                            <div>下單日期:@Model.booking.bookingDate</div>
+                            <div>&nbsp;</div>
+                            <div>付款卡號:@Model.</div>
+                            <div>退房日期</div>
+                            <div>@Model.booking.checkoutDate</div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="row centerrow" style="width: 100%;padding-left: 5%;">
+                        <div style="width: 100%;display: flex;
+        justify-content: center;">
+                            <h4>詳細預定資訊</h4>
+                        </div>
+                        @foreach(var bd in Model.bookingDetails)
+                        {
+                            <div class="row">
+                                <div class="col-6"> @bd.roomName x @bd.bdAmount </div>
+                                <div class="col-6">TWD @bd.bdTotal</div>
+                            </div>
+                        }
+                       
+                    </div>
+
+                </li>
+                <li class="list-group-item">
+
+                    <div class="row centerrow" style="width: 100%;padding-left: 5%;">
+                        <div style="display: flex;align-items: center;justify-content: center;"><h4>入住資訊</h4></div>
+                        @foreach(var ci in Model.checkinDetails)
+                        {
+                            <div class="row">
+                                <div class="col-6">@ci.roomName - @ci.petType </div>
+                                <div class="col-6">@ci.petName - @ci.petType </div>
+                            </div>
+                        }
+                        
+                    </div>
+
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

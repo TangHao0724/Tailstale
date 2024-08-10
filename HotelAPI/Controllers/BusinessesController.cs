@@ -29,7 +29,7 @@ namespace HotelAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Business>>> GetBusinesses()
         {
-            return await _context.Businesses.ToListAsync();
+            return await _context.businesses.ToListAsync();
         }
 
         
