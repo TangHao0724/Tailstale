@@ -9,7 +9,7 @@ public partial class image_file
 {
     public int image_id { get; set; }
 
-    public string file_path { get; set; }
+    public string file_name { get; set; }
 
     public int? medical_imaging_id { get; set; }
 

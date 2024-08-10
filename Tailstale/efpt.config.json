@@ -27,10 +27,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[biological_test]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[biological_test_order]",
          "ObjectType": 0
       },
@@ -132,10 +128,6 @@
       },
       {
          "Name": "[dbo].[Message]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[nursing_record]",
          "ObjectType": 0
       },
       {

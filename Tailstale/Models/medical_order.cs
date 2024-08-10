@@ -11,17 +11,19 @@ public partial class medical_order
 
     public DateTime datetime { get; set; }
 
+    public int? pet_id { get; set; }
+
     public int? medical_records_id { get; set; }
 
     public virtual ICollection<biological_test_order> biological_test_orders { get; set; } = new List<biological_test_order>();
 
     public virtual ICollection<medical_imaging_order> medical_imaging_orders { get; set; } = new List<medical_imaging_order>();
 
-    public virtual ICollection<medical_imaging> medical_imagings { get; set; } = new List<medical_imaging>();
-
     public virtual medical_record medical_records { get; set; }
 
     public virtual ICollection<medicine_order> medicine_orders { get; set; } = new List<medicine_order>();
+
+    public virtual pet pet { get; set; }
 
     public virtual ICollection<surgery> surgeries { get; set; } = new List<surgery>();
 }

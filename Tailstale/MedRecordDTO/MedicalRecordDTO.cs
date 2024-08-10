@@ -32,7 +32,7 @@ namespace Tailstale.MedRecordDTO
 
         [Required(ErrorMessage = "必填")]
         [Display(Name = "就診時間")]
-        public DateTime? Datetime { get; set; }
+        public DateTime Datetime { get; set; }
 
 
         [Required(ErrorMessage = "必填")]

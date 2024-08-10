@@ -11,19 +11,11 @@ public partial class medical_imaging
 
     public DateTime? examined_time { get; set; }
 
-    public string type { get; set; }
-
-    public string examined_area { get; set; }
-
     public string findings { get; set; }
 
-    public int? pet_id { get; set; }
-
-    public int? medical_orders_id { get; set; }
+    public int? medical_imaging_order_id { get; set; }
 
     public virtual ICollection<image_file> image_files { get; set; } = new List<image_file>();
 
-    public virtual medical_order medical_orders { get; set; }
-
-    public virtual pet pet { get; set; }
+    public virtual medical_imaging_order medical_imaging_order { get; set; }
 }

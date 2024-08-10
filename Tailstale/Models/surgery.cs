@@ -13,7 +13,7 @@ public partial class surgery
 
     public string technique { get; set; }
 
-    public string anesthesia_duration { get; set; }
+    public string anesthesia { get; set; }
 
     public string findings { get; set; }
 

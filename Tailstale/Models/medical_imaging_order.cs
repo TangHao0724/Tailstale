@@ -17,5 +17,7 @@ public partial class medical_imaging_order
 
     public int? medical_orders_id { get; set; }
 
+    public virtual ICollection<medical_imaging> medical_imagings { get; set; } = new List<medical_imaging>();
+
     public virtual medical_order medical_orders { get; set; }
 }

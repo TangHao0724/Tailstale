@@ -9,17 +9,19 @@ public partial class medicine_order
 {
     public int id { get; set; }
 
-    public DateTime order_datetime { get; set; }
-
     public DateTime start_datetime { get; set; }
 
-    public int duration { get; set; }
-
-    public string route { get; set; }
+    public DateTime end_datetime { get; set; }
 
     public string order_status { get; set; }
 
-    public int? medicine_id { get; set; }
+    public int medicine_id { get; set; }
+
+    public string route { get; set; }
+
+    public decimal dosage { get; set; }
+
+    public string frequency { get; set; }
 
     public int? medical_orders_id { get; set; }
 

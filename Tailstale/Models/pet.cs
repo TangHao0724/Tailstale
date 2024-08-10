@@ -43,7 +43,7 @@ public partial class pet
 
     public virtual keeper keeper { get; set; }
 
-    public virtual ICollection<medical_imaging> medical_imagings { get; set; } = new List<medical_imaging>();
+    public virtual ICollection<medical_order> medical_orders { get; set; } = new List<medical_order>();
 
     public virtual ICollection<medical_record> medical_records { get; set; } = new List<medical_record>();
 

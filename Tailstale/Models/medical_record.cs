@@ -11,15 +11,13 @@ public partial class medical_record
 
     public int? pet_id { get; set; }
 
-    public DateTime? Datetime { get; set; }
+    public DateTime Datetime { get; set; }
 
     public decimal? weight { get; set; }
 
     public string complain { get; set; }
 
     public string diagnosis { get; set; }
-
-    public string treatment { get; set; }
 
     public string memo { get; set; }
 

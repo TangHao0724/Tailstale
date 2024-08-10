@@ -21,7 +21,5 @@ public partial class hosp_record
 
     public virtual medical_record medical_records { get; set; }
 
-    public virtual ICollection<nursing_record> nursing_records { get; set; } = new List<nursing_record>();
-
     public virtual ward ward { get; set; }
 }

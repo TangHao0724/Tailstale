@@ -111,7 +111,6 @@ namespace Tailstale.Controllers
                                       weight = r.weight,
                                       complain = r.complain,
                                       diagnosis = r.diagnosis,
-                                      treatment = r.treatment,
                                       memo = r.memo,
                                       fee = r.fee,
                                   }).FirstOrDefault();
@@ -146,7 +145,6 @@ namespace Tailstale.Controllers
                 outpatient_clinic_id = medicalRecordDTO.outpatient_clinic_id,
                 complain = medicalRecordDTO.complain,
                 diagnosis = medicalRecordDTO.diagnosis,
-                treatment = medicalRecordDTO.treatment,
                 memo = medicalRecordDTO.memo,
                 fee = medicalRecordDTO.fee
             };
@@ -178,7 +176,6 @@ namespace Tailstale.Controllers
                               weight = e.weight,
                               complain = e.complain,
                               diagnosis = e.diagnosis,
-                              treatment = e.treatment,
                               memo = e.memo,
                               fee = e.fee
                           }).FirstOrDefault(); //FirstOrDefault嗽嘎嘍啊
@@ -210,7 +207,6 @@ namespace Tailstale.Controllers
                 outpatient_clinic_id = medicalRecordDTO.outpatient_clinic_id,
                 complain = medicalRecordDTO.complain,
                 diagnosis = medicalRecordDTO.diagnosis,
-                treatment = medicalRecordDTO.treatment,
                 memo = medicalRecordDTO.memo,
                 fee = medicalRecordDTO.fee
             };
