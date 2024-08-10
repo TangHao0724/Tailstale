@@ -28,7 +28,6 @@ namespace Tailstale.Controllers
                     pet_ID = a.pet_ID,
                     pet_name = a.pet.name,
                     date = a.daily_outpatient_clinic_schedule.date
-                    //↑預約date改成確切時間
                 })
                 .ToListAsync();
             ViewBag.selected = appointments;
@@ -38,11 +37,6 @@ namespace Tailstale.Controllers
         // GET: medical_record
         public async Task<IActionResult> Index(int? pet_id)
         { //渲染
-            if (pet_id == null)
-            {
-                return View();
-            }
-
             var query = from m in _context.medical_records
                         join o in _context.outpatient_clinics on m.outpatient_clinic_id equals o.outpatient_clinic_ID
                         join p in _context.pets on m.pet_id equals p.pet_ID
@@ -66,20 +60,20 @@ namespace Tailstale.Controllers
 
             if (pet_id.HasValue)
             {
-                var basicInfo = await _context.pets.Where(p => p.pet_ID == pet_id).Select(p => new
+                query = query.Where(r => r.pet_id == pet_id.Value);
+
+                var basicInfo = await _context.pets
+                        .Where(p => p.pet_ID == pet_id)
+                        .Select(p => new
                 {
                     keeper_name = p.keeper.name,
                     pet_name = p.name,
                     pet_breed = p.pet_type.breed,
                     pet_age = p.age
                 }).FirstOrDefaultAsync();
-                query = query.Where(r => r.pet_id == pet_id.Value);
                 ViewBag.basicInfo = basicInfo;
             }
             var records = await query.OrderByDescending(m => m.Datetime).ToListAsync();
-
-
-
             ViewBag.pet_id = pet_id;
 
             return View(records);
