@@ -4,6 +4,7 @@
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
     
     <style>
         body {
@@ -144,6 +145,11 @@
         .form-select{
             width:45% !important;
             display:inline;
+        }
+
+        .flatpickr-calendar {
+            width: 320px;
+            zoom: 1.5;
         }
 
     </style>
@@ -344,11 +350,6 @@
                         </div>
                     </div>
 
-
-
-
-
-
                     <p>{{service.price}}</p>
                     <div class="text-center"><button class="Beauty_btn-3-1 dog_service"  :value="service.service_name" v-on:click="changeService(service.service_name)">選擇</button>
                     </div>
@@ -361,16 +362,18 @@
 
 
 
-    <div class="container my-5 Beauty_Step-4">
-        <div class="row">
-            <div class="col-12 col-md-12 p-0">
-                @* <p>預約時間: <input type="text" id="Appointment" value=""></p> *@
-                <p>預約時間: <input type="text" id="datetime-picker" value=""></p>
-                <div class="text-center"><button class="Beauty_btn-4" id="Beauty_date" v-on:click="selectTime()">確定</button>
-                    <p class="reminder" id="reminder">請按下「確定」按鈕以完成操作</p>
-                </div>
+    <div class="container my-5 Beauty_Step-4 p-0">
+            <h4>預約時間:</h4>
+            <input v-model="day" type="text" id="datepicker" style="display:none;" v-on:change="handleChangetime">
+            <div id="calendar" style="cursor: pointer;">Open Calendar</div>
+            <div v-for="(item, index) in AllTime" :key="index" style="display: inline-block;" class="m-2">
+                <input type="radio" class="btn-check" name="options" :id="'btn-check-' + index" autocomplete="off" :value="item" v-on:change="handleClick">
+                <label class="btn btn-primary" :for="'btn-check-' + index">{{item}}</label>
+             </div>
+            <div class="text-center">
+                <button class="Beauty_btn-4" id="Beauty_date" v-on:click="selectTime()">確定</button>
+                <p class="reminder" id="reminder">請按下「確定」按鈕以完成操作</p>
             </div>
-        </div>
     </div>
 
     <div class="container my-5 Beauty_Step-5">
@@ -414,13 +417,14 @@
     @section Scripts{
     <script src="https://unpkg.com/vue@3.4.31/dist/vue.global.js"></script>
    
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
+   
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"
             integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    
 
     <script>
         var viewBagKeeperIdStr = '@Html.Raw(ViewBag.KLoginID ?? "0")';
@@ -452,6 +456,12 @@
                     selectService: "",
                     selectAddress: "",
                     businessCard: [],
+                    Allday:[],
+                    
+                    day:"",
+                    daytime:"",
+                    people:0,
+                    AllTime: [],
                 };
             },
             mounted: function () {//初始化,發生呼叫函式,他需要用callback,
@@ -473,19 +483,44 @@
                 //     alert(err);
                 // });
 
+                const today = new Date();
 
+                // 指定可以选择的日期数组
+                const allowedDates = [
+                    '2024-08-11',
+                    '2024-08-15',
+                    '2024-08-20'
+                ].map(dateStr => new Date(dateStr));
 
-
-
-                flatpickr("#datetime-picker", {
-                    enableTime: true, // 啟用時間選擇
-                    dateFormat: "Y-m-d H:i", // 日期和時間格式
-                    minDate: "today", // 最小日期
-                    // disable: [disableDates],
-                    minTime: "10:00", // 最小時間
-                    maxTime: "19:00", // 最大時間
-                    time_24hr: true // 使用24小時制
+                flatpickr("#datepicker", {
+                    inline: true,
+                    minDate: today, // 禁用今天之前的日期
+                    disable: [
+                        function (date) {
+                            // 禁用不在 allowedDates 数组中的日期
+                            return !allowedDates.some(allowedDate => date.toDateString() === allowedDate.toDateString());
+                        }
+                    ]
                 });
+
+                // 绑定点击事件来打开日历
+                document.getElementById('calendar').addEventListener('click', function () {
+                    document.getElementById('datepicker').click();
+                });
+            
+        
+
+
+
+                // flatpickr("#datetime-picker", {
+                //     enableTime: true, // 啟用時間選擇
+                //     dateFormat: "Y-m-d H:i", // 日期和時間格式
+                //     minDate: "today", // 最小日期
+                //     // disable: [disableDates],
+                //     minTime: "10:00", // 最小時間
+                //     maxTime: "19:00", // 最大時間
+                //     time_24hr: true // 使用24小時制
+                // });
 
 
 
@@ -501,6 +536,26 @@
 
             },
             methods: {
+                handleClick(event) {
+                    // 获取 checkbox 元素
+                    const checkbox = event.target;
+
+                    // 获取 checkbox 的 value 属性
+                    this.daytime = checkbox.value + ":00";
+
+                    const dateTimeString = `${this.day} ${this.daytime}`;
+
+                    // 将字符串转换为 Date 对象
+                    this.Usetime = new Date(dateTimeString);
+
+
+                    // 格式化为数据库接受的格式
+                    // 使用 toLocaleString 来格式化为期望的格式
+                    
+
+                   
+                    
+                },
                 processAddresses(addresses) {
                     // 提取地址的前面三个字符
                     const shortAddresses = addresses.map(addr => addr.substring(0, 3));
@@ -528,6 +583,8 @@
                     }).catch(err => {
                         alert(err);
                     });
+
+                    
                 },
                 hidepic: function () {
                     $(".petimage-group").hide();
@@ -644,28 +701,80 @@
                     $(".Beauty_Step-2").fadeIn();
                     $('.nav-link').removeClass('active');
                     $('#stepbtn-2').addClass('active');
-                    axios.get(`${_this.baseAddress}/api/SalonApi/GetBusinessHour`).then(response => {
-                        this.BusinessHour = response.data.filter(item => item.business_ID === businessID);
+                    axios.get(`${_this.baseAddress}/api/SalonApi/GetBusinessHour`, {
+                        params: {
+                            id: _this.business_ID,
+                        }
+                    }).then(response => {
+                        // this.BusinessHour = response.data;
+                        this.Allday = response.data.map(item => item.business_day);
+                        this.people = response.data.map(item => item.people_limit);
                     }).catch(err => {
                         alert(err);
                     });
-                    
 
+                },
+                handleChangetime(event) {
+                    // 直接在这里更新 day 值并调用 showTime
+                    this.day = event.target.value;
+                    this.showTime();
+                },
+                showTime:function() {
+                    let _this = this;
+                    console.log('Request params:', {
+                        id: _this.business_ID,
+                        day: _this.day // 确保 day 值正确
+                    });
+                    axios.get(`${_this.baseAddress}/api/SalonApi/GetTimeRange`, {
+                        params: {
+                            id: _this.business_ID,
+                            day: _this.day,
+                        }
+                    }).then(response => {
+                        // this.BusinessHour = response.data;
+                        this.AllTime = response.data;
+                       
+                    }).catch(err => {
+                        console.error('Error:', err.response ? err.response.data : err.message);
+                        alert('An error occurred: ' + (err.response ? err.response.data : err.message));
+                    });
                 },
                 // servicesForBusinessID1004(businessID) {
                 //     return this.service.filter(service => service.business_ID === businessID);
                 // },
                 selectPetType: function (petType) {
-                    this.pet_type = petType
-                    this.selectService(this.business_ID, this.pet_type)
+                    this.pet_type = petType;
+                    this.selectService2(this.business_ID, this.pet_type);
                     $(".Beauty_Step-2").hide();
                     $(".Beauty_Step-3-1").fadeIn();
 
                     $('.nav-link').removeClass('active');
                     $('#stepbtn-3').addClass('active');
 
+                    const today = new Date();
+
+                    // 指定可以选择的日期数组
+                    const allowedDates = this.Allday.map(dateStr => new Date(dateStr));
+
+                    flatpickr("#datepicker", {
+                        inline: true,
+                        minDate: today, // 禁用今天之前的日期
+                        disable: [
+                            function (date) {
+                                // 禁用不在 allowedDates 数组中的日期
+                                return !allowedDates.some(allowedDate => date.toDateString() === allowedDate.toDateString());
+                            }
+                        ]
+                    });
+
+                    // 绑定点击事件来打开日历
+                    document.getElementById('calendar').addEventListener('click', function () {
+                        document.getElementById('datepicker').click();
+                    });
+
+
                 },
-                selectService: function (businessID, petType) {
+                selectService2: function (businessID, petType) {
                     let _this = this;
                     axios.get(`${_this.baseAddress}/api/SalonApi/GetService`).then(response => {
 
@@ -684,10 +793,11 @@
                     $('.nav-link').removeClass('active');
                     $('#stepbtn-4').addClass('active');
                 },
-                selectTime: function () {
-                    console.log(this.Usetime);
-                    this.Usetime = document.getElementById("datetime-picker").value;
-
+                selectTime: function () { 
+                    var timeInput = this.time + ":00";
+                    var combinedInput = this.day + 'T' + timeInput;
+                    // this.Usetime = document.getElementById("datetime-picker").value;
+                     console.log(this.Usetime);
                     // 如果有值，執行程式碼
                     $(".Beauty_Step-4").hide();
                     $(".Beauty_Step-5").fadeIn();
@@ -705,9 +815,9 @@
                         form.append("keeper_id", _this.keeper_id);
                         form.append("pet_name", _this.pet_name);
                         form.append("business_ID", _this.business_ID);
-                        form.append("time", new Date(_this.Usetime).toISOString());
+                        form.append("time", new Date(_this.Usetime).toLocaleString());
                         form.append("service_name", _this.serviceName);
-                        form.append("created_at", new Date().toISOString());
+                        form.append("created_at", new Date().toLocaleString());
                         form.append("status", 1);
                         //axios.put(uri, 參數, {物件參數}).then().catch()
                         axios.post(`${_this.baseAddress}/api/SalonApi/ReserveCreate`, form, {//新增不需要id在uri

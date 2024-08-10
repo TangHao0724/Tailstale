@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.VisualBasic;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using System;
 using System.Drawing;
 using Tailstale.Models;
 using Tailstale.Salon_DTO;
@@ -66,9 +68,11 @@ namespace Tailstale.Controllers
 
         // GET: api/SalonApi/GetBusinessHour
         [HttpGet("GetBusinessHour")]
-        public async Task<IEnumerable<BusinessHourDTO>> GetBusinessHour()
+        public async Task<IEnumerable<BusinessHourDTO>> GetBusinessHour(int id)
         {
-            return _context.Business_hours.Select(Emp => new BusinessHourDTO
+            return _context.Business_hours
+                .Where(Emp => Emp.business_ID == id)
+                .Select(Emp => new BusinessHourDTO
             {
                 id = Emp.id,
                 business_ID = Emp.business_ID,
@@ -78,6 +82,51 @@ namespace Tailstale.Controllers
                 people_limit = Emp.people_limit,
             });
         }
+
+        // GET: api/SalonApi/GetTimeRange
+        [HttpGet("GetTimeRange")]
+        public async Task<IActionResult> GetTimeRange(string day,int id)
+        {
+           
+            if (!DateOnly.TryParse(day, out var dayDate))
+            {
+                Console.WriteLine($"Failed to parse day: {day}");
+                return BadRequest(new { error = "Invalid date format. Expected format: yyyy-MM-dd" });
+            }
+
+            // 查詢對應的資料
+            var businessHour = await _context.Business_hours
+                .Where(bh => bh.business_day == dayDate && bh.business_ID == id)
+                .FirstOrDefaultAsync();
+
+            if (businessHour == null)
+            {
+                return NotFound("No data found for the specified day.");
+            }
+
+            // 確保時間格式有效
+            if (businessHour.open_time == null || businessHour.close_time == null)
+            {
+                return StatusCode(500, new { error = "Open time or close time is null in database." });
+            }
+
+            // 生成時間範圍
+            var timeList = new List<string>();
+            var currentTime = businessHour.open_time.Value;
+            var endTime = businessHour.close_time.Value;
+
+            while (currentTime <= endTime)
+            {
+                //timeList.Add(currentTime.ToString(@"hh\:mm"));//12小時制
+                timeList.Add(currentTime.ToString("HH:mm"));
+                currentTime = currentTime.AddHours(1);
+            }
+
+            return Ok(timeList);
+        }
+
+
+
 
         // GET: api/SalonApi/GetSalonPicture
         [HttpGet("GetSalonPicture")]
