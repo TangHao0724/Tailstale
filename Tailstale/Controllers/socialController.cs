@@ -20,8 +20,8 @@ namespace Tailstale.Controllers
         }
         //寫入keeper文章以及文章圖片關聯表，完持一次的文章貼文
         [HttpPost("PostArticle")]
-    public async Task<IActionResult> PostArticle(postArticleDTO DTO)
-    {
+        public async Task<IActionResult> PostArticle(postArticleDTO DTO)
+        {
             if (DTO == null)
             {
                 return BadRequest("你的輸入為空");
@@ -130,7 +130,7 @@ namespace Tailstale.Controllers
                 return StatusCode(500, new { Message = $"上傳圖片失敗: {ex.Message}" });
             }
         }
-        private async Task save_Kimg_intype(int userid,int typeid , List<IFormFile> imgs)
+        private async Task save_Kimg_intype(int userid, int typeid, List<IFormFile> imgs)
         {
             try
             {
@@ -144,8 +144,8 @@ namespace Tailstale.Controllers
                     string Name = Path.GetFileNameWithoutExtension(item.FileName);
 
                     int counter = 1;
-                    
-                    while (_context.keeper_imgs.Where(t => t.img_type_id == typeid  ).Any(n => n.name == Name))
+
+                    while (_context.keeper_imgs.Where(t => t.img_type_id == typeid).Any(n => n.name == Name))
                     {
                         Name = $"{Path.GetFileNameWithoutExtension(item.FileName)}_{counter}";
                         counter++;
@@ -171,7 +171,7 @@ namespace Tailstale.Controllers
             }
             catch (Exception ex) {
                 Console.WriteLine(ex.ToString());
-            }   
+            }
         }
         private async Task save_Bimg_intype(int userid, int typeid, List<IFormFile> imgs)
         {
@@ -216,6 +216,11 @@ namespace Tailstale.Controllers
             {
                 Console.WriteLine(ex.ToString());
             }
+        }
+        [HttpGet("GetAllpost")]
+        public async Task<IActionResult> GetAllpost()
+        {
+            //獲得最新的幾天
         }
 
         private string GenerateRandomString(int length)
