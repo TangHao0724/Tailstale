@@ -103,10 +103,6 @@ namespace Tailstale.Controllers
             return View();
         }
 
-        public async Task<IEnumerable<frontDeskSearchingResult_DTO>> showVetInfo([FromBody] frontDeskSearchingCriteria_DTO criteria)
-        { 
-         
-        }
 
 
     }
