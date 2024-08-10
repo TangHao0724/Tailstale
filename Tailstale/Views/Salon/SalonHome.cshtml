@@ -462,6 +462,7 @@
                     daytime:"",
                     people:0,
                     AllTime: [],
+                    mypeople: 0,
                 };
             },
             mounted: function () {//初始化,發生呼叫函式,他需要用callback,
@@ -708,15 +709,20 @@
                     }).then(response => {
                         // this.BusinessHour = response.data;
                         this.Allday = response.data.map(item => item.business_day);
-                        this.people = response.data.map(item => item.people_limit);
+                        this.people = response.data.map(item => ({
+                            business_day: item.business_day,
+                            people_limit: item.people_limit
+                        }));
                     }).catch(err => {
                         alert(err);
                     });
-
+                    
                 },
                 handleChangetime(event) {
                     // 直接在这里更新 day 值并调用 showTime
                     this.day = event.target.value;
+                    const foundItem = this.people.find(item => item.business_day === this.day);
+                    this.mypeople = foundItem ? foundItem.people_limit : null;
                     this.showTime();
                 },
                 showTime:function() {
@@ -729,6 +735,7 @@
                         params: {
                             id: _this.business_ID,
                             day: _this.day,
+                            people: _this.mypeople,
                         }
                     }).then(response => {
                         // this.BusinessHour = response.data;
@@ -826,16 +833,20 @@
                             alert(response.data);
                             $(".Beauty_Step-5").hide();
                             $(".Beauty_Step-1").fadeIn();
+                            $('.nav-link').removeClass('active');
+                            $('#stepbtn-1').addClass('active');
                             _this.business_ID = 0;
                             _this.pet_type = "";
                             _this.serviceName = "";
                             _this.Usetime = "";
+                            _this.mypeople = 0;
                         }).catch(err => {
                             alert(err);
                         });
                     } else {
                         alert("請先登入在預約!");
                     }
+                    this.AllTime = [];
                 },
                 initializeSelectedValue() {
                     const selectElement = document.getElementById('pet_name');;

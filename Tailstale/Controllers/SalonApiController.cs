@@ -85,7 +85,7 @@ namespace Tailstale.Controllers
 
         // GET: api/SalonApi/GetTimeRange
         [HttpGet("GetTimeRange")]
-        public async Task<IActionResult> GetTimeRange(string day,int id)
+        public async Task<IActionResult> GetTimeRange(string day,int id, int people)
         {
            
             if (!DateOnly.TryParse(day, out var dayDate))
@@ -115,12 +115,23 @@ namespace Tailstale.Controllers
             var currentTime = businessHour.open_time.Value;
             var endTime = businessHour.close_time.Value;
 
-            while (currentTime <= endTime)
+            var endTimePlusOneHour = endTime.AddHours(-1);
+
+            while (currentTime <= endTimePlusOneHour)
             {
-                //timeList.Add(currentTime.ToString(@"hh\:mm"));//12小時制
-                timeList.Add(currentTime.ToString("HH:mm"));
+                // 檢查是否有足夠空位
+                var dateTimeToCheck = dayDate.ToDateTime(currentTime);
+                var reservationCount = await _context.Reserves
+                    .CountAsync(r => r.time.Date == dateTimeToCheck.Date && r.time.TimeOfDay == dateTimeToCheck.TimeOfDay);
+
+                if (reservationCount < people)
+                {
+                    timeList.Add(currentTime.ToString("HH:mm"));
+                }
+
                 currentTime = currentTime.AddHours(1);
             }
+        
 
             return Ok(timeList);
         }
@@ -158,11 +169,26 @@ namespace Tailstale.Controllers
                 return "預約失敗,請先登入!";
             }
 
+            try
+            {
+                _context.Reserves.Add(reserve);
+                _context.SaveChangesAsync();
 
-            _context.Reserves.Add(reserve);
-            _context.SaveChangesAsync();
+                return "預約完成!";
+            }
+            catch (Exception ex)
+            {
+                // 记录异常日志（可选）
+                // _logger.LogError(ex, "Error occurred while creating reservation");
 
-            return "預約完成!";
+                // 返回错误响应
+                return "預約失敗,請重試";
+            }
+
+            //_context.Reserves.Add(reserve);
+            //_context.SaveChangesAsync();
+
+            //return "預約完成!";
         }
 
         [HttpGet("SelectKeeperId")]
