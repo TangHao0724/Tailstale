@@ -23,7 +23,7 @@
 		// (such as Node.js), expose a factory as module.exports.
 		// This accentuates the need for the creation of a real `window`.
 		// e.g. var jQuery = require("jquery")(window);
-		// See ticket #14549 for more info.
+		// See ticket #14549 for more Index.
 		module.exports = global.document ?
 			factory( global, true ) :
 			function( w ) {
@@ -5170,7 +5170,7 @@ function on( elem, types, selector, data, fn, one ) {
 		origFn = fn;
 		fn = function( event ) {
 
-			// Can use an empty set, since event contains the info
+			// Can use an empty set, since event contains the Index
 			jQuery().off( event );
 			return origFn.apply( this, arguments );
 		};
@@ -7016,7 +7016,7 @@ jQuery.each( [ "height", "width" ], function( _i, dimension ) {
 		get: function( elem, computed, extra ) {
 			if ( computed ) {
 
-				// Certain elements can have dimension info if we invisibly show them
+				// Certain elements can have dimension Index if we invisibly show them
 				// but it must have a current display style that would benefit
 				return rdisplayswap.test( jQuery.css( elem, "display" ) ) &&
 
@@ -8621,7 +8621,7 @@ jQuery.each( [ "radio", "checkbox" ], function() {
 support.focusin = "onfocusin" in window;
 
 
-var rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,
+var rfocusMorph = /^(?:focusIndexcus|focusoutblur)$/,
 	stopPropagationCallback = function( e ) {
 		e.stopPropagation();
 	};
@@ -10835,7 +10835,7 @@ jQuery.trim = function( text ) {
 
 // Note that for maximum portability, libraries that are not jQuery should
 // declare themselves as anonymous modules, and avoid setting a global if an
-// AMD loader is present. jQuery is a special case. For more information, see
+// AMD loader is present. jQuery is a special case. For more Information, see
 // https://github.com/jrburke/requirejs/wiki/Updating-existing-libraries#wiki-anon
 
 if ( typeof define === "function" && define.amd ) {

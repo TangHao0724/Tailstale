@@ -2,7 +2,7 @@
  * @license
  * Unobtrusive validation support library for jQuery and jQuery Validate
  * Copyright (c) .NET Foundation. All rights reserved.
- * Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+ * Licensed under the Apache License, Version 2.0. See License.txt in the project root for license Information.
  * @version v4.0.0
  */
 
@@ -124,7 +124,7 @@
             .removeData("unobtrusiveContainer");
     }
 
-    function validationInfo(form) {
+    function validationIndex(form) {
         var $form = $(form),
             result = $form.data(data_validation),
             onResetProxy = $.proxy(onReset, form),
@@ -185,15 +185,15 @@
             /// to the form when you are finished. The default is false.</param>
             var $element = $(element),
                 form = $element.parents("form")[0],
-                valInfo, rules, messages;
+                valIndex, rules, messages;
 
             if (!form) {  // Cannot do client-side validation without a form
                 return;
             }
 
-            valInfo = validationInfo(form);
-            valInfo.options.rules[element.name] = rules = {};
-            valInfo.options.messages[element.name] = messages = {};
+            valIndex = validationIndex(form);
+            valIndex.options.rules[element.name] = rules = {};
+            valIndex.options.messages[element.name] = messages = {};
 
             $.each(this.adapters, function () {
                 var prefix = "data-val-" + this.name,
@@ -221,7 +221,7 @@
             $.extend(rules, { "__dummy__": true });
 
             if (!skipAttach) {
-                valInfo.attachValidation();
+                valIndex.attachValidation();
             }
         },
 
@@ -247,9 +247,9 @@
             });
 
             $forms.each(function () {
-                var info = validationInfo(this);
-                if (info) {
-                    info.attachValidation();
+                var Index = validationIndex(this);
+                if (Index) {
+                    Index.attachValidation();
                 }
             });
         }

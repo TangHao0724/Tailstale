@@ -48,6 +48,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="MedViewModels\" />
     <Folder Include="wwwroot\images\business\" />
     <Folder Include="wwwroot\images\room\" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />

@@ -600,7 +600,7 @@
           bubbles,
           cancelable: true
         });
-      } // merge custom information in our event
+      } // merge custom Information in our event
 
 
       if (typeof args !== 'undefined') {

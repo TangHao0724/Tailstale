@@ -21,7 +21,5 @@ public partial class speciman
 
     public virtual ICollection<biological_test_order> biological_test_orders { get; set; } = new List<biological_test_order>();
 
-    public virtual ICollection<biological_test> biological_tests { get; set; } = new List<biological_test>();
-
     public virtual pet_type pet_typeNavigation { get; set; }
 }

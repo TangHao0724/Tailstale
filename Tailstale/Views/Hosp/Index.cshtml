@@ -5,63 +5,80 @@
 }
 
 <h1>住院記錄</h1>
-<span>
-    <a asp-controller="medical_record" asp-action="Index">病歷記錄</a>
-    <a asp-controller="nursing_record" asp-action="Info">護理記錄</a>
-</span>
-<br />
-<br />
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.admission_date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.discharge_date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.medical_record_id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.medical_record_id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ward_id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.memo)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+<br>
+@if (ViewBag.basicInfo != null)
+{
+    <div id="basic_info" style="border:2px solid black;">
+        飼主: @ViewBag.basicInfo.keeper_name
+        寵物: @ViewBag.basicInfo.pet_name
+        @ViewBag.basicInfo.pet_breed
+        年紀: @ViewBag.basicInfo.pet_age 歲
+    </div>
+}
+<br /><br />
+@if (Model.Any()) @* 檢查是否有住院記錄 *@
+{
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(moitemdelItem => item.admission_date)
-                </td>
-                <td>
-                    @Html.DisplayFor(moitemdelItem => item.discharge_date)
-                </td>
-                <td>
-                    @Html.DisplayFor(moitemdelItem => item.medical_record_id)
-                </td>
-                <td>
-                    @*住院的看診記錄*@
-                    <a href="/medical_record/Details/@item.medical_record_id">@item.created_at</a>
-                </td>
-                <td>
-                        @Html.DisplayFor(modelItem => item.ward_id)
-                </td>
-                <td>
-                        @Html.DisplayFor(modelItem => item.memo)
-                </td>
-                <td>
-                    <a asp-controller="nursing_record" asp-action="Info" asp-route-id="@item.id">護理記錄</a>
-                    <a asp-action="Edit" asp-route-id="@item.id">修改</a>
-                </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.admission_date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.discharge_date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.medical_records_id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.medical_records_id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ward_id)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.memo)
+                </th>
+                <th> </th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.admission_date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.discharge_date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.medical_records_id)
+                    </td>
+                    <td>
+                        @*住院的看診記錄*@
+                        <a href="/medical_record/Details/@item.medical_records_id">@item.Datetime</a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ward_id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.memo)
+                    </td>
+                    <td>
+                        @*<a asp-controller="nursing_record" asp-action="Index" asp-route-hosp_record_id="@item.id">護理記錄</a>*@
+                        <a asp-action="Edit" asp-route-medical_records_id="@item.medical_records_id" asp-route-id="@item.id">修改</a>@*修改for出院*@
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>
+        沒有相關的住院資料
+        <br><br>
+    <a asp-action="Create" asp-route-medical_record_id="@ViewBag.medical_record_id">新增住院記錄</a>
+    </p>
+}

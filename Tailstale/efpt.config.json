@@ -31,7 +31,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[biological_test]",
+         "Name": "[dbo].[biological_test_order]",
          "ObjectType": 0
       },
       {

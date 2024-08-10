@@ -11,7 +11,7 @@ namespace Tailstale.MedRecordDTO
         public int? pet_id { get; set; }
 
         [Display(Name = "住院記錄")]
-        public int hosp_history_id { get; set; }
+        public int hosp_record_id { get; set; }
 
         [Display(Name = "時間")]
         public DateTime datetime { get; set; }

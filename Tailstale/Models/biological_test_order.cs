@@ -9,6 +9,19 @@ public partial class biological_test_order
 {
     public int id { get; set; }
 
+<<<<<<<< HEAD:Tailstale/Models/biological_test.cs
+    public DateTime? test_time { get; set; }
+
+    public decimal lab_data { get; set; }
+
+    public string findings { get; set; }
+
+    public int? specimen_id { get; set; }
+
+    public int? biological_test_order_id { get; set; }
+
+    public virtual biological_test_order biological_test_order { get; set; }
+========
     public DateTime order_time { get; set; }
 
     public DateTime test_time { get; set; }
@@ -17,9 +30,8 @@ public partial class biological_test_order
 
     public int? medical_orders_id { get; set; }
 
-    public virtual ICollection<biological_test> biological_tests { get; set; } = new List<biological_test>();
-
     public virtual medical_order medical_orders { get; set; }
+>>>>>>>> med-record,V2:Tailstale/Models/biological_test_order.cs
 
     public virtual speciman specimen { get; set; }
 }

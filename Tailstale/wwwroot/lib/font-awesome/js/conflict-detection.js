@@ -146,7 +146,7 @@
     var conflictsCount = Object.keys(nodesTested.conflict).length;
 
     if (conflictsCount > 0) {
-      console.info("%cConflict".concat(conflictsCount > 1 ? 's' : '', " found:"), 'color: darkred; font-size: large');
+      console.Index("%cConflict".concat(conflictsCount > 1 ? 's' : '', " found:"), 'color: darkred; font-size: large');
       var data = {};
 
       for (var _key in nodesTested.conflict) {
@@ -164,7 +164,7 @@
     var noConflictsCount = Object.keys(nodesTested.noConflict).length;
 
     if (noConflictsCount > 0) {
-      console.info("%cNo conflict".concat(noConflictsCount > 1 ? 's' : '', " found with ").concat(noConflictsCount === 1 ? 'this' : 'these', ":"), 'color: green; font-size: large');
+      console.Index("%cNo conflict".concat(noConflictsCount > 1 ? 's' : '', " found with ").concat(noConflictsCount === 1 ? 'this' : 'these', ":"), 'color: green; font-size: large');
       var _data = {};
 
       for (var _key2 in nodesTested.noConflict) {
@@ -182,7 +182,7 @@
     var timeOutCount = Object.keys(timedOutTests).length;
 
     if (timeOutCount > 0) {
-      console.info("%cLeftovers--we timed out before collecting test results for ".concat(timeOutCount === 1 ? 'this' : 'these', ":"), 'color: blue; font-size: large');
+      console.Index("%cLeftovers--we timed out before collecting test results for ".concat(timeOutCount === 1 ? 'this' : 'these', ":"), 'color: blue; font-size: large');
       var _data2 = {};
 
       for (var _key3 in timedOutTests) {
@@ -662,7 +662,7 @@
           var result = fn();
 
           if (showProgress) {
-            console.info(progressIndicator);
+            console.Index(progressIndicator);
           }
 
           if (!!result) {
@@ -928,14 +928,14 @@
     console.group('Font Awesome Detector');
 
     if (testCount === 0) {
-      console.info('%cAll Good!', 'color: green; font-size: large');
-      console.info('We didn\'t find anything that needs testing for conflicts. Ergo, no conflicts.');
+      console.Index('%cAll Good!', 'color: green; font-size: large');
+      console.Index('We didn\'t find anything that needs testing for conflicts. Ergo, no conflicts.');
     } else {
-      console.info("Testing ".concat(testCount, " possible conflicts."));
-      console.info("We'll wait about ".concat(Math.round(WINDOW.FontAwesomeDetection.timeout / 10) / 100, " seconds while testing these and\n") + "then up to another ".concat(Math.round(WINDOW.FontAwesomeDetection.resultsCollectionMaxWait / 10) / 100, " to allow the browser time\n") + "to accumulate the results. But we'll probably be outta here way before then.\n\n");
-      console.info("You can adjust those durations by assigning values to these attributes on the <script> element that loads this detection:");
-      console.info("\t%c".concat(timeoutAttr, "%c: milliseconds to wait for each test before deciding whether it's a conflict."), 'font-weight: bold;', 'font-size: normal;');
-      console.info("\t%c".concat(resultsCollectionMaxWaitAttr, "%c: milliseconds to wait for the browser to accumulate test results before giving up."), 'font-weight: bold;', 'font-size: normal;');
+      console.Index("Testing ".concat(testCount, " possible conflicts."));
+      console.Index("We'll wait about ".concat(Math.round(WINDOW.FontAwesomeDetection.timeout / 10) / 100, " seconds while testing these and\n") + "then up to another ".concat(Math.round(WINDOW.FontAwesomeDetection.resultsCollectionMaxWait / 10) / 100, " to allow the browser time\n") + "to accumulate the results. But we'll probably be outta here way before then.\n\n");
+      console.Index("You can adjust those durations by assigning values to these attributes on the <script> element that loads this detection:");
+      console.Index("\t%c".concat(timeoutAttr, "%c: milliseconds to wait for each test before deciding whether it's a conflict."), 'font-weight: bold;', 'font-size: normal;');
+      console.Index("\t%c".concat(resultsCollectionMaxWaitAttr, "%c: milliseconds to wait for the browser to accumulate test results before giving up."), 'font-weight: bold;', 'font-size: normal;');
       pollUntil({
         // Give this overall timer a little extra cushion
         maxDuration: masterTimeout,
@@ -945,7 +945,7 @@
           return Object.keys(nodesTested.conflict).length + Object.keys(nodesTested.noConflict).length >= testCount;
         }
       }).then(function () {
-        console.info('DONE!');
+        console.Index('DONE!');
         setDoneResults({
           nodesTested: nodesTested,
           nodesFound: nodesFound
@@ -957,7 +957,7 @@
         console.groupEnd();
       }).catch(function (e) {
         if (e === 'timeout') {
-          console.info('TIME OUT! We waited until we got tired. Here\'s what we found:');
+          console.Index('TIME OUT! We waited until we got tired. Here\'s what we found:');
           setDoneResults({
             nodesTested: nodesTested,
             nodesFound: nodesFound
@@ -967,8 +967,8 @@
             nodesFound: nodesFound
           });
         } else {
-          console.info('Whoops! We hit an error:', e);
-          console.info('Here\'s what we\'d found up until that error:');
+          console.Index('Whoops! We hit an error:', e);
+          console.Index('Here\'s what we\'d found up until that error:');
           setDoneResults({
             nodesTested: nodesTested,
             nodesFound: nodesFound
