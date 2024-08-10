@@ -26,4 +26,6 @@ public partial class medical_order
     public virtual pet pet { get; set; }
 
     public virtual ICollection<surgery> surgeries { get; set; } = new List<surgery>();
+
+    public virtual ICollection<treatment> treatments { get; set; } = new List<treatment>();
 }
