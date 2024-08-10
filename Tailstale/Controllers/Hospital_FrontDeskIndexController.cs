@@ -98,11 +98,17 @@ namespace Tailstale.Controllers
             }
         }
 
-        public IActionResult HospitalIndex()//院所首頁
+        [HttpGet]
+        public IActionResult HospitalIndex(HospitalInfo_DTO hospitalInfo, outpatientClinicInfo opcInfo)//院所首頁
         {
+            
             return View();
         }
 
+        public async Task<IEnumerable<HospitalInfo_DTO>> showVetInfo([FromBody] )
+        {
+            return null;
+        }
 
 
     }
