@@ -50,7 +50,7 @@ namespace Tailstale.Controllers
                                    img_type_id = b_img_types.ID,
                                    URL = b_img.URL,
                                    name = b_img.name,
-                                   employment_status=v_info.employment_status,
+                                   employment_status=(bool)v_info.employment_status,
                                };
 
                 return View(v_Infovm);
@@ -92,7 +92,7 @@ namespace Tailstale.Controllers
                                       img_type_id = b_img_types.ID,
                                       URL = b_img.URL,
                                       name = b_img.name,
-                                      employment_status=v_info.employment_status,
+                                      employment_status=(bool)v_info.employment_status,
                                   }).FirstOrDefaultAsync();
 
             return View(v_Infovm);
@@ -210,7 +210,7 @@ namespace Tailstale.Controllers
                                img_type_id = b_img_types.ID,
                                URL = b_img.URL,
                                name = b_img.name,
-                               employment_status=v_info.employment_status,
+                               employment_status=(bool)v_info.employment_status
                            }).FirstOrDefaultAsync();
 
             ViewData["business_ID"] = new SelectList(_context.businesses.Where(b=>b.type_ID==3), "ID", "name");
@@ -305,7 +305,7 @@ namespace Tailstale.Controllers
                         license_number = v_Infovm.license_number,
                         department_ID = v_Infovm.department_ID,
                         profile = v_Infovm.profile,
-                        employment_status=v_Infovm.employment_status,
+                        employment_status=(bool)v_Infovm.employment_status,
                         business_img_ID = business_ImgUpdate.ID,
                     };
                     _context.Update(vet_InformationUpdate);

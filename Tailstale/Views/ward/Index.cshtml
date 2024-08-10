@@ -20,17 +20,11 @@
 <div class="container">
     <div class="row">
         <div class="list-group col-2 text-start">
-            <a href="#" class="list-group-item list-group-item-action sidebar-item">預約記錄管理</a>            
-            <div class="dropdown">
-                <a class="list-group-item list-group-item-action sidebar-item dropdown-toggle" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                    醫療資訊管理
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><a asp-action="Index" asp-controller="departments" class="list-group-item list-group-item-action sidebar-item">科別管理</a></li>
-                    <li><a asp-action="Index" asp-controller="outpatient_clinic" class="list-group-item list-group-item-action sidebar-item">門診資訊管理</a></li>
-                    <li><a asp-action="Index" asp-controller="daily_outpatient_clinic_schedule" class="list-group-item list-group-item-action sidebar-item">門診表管理</a></li>                    
-                </ul>
-            </div>            
+            <a asp-action="Index" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item">預約記錄管理</a>
+            <a asp-action="Details" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item">過去預約記錄檢視</a>
+            <a asp-action="Index" asp-controller="daily_outpatient_clinic_schedule" class="list-group-item list-group-item-action sidebar-item">門診表管理</a>
+            <a asp-action="Index" asp-controller="outpatient_clinic" class="list-group-item list-group-item-action sidebar-item ">門診資訊管理</a>
+            <a asp-action="Index" asp-controller="departments" class="list-group-item list-group-item-action sidebar-item">科別管理</a>
             <a asp-action="Index" asp-controller="vet_information" class="list-group-item list-group-item-action sidebar-item">醫師資訊管理</a>
             <a asp-action="Index" asp-controller="ward" class="list-group-item list-group-item-action sidebar-item active">院內病房管理</a>
             <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 6</a>

@@ -1,0 +1,423 @@
+﻿@model IEnumerable<Tailstale.Models.daily_outpatient_clinic_schedule>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section Styles
+{
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        .calendar-cell {
+            height: 150px;
+            width: 14.28%;
+            /* 確保每個單元格寬度相等，7天每天佔14.28% */
+            position: relative;
+            padding: 5px;
+            /* 減少內邊距以增加可用空間 */
+        }
+
+        .date {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            /* 設置日期數字的字體大小 */
+        }
+
+        .shift-content {
+            height: 160px;
+            overflow-y: auto;
+            /* 允許垂直滾動，以顯示多個班次 */
+            padding-top: 30px;
+            /* 為日期數字留出空間 */
+            font-size: 0.9rem;
+            /* 稍微減小字體大小以適應更多內容 */
+        }
+
+        .shift-item {
+            /* display: flex; */
+            background-color: #D8D8EB;
+            justify-content: space-between;            
+            align-items: flex-start;
+            margin-bottom: 7px;
+            padding: 5px 5px;
+            border-radius: 3px;            
+        }
+        
+        .shift-text {
+            background-color: #E6E6F2;
+            padding: 3px;
+            width:100%;
+        }
+
+        .other-month {
+            background-color: lightgray;
+            /* 淺灰色背景表示非當前月份的日期 */
+        }
+
+        #calendar {
+            width: 100%;
+            table-layout: fixed;
+            /* 確保表格列寬度均勻分布 */
+        }
+
+        #calendar th {
+            text-align: center;
+            padding: 10px 5px;
+            /* 調整表格標題的內邊距 */
+        }
+    </style>
+}
+
+<h4>門診表管理</h4>
+<hr>
+
+
+<div class="container">
+    <div class="row">
+        <div class="list-group col-2 text-start">
+            <a asp-action="Index" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item">預約記錄管理</a>
+            <a asp-action="Index" asp-controller="daily_outpatient_clinic_schedule" class="list-group-item list-group-item-action sidebar-item active">門診表管理</a>            
+            <a asp-action="Index" asp-controller="outpatient_clinic" class="list-group-item list-group-item-action sidebar-item ">門診資訊管理</a>            
+            <a asp-action="Index" asp-controller="departments" class="list-group-item list-group-item-action sidebar-item">科別管理</a>
+            <a asp-action="Index" asp-controller="vet_information" class="list-group-item list-group-item-action sidebar-item">醫師資訊管理</a>
+            <a asp-action="Index" asp-controller="ward" class="list-group-item list-group-item-action sidebar-item">院內病房管理</a>
+            <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 6</a>
+            <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 7</a>
+            <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 8</a>
+            <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 9</a>
+            <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 10</a>
+        </div>
+
+        <div class="col-10">
+            <div class="container-fluid">   
+                <div class="row mb-3">
+                    <div class="col-auto">
+                        <select id="yearSelect" class="form-select"></select>
+                    </div>
+                    <div class="col-auto">
+                        <select id="monthSelect" class="form-select">
+                            <option value="0">1月</option>
+                            <option value="1">2月</option>
+                            <option value="2">3月</option>
+                            <option value="3">4月</option>
+                            <option value="4">5月</option>
+                            <option value="5">6月</option>
+                            <option value="6">7月</option>
+                            <option value="7">8月</option>
+                            <option value="8">9月</option>
+                            <option value="9">10月</option>
+                            <option value="10">11月</option>
+                            <option value="11">12月</option>
+                        </select>
+                    </div>
+                </div>
+                <table id="calendar" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>星期日</th>
+                            <th>星期一</th>
+                            <th>星期二</th>
+                            <th>星期三</th>
+                            <th>星期四</th>
+                            <th>星期五</th>
+                            <th>星期六</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="shiftModal" tabindex="-1" aria-labelledby="shiftModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="shiftModalLabel">選擇門診</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <select id="shiftSelect" class="form-select mb-3"></select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="addShift">添加</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script>       
+                
+        let currentCell; // 存儲當前選中的日期單元格
+        //const shiftData = JSON.parse(localStorage.getItem('shiftData')) || {}; // 從本地存儲加載班次數據，如果不存在則初始化為空對象
+        let shiftModal; // 存儲班次選擇模態框的實例
+
+        // 生成日曆函數
+        function generateCalendar(year, month) {
+            const calendar = document.getElementById('calendar').getElementsByTagName('tbody')[0];
+            calendar.innerHTML = ''; // 清空現有日曆內容
+
+            // 獲取當月的第一天和最後一天
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDay = firstDay.getDay();
+
+            let date = 1;
+            // 生成日曆網格
+            for (let i = 0; i < 6; i++) { // 最多6行
+                let row = calendar.insertRow();
+                for (let j = 0; j < 7; j++) { // 7列（週日到週六）
+                    let cell = row.insertCell();
+                    cell.className = 'calendar-cell';
+                    if (i === 0 && j < startingDay) {
+                        cell.classList.add('other-month'); // 上個月的日期
+                    } else if (date > daysInMonth) {
+                        cell.classList.add('other-month'); // 下個月的日期
+                    } else {
+                        const monthFormatted = String(month + 1).padStart(2, '0'); // 確保月份是兩位數
+                        const dateFormatted = String(date).padStart(2, '0'); // 確保日期是兩位數
+                        const cellDate = `${year}-${monthFormatted}-${dateFormatted}`;
+
+                        cell.innerHTML = `<div class="date">${date}</div><div class="shift-content" id="${cellDate}" data-dayofweek="${j}"></div>`;
+                        cell.classList.add('shift');
+                        //loadShifts(cellDate); // 載入該日期的門診數據(可刪除)
+                        date++;
+                    }
+                }
+                if (date > daysInMonth) {
+                    break; // 如果日期超過了當月天數，退出循環
+                }
+            }
+
+            // 為每個日期單元格添加點擊事件
+            $('.shift-content').on('click', function (e) {
+                if (e.target.classList.contains('btnDelete') || (e.target.classList.contains('chkEdit'))) {
+                    
+                    return; // 如果點擊的是刪除按鈕，不執行後續操作
+                }
+                
+                currentCell = $(this);                
+                shiftModal.show(); // 顯示班次選擇彈出視窗
+                showOptionsfromOpc(currentCell.data('dayofweek'))
+            })
+        }       
+
+        //生成當月單元格內容
+        function generateMonthlySchedule(opcsofselectedMonth) {
+            $('.shift-content').empty();
+            opcsofselectedMonth.forEach(result => {
+                var shiftContent = document.getElementById(result.date);                
+                const shiftItem = document.createElement('div');
+                shiftItem.className = `shift-item`;
+
+                //將資料庫查詢到的結果填入對應日期的單元格中
+                if (result.daily_outpatient_clinic_schedule_status==true)
+                {
+                    shiftItem.innerHTML = `
+                            <div class="shift-text"><span>[${result.outpatient_clinic_name}]<br>${result.vet_name}<br>${result.outpatient_clinic_timeslot_name}</span></div>
+
+                            <div class="text-end mt-1">
+                            <label class="form-switch-label chkEdit" for="switch-${result.daily_outpatient_clinic_schedule_ID}">
+                            <input class="form-check-input chkEdit" type="checkbox" data-edit="${result.daily_outpatient_clinic_schedule_ID}" checked>休診
+                            </label>
+
+                            <a class="btn-outline-danger btn-sm btnDelete" aria-label="刪除" data-delete="${result.daily_outpatient_clinic_schedule_ID}"><i class="bi bi-trash3"></i></a>
+                            </div>
+                        `;
+                    shiftContent.appendChild(shiftItem);
+                }
+                else
+                {
+                    shiftItem.innerHTML = `
+                            <div class="shift-text"><span>[${result.outpatient_clinic_name}]<br>${result.vet_name}<br>${result.outpatient_clinic_timeslot_name}</span></div>
+
+                            <div class="text-end mt-1">
+                                <label class="form-switch-label chkEdit" for="switch-${result.daily_outpatient_clinic_schedule_ID}">
+                            <input class="form-check-input chkEdit" type="checkbox" data-edit="${result.daily_outpatient_clinic_schedule_ID}">休診
+                            </label>
+
+                            <a class="btn-outline-danger btn-sm btnDelete" aria-label="刪除" data-delete="${result.daily_outpatient_clinic_schedule_ID}"><i class="bi bi-trash3"></i></a>
+                            </div>
+                        `;
+                    shiftContent.appendChild(shiftItem);
+                }
+                deleteOpcfromschedule();
+                docsStatusChange();                
+            });
+        }
+
+       
+        // 初始化年份月份下拉選單
+        const yearSelect = document.getElementById('yearSelect');
+        const monthSelect = document.getElementById('monthSelect');
+
+        const currentYear = new Date().getFullYear();
+        for (let year = currentYear; year <= currentYear + 10; year++) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year + '年';
+            if (year === currentYear) {
+                option.selected = true;
+            }
+            yearSelect.appendChild(option);
+        }
+
+        // 更新日曆
+        function updateCalendar() {
+            const selectedYear = parseInt(yearSelect.value);
+            const selectedMonth = parseInt(monthSelect.value);
+            generateCalendar(selectedYear, selectedMonth);
+
+            showScheduleofSelectedMonth();
+        }
+
+        //從資料庫抓取所選月份的資料，並將資料寫入日期單元格
+        function showScheduleofSelectedMonth() {
+            const SelectedYear = document.getElementById('yearSelect').value;
+            const SelectedMonth = document.getElementById('monthSelect').value;
+
+            const dateParam = `${SelectedYear}-${Number(SelectedMonth)+1}`;
+            console.log(`showScheduleofSelectedMonth: ${dateParam }`)
+            $.ajax({                
+                type:'GET',
+                url:`daily_outpatient_clinic_schedule/GetSchedule?id=${encodeURIComponent(dateParam)}`,
+            }).done(data => {
+                console.log(`showScheduleofSelectedMonth:${data}`)
+                generateMonthlySchedule(data);                
+            }).fail(err=>{
+             alert('呼叫失敗')
+            });
+        }
+
+        // 為年份和月份選擇添加事件監聽器
+        yearSelect.addEventListener('change', updateCalendar);
+        monthSelect.addEventListener('change', updateCalendar);
+
+        // 設置初始月份為當前月份
+        const currentDate = new Date();
+        monthSelect.value = currentDate.getMonth().toString();
+        updateCalendar();        
+
+        // DOM加載完成後執行
+        document.addEventListener('DOMContentLoaded', function () {
+            shiftModal = new bootstrap.Modal(document.getElementById('shiftModal'));
+
+            // 為加入門診按鈕添加事件監聽器
+            document.getElementById('addShift').addEventListener('click', function () {
+                const shift = $('#shiftSelect option:selected').text();
+                if (shift && currentCell) {
+                    const date = currentCell.attr('id');                    
+                    const shiftContent = $('#shiftSelect').val();
+                    console.log(`currentCellid:${date}`)
+                    console.log(`shiftContent:${shiftContent}`)
+
+                    var opcId_date={                       
+                        outpatient_clinic_ID: Number(shiftContent),
+                        date:date,                        
+                    };
+                    console.log(`newopc:${opcId_date}`)
+
+                    $.ajax({
+                        type:'POST',
+                        url: 'daily_outpatient_clinic_schedule/Create',
+                        data: JSON.stringify(opcId_date),
+                        contentType:'application/json'
+                    }).done(data => {
+                     //alert(data)
+                        showScheduleofSelectedMonth();
+                    }).fail(err=>{
+                     alert('呼叫失敗')
+                    });
+
+                    // if (!shiftData[date]) {
+                    //     shiftData[date] = [];
+                    // }
+                    // shiftData[date].push(shift);
+                    // localStorage.setItem('shiftData', JSON.stringify(shiftData)); // 更新本地存儲
+
+                    //addShiftToCell(shiftContent, shift, date);
+                    shiftModal.hide(); // 隱藏模態框
+                }
+            });
+        });
+
+        //產生被點選日當日的門診選單
+        function showOptionsfromOpc(dayofweek) {
+            //alert('showOptionsfromOpc');
+            //console.log($('#shiftSelect'));
+            console.log(dayofweek)
+            $.ajax(
+            {
+             type:'GET',
+                    url: `daily_outpatient_clinic_schedule/CreateOptions?id=${dayofweek}`,
+            }).done(data=>{
+             console.log(data)                    
+                $('#shiftSelect').empty();
+                data.forEach(opcOption => {
+                    $('#shiftSelect').append(`<option value="${opcOption.outpatient_clinic_ID}">${opcOption.outpatient_clinic_Info}</option>`)
+                })
+            }).fail(err=>{
+             alert(err)
+            });
+        }
+
+        //刪除被點選的當日門診
+        function deleteOpcfromschedule() {
+            $(document).on('click', '.btnDelete', function (e) {
+                alert(this.dataset.delete)
+                e.stopPropagation();
+                var deleteId = this.dataset.delete;
+                $.ajax({
+                    type: 'Delete',
+                    url: 'daily_outpatient_clinic_schedule/DeleteConfirmed',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: {
+                        id: deleteId
+                    }
+                }).done(data=>{
+                    console.log(`deleteOpcfromschedule:${data}`)
+                    showScheduleofSelectedMonth();
+                }).fail(err=>{
+                    alert('刪除失敗')
+                });
+            })
+        }
+
+        //將被點選的門診狀態改為休診
+        function docsStatusChange() {
+            //$(document).on('change', '.chkEdit', function (e) {
+            $('.chkEdit').on('change', function (e) {
+                e.stopPropagation();
+                // console.log("Propagation stopped.");
+                // console.log(`docsStatusChange:${this.dataset.edit}`); // 檢查 this.dataset.edit 是否正確
+                alert(`docsStatusChange: ${this.dataset.edit}`);
+                var editId = this.dataset.edit;
+                $.ajax({
+                    type:'Put',
+                    url: 'daily_outpatient_clinic_schedule/Edit',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: {
+                        id: editId
+                    }
+                }).done(data=>{
+                    console.log(`docsStatusChange:${data}`)
+                    showScheduleofSelectedMonth();
+                }).fail(err=>{
+                 alert('修改失敗')
+                });
+            });
+        }
+        
+    </script>
+}
+
