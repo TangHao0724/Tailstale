@@ -8,14 +8,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="bundleconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\css\Salonfrom.css" />
   </ItemGroup>
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\css\DragDropStyle.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\SearchBar.css" />
+    <_ContentIncludedByDefault Remove="wwwroot\css\SearchBar.min.css" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="bundleconfig.json" />
     <None Include="efpt.config.json.user" />
   </ItemGroup>
 

@@ -1,0 +1,308 @@
+﻿@model Tailstale.Hotel_DTO.CheckInDTO
+
+
+
+
+@section Styles{
+    <style>
+        body {
+            background-color: #f5f7fd;
+        }
+
+        .pp{
+            margin:0;
+            padding:0;
+        }
+    </style>
+}
+
+@{
+    int sumCatDog = ViewBag.Selected.cat + ViewBag.Selected.dog;
+   
+
+}
+
+<div class="container">
+   
+    <div class="row">
+        <div class="col-4">
+            <!--飯店資訊-->
+            <div class="card mb-3" style="width: 100%;">
+                <div class="card-body">
+                    <h5 class="card-title">入住飯店</h5>
+                    <h5 class="card-title"><strong>@ViewBag.HotelInfo.hotelname</strong></h5>
+                    <h6 class="card-subtitle">@ViewBag.HotelInfo.address</h6>
+                </div>
+            </div>
+            <!--入住資訊-->
+            <div class="card mb-3" style="width: 100%;">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="row">
+                            <h5 class="card-title"><strong>您的訂房資訊</strong></h5>
+                            <div class="col">
+                                <h6 class="card-subtitle">入住時間</h6>
+                                <p class="card-text"><strong>@ViewBag.Selected.startdate</strong></p>
+                                <p>總共入住：</p><p>@ViewBag.totalDays 晚</p>
+                            </div>
+                            <div class="col">
+                                <h6 class="card-subtitle">退房時間</h6>
+                                <p class="card-text"><strong>@ViewBag.Selected.enddate</strong></p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <p>已選擇：</p>
+                        @if (ViewBag.Selected.cat != 0 && ViewBag.Selected.dog!=0)
+                        {
+                            <p> @sumCatDog 間客房（ @ViewBag.Selected.cat 貓  @ViewBag.Selected.dog 狗）</p>
+                        }
+                        else if (ViewBag.Selected.cat != 0)
+                        {
+                            <p> @sumCatDog 間客房（ @ViewBag.Selected.cat 貓）</p>
+                        }
+                        else if (ViewBag.Selected.dog != 0)
+                        {
+                            <p> @sumCatDog 間客房（ @ViewBag.Selected.dog 狗）</p>
+                        }
+
+                        @foreach (var room in ViewBag.roomInfo)
+                        {
+                            <p>@room.roomQuantity x @room.roomName - @room.roomSpecies </p>
+                        }
+                        <a href="#">更多</a>
+                      
+                        
+                    </li>
+
+                </ul>
+            </div>
+            <!--房價明細-->
+            <div class="card" style="width: 100%;">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="row">
+                            <h5 class="card-title"><strong>房價明細</strong></h5>
+                            <div class="col">總金額</div>
+                            <div class="col"> <p class="card-text"><strong>TWD @ViewBag.BookingTotal.ToString("N0")</strong></p></div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <p>價格資訊</p>
+
+                        @foreach (var room in ViewBag.roomInfo)
+                        {
+                            int a = room.roomPriceTotal;
+                           
+                            <div class="row">
+                                <div class="col"><p>@room.roomName - @room.roomSpecies x @room.roomQuantity</p>
+                                </div>
+                                <div class="col">TWD @a.ToString("N0")</div>
+                            </div>
+                            
+                        }
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-8">
+            <h2 class="ms-3">
+                <strong>輸入入住寵物資料</strong>
+            </h2>
+            @foreach (var item in ViewBag.roomList as List<Tailstale.Tools.RoomListHaveNumber>)
+            {
+                <div class="card border border-success rounded-2 mb-3 petinfo">
+                    <div class="card-header bg-info">
+                        <label class="control-label">第 @item.number 隻寵物</label>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-3 list-group-item border justify-content-center align-items-center">
+                                        <h3>
+                                            <strong>
+                                                <label class="control-label">@item.RoomName</label>
+                                            </strong>
+                                        </h3>
+
+                                    </div>
+
+                                    <div class="col-3 list-group-item border">
+                                        <label class="control-label">入住寵物</label>
+                                    </div>
+                                    <div class="col-6 list-group-item border">
+                                        <select class="form-control getPet" onchange="updateOptions(this)" asp-items="ViewBag.PetList">
+                                            <option>請選擇寵物</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item d-none">
+                            <input hidden type="number" class="roomID" value="@item.RoomId" />
+                        </li>
+
+                        <li class="list-group-item canclear">
+                            <label asp-for="petName" class="control-label"></label>
+                            <input class="form-control petName" />
+
+                            <span asp-validation-for="petName" class="text-danger"></span>
+                        </li>
+                        <li class="list-group-item canclear">
+                            <label asp-for="petType" class="control-label"></label>
+                            <input class="form-control petType" />
+                            <span asp-validation-for="petType" class="text-danger"></span>
+                        </li>
+                        <li class="list-group-item canclear">
+                            <label asp-for="petChipID" class="control-label"></label>
+                            <input class="form-control petChipID" />
+                        </li>
+                        <li class="list-group-item canclear">
+                            <label class="control-label"></label>
+                            <input type="date" class="form-control petBirthDay" />
+                        </li>
+                    </ul>
+                </div>
+
+            }
+            <button id="sendInfoBtn" type="submit" class="btn btn-primary" onclick="sendCheckinDetail()">送出入住資料</button>
+        
+        </div>
+    </div>
+    
+</div>
+
+
+
+
+@section Scripts{
+    <script>
+
+        // cartBtns.forEach(button => {
+        //     button.addEventListener("click", event => {
+        //         addToCart();
+        //     });
+        // });
+        var baseAddress = "https://localhost:7112/Hotels";
+        function updateOptions(selectedSelect) {
+            const getPetSelect = document.querySelectorAll(".getPet");
+            const selectedValue = selectedSelect.value;
+            // const selectedValues = Array.from(getPetSelect).map(select => select.value);
+            getPetSelect.forEach(select => {
+                if (select !== selectedSelect && select.value === selectedValue) {
+                    select.options[0].selected = true;
+                    const container = select.closest('.card.petinfo');
+                    if (container) {
+                        const inputs = container.querySelectorAll('.canclear input');
+                        inputs.forEach(input => {
+                            input.value = "";
+                        });
+                    }
+                }
+                    
+                    else {
+                        getPetInfo();
+                    }
+
+            });
+
+            function clearPetInfo(select) {
+                const cardContainer = event.target.closest('.petinfo');
+                const petNameInput = cardContainer.querySelector('.petName');
+                const petTypeInput = cardContainer.querySelector('.petType');
+                const petChipIDInput = cardContainer.querySelector('.petChipID');
+               // const petBirthDay = cardContainer.querySelector('.petBirthDay');
+
+                petNameInput.value = "";
+                petTypeInput.value = "";
+                petChipIDInput.value = "";
+            };
+            function getPetInfo() {
+                var petId = event.target.value;
+                const cardContainer = event.target.closest('.petinfo');
+                //alert(petId);
+               // var baseAddress = "https://localhost:7112/Hotels"
+                // 使用 Axios 獲取寵物資料
+                axios.post(`${baseAddress}/FindPet1`, petId, {
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                    .then(response => {
+                        const data = response.data;
+                        const petNameInput = cardContainer.querySelector('.petName');
+                        const petTypeInput = cardContainer.querySelector('.petType');
+                        const petChipIDInput = cardContainer.querySelector('.petChipID');
+                        const petBirthDay = cardContainer.querySelector('.petBirthDay');
+
+                        petNameInput.value = data.petName;
+                        petTypeInput.value = data.petType;
+                        petChipIDInput.value = data.petChipID;
+
+                        if (data.petBirthDay != null) {
+                            petBirthDay.value = data.petBirthDay;
+                        }
+
+                    })
+                    .catch(err => { alert(err) });
+
+              
+            };
+        
+        };
+        function sendCheckinDetail() {
+            const Allpetinfo = document.querySelectorAll(".petinfo");
+            var petinfoList = [];
+            Allpetinfo.forEach(petinfo => {
+                var roomIDInput = petinfo.querySelector('.roomID');
+                var petSelect = petinfo.querySelector('.getPet');
+                var petNameInput = petinfo.querySelector('.petName');
+                var petTypeInput = petinfo.querySelector('.petType');
+                var petChipIDInput = petinfo.querySelector('.petChipID');
+                var petBirthDayInput = petinfo.querySelector('input.petBirthDay');
+
+
+                var roomID = parseInt(roomIDInput.value);
+                var petID = parseInt(petSelect.value);
+                var petName = petNameInput.value;
+                var petType = petTypeInput.value;
+                var petChipID = petTypeInput.value;
+                var a1 = petBirthDayInput.value;
+                var ConvertPetBirthDay;
+                if(a1!=""){
+                    var petBirthDay = new Date(a1);
+
+                    const options = { year: 'numeric', month: 'long', day: 'numeric' }; // 設定格式
+                    const dateString = petBirthDay.toLocaleDateString('zh-TW', options); // 轉換為文字
+                    ConvertPetBirthDay = petBirthDay.getFullYear() + "-" +
+                        String(petBirthDay.getMonth() + 1).padStart(2, '0') + "-" +
+                        String(petBirthDay.getDate()).padStart(2, '0');
+                }
+                else{
+                    ConvertPetBirthDay=""
+                }
+                
+
+
+
+
+                petinfoList.push({ 
+                    "RoomId": roomID,
+                    "petID": petID, 
+                    "petName": petName, 
+                    "petType": petType,
+                    "petChipID": petChipID, 
+                    "petBirthDay": ConvertPetBirthDay })
+            });
+            console.log(petinfoList);
+            axios.post(`${baseAddress}/CheckinDetailShow`, petinfoList, {
+                headers: { 'Content-Type': 'application/json' }
+            }).then(response => {
+                window.location.href = response.data.redirectUrl;
+            }).catch(err => { alert(err) });
+
+        }
+       
+        
+    </script>
+   
+}

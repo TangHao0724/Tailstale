@@ -1,0 +1,26 @@
+[
+  {
+    "outputFileName": "wwwroot/css/numberspinner.min.css",
+    "inputFiles": [
+      "wwwroot/css/numberspinner.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/newnumberspinner2.min.css",
+    "inputFiles": [
+      "wwwroot/css/newnumberspinner2.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/SearchBar.min.css",
+    "inputFiles": [
+      "wwwroot/css/SearchBar.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/SearchBar.min.js",
+    "inputFiles": [
+      "wwwroot/js/SearchBar.js"
+    ]
+  }
+]

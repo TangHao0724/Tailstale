@@ -1,0 +1,145 @@
+﻿@section Styles{
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+}
+
+ShowAllbooking
+<div class="d-flex justify-content-between pt-4">
+    <div class="pt-2">
+        <h2 class="test-primary">預訂清單 Booking List</h2>
+    </div>
+    <div class="p-2">
+        <ul class="list-group list-group-horizontal-sm">
+            <a href="#" style="text-decoration:none;">
+            <li class="list-group-item" id="a1">預約確認中</li></a>
+            <a href="#" style="text-decoration:none;">
+            <li class="list-group-item" id="a2">預約成功</li>
+            </a>
+            <a href="#" style="text-decoration:none;">
+            <li class="list-group-item" id="a3">店家取消</li>
+            </a>
+            <a href="#" style="text-decoration:none;">
+            <li class="list-group-item" id="a4">顧客取消</li>
+            </a>
+        </ul>
+    </div>
+</div>
+@* <button id="a1">預約確認中</button>
+<button id="a2">預約成功</button>
+<button id="a3">店家取消</button>
+<button id="a4">顧客取消</button> *@
+<table id="tableArray" class="display" style="width:100%"></table>
+
+@section Scripts{
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var baseAddress = "https://localhost:7112/";
+            var getvalue = parseInt("@ViewBag.HotelID");
+
+           var getBookingdata=axios({
+                method: 'post',
+                url: `${baseAddress}Hotels/BookingData`,
+                data: getvalue,
+                headers: { 'Content-Type': 'application/json' }
+            }).then(reponse=>{
+                var table = $('#tableArray').DataTable({
+                    language: {
+                        "sProcessing": "處理中...",
+                        "sLengthMenu": "顯示 _MENU_ 項結果",
+                        "sZeroRecords": "沒有匹配結果",
+                        "sInfo": "顯示第 _START_ 至 _END_ 項結果，共 _TOTAL_ 項",
+                        "sInfoEmpty": "顯示第 0 至 0 項結果，共 0 項",
+                        "sInfoFiltered": "(由 _MAX_ 項結果過濾)",
+                        "sSearch": "搜尋：",
+                        "sEmptyTable": "表中數據為空",
+                        "sLoadingRecords": "載入中...",
+                        "oPaginate": {
+                            "sFirst": "首頁",
+                            "sPrevious": "上一頁",
+                            "sNext": "下一頁",
+                            "sLast": "末頁"
+                        },
+                        "oAria": {
+                            "sSortAscending": "以升序排列此列",
+                            "sSortDescending": "以降序排列此列"
+                        }
+                    },
+                    "data": reponse.data, // 確保使用 Response.data
+                    "columns": [
+                        { title: "訂單編號", data: "bookingID" }, // 使用小寫
+                        { title: "使用者名稱", data: "keeperName" }, // 使用小寫
+                        { title: "入住日期", data: "checkinDate" }, // 使用小寫
+                        { title: "退房日期", data: "checkoutDate" }, // 使用小寫
+                        { title: "訂單狀態", data: "bookingStatus" }, // 使用小寫
+                        { title: "訂單總金額", data: "bookingTotal" }, // 使用小寫
+                        { title: "預定日期", data: "bookingDate" }, // 使用小寫
+                        {
+                            title: "操作",
+                            data: null,
+                            render: function (data, type, row) {
+                                return `<button class="btn btn-primary" data-id="${row.bookingID}">處理訂單</button>`;
+                            }
+                        }
+                    ]
+                           
+                    });
+                $('#a1').on('click', function () {
+                    var status = "預約確認中"; // 獲取輸入的訂單狀態
+                    table.columns(4).search(status).draw(); // 在訂單狀態欄位搜尋
+                });
+                $('#a2').on('click', function () {
+                    var status = "預約成功"; // 獲取輸入的訂單狀態
+                    table.columns(4).search(status).draw(); // 在訂單狀態欄位搜尋
+                });
+                $('#a3').on('click', function () {
+                    var status = "店家取消"; // 獲取輸入的訂單狀態
+                    table.columns(4).search(status).draw(); // 在訂單狀態欄位搜尋
+                });
+                $('#a4').on('click', function () {
+                    var status = "顧客取消"; // 獲取輸入的訂單狀態
+                    table.columns(4).search(status).draw(); // 在訂單狀態欄位搜尋
+                });
+                $('#tableArray tbody').on('click', '.btn-primary', function () {
+                    var bookingID = parseInt($(this).data('id')); // 獲取 bookingID
+
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = `${baseAddress}Hotels/ShowBookingDetail`; // 目標 URI
+
+                    // 將 payment 陣列轉換為 JSON 字串
+                   // const ConvertID = JSON.stringify(bookingID);
+
+                    // 創建一個隱藏的輸入元素來存放 JSON 字串
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'BookingID'; // 你可以根據需要修改這個名稱
+                    input.value = bookingID;
+
+                    // 將輸入元素添加到表單中
+                    form.appendChild(input);
+
+                    // 將表單添加到文檔中並提交
+                    document.body.appendChild(form);
+                    form.submit(); // 提交表單
+
+
+                    // window.location.href = `hotels/bookingDetails?bookingID=${bookingID}`; // 跳轉到 hotels/bookingDetails
+                });
+            }).catch(err=>{(alert(err))}) ;
+            //console.log(getBookingdata.data);
+           
+
+            
+           
+        });
+            
+            
+           
+
+
+           
+
+     
+    </script>
+}

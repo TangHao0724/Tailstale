@@ -1,0 +1,334 @@
+﻿@model IEnumerable<Tailstale.Hotel_DTO.RoomInfoDTO>
+
+@section Styles{
+    <style>
+       /*  .accordion-item {
+            background-color: bisque; /* 收起時的背景色 
+            border-color: blue;
+           
+            transition: background-color 1s ease;
+        }
+
+        
+        
+
+        .accordion-button {
+            color: #FF5809;
+        }
+          */
+        body {
+            background-color: #f5f7fd;
+        }
+
+
+        .accordion-button:focus {
+            box-shadow: none;
+        }
+
+        .accordion-item{
+            border-color: #613030 !important;
+        }
+
+        .accordion-button {
+            background-color: #B87070 !important; /* 展開時的背景色 */
+            color: #FFFF37 !important; /* 展開時的文字顏色 */
+
+            
+        }
+
+        
+
+       
+    </style>
+}
+
+@{
+    int sumCatDog = ViewBag.Selected.cat + ViewBag.Selected.dog;
+    
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-4">
+            <!--飯店資訊-->
+            <div class="card mb-3" style="width:100%;">
+                <div class="card-body">
+                    <h5 class="card-title">入住飯店</h5>
+                    <h5 class="card-title"><strong>@ViewBag.HotelInfo.name</strong></h5>
+                    <h6 class="card-subtitle">@ViewBag.HotelInfo.address</h6>
+                </div>
+            </div>
+            <!--入住資訊-->
+            <div class="card mb-3" style="width: 100%;">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="row">
+                            <h5 class="card-title"><strong>您的訂房資訊</strong></h5>
+                            <div class="col">
+                                <h6 class="card-subtitle">入住時間</h6>
+                                <p class="card-text"><strong>@ViewBag.Selected.startdate</strong></p>
+                                <p>總共入住：</p>
+                                <p>@ViewBag.totalDays 晚</p>
+                            </div>
+                            <div class="col">
+                                <h6 class="card-subtitle">退房時間</h6>
+                                <p class="card-text"><strong>@ViewBag.Selected.enddate</strong></p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <p>已選擇：</p>
+                        @if (ViewBag.Selected.cat != 0 && ViewBag.Selected.dog != 0)
+                        {
+                            <p> @sumCatDog 間客房（ @ViewBag.Selected.cat 貓  @ViewBag.Selected.dog 狗）</p>
+                        }
+                        else if (ViewBag.Selected.cat != 0)
+                        {
+                            <p> @sumCatDog 間客房（ @ViewBag.Selected.cat 貓）</p>
+                        }
+                        else if (ViewBag.Selected.dog != 0)
+                        {
+                            <p> @sumCatDog 間客房（ @ViewBag.Selected.dog 狗）</p>
+                        }
+
+                        @foreach (var room in ViewBag.roomInfo)
+                        {
+                            <p>@room.roomQuantity x @room.roomName - @room.roomSpecies </p>
+                        }
+                        <a href="#">更多</a>
+
+
+                    </li>
+
+                </ul>
+            </div>
+            <!--房價明細-->
+            <div class="card mb-3" style="width: 100%;">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="row">
+                            <h5 class="card-title"><strong>房價明細</strong></h5>
+                            <div class="col">總金額</div>
+                            <div class="col"> <p class="card-text"><strong>TWD @ViewBag.BookingTotal.ToString("N0")</strong></p></div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <p>價格資訊</p>
+                        @foreach (var room in ViewBag.roomInfo)
+                        {
+                            int a = room.roomPriceTotal;
+                            <div class="row">
+                                <div class="col">
+                                    <p>@room.roomName - @room.roomSpecies x @room.roomQuantity</p>
+                                </div>
+                                <div class="col">TWD @a.ToString("N0")  </div>
+                            </div>
+
+                        }
+                    </li>
+                </ul>
+            </div>
+            <!--寵物資訊手風琴-->
+            <div class="accordion" id="accordionPanelsStayOpenExample">
+                @{
+                    int i = 0;
+                }
+                @foreach (var room in Model)
+                {
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="panelsStayOpen-heading-@i">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-@i" aria-expanded="false" aria-controls="panelsStayOpen-collapse-@i">
+                                @room.roomInfo.roomName @room.roomInfo.roomSpecies
+                            </button>
+                        </h2>
+                        <div id="panelsStayOpen-collapse-@i" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-@i">
+
+                            <div class="accordion-body ms-2">
+                                @foreach (var pet in room.myReviewBooking)
+                                {
+                                    <strong>@pet.petType - @pet.petName </strong>
+
+                                    <br />
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+                    i++;
+                }
+            </div>
+
+
+        </div>
+        
+     
+        <div class="col-8">
+            <div class="card" style="width: 80%;">
+                <div class="card-body paymentInfo">
+                    <h5 class="card-title"><strong>輸入個人資料</strong></h5>
+                    <label class="form-control">
+                        快好了！只要在標有*的欄位填入資訊
+                        請以中文或英文輸入您的資料
+                    </label>
+                    @if (ViewBag.IsCard >0)
+                    {
+                        <div class="form-control cardList">
+                            信用卡資訊:<select class="form-control getCard" asp-items="ViewBag.myCardList">
+                                <option>請選擇卡片</option>
+                            </select>
+                        </div>
+                    }
+                    
+                        訂購人姓名:<input type="text" value="" class="form-control">
+                        持卡人姓名（以英文填寫）:<input type="text" id="cardholdername" class="form-control">
+                        卡號:<input type="text" id="credit-card" class="form-control" name="credit-card" required>
+                        有效年月:<input type="month" class="form-control" id="month" name="month" required>
+                        CVV:<input type="password" maxlength="3" id="cvv" class="form-control">
+                        <button id="sendInfoBtn" type="submit" class="btn btn-primary">送出入住資料</button>
+                 
+                    
+
+                    <!-- <label for="year">選擇年份：</label>
+                    <select id="year" class="form-control" name="year" required>
+                        <script>
+                            const currentYear = new Date().getFullYear();
+                            for (let year = currentYear; year<=currentYear+20; year++) {
+                                document.write(`<option value="${year}">${year}年</option>`);
+                            }
+                        </script>
+                    </select>
+                    <label for="month">選擇月份：</label>
+                    <select id="month" class="form-control" name="month" required>
+                        <option value="01">一月</option>
+                        <option value="02">二月</option>
+                        <option value="03">三月</option>
+                        <option value="04">四月</option>
+                        <option value="05">五月</option>
+                        <option value="06">六月</option>
+                        <option value="07">七月</option>
+                        <option value="08">八月</option>
+                        <option value="09">九月</option>
+                        <option value="10">十月</option>
+                        <option value="11">十一月</option>
+                        <option value="12">十二月</option>
+                    </select> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            var baseAddress = "https://localhost:7112/";
+            var bt = document.querySelector('#sendInfoBtn');
+            bt.addEventListener('click', function () {
+                sendPaymentInfo();
+            });
+            var cardList = document.querySelector('.getCard');
+            cardList.addEventListener('change', function () {
+                updateOptions(cardList);
+            });
+
+
+            function sendPaymentInfo() {
+                var payment = [];
+                const paymentInfo = document.querySelector('.paymentInfo');
+                var cardholdername = "";
+                cardholdername= paymentInfo.querySelector('#cardholdername').value;
+                const cardnumber = parseInt(paymentInfo.querySelector('#credit-card').value);
+                const month = paymentInfo.querySelector('#month').value;
+                const cvv = parseInt(paymentInfo.querySelector('#cvv').value);
+                var formattedDate = "";
+                if (month) {
+                    const [year, monthValue] = month.split('-'); // 分割年份和月份
+                    const lastDate = new Date(year, parseInt(monthValue), 0); // 獲取該月的最後一天
+
+                    // 將年份、月份和最後一天組合成 YYYY-MM-DD 格式
+                    formattedDate = `${lastDate.getFullYear()}-${String(lastDate.getMonth() + 1).padStart(2, '0')}-${String(lastDate.getDate()).padStart(2, '0')}`;
+                   
+
+                }
+                payment.push({ "cardName": cardholdername, "cardNumber": cardnumber, "cardExpirationDate": formattedDate, "cvvNumber": cvv });
+                console.log(payment);
+                //alert(payment);
+
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `${baseAddress}Hotels/SaveBooking`; // 目標 URI
+
+                // 將 payment 陣列轉換為 JSON 字串
+                const ConvertPayment = JSON.stringify(payment);
+
+                // 創建一個隱藏的輸入元素來存放 JSON 字串
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'payment'; // 你可以根據需要修改這個名稱
+                input.value = ConvertPayment;
+
+                // 將輸入元素添加到表單中
+                form.appendChild(input);
+
+                // 將表單添加到文檔中並提交
+                document.body.appendChild(form);
+                form.submit(); // 提交表單
+
+                // axios.post(`${baseAddress}Hotels/SaveBooking`, payment, { headers: { 'Content-Type': 'application/json' } })
+                //     .then(response => {
+                //         window.location.href = response.data.redirectUrl;
+                    
+                //     })
+                //     .catch(err => { alert(err) })
+
+            };
+
+
+            function updateOptions(cardList) {
+               
+                const cardNumber = cardList.value;
+                if (cardList.value != "請選擇卡片"){
+                    getCardInfo();
+                }
+               
+            };
+            
+
+            function getCardInfo() {
+                var cardNumber = event.target.value;
+                
+                axios.post(`${baseAddress}Hotels/SearchPaymentInfo`, cardNumber, {
+                             headers: { 'Content-Type': 'application/json' }
+                         })
+                    .then(response => {
+                        const data = response.data;
+                        const cardholdername = document.querySelector('#cardholdername').value;
+                        const creditcard = document.querySelector('#credit-card').value;
+                        
+                        setMonthValue(data.cardExpirationDate);
+                        cardholdername = data.cardName;
+                        creditcard = data.cardNumber;
+
+
+                    })
+                    .catch(err => { alert(err) });
+
+
+            };
+
+            function setMonthValue(month) {
+                var date = new Date(month); // 注意月份從 0 開始
+                // 設定為當前月份，例如：2024-08
+                
+                const year = date.getFullYear();
+                const Cmonth = String(date.getMonth() + 1).padStart(2, '0'); // 確保月份是兩位數
+                const monthValue = `${year}-${Cmonth}`;
+
+                // 賦值給 input
+                document.getElementById('month').value = monthValue;
+            };
+        });
+       
+    </script>
+}

@@ -3,31 +3,37 @@
 using System;
 using System.Collections.Generic;
 
-namespace HotelAPI.Models;
+namespace Tailstale.Models;
 
 public partial class Room
 {
-    public int RoomId { get; set; }
+    public int roomID { get; set; }
 
-    public int HotelId { get; set; }
+    public int hotelID { get; set; }
 
-    public string RoomSpecies { get; set; }
+    public string roomSpecies { get; set; }
 
-    public string RoomType { get; set; }
+    public int? roomPrice { get; set; }
 
-    public int? RoomPrice { get; set; }
+    public int? roomDiscount { get; set; }
 
-    public int? RoomDiscount { get; set; }
+    public int? roomReserve { get; set; }
 
-    public int? RoomReserve { get; set; }
+    public string roomDescrep { get; set; }
 
-    public string RoomDescrep { get; set; }
+    public int? FK_roomImg_ID { get; set; }
+
+    public int? FK_roomType_ID { get; set; }
 
     public virtual ICollection<BookingDetail> BookingDetails { get; set; } = new List<BookingDetail>();
 
     public virtual ICollection<CheckinDetail> CheckinDetails { get; set; } = new List<CheckinDetail>();
 
-    public virtual Business Hotel { get; set; }
+    public virtual business_img_type FK_roomImg { get; set; }
+
+    public virtual roomType FK_roomType { get; set; }
 
     public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
+
+    public virtual business hotel { get; set; }
 }

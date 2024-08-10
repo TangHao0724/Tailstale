@@ -3,35 +3,35 @@
 using System;
 using System.Collections.Generic;
 
-namespace HotelAPI.Models;
+namespace Tailstale.Models;
 
 public partial class PaymentInfo
 {
-    public int PaymentId { get; set; }
+    public int paymentID { get; set; }
 
-    public int? BusinessId { get; set; }
+    public int? business_ID { get; set; }
 
-    public int? KeeperId { get; set; }
+    public int? keeper_ID { get; set; }
 
-    public int? BookingId { get; set; }
+    public int? bookingID { get; set; }
 
-    public string CardholderName { get; set; }
+    public string cardholderName { get; set; }
 
-    public int? CardNumber { get; set; }
+    public int? cardNumber { get; set; }
 
-    public DateOnly? ExpirationDate { get; set; }
+    public DateOnly? expirationDate { get; set; }
 
-    public int? CvvNumber { get; set; }
+    public int? cvvNumber { get; set; }
 
-    public int? PaymentAmount { get; set; }
+    public int? paymentAmount { get; set; }
 
-    public byte[] PaymentStatus { get; set; }
+    public byte[] paymentStatus { get; set; }
 
-    public DateTime? PaymentTimestamp { get; set; }
+    public DateTime? paymentTimestamp { get; set; }
 
-    public virtual Booking Booking { get; set; }
+    public virtual Booking booking { get; set; }
 
-    public virtual Business Business { get; set; }
+    public virtual business business { get; set; }
 
-    public virtual Keeper Keeper { get; set; }
+    public virtual keeper keeper { get; set; }
 }
