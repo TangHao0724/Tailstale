@@ -101,6 +101,7 @@
                                 <button class="btn btn-outline-success save-status d-none" data-id="@item.AppointmentID">儲存修改</button>
                                 <button class="btn btn-outline-secondary cancel-edit d-none" data-id="@item.AppointmentID">取消修改</button>
                             </td>
+                            <td><a asp-controller="medical_record" asp-action="Index" asp-route-pet_id="@ViewBag.pet_ID" class="btn btn-primary">病歷資料</a>
                         </tr>
                     }
                 </tbody>

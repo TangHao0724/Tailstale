@@ -41,11 +41,17 @@ namespace Tailstale.Controllers
                                        VetName = vInfo.vet_name,
                                        KeeperName = keeper.name,
                                        PetName = pet.name,
+                                       PetID = pet.pet_ID, //連到病歷用
                                        AppointmentStatus = order_status.status_name
                                    }).ToListAsync();
 
             var statusOptions = new List<string> { "預約成功", "完成診療", "院方取消" , "預約未到" };
             ViewBag.StatusOptions = statusOptions;
+
+            var pet_ID = Appointments
+                 .Select(a => a.PetID)
+                 .ToList();
+            ViewBag.PetID = pet_ID;
 
             return View(Appointments);
         }
