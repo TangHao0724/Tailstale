@@ -28,9 +28,9 @@ namespace Tailstale.Controllers
                     pet_ID = a.pet_ID,
                     pet_name = a.pet.name,
                     date = a.daily_outpatient_clinic_schedule.date
+                    //↑預約date改成確切時間
                 })
                 .ToListAsync();
-
             ViewBag.selected = appointments;
             return View();
         }
@@ -38,20 +38,27 @@ namespace Tailstale.Controllers
         // GET: medical_record
         public async Task<IActionResult> Index(int? pet_id)
         { //渲染
+            if (pet_id == null)
+            {
+                return View();
+            }
 
             var query = from m in _context.medical_records
                         join o in _context.outpatient_clinics on m.outpatient_clinic_id equals o.outpatient_clinic_ID
                         join p in _context.pets on m.pet_id equals p.pet_ID
+                        join pet_type in _context.pet_types on p.pet_type_ID equals pet_type.ID
                         join k in _context.keepers on p.keeper_ID equals k.ID
-                        //orderby m.created_at descending
                         select new MedicalRecordDTO
                         {  //DTO設的名字 = table抓出來的名字
                             id = m.id,
                             keeper_id = k.ID,
-                            keeper_num = k.phone,
+                            keeper_number = k.phone,
+                            keeper_name = k.name,
                             pet_id = p.pet_ID,
                             pet_name = p.name,
-                            //created_at = m.created_at,
+                            pet_breed = pet_type.breed,
+                            pet_age = p.age,
+                            Datetime = m.Datetime,
                             outpatient_clinic_id = o.outpatient_clinic_ID,
                             weight = m.weight,
                             memo = m.memo,
@@ -59,10 +66,21 @@ namespace Tailstale.Controllers
 
             if (pet_id.HasValue)
             {
+                var basicInfo = await _context.pets.Where(p => p.pet_ID == pet_id).Select(p => new
+                {
+                    keeper_name = p.keeper.name,
+                    pet_name = p.name,
+                    pet_breed = p.pet_type.breed,
+                    pet_age = p.age
+                }).FirstOrDefaultAsync();
                 query = query.Where(r => r.pet_id == pet_id.Value);
+                ViewBag.basicInfo = basicInfo;
             }
+            var records = await query.OrderByDescending(m => m.Datetime).ToListAsync();
 
-            var records = await query.OrderByDescending(m => m.created_at).ToListAsync();
+
+
+            ViewBag.pet_id = pet_id;
 
             return View(records);
         }
@@ -79,7 +97,7 @@ namespace Tailstale.Controllers
                                   join o in _context.outpatient_clinics on r.outpatient_clinic_id equals o.outpatient_clinic_ID
                                   join p in _context.pets on r.pet_id equals p.pet_ID
                                   join k in _context.keepers on p.keeper_ID equals k.ID
-                                  where r.id == id /*鎖定id*/
+                                  where r.id == id
                                   select new MedicalRecordDTO
                                   {
                                       id = r.id,
@@ -87,10 +105,11 @@ namespace Tailstale.Controllers
                                       keeper_name = k.name,
                                       pet_id = p.pet_ID,
                                       pet_name = p.name,
-                                      //created_at = r.created_at,
+                                      Datetime = r.Datetime,
+                                      //DatetimeView=r.Datetime.ToString("yyyy-MM-dd"),
                                       outpatient_clinic_id = o.outpatient_clinic_ID,
                                       weight = r.weight,
-                                      //admission_process = r.admission_process,
+                                      complain = r.complain,
                                       diagnosis = r.diagnosis,
                                       treatment = r.treatment,
                                       memo = r.memo,
@@ -101,17 +120,14 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
-
             return View(medical_record);
         }
 
         // GET: medical_record/Create
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Create(int pet_id)
         {
-            ViewData["biological_test_id"] = new SelectList(_context.biological_tests, "id", "id");
-            ViewData["outpatient_clinic_id"] = new SelectList(_context.outpatient_clinics, "outpatient_clinic_ID", "name");
-            ViewData["pet_id"] = new SelectList(_context.pets, "pet_ID", "pet_ID");
+            ViewData["pet_id"] = pet_id;
             return View();
         }
 
@@ -124,12 +140,11 @@ namespace Tailstale.Controllers
         {
             var a = new medical_record
             {
-                //keeper_id = medicalRecordDTO.keeper_id,
                 pet_id = medicalRecordDTO.pet_id,
-                //created_at = medicalRecordDTO.created_at,
+                Datetime = medicalRecordDTO.Datetime,
                 weight = medicalRecordDTO.weight,
                 outpatient_clinic_id = medicalRecordDTO.outpatient_clinic_id,
-                //admission_process = medicalRecordDTO.admission_process,
+                complain = medicalRecordDTO.complain,
                 diagnosis = medicalRecordDTO.diagnosis,
                 treatment = medicalRecordDTO.treatment,
                 memo = medicalRecordDTO.memo,
@@ -158,10 +173,10 @@ namespace Tailstale.Controllers
                               id = e.id,
                               keeper_id = k.ID,
                               pet_id = p.pet_ID,
-                              //created_at = e.created_at,
+                              Datetime = e.Datetime,
                               outpatient_clinic_id = o.outpatient_clinic_ID,
                               weight = e.weight,
-                              //admission_process = e.admission_process,
+                              complain = e.complain,
                               diagnosis = e.diagnosis,
                               treatment = e.treatment,
                               memo = e.memo,
@@ -190,10 +205,10 @@ namespace Tailstale.Controllers
             {
                 id = id,
                 pet_id = medicalRecordDTO.pet_id,
-                //created_at = medicalRecordDTO.created_at,
+                Datetime = medicalRecordDTO.Datetime,
                 weight = medicalRecordDTO.weight,
                 outpatient_clinic_id = medicalRecordDTO.outpatient_clinic_id,
-                //admission_process = medicalRecordDTO.admission_process,
+                complain = medicalRecordDTO.complain,
                 diagnosis = medicalRecordDTO.diagnosis,
                 treatment = medicalRecordDTO.treatment,
                 memo = medicalRecordDTO.memo,
@@ -218,59 +233,5 @@ namespace Tailstale.Controllers
             //}
             //return View(medicalRecordDTO); //沒成功
         }
-
-        // GET: medical_record/Delete/5   // medical_record不可以delete！！！
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var medical_record = (from r in _context.medical_records
-        //                          join o in _context.outpatient_clinics on r.outpatient_clinic_id equals o.outpatient_clinic_ID
-        //                          join p in _context.pets on r.pet_id equals p.pet_ID
-        //                          join k in _context.keepers on p.keeper_ID equals k.ID
-        //                          where r.id == id
-        //                          select new MedicalRecordDTO
-        //                          {
-        //                              keeper_id = k.ID,
-        //                              pet_id = p.pet_ID,
-        //                              created_at = r.created_at,
-        //                              outpatient_clinic_id = o.outpatient_clinic_ID,
-        //                              weight = r.weight,
-        //                              admission_process = r.admission_process,
-        //                              diagnosis = r.diagnosis,
-        //                              treatment = r.treatment,
-        //                              memo = r.memo,
-        //                          }).FirstOrDefault();
-
-        //    if (medical_record == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(medical_record);
-        //}
-
-        //// POST: medical_record/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var medical_record = await _context.medical_records.FindAsync(id);
-        //    if (medical_record != null)
-        //    {
-        //        _context.medical_records.Remove(medical_record);
-        //    }
-
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        //private bool medical_recordExists(int id)
-        //{
-        //    return _context.medical_records.Any(e => e.id == id);
-        //}
     }
 }

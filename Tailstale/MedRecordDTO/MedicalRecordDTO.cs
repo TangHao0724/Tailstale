@@ -12,7 +12,7 @@ namespace Tailstale.MedRecordDTO
         public int keeper_id { get; set; }
 
         [Display(Name = "飼主電話")]
-        public string keeper_num { get; set; }
+        public string keeper_number { get; set; }
 
         [Display(Name = "飼主姓名")]
         public string keeper_name { get; set; }
@@ -21,12 +21,19 @@ namespace Tailstale.MedRecordDTO
         [Display(Name = "寵物")]
         public int pet_id { get; set; }
 
-        [Display(Name = "寵物")]
+        [Display(Name = "寵物名字")]
         public string pet_name { get; set; }
+
+        [Display(Name = "品種")]
+        public string pet_breed { get; set; }
+
+        [Display(Name = "年紀")]
+        public int? pet_age { get; set; }
 
         [Required(ErrorMessage = "必填")]
         [Display(Name = "就診時間")]
-        public DateTime? created_at { get; set; }
+        public DateTime? Datetime { get; set; }
+
 
         [Required(ErrorMessage = "必填")]
         [Display(Name = "診別")]
@@ -35,12 +42,9 @@ namespace Tailstale.MedRecordDTO
         [Display(Name = "體重")]
         public decimal? weight { get; set; }
 
-        [Display(Name = "生命徵象")]
-        public int? vital_sign_record_id { get; set; }
-
         [Required(ErrorMessage = "必填")]
         [Display(Name = "主訴")]
-        public string admission_process { get; set; }
+        public string complain { get; set; }
 
         [Required(ErrorMessage = "必填")]
         [Display(Name = "診斷")]

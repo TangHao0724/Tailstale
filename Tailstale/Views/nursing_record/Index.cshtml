@@ -7,7 +7,7 @@
 <h1>護理記錄</h1>
 
 <div>
-    <a asp-action="Create" asp-route-hosp_history_id="@ViewBag.hosp_history_id">新增護理記錄</a>
+    <a asp-action="Create" asp-route-hosp_record_id="@ViewBag.hosp_record_id">新增護理記錄</a>
 </div>
 <br /><br />
 @if (Model.Any())
@@ -19,7 +19,7 @@
                 @Html.DisplayNameFor(model => model.datetime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.hosp_history_id)
+                @Html.DisplayNameFor(model => model.hosp_record_id)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.weight)
@@ -40,7 +40,7 @@
                     @Html.DisplayFor(modelItem => item.datetime)
                 </td>
                 <th>
-                    @Html.DisplayFor(modelItem => item.hosp_history_id)
+                    @Html.DisplayFor(modelItem => item.hosp_record_id)
                 </th>
                 <td>
                     @Html.DisplayFor(modelItem => item.weight)

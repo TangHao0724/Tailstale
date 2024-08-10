@@ -8,13 +8,14 @@ namespace Tailstale.MedRecordDTO
         public int id { get; set; }
 
         [Display(Name = "就診記錄")]
-        public int? medical_record_id { get; set; }
+        public int? medical_records_id { get; set; }
 
         [Display(Name = "就診時間")]
-        public DateTime? created_at { get; set; }
+        public DateTime? Datetime { get; set; }
 
         [Display(Name = "入院時間")]
         public DateTime admission_date { get; set; }
+
         [Display(Name = "入院時間")]
         public string? admission_date_view { get; set; }
 

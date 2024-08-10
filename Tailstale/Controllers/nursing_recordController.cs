@@ -17,32 +17,32 @@ namespace Tailstale.Controllers
         }
 
         // GET: nursing_record
-        public async Task<IActionResult> Index(int hosp_history_id)
+        public async Task<IActionResult> Index(int hosp_record_id)
         {
             //var records = await (from n in _context.nursing_records
             //                     join p in _context.pets on n.pet_id equals p.pet_ID
             //                     join v in _context.vital_sign_records on n.vital_sign_record_id equals v.id into vsrGroup
             //                     from v in vsrGroup.DefaultIfEmpty()
-            //                     join h in _context.hosp_histories on n.hosp_history_id equals h.id
-            //                     where n.hosp_history_id == hosp_history_id //鎖定h_h_id
+            //                     join h in _context.hosp_records on n.hosp_record_id equals h.id
+            //                     where n.hosp_record_id == hosp_record_id //鎖定h_h_id
             //                     select new NursingDTO
             //                     {
             //                         id = n.id,
             //                         pet_id = p.pet_ID,
-            //                         hosp_history_id = h.id,
+            //                         hosp_record_id = h.id,
             //                         datetime = n.datetime,
             //                         weight = n.weight,
             //                         memo = n.memo,
             //                         vs_id = v.id,
             //                     })
             //                    .ToListAsync();
-            //var pet_id = await (from h in _context.hosp_histories
+            //var pet_id = await (from h in _context.hosp_records
             //                    join m in _context.medical_records on h.medical_record_id equals m.id
-            //                    where h.id == hosp_history_id
+            //                    where h.id == hosp_record_id
             //                    select m.pet_id)
             //       .FirstOrDefaultAsync();
 
-            //ViewBag.hosp_history_id = hosp_history_id;
+            //ViewBag.hosp_record_id = hosp_record_id;
             //ViewBag.pet_id = pet_id;
             //var sortedRecord = records.OrderByDescending(n => n.datetime);
             return View(/*sortedRecord*/);
@@ -60,13 +60,13 @@ namespace Tailstale.Controllers
             //              //join p in _context.pets on n.pet_id equals p.pet_ID
             //              //join v in _context.vital_sign_records on n.vital_sign_record_id equals v.id into vsrGroup
             //              from v in vsrGroup.DefaultIfEmpty()
-            //              //join h in _context.hosp_histories on n.hosp_history_id equals h.id
+            //              //join h in _context.hosp_records on n.hosp_record_id equals h.id
             //              orderby n.datetime descending
             //              select new NursingDTO
             //              {
             //                  id = n.id,
             //                  pet_id = p.pet_ID,
-            //                  hosp_history_id = h.id,
+            //                  hosp_record_id = h.id,
             //                  datetime = n.datetime,
             //                  weight = n.weight,
             //                  memo = n.memo,
@@ -83,20 +83,20 @@ namespace Tailstale.Controllers
 
 
         // GET: nursing_record/Create
-        public IActionResult Create(int hosp_history_id)
+        public IActionResult Create(int hosp_record_id)
         {
-            //var pet_id = (from h in _context.hosp_histories
+            //var pet_id = (from h in _context.hosp_records
             //              join m in _context.medical_records on h.medical_record_id equals m.id
-            //              where h.id == hosp_history_id
+            //              where h.id == hosp_record_id
             //              select m.pet_id).FirstOrDefault();
             //var model = new NursingDTO
             //{
-            //    hosp_history_id = hosp_history_id,
+            //    hosp_record_id = hosp_record_id,
             //    pet_id = pet_id,
             //    datetime = DateTime.Now,
             //};
 
-            //ViewBag.hosp_history_id = hosp_history_id;
+            //ViewBag.hosp_record_id = hosp_record_id;
             //ViewBag.pet_id = pet_id;
             return View(/*model*/);
         }
@@ -112,7 +112,7 @@ namespace Tailstale.Controllers
             {
                 id = nursingDTO.id,
                 //pet_id = nursingDTO.pet_id,
-                //hosp_history_id = nursingDTO.hosp_history_id,
+                //hosp_record_id = nursingDTO.hosp_record_id,
                 datetime = nursingDTO.datetime,
                 weight = nursingDTO.weight,
                 memo = nursingDTO.memo,
@@ -120,7 +120,7 @@ namespace Tailstale.Controllers
             };
             _context.Add(a);
             await _context.SaveChangesAsync();
-            //return Redirect(/*$"https://localhost:7112/nursing_record?hosp_history_id={a.hosp_history_id}"*/);
+            //return Redirect(/*$"https://localhost:7112/nursing_record?hosp_record_id={a.hosp_record_id}"*/);
 
             return View();
         }
@@ -137,13 +137,13 @@ namespace Tailstale.Controllers
             //              join p in _context.pets on n.pet_id equals p.pet_ID
             //              join v in _context.vital_sign_records on n.vital_sign_record_id equals v.id into vsrGroup
             //              from v in vsrGroup.DefaultIfEmpty()
-            //              join h in _context.hosp_histories on n.hosp_history_id equals h.id
+            //              join h in _context.hosp_records on n.hosp_record_id equals h.id
             //              where n.id == id && p.pet_ID == id
             //              select new NursingDTO
             //              {
             //                  id = n.id,
             //                  pet_id = p.pet_ID,
-            //                  hosp_history_id = h.id,
+            //                  hosp_record_id = h.id,
             //                  datetime = n.datetime,
             //                  weight = n.weight,
             //                  memo = n.memo,
@@ -173,7 +173,7 @@ namespace Tailstale.Controllers
             {
                 id = nursingDTO.id,
                 //pet_id = nursingDTO.pet_id,
-                //hosp_history_id = nursingDTO.id,
+                //hosp_record_id = nursingDTO.id,
                 datetime = nursingDTO.datetime,
                 weight = nursingDTO.weight,
                 memo = nursingDTO.memo,
@@ -195,14 +195,14 @@ namespace Tailstale.Controllers
         //    var records = from n in _context.nursing_records
         //                  join p in _context.pets on n.pet_id equals p.pet_ID
         //                  join v in _context.vital_sign_records on n.vital_sign_record_id equals v.id
-        //                  join h in _context.hosp_histories on n.hosp_history_id equals h.id
+        //                  join h in _context.hosp_records on n.hosp_record_id equals h.id
         //                  orderby n.datetime descending
         //                  where n.id == id
         //                  select new NursingDTO
         //                  {
         //                      id = n.id,
         //                      pet_id = p.pet_ID,
-        //                      hosp_history_id = h.id,
+        //                      hosp_record_id = h.id,
         //                      datetime = n.datetime,
         //                      weight = n.weight,
         //                      memo = n.memo,
