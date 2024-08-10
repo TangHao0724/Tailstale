@@ -146,16 +146,16 @@
                         </ul>
                         @if (ViewBag.BookingStatus == 1)
                         {
-                            <a class="btn btn-success form-control btn-sm btnsuccess"  href="#">確認預約</a>
-                            <a class="btn btn-danger form-control btn-sm btncancel"  href="#">取消訂單</a>
+                            <a class="btn btn-success form-control btn-sm " id="btnsuccess" href="#">確認預約</a>
+                            <a class="btn btn-danger form-control btn-sm " id="btncancel" href="#">取消訂單</a>
                         }
                         else if (ViewBag.BookingStatus == 2)
                         {
-                            <a class="btn btn-danger form-control btn-sm btncancel" href="#">取消訂單</a>
+                            <a class="btn btn-danger form-control btn-sm" id="btncancel" href="#">取消訂單</a>
                         }
                         else if (ViewBag.BookingStatus == 3)
                         {
-                            <a class="btn btn-success form-control btn-sm btnsuccess" href="#">確認預約</a>
+                            <a class="btn btn-success form-control btn-sm " id="btnsuccess" href="#">確認預約</a>
                         }
                         
 
@@ -174,21 +174,17 @@
         $(document).ready(function () {
             var baseAddress = "https://localhost:7112/";
             //var statusNumber = "@ViewBag.BookingStatus"
-            var btnsuccess= document.querySelectorAll(".btnsuccess");
-            var btncancel = document.querySelectorAll(".btncancel");
+            var btnsuccess= document.querySelectorAll("#btnsuccess");
+            var btncancel = document.querySelectorAll("#btncancel");
             var statusLabel = document.querySelectorAll(".statusLabel").textContent;
             var bookingID = parseInt("@ViewBag.BookingID");
-            btnsuccess.forEach(bs => function () {
-                bs.addEventListener('click', function (event) {
-                    event.preventDefault();
-                    updateBookingStatus(bookingID, 2);
-                });
+            btnsuccess.addEventListener('click', function (event) {
+                event.preventDefault();
+                updateBookingStatus(bookingID, 2);
             });
-            btncancel.forEach(bc => function () {
-                bc.addEventListener('click', function (event) {
-                    event.preventDefault();
-                    updateBookingStatus(bookingID, 3);
-                });
+            btncancel.addEventListener('click', function (event) {
+                event.preventDefault();
+                updateBookingStatus(bookingID, 3);
             });
             // btnsuccess.addEventListener('click', function (event) {
             //     event.preventDefault();

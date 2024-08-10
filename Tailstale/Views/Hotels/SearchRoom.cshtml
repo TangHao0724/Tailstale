@@ -227,11 +227,11 @@
                                                 <div>@room.roomDescription</div>
                                                 <div hidden class="roomID">@room.roomID</div>
                                             </div>
-                                            <div class="col-2 border-end">
+                                            <div class="col-2 border-end d-flex justify-content-center align-items-center">
                                                 <div class="roomPrice">@String.Format("{0:N0}", room.roomPrice)</div>
                                             </div>
-                                            <div class="col-2 border-end">
-                                                <div style="display: flex;align-items:center;justify-content:center" class="roomA">
+                                            <div class="col-2 border-end d-flex justify-content-center align-items-center">
+                                                <div  class="roomA">
                                                     <div class="w-100 bg-danger getQuantity" style="max-width:150px;">
                                                         <div class='ctrl'>
                                                             <div class='ctrl__button ctrl__button--decrement'>&ndash;</div>
@@ -244,10 +244,18 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-3 ">
-
-                                                <div>@ViewBag.totalDays 晚</div>
-                                                <div class="roomPriceinCLass">0</div>
+                                            <div class="col-3 d-flex justify-content-center align-items-center">
+                                                <div>
+                                                    <div class="row">
+                                                        <span class="text-center">
+                                                            @ViewBag.totalDays 晚
+                                                        </span>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="text-center roomPriceinCLass">0</div>
+                                                    </div>
+                                                </div>
+ 
                                             </div>
                                         </div>
                                     </li>
