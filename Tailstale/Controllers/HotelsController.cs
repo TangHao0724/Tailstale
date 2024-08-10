@@ -316,7 +316,7 @@ namespace Tailstale.Controllers
         }
 
 
-        //Room轉roomDTO
+        //Room轉roomDTO1
         private static EditRoomDTO ConvertToEditRoomDTO(Room room, List<business_img> img)
         {
             return new EditRoomDTO
