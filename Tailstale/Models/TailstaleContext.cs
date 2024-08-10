@@ -41,6 +41,8 @@ public partial class TailstaleContext : DbContext
 
     public virtual DbSet<article> articles { get; set; }
 
+    public virtual DbSet<article_img> article_imgs { get; set; }
+
     public virtual DbSet<biological_test> biological_tests { get; set; }
 
     public virtual DbSet<business> businesses { get; set; }
@@ -433,6 +435,10 @@ public partial class TailstaleContext : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.parent_ID).HasDefaultValueSql("(NULL)");
 
+            entity.HasOne(d => d.FK_Business).WithMany(p => p.articles)
+                .HasForeignKey(d => d.FK_Business_ID)
+                .HasConstraintName("FK__article__FK_Busi__1E6F845E");
+
             entity.HasOne(d => d.FK_Keeper).WithMany(p => p.articles)
                 .HasForeignKey(d => d.FK_Keeper_ID)
                 .HasConstraintName("FK__article__FK_Keep__74794A92");
@@ -440,6 +446,26 @@ public partial class TailstaleContext : DbContext
             entity.HasOne(d => d.parent).WithMany(p => p.Inverseparent)
                 .HasForeignKey(d => d.parent_ID)
                 .HasConstraintName("FK__article__parent___76619304");
+        });
+
+        modelBuilder.Entity<article_img>(entity =>
+        {
+            entity.HasKey(e => e.AI_ID).HasName("PK__article___AB500D4D7DAE2D22");
+
+            entity.ToTable("article_img");
+
+            entity.HasOne(d => d.FK_Business_img).WithMany(p => p.article_imgs)
+                .HasForeignKey(d => d.FK_Business_img_ID)
+                .HasConstraintName("FK__article_i__FK_Bu__1D7B6025");
+
+            entity.HasOne(d => d.FK_Keeper_img).WithMany(p => p.article_imgs)
+                .HasForeignKey(d => d.FK_Keeper_img_ID)
+                .HasConstraintName("FK__article_i__FK_Ke__1C873BEC");
+
+            entity.HasOne(d => d.FK_article).WithMany(p => p.article_imgs)
+                .HasForeignKey(d => d.FK_article_ID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__article_i__FK_ar__1B9317B3");
         });
 
         modelBuilder.Entity<biological_test>(entity =>

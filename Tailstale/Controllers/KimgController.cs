@@ -35,7 +35,7 @@ namespace Tailstale.Controllers
                 }
                 if (!_context.keeper_img_types.Where(n => n.FK_Keeper_id == DTO.UserID).Any(x => x.typename.Contains(DTO.type_name)))
                 {
-                    //2.2.1沒有，先在TYPE建立輸入的typeNAME
+                    //2.2.1沒有，先在TYPE建立輸入的typeNAME  12_MIMI_
                     var newKeeperImgType = new keeper_img_type
                     {
                         FK_Keeper_id = DTO.UserID,

@@ -20,16 +20,7 @@ html {
 body {
   margin-bottom: 60px;
 }
-.card-containercas {
-    column-count: 4; /* 根據需要調整列數 */
-    column-gap: 1rem; /* 根據需要調整間距 */
-}
 
-.cardcas {
-    display: inline-block;
-    width: 100%; /* 確保卡片寬度填滿列 */
-    margin-bottom: 1rem; /* 根據需要調整間距 */
-}
 .card-container-cas {
     column-count: 3; /* 根據需要調整列數 */
     column-gap: 0.5rem; /* 根據需要調整間距 */
@@ -39,4 +30,14 @@ body {
     display: inline-block;
     width: 100%; /* 確保卡片寬度填滿列 */
     margin-bottom: 1rem; /* 根據需要調整間距 */
+}
+.card-container-cass-articale {
+    column-count: 10; /* 根據需要調整列數 */
+    column-gap: 0.4rem; /* 根據需要調整間距 */
+}
+
+.card-cas-articale {
+    display: inline-block;
+    width: 100%; /* 確保卡片寬度填滿列 */
+    margin-bottom: 0.4rem; /* 根據需要調整間距 */
 }

@@ -4,10 +4,7 @@
 @{
     
 }
-<style>
 
-
-</style>
 <div id="app">
     <header>
         @await Component.InvokeAsync("NavBar")
@@ -579,7 +576,7 @@
                 <div class="form-floating mb-3">
                     <span>圖片預覽：</span>
                     <div class="card-container-cas" v-if="fileDatas.length > 0">
-                            <img v-for="fileData in fileDatas" :src="fileData" alt="File Preview" class="card-cas img-thumbnail" />
+                            <img v-for="fileData in fileDatas" :src="fileData" alt="File Preview" class="card-cas img-thumbnail w-50" />
                     </div>
                 </div>
             </div>

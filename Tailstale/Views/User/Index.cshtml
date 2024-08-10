@@ -3,7 +3,87 @@
     <header>
         @await Component.InvokeAsync("NavBar")
     </header>
+    <div class="container-fluid" id="app">
+        <!--側攔-->
+        <div class="row mt-4">
+            <!--個人資訊欄&個人標籤-->
+            <div class="col-2 rounded-2 shadow-sm  bg-light">
+                <div class="row">
+                    @await Component.InvokeAsync("LUTag")
+                </div>
+                <hr />
+                <div class="row mt-3">
+
+                </div>
+            </div>
+            <!--輸入框&文章框-->
+            <div class="col-7 mx-3">
+                <!--輸入框 S-->
+                <div class="row">
+                    <div class="col-12 rounded-2 shadow-sm  bg-light p-3">
+                        <div class="row">
+                            <div class="col-1 d-flex justify-content-center">
+                                @switch (@ViewBag.loginType)
+                                {
+                                    case 0:
+                                        <img :src="imgurlLu" alt="mdo" width="48" height="48" class="rounded-circle">
+                                        break;
+                                    case 1:
+                                        <img src="@ViewBag.hotel_imgurl" width="48" height="48"  alt="" class=" rounded-circle" />
+                                        break;
+                                    case 2:
+                                        <img src="@ViewBag.salon_imgurl" width="48" height="48"  alt="" class=" rounded-circle" />
+                                        break;
+                                    case 3:
+                                        <img src="@ViewBag.hospital_imgurl" width="48" height="48"  alt="" class=" rounded-circle" />
+                                        break;
+                                        
+                                }
+                            </div>
+                            <div class="col-10">
+                                <div class="row">
+                                    <form id="postarticle" ref="postform" V-on:submit.prevent="postarticle">
+                                        <div class="mb-3 input-group">
+                                        <textarea class="form-control" id="articleTextarea" name="content" rows="5" placeholder="讓大家知道，今天你的可愛發生了什麼？" style="height: 100px"></textarea>
+                                            <button class="btn btn-outline-secondary" type="button" id="button-addon2" @@click="inputFile">添加相片</button>
+                                            <input type="file" id="updateImg" name="imgs" accept="image/png, image/jpeg, image/jpg" style="display: none;" @@change="handleFileChange" multiple>
+                                            <button class="btn btn-primary" type="submit" id="button-addon2">送出</button>
+                                        </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="ispublic" value="true" id="flexCheckDefault">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            設為公開
+                                        </label>
+                                    </div>
+                                    </form>
+                                </div>
+                                <div class="row">
+                                    <span>圖片預覽：</span>
+                                    <div class="card-container-cas-articale" v-if="fileDatas.length > 0">
+                                        <img v-for="fileData in fileDatas" :src="fileData" alt="File Preview"  class="card-cas-articale img-thumbnail w-25" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!--輸入框 E-->
+                <!--文章框 S-->
+                <!--文章框 E-->
+            </div>
+            <!--搜尋欄&熱門標籤-->
+            <div class="col-2">
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
-<script src="~/js/keeper/IndexVue.js"></script>
+@section scripts{
+
+    <script src="~/js/keeper/IndexVue.js"></script>
+}
+

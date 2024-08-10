@@ -19,9 +19,15 @@ public partial class article
 
     public DateTime? created_at { get; set; }
 
+    public int? FK_Business_ID { get; set; }
+
+    public virtual business FK_Business { get; set; }
+
     public virtual keeper FK_Keeper { get; set; }
 
     public virtual ICollection<article> Inverseparent { get; set; } = new List<article>();
+
+    public virtual ICollection<article_img> article_imgs { get; set; } = new List<article_img>();
 
     public virtual article parent { get; set; }
 
