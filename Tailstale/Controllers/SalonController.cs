@@ -1,6 +1,7 @@
 ﻿using CRUD_COREMVC;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System.Drawing;
 using Tailstale.Models;
 
@@ -83,7 +84,91 @@ namespace Tailstale.Controllers
         }
 
 
-       
+        //public async Task<IActionResult> KeeperEdit()
+        //{
+
+        //    int? KloginID = HttpContext.Session.GetInt32("KloginID");
+        //    ViewBag.KLoginID = KloginID.HasValue ? KloginID.Value : (int?)null;
+
+
+        //    if (KloginID == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var reserve = await _context.Reserves.FindAsync(KloginID);
+        //    if (reserve == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+
+            
+
+           
+        //    return View(reserve);
+        //}
+
+        //// POST: Reserves/Edit/5
+        //// To protect from overposting attacks, enable the specific properties you want to bind to.
+        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> KeeperEdit(int id, [Bind("id,keeper_id,pet_name,business_ID,time,service_name,created_at,status")] Reserve reserve)
+        //{
+        //    if (id != reserve.id)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            _context.Update(reserve);
+        //            await _context.SaveChangesAsync();
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            if (!ReserveExists(reserve.id))
+        //            {
+        //                return NotFound();
+        //            }
+        //            else
+        //            {
+        //                throw;
+        //            }
+        //        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
+
+        //    var pets = _context.pets
+        //    .Where(p => p.keeper_ID == reserve.keeper_id) // 根据 keeper_id 进行过滤
+        //   .ToList();
+        //    var orderstatus = _context.order_statuses
+        //       .Where(b => b.business_type_ID == 2)
+        //       .ToList();
+
+        //    int? loginID = HttpContext.Session.GetInt32("loginID");
+        //    var businesses = _context.businesses
+        //   .Where(b => b.ID == loginID)
+        //   .ToList();
+
+        //    var keeper = _context.keepers
+        //   .Where(p => p.ID == reserve.keeper_id) // 根据 keeper_id 进行过滤
+        //  .ToList();
+
+        //    ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+        //    ViewData["Orderstatus_ID"] = new SelectList(orderstatus, "ID", "status_name", reserve.status);
+        //    ViewData["pet_name"] = new SelectList(pets, "name", "name");
+        //    ViewData["keeper_id"] = new SelectList(keeper, "ID", "name");
+        //    //ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "address", reserve.keeper_id);
+        //    return View(reserve);
+        //}
+
+
+
+
 
 
     }
