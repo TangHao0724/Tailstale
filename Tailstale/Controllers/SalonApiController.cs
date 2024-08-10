@@ -122,7 +122,10 @@ namespace Tailstale.Controllers
                 // 檢查是否有足夠空位
                 var dateTimeToCheck = dayDate.ToDateTime(currentTime);
                 var reservationCount = await _context.Reserves
+                    .Where(r => r.business_ID == id)
                     .CountAsync(r => r.time.Date == dateTimeToCheck.Date && r.time.TimeOfDay == dateTimeToCheck.TimeOfDay);
+
+                //.CountAsync(r => r.business_ID == id && r.time.Date == dateTimeToCheck.Date && r.time.TimeOfDay == dateTimeToCheck.TimeOfDay);
 
                 if (reservationCount < people)
                 {
@@ -162,7 +165,7 @@ namespace Tailstale.Controllers
 
         // Post: api/SalonApi/ReserveCreate
         [HttpPost("ReserveCreate")]
-        public string ReserveCreate([FromForm] Reserve reserve)
+        public async Task<string> ReserveCreate([FromForm] Reserve reserve)
         {
             if (reserve.keeper_id == 0 || string.IsNullOrEmpty(reserve.pet_name))
             {
@@ -172,7 +175,7 @@ namespace Tailstale.Controllers
             try
             {
                 _context.Reserves.Add(reserve);
-                _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 return "預約完成!";
             }
