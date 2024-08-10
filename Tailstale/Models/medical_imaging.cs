@@ -9,15 +9,13 @@ public partial class medical_imaging
 {
     public int id { get; set; }
 
-    public int? pet_id { get; set; }
-
-    public DateTime? examined_at { get; set; }
-
-    public string type { get; set; }
-
-    public string examined_area { get; set; }
+    public DateTime? examined_time { get; set; }
 
     public string findings { get; set; }
 
-    public virtual pet pet { get; set; }
+    public int? medical_imaging_order_id { get; set; }
+
+    public virtual ICollection<image_file> image_files { get; set; } = new List<image_file>();
+
+    public virtual medical_imaging_order medical_imaging_order { get; set; }
 }

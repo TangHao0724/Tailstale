@@ -9,13 +9,9 @@ public partial class image_file
 {
     public int image_id { get; set; }
 
-    public int? record_type_id { get; set; }
+    public string file_name { get; set; }
 
-    public int record_id { get; set; }
+    public int? medical_imaging_id { get; set; }
 
-    public DateTime? uploaded_at { get; set; }
-
-    public string file_path { get; set; }
-
-    public virtual record_type record_type { get; set; }
+    public virtual medical_imaging medical_imaging { get; set; }
 }

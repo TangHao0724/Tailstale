@@ -51,6 +51,8 @@ public partial class business
 
     public virtual ICollection<Service> Services { get; set; } = new List<Service>();
 
+    public virtual ICollection<article> articles { get; set; } = new List<article>();
+
     public virtual ICollection<business_img_type> business_img_types { get; set; } = new List<business_img_type>();
 
     public virtual member_status business_statusNavigation { get; set; }
@@ -62,6 +64,8 @@ public partial class business
     public virtual ICollection<roomType> roomTypes { get; set; } = new List<roomType>();
 
     public virtual business_type type { get; set; }
+
+    public virtual ICollection<using_person_tag> using_person_tags { get; set; } = new List<using_person_tag>();
 
     public virtual ICollection<vet_information> vet_informations { get; set; } = new List<vet_information>();
 

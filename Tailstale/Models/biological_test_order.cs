@@ -5,21 +5,21 @@ using System.Collections.Generic;
 
 namespace Tailstale.Models;
 
-public partial class surgery
+public partial class biological_test_order
 {
     public int id { get; set; }
 
-    public DateTime start_time { get; set; }
+    public DateTime order_time { get; set; }
 
-    public string technique { get; set; }
+    public DateTime test_time { get; set; }
 
-    public string anesthesia { get; set; }
-
-    public string findings { get; set; }
-
-    public string op_duration { get; set; }
+    public int? specimen_id { get; set; }
 
     public int? medical_orders_id { get; set; }
 
+    public virtual ICollection<biological_test> biological_tests { get; set; } = new List<biological_test>();
+
     public virtual medical_order medical_orders { get; set; }
+
+    public virtual speciman specimen { get; set; }
 }

@@ -17,5 +17,7 @@ public partial class keeper_img
 
     public DateTime? created_at { get; set; }
 
+    public virtual ICollection<article_img> article_imgs { get; set; } = new List<article_img>();
+
     public virtual keeper_img_type img_type { get; set; }
 }
