@@ -141,6 +141,12 @@ namespace Tailstale.Controllers
            .Where(b => b.ID == loginID)
            .ToList();
 
+            var service = _context.Services
+           .Where(b => b.business_ID == loginID)
+           .ToList();
+
+            ViewData["servicename"] = new SelectList(service, "service_name", "service_name");
+            ViewBag.LoginID = loginID.HasValue ? loginID.Value : (int?)null;
             ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
             ViewData["Orderstatus_ID"] = new SelectList(orderstatus, "ID", "status_name");
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
@@ -184,10 +190,16 @@ namespace Tailstale.Controllers
             var businesses = _context.businesses
            .Where(b => b.ID == loginID)
            .ToList();
+            var service = _context.Services
+           .Where(b => b.business_ID == loginID)
+           .ToList();
+
+            ViewData["service_name"] = new SelectList(service, "service_name", "service_name");
 
             ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
 
             ViewData["Orderstatus_ID"] = new SelectList(orderstatus, "ID", "status_name");
+
             
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", reserve.business_ID);
             //ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "address", reserve.keeper_id);
@@ -226,6 +238,11 @@ namespace Tailstale.Controllers
             var businesses = _context.businesses
            .Where(b => b.ID == loginID)
            .ToList();
+            var service = _context.Services
+           .Where(b => b.business_ID == loginID)
+           .ToList();
+
+            ViewData["servicename"] = new SelectList(service, "service_name", "service_name");
 
             ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
 
@@ -288,6 +305,11 @@ namespace Tailstale.Controllers
             var keeper = _context.keepers
            .Where(p => p.ID == reserve.keeper_id) // 根据 keeper_id 进行过滤
           .ToList();
+            var service = _context.Services
+           .Where(b => b.business_ID == loginID)
+           .ToList();
+
+            ViewData["servicename"] = new SelectList(service, "service_name", "service_name");
 
             ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
             ViewData["Orderstatus_ID"] = new SelectList(orderstatus, "ID", "status_name", reserve.status);

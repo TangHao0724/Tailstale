@@ -102,7 +102,11 @@ namespace Tailstale.Controllers
             .Where(b => b.ID == loginID)
             .ToList();
 
+            var service = _context.Services
+           .Where(b => b.business_ID == loginID)
+           .ToList();
 
+            ViewData["servicename"] = new SelectList(service, "service_name", "service_name");
             ViewData["business_ID"] = new SelectList(business, "ID", "name");
             ViewData["beautician_id"] = new SelectList(_context.Beauticians, "id", "name");
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
@@ -125,7 +129,11 @@ namespace Tailstale.Controllers
             .ToList();
 
 
-            
+            var service = _context.Services
+           .Where(b => b.business_ID == loginID)
+           .ToList();
+
+            ViewData["servicename"] = new SelectList(service, "service_name", "service_name");
 
 
 
@@ -281,7 +289,11 @@ namespace Tailstale.Controllers
             var keeper = _context.keepers
             .Where(p => p.ID == consumption_Record.keeper_id) // 根据 keeper_id 进行过滤
             .ToList();
+            var service = _context.Services
+           .Where(b => b.business_ID == loginID)
+           .ToList();
 
+            ViewData["servicename"] = new SelectList(service, "service_name", "service_name");
 
             ViewData["business_ID"] = new SelectList(business, "ID", "name");
 
@@ -312,6 +324,12 @@ namespace Tailstale.Controllers
             var business = _context.businesses
             .Where(b => b.ID == loginID)
             .ToList();
+
+            var service = _context.Services
+           .Where(b => b.business_ID == loginID)
+           .ToList();
+
+            ViewData["servicename"] = new SelectList(service, "service_name", "service_name");
 
             var keeper = _context.keepers
             .Where(p => p.ID == consumption_Record.keeper_id) // 根据 keeper_id 进行过滤

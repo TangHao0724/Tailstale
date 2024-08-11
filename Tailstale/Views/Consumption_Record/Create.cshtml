@@ -44,7 +44,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="service_name" class="control-label"></label>
-                <input asp-for="service_name" class="form-control" />
+                <select asp-for="service_name" class="form-control" asp-items="ViewBag.servicename"></select>
                 <span asp-validation-for="service_name" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -166,11 +166,11 @@
         };
         var app = Vue.createApp(vueApp).mount("#app");
 
-        document.querySelector('.meeting-time').addEventListener('input', function () {
-            var inputDate = new Date(this.value);
-            inputDate.setMinutes(0);  // 将分钟部分设为 0
-            this.value = inputDate.toISOString().slice(0, 16);  // 格式化为 yyyy-MM-ddTHH:mm
-        });
+        // document.querySelector('.meeting-time').addEventListener('input', function () {
+        //     var inputDate = new Date(this.value);
+        //     inputDate.setMinutes(0);  // 将分钟部分设为 0
+        //     this.value = inputDate.toISOString().slice(0, 16);  // 格式化为 yyyy-MM-ddTHH:mm
+        // });
 
         function previewImage(input, imgId) {
             var imgPreview = document.getElementById(imgId);
