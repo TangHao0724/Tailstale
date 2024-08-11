@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting.Internal;
 using System.Drawing;
 using Tailstale.Models;
 
@@ -11,16 +12,17 @@ namespace Tailstale.Controllers
    
     public class SalonController : Controller
     {
-
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly ILogger<SalonController> _logger;
         private readonly TailstaleContext _context;
 
         //  private readonly TailstaleContext _context;
 
-        public SalonController(ILogger<SalonController> logger, TailstaleContext context)
+        public SalonController(ILogger<SalonController> logger, TailstaleContext context, IWebHostEnvironment hostingEnvironment)
         {
             _logger = logger;
             _context = context;
+            _hostingEnvironment = hostingEnvironment;
         }
 
         [IsLoginFilter]
@@ -83,93 +85,134 @@ namespace Tailstale.Controllers
             return View();
         }
 
+        [IsLoginFilter]
+        public async Task<IActionResult> businessEdit()
+        {
 
-        //public async Task<IActionResult> KeeperEdit()
-        //{
-
-        //    int? KloginID = HttpContext.Session.GetInt32("KloginID");
-        //    ViewBag.KLoginID = KloginID.HasValue ? KloginID.Value : (int?)null;
-
-
-        //    if (KloginID == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var reserve = await _context.Reserves.FindAsync(KloginID);
-        //    if (reserve == null)
-        //    {
-        //        return NotFound();
-        //    }
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            ViewBag.LoginID = loginID.HasValue ? loginID.Value : (int?)null;
 
 
-            
+            if (loginID == null)
+            {
+                return NotFound();
+            }
 
-           
-        //    return View(reserve);
-        //}
-
-        //// POST: Reserves/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> KeeperEdit(int id, [Bind("id,keeper_id,pet_name,business_ID,time,service_name,created_at,status")] Reserve reserve)
-        //{
-        //    if (id != reserve.id)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(reserve);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!ReserveExists(reserve.id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-
-        //    var pets = _context.pets
-        //    .Where(p => p.keeper_ID == reserve.keeper_id) // 根据 keeper_id 进行过滤
-        //   .ToList();
-        //    var orderstatus = _context.order_statuses
-        //       .Where(b => b.business_type_ID == 2)
-        //       .ToList();
-
-        //    int? loginID = HttpContext.Session.GetInt32("loginID");
-        //    var businesses = _context.businesses
-        //   .Where(b => b.ID == loginID)
-        //   .ToList();
-
-        //    var keeper = _context.keepers
-        //   .Where(p => p.ID == reserve.keeper_id) // 根据 keeper_id 进行过滤
-        //  .ToList();
-
-        //    ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
-        //    ViewData["Orderstatus_ID"] = new SelectList(orderstatus, "ID", "status_name", reserve.status);
-        //    ViewData["pet_name"] = new SelectList(pets, "name", "name");
-        //    ViewData["keeper_id"] = new SelectList(keeper, "ID", "name");
-        //    //ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "address", reserve.keeper_id);
-        //    return View(reserve);
-        //}
+            var businesses = await _context.businesses.FindAsync(loginID);
+            if (businesses == null)
+            {
+                return NotFound();
+            }
 
 
+            return View(businesses);
+        }
+
+        // POST: Reserves/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> businessEdit(int id, [Bind("ID,password,salt,type_ID,name,email,phone,address,geoJson,license_number,business_status,description,photo_url,created_at")] business business)
+        {
+            if (id != business.ID)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // 取得原始的 Service 資料
+                    var originalService = await _context.businesses.AsNoTracking().FirstOrDefaultAsync(s => s.ID == business.ID);
+
+                    // 檢查是否有新的圖片文件上傳
+                    if (HttpContext.Request.Form.Files.Count > 0)
+                    {
+                        var photoFile = HttpContext.Request.Form.Files[0]; // 取得第一個上傳的文件
+
+                        if (photoFile != null && photoFile.Length > 0) // 檢查文件有效性
+                        {
+                            // 生成唯一的文件名，避免重复
+                            string uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(photoFile.FileName);
+
+                            // 指定文件的完整路徑，保存到 wwwroot/Salon_img 文件夾下
+                            string filePath = Path.Combine(_hostingEnvironment.WebRootPath, "Salon_img", uniqueFileName);
+
+                            // 保存文件到目標路徑
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await photoFile.CopyToAsync(stream);
+                            }
+
+                            // 刪除舊的檔案
+                            DeleteImageFile(originalService.photo_url);
+
+                            // 更新 service_img 屬性為新的文件名
+                            business.photo_url = uniqueFileName;
+                        }
+                    }
+                    else
+                    {
+                        // 沒有新圖片上傳，保留原有的 service_img 值
+                        business.photo_url = originalService.photo_url;
+                    }
+                    var existingbusinesses = await _context.businesses.FindAsync(id);
+
+                    existingbusinesses.name = business.name;
+                    existingbusinesses.phone = business.phone;
+                    existingbusinesses.address = business.address;
+                    existingbusinesses.geoJson = business.geoJson;
+                    existingbusinesses.license_number = business.license_number;
+                    existingbusinesses.description = business.description;
+                    existingbusinesses.photo_url = business.photo_url;
+
+                    // 更新 Service 資料
+                    _context.Update(existingbusinesses);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!business_Exists(business.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                return RedirectToAction("Index", "Home", new { area = "Home" });
+            }
+            return View(business);
+        }
+
+        private void DeleteImageFile(string fileName)
+        {
+            //string filePath = Path.Combine(_hostingEnvironment.WebRootPath, "Salon_img", fileName);
+            //if (System.IO.File.Exists(filePath))
+            //{
+            //    System.IO.File.Delete(filePath);
+            //}
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return;
+            }
+
+            string filePath = Path.Combine(_hostingEnvironment.WebRootPath, "Salon_img", fileName);
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
+        }
 
 
-
+        private bool business_Exists(int id)
+        {
+            return _context.business_imgs.Any(e => e.ID == id);
+        }
 
     }
 }
