@@ -27,12 +27,12 @@
             <a asp-action="Index" asp-controller="departments" class="list-group-item list-group-item-action sidebar-item">科別管理</a>
             <a asp-action="Index" asp-controller="vet_information" class="list-group-item list-group-item-action sidebar-item">醫師資訊管理</a>
             <a asp-action="Index" asp-controller="ward" class="list-group-item list-group-item-action sidebar-item active">院內病房管理</a>
-            <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 6</a>
+            <a asp-action="Index" asp-controller="medical_record" class="list-group-em list-group-item-action sidebar-item active">病歷資料</a>
             <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 7</a>
             <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 8</a>
             <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 9</a>
-            <a href="#" class="list-group-item list-group-item-action sidebar-item">Option 10</a>
-        </div>
+            <a id="logout" class="list-group-item list-group-item-action sidebar-item">登出</a>
+      </div>
 
         <div class="col-10">
             <div class="mb-2">
@@ -114,10 +114,25 @@
         </div>
     </div>
 </div>
-
-
-
-@section Scripts
+@section scripts
 {
- 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"></script>
+    <script>
+        $("#logout").on("click", function () {
+            axios.delete('api/LNRApi/Logout')
+                .then(response => {
+                    console.log(response); // 檢查完整的響應對象
+                    if (response.status === 200) {
+                        window.location.href = '/User/Index';
+                    } else {
+                        console.error('Logout failed with status:', response.status);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during logout:', error);
+                });
+
+        });
+    </script>
+
 }

@@ -16,33 +16,11 @@ namespace Tailstale.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> appointment()
-        {
-            var today = DateOnly.FromDateTime(DateTime.Today);
-            var appointments = await _context.Appointments
-                .Where(a => a.daily_outpatient_clinic_schedule.date == today)
-                .Select(a => new
-                {
-                    keeper_ID = a.keeper_ID,
-                    keeper_name = a.keeper.name,
-                    pet_ID = a.pet_ID,
-                    pet_name = a.pet.name,
-                    date = a.daily_outpatient_clinic_schedule.date
-                    //↑預約date改成確切時間
-                })
-                .ToListAsync();
-            ViewBag.selected = appointments;
-            return View();
-        }
+
 
         // GET: medical_record
-        public async Task<IActionResult> Index(int? pet_id)
+public async Task<IActionResult> Index(int? pet_id)
         { //渲染
-            if (pet_id == null)
-            {
-                return View();
-            }
-
             var query = from m in _context.medical_records
                         join o in _context.outpatient_clinics on m.outpatient_clinic_id equals o.outpatient_clinic_ID
                         join p in _context.pets on m.pet_id equals p.pet_ID
@@ -66,25 +44,24 @@ namespace Tailstale.Controllers
 
             if (pet_id.HasValue)
             {
-                var basicInfo = await _context.pets.Where(p => p.pet_ID == pet_id).Select(p => new
-                {
-                    keeper_name = p.keeper.name,
-                    pet_name = p.name,
-                    pet_breed = p.pet_type.breed,
-                    pet_age = p.age
-                }).FirstOrDefaultAsync();
                 query = query.Where(r => r.pet_id == pet_id.Value);
+
+                var basicInfo = await _context.pets
+                        .Where(p => p.pet_ID == pet_id)
+                        .Select(p => new
+                        {
+                            keeper_name = p.keeper.name,
+                            pet_name = p.name,
+                            pet_breed = p.pet_type.breed,
+                            pet_age = p.age
+                        }).FirstOrDefaultAsync();
                 ViewBag.basicInfo = basicInfo;
             }
             var records = await query.OrderByDescending(m => m.Datetime).ToListAsync();
-
-
-
             ViewBag.pet_id = pet_id;
 
             return View(records);
         }
-
         // GET: medical_record/Details/5
         public async Task<IActionResult> Details(int? id)
         {

@@ -8,8 +8,10 @@
         <div class="col-4 nav-item  ">
             <a asp-controller="Home" asp-action="Index"><img src="/imgs/LNR_img/logo2.png" width="160" height="44"></a>
         </div>
-        <a class="col-3 nav-item nav-link" asp-controller="User" asp-action="Index">紀錄&社交</a>
-        <a class=" col-3 nav-item nav-link" asp-controller="User" asp-action="search">服務&查詢</a>
+        <a class="col nav-item nav-link" asp-controller="User" asp-action="Index">紀錄&社交</a>
+        <a class=" col nav-item nav-link" asp-controller="Salon" asp-action="SalonHome">寵物美容</a>
+        <a class=" col nav-item nav-link" asp-controller="" asp-action="">寵物醫療</a>
+        <a class=" col nav-item nav-link" asp-controller="Hotels" asp-action="postdatetosearch">寵物旅館</a>
         <div class="col-2 nav-item align-self-end ">
 
             @if (ID != null)

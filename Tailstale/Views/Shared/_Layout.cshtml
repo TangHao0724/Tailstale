@@ -17,6 +17,10 @@
 <body>
 
     <div class="container">
+        <header>
+            @await Component.InvokeAsync("NavBar")
+        </header>
+
         <main role="main" class="pb-3">
             @RenderBody()
            
