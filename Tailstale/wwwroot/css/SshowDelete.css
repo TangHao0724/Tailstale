@@ -25,6 +25,7 @@ dt {
 dd:last-of-type {
     border-bottom: 5px solid rgba(255, 99, 71, 0.8);
     margin: 0;
+    line-height: 60px;
 }
     /*.ddt {
     padding: 20px;

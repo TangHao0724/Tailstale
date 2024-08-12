@@ -16,17 +16,17 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
             <div class="form-group">
-                <label asp-for="FK_business_id" class="control-label"></label>
+                <label asp-for="FK_business_id" class="control-label">門市</label>
                 <select asp-for="FK_business_id" class="form-control" asp-items="ViewBag.FK_business_id"></select>
                 <span asp-validation-for="FK_business_id" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="typename" class="control-label"></label>
+                <label asp-for="typename" class="control-label">類型名稱</label>
                 <input asp-for="typename" class="form-control" required />
                 <span asp-validation-for="typename" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="created_at" class="control-label"></label>
+                <label asp-for="created_at" class="control-label">建立日期</label>
                 <input asp-for="created_at" class="form-control" />
                 <span asp-validation-for="created_at" class="text-danger"></span>
             </div>
@@ -38,7 +38,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-secondary" asp-action="Index">返回</a>
 </div>
 
 @section Scripts {
