@@ -4,7 +4,7 @@
 @{
 }
 <div class="dropdown text-end" id="UserTag">
-    <a class="d-block link-dark text-decoration-none " id="dropdownUser1" asp-area="" asp-controller="" asp-action="">
-        <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+    <a class="d-block link-dark text-decoration-none " id="dropdownUser1" asp-area="" asp-controller="UserInfo" asp-action="Index">
+        <img :src="imgurlLu" alt="mdo" width="32" height="32" class="rounded-circle" id="user-id" data-user-id="@ViewBag.UserID" data-user-type="0">
     </a>
 </div>

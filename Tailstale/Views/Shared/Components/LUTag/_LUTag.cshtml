@@ -4,10 +4,28 @@
 @{
 }
 <!--使用者資訊-->
-<div class="container justify-content-center">
+<div class="container justify-content-center" id="LUTag">
     <div class="col-12  ">
-        <img src="/imgs/LNR_img/logo2.png" alt="" class="w-75 rounded-circle" />
+        @switch (@ViewBag.userType)
+        {
+           case 0 :
+                <img :src="imgurlLu" alt="" class="w-75 rounded-circle" />
+                break;
+            case 1:
+                <img src="@ViewBag.hotel_imgurl" alt="" class="w-75 rounded-circle" />
+                break;
+            case 2:
+                <img src="@ViewBag.salon_imgurl" alt="" class="w-75 rounded-circle" />
+                break;
+            case 3:
+                <img src="@ViewBag.hospital_imgurl" alt="" class="w-75 rounded-circle" />
+                break;                  
+        }
     </div>
-    <div class="col-12">編號：@ViewBag.userID</div>
+    <div class="col-12"  >編號：@ViewBag.userID</div>
     <div class="col-12">名稱：@ViewBag.userName</div>
 </div>
+
+@section scripts {
+    <script src="~/js/components/LUTagVue.js"></script>
+}   

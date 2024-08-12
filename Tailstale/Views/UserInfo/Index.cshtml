@@ -3,15 +3,16 @@
 *@
 @{
     
-}x`
+}
 
-<header>
-    @await Component.InvokeAsync("NavBar")
-</header>
+<div id="app">
+    <header>
+        @await Component.InvokeAsync("NavBar")
+    </header>
 
-<div class="container" id="app">
-    <!--側攔-->
-    <div class="row mt-4">
+    <div class="container" id="app">
+        <!--側攔-->
+        <div class="row mt-4">
             <div class="col-2 rounded-2 shadow-sm  bg-light">
                 <div class="row">
                     @await Component.InvokeAsync("LUTag")
@@ -20,21 +21,25 @@
                 <div class="row mt-3">
                     <a v-for="tab in tabs"
                        :key="tab"
+                       
                        :class="['nav-link link-dark-hover', { active: currentTab === tab }]"
                        @@click="currentTab = tab">
                         {{ tab }}
                     </a>
+                    <a class="nav-link link-dark-hover" @@click="logout()">登出</a>
                 </div>
             </div>
-        
 
-        <div class="col-9">
-            <component :is="currentTabComponent" :userID= "@ViewBag.loginID"></component>
+
+            <div class="col-9">
+                <component :is="currentTabComponent" :userID="@ViewBag.loginID" @@data-updated="GetUserimgm"></component>
+            </div>
+
         </div>
 
     </div>
-
 </div>
+
 
 <script type="text/x-template" id="tab-Main">
     <h1>Tab-main</h1>
@@ -51,57 +56,88 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="UpdateUser">
+                    <form id="UpdateUser"  @@submit.prevent="postuserinfo" ref="userinfoform">
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="updateName" name="updateName" placeholder="名稱">
+                            <input type="text" class="form-control" id="updateName" name="name" placeholder="名稱" :value="user.name">
                             <label for="updateName" class="form-label">名稱</label>
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="email" class="form-control" id="updateEmail" name="updateEmail" placeholder="電子信箱">
+                            <input type="email" class="form-control" id="updateEmail" name="email" placeholder="電子信箱" :value="user.email">
                             <label for="updateEmail" class="form-label">電子信箱</label>
                         </div>
                         <div class=" form-floating mb-3">
-                            <input type="text" class="form-control" id="updateAddress" name="updateAddress" placeholder="聯絡地址">
+                            <input type="text" class="form-control" id="updateAddress" name="address" placeholder="聯絡地址":value="user.address" >
                             <label for="updateAddress" class="form-label">聯絡地址</label>
 
                         </div>
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="updatePhone" name="updatePhone" placeholder="聯絡電話">
+                            <input type="text" class="form-control" id="updatePhone" name="phone" placeholder="聯絡電話" :value="user.phone">
                             <label for="updatePhone" class="form-label">聯絡電話</label>
-
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="updatePassword" name="updatePassword" placeholder="密碼">
-                            <label for="updatePassword" class="form-label">請輸入密碼確認身分</label>
 
                         </div>
                         <button type="submit" class="btn btn-primary justify-content-end">修改資料</button>
                     </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
+
             </div>
         </div>
     </div>
     <!-- UserUpdateModal E-->
-    <!-- Modal_E -->
+    <!-- UserUpdateImgModal S-->
+        <div class="modal fade" id="UserUpdateImgModal" tabindex="-1" aria-labelledby="UserUpdateImgModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">上傳圖片</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="UpdateUserImg"  @@submit.prevent="postUserimgInfo" ref="form">
+                            <div class="form-floating mb-3">
+                                <span>上傳圖片：</span>
+                                    <input type="file" class="form-control form-control-sm" id="updateImg" name="img" accept="image/png, image/jpeg, image/jpg" @@change="handleFileChange">
+                            </div>
+                            <div class="form-floating mb-3">
+                                    <span>圖片預覽：</span>
+                                    <div v-if="fileData">
+                                        <img :src="fileData" alt="File Preview" class="w-50" />
+                                    </div>
+                            </div>
 
+                            <button type="submit" class="btn btn-primary justify-content-end">上傳</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- UserUpdateImgModal E-->
+    <!-- Modal_E -->
     <div class="container-fluid">
         <div class="row shadow rounded-2 align-content-center mb-4">
             <h2>使用者資訊</h2>
         </div>
-        <div class="row shadow rounded-2 align-content-center mb-4">
+        <div class="row shadow rounded-2 align-content-center mb-4 p-3">
             <div class="col-7">
                 <dl class="row">
                     <dt class="col-4 col-md-12 ">使用者編號：</dt>
                     <dd class="col-sm-10">
                                 <span>{{userid}}</span>
                     </dd>
-
+                    <dt class="col-4 col-md-12">
+                        電子信箱：
+                    </dt>
+                    <dd class="col-sm-10">
+                        <span>{{user.email}}</span>
+                    </dd>
                     <dt class="col-4 col-md-12">姓名：</dt>
                     <dd class="col-sm-10">
                         <span>{{user.name}}</span>
+                    </dd>
+                    <dt class="col-4 col-md-12">
+                        連絡住址：
+                    </dt>
+                    <dd class="col-sm-10">
+                        <span>{{user.address}}</span>
                     </dd>
 
                     <dt class="col-4 col-md-12">
@@ -110,20 +146,6 @@
                     <dd class="col-sm-10">
                         <span>{{user.phone}}</span>
                     </dd>
-                    <dt class="col-4 col-md-12">
-                        電子信箱：
-                    </dt>
-                    <dd class="col-sm-10">
-                        <span>{{user.email}}</span>
-                    </dd>
-
-                    <dt class="col-4 col-md-12">
-                        連絡住址：
-                    </dt>
-                    <dd class="col-sm-10">
-                        <span>{{user.address}}</span>
-                    </dd>
-
                     <dt class="col-4 col-md-12">
                         會員狀態：
                     </dt>
@@ -136,25 +158,48 @@
                         加入時間：
                     </dt>
                     <dd class="col-sm-10">
-                        <span>{{ user.created_at }}</span>
+                        <span>{{ user.created_at.split('T')[0] }}</span>
                     </dd>
                 </dl>
-                    <button class="btn btn-outline-primary btn-sm mx-3" 
-                            type="button" data-bs-toggle="modal" 
-                            data-bs-target="#UserUpdateModal">
-                    修改會員資料
-                    </button>
+                <button class="btn btn-outline-primary btn-sm mx-1" 
+                        type="button" data-bs-toggle="modal" 
+                        data-bs-target="#UserUpdateModal">
+                修改會員資料
+                </button>
+                <button class="btn btn-outline-primary btn-sm mx-1"
+                        type="button" data-bs-toggle="modal" 
+                        data-bs-target="#UserUpdateModal">
+                認證會員
+                </button>
+                <button class="btn btn-outline-primary btn-sm mx-1"
+                        type="button" data-bs-toggle="modal"
+                        data-bs-target="#UserUpdateModal">
+                重設密碼
+                </button>
             </div>
             <div class="col-4">
-                 使用者頭像
+                <div class="container">
+                    <div class="row mb-3">
+                        <h4>目前頭像：</h4>
+                    </div>
+                    <div class="row mb-3">
+                        <img :src="imgurl" />
+                    </div>                        
+                    <div class="row mb-3">
+                        <button class="btn btn-outline-primary btn-sm mx-3"
+                                type="button" data-bs-toggle="modal"
+                                data-bs-target="#UserUpdateImgModal">
+                        更新頭像
+                        </button>
+                    </div>
+                </div>
             </div>
          </div>
     </div>
-</div>
 </script>
 
 <script type="text/x-template" id="tab-PInfo">
-        <!-- PUpdateModal S-->
+<!-- PUpdateModal S-->
     <div class="modal fade" id="PUpdateModal" tabindex="-1" aria-labelledby="PUpdateModal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -163,19 +208,10 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="UpdateUser">
-                        <div class=" form-floating mb-3">
-                            <span>寵物相片：</span>
-                            <input class="form-control form-control-sm" id="formimg" type="file">
-                        </div>
-                        <hr />
+                    <form id="UpdateUser" @@submit.prevent="submitForm" ref="form">
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" id="name" name="name" placeholder="名稱">
                             <label for="updateName" class="form-label">名稱</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input type="email" class="form-control" id="chip_ID" name="chip_ID" placeholder="晶片編號">
-                            <label for="updateEmail" class="form-label">晶片編號</label>
                         </div>
                         <div class=" form-floating mb-3">
                             <input type="number" class="form-control" id="age" name="age" placeholder="年齡">
@@ -184,57 +220,311 @@
                         <div class="form-floating mb-3">
                              <span>生日：</span>
                             <br />
-                            <input type="date" id="datepicker" id="birthday" name="birthday">
+                            <input type="date"  id="birthday" name="birthday">
                         </div>
                         <div class=" form-floating mb-3">
-                                <select class="form-select form-select-sm" aria-label=".form-select-sm example" name="pet_type_ID">
-                                    <option v-for="pet in pet_types" :key="pet.id" :value="pet.id">
-                                        {{ pet.id }}
-                                    </option>
-                                </select>
+                            <span>寵物品種：</span>
+                            <br />
+                            <select class="form-select form-select-sm" aria-label=".form-select-sm example" name="pet_type_ID">
+                                <option v-for="pet in pet_types" :key="pet.id" :value="pet.id">
+                                    {{ pet.species + ', ' + pet.breed}}
+                                </option>
+                            </select>
                         </div>
                         <div class="form-floating mb-3">
                             <span>寵物性別：</span>
                             <br />
                               <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="0">
+                              <input class="form-check-input" type="radio" name="gender" id="gender1" value="0">
                               <label class="form-check-label" for="inlineRadio1">公</label>
                             </div>
                             <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="1">
+                              <input class="form-check-input" type="radio" name="gender" id="gender2" value="1">
                               <label class="form-check-label" for="inlineRadio2">母</label>
                             </div>
                         </div>
-                        <div class="form-floating mb-3">
-                            <input type="number"  step="0.01" class="form-control" id="pet_weight" name="pet_weight" placeholder="體重">
-                            <label for="pet_weight" class="form-label">體重</label>
-                        </div>
-
                         <button type="submit" class="btn btn-primary justify-content-end">新增</button>
                     </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
-    <!-- PUpdateModal E-->
+<!-- PUpdateModal E-->
+<!-- PImgModal S-->
+<div class="modal fade" id="PImgModal" tabindex="1" aria-labelledby="PImgModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">上傳圖片</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+            </div>
+            <div class="modal-body">
+                <form id="PImg"  @@submit.prevent="postPImg" ref="PIform">
+                    <div class="form-floating mb-3">
+                        <span>上傳圖片：</span>
+                            <input type="file" class="form-control form-control-sm" id="updateImg" name="img" accept="image/png, image/jpeg, image/jpg" @@change="handleFileChange">
+                    </div>
+                    <div class="form-floating mb-3">
+                            <span>圖片預覽：</span>
+                            <div v-if="fileData">
+                                <img :src="fileData" alt="File Preview" class="w-50" />
+                            </div>
+                    </div>
+                    <div class="form-floating mb-3">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary justify-content-end">上傳</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- PImgModal E-->
+    <!-- PDUpdateModal S-->
+    <div class="modal fade" id="PDUpdateModal" tabindex="-1" aria-labelledby="PDUpdateModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">寵物詳細內容</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="PDUpdate" @@submit.prevent="submitPDUForm" ref="PDUform" class="row g-3">
+                        <div class="col-6">
+                            <div class="form-floating mb-3">
+                                <input type="number" :value="getSPetW(selectedPet)" class="form-control" id="name"  name="pet_weight" placeholder="體重" step="0.01">
+                                <label for="updateName" class="form-label">體重</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <span>是否結紮：</span>
+                                <br />
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input form-check-inline" type="radio" name="neutered" id="flexRadioDefault1" value="true"  :checked="selectedPet?.neutered === true"  >
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                    已結紮
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input " type="radio" name="neutered" id="flexRadioDefault2"  :checked="selectedPet?.neutered === false" value="false"  >
+                                    <label class="form-check-label" for="flexRadioDefault2">
+                                    尚未結紮
+                                    </label>
+                                </div>
+                            </div>
+                                <div class=" form-floating mb-3">
+                                <textarea class="form-control" id="vaccineTextarea1" :value="selectedPet?.vaccine"  name="vaccine"  placeholder="已接踵疫苗：" style="height: 75px"></textarea>
+                                <label for="vaccineTextarea1" class="form-label" >已接踵疫苗：</label>
+                            </div>
+                            <div class=" form-floating mb-3">
+                                <textarea class="form-control" id="allergyTextarea1"  :value="selectedPet?.allergy"  name="allergy"  placeholder="過敏史：" rows="3" style="height: 75px"></textarea>
+                                <label for="allergyTextarea1" class="form-label">過敏史：</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <textarea class="form-control" id="chronic_disTextarea1" :value="selectedPet?.chronic_dis"  name="chronic_dis" placeholder="慢性病史：" rows="3" style="height: 75px"></textarea>
+                                <label for="chronic_disTextarea1" class="form-label">慢性病史：</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <textarea class="form-control" id="memoTextarea1"   :value="selectedPet?.memo"   name="memo"  rows="4"  placeholder="備註：" style="height: 100px"></textarea>
+                                <label for="memoTextarea1" class="form-label">備註：</label>
+                            </div>
+                        </div>
+                        <div class="col-5">
+                                <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="name" name="name" :value="selectedPet?.name" placeholder="名稱">
+                                <label for="updateName" class="form-label">名稱</label>
+                            </div>
+                            <div class=" form-floating mb-3">
+                                <input type="number" class="form-control" id="age" name="age" :value="selectedPet?.age" placeholder="年齡">
+                                <label for="age" class="form-label">年齡</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="name" name="chip_ID" :value="selectedPet?.chip_ID" placeholder="晶片編號：">
+                                <label for="updateName" class="form-label">晶片編號：</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                    <span>生日：</span>
+                                <br />
+                                <input type="date"  id="birthday" name="birthday" :value="selectedPet?.birthday">
+                            </div>
+                            <div class=" form-floating mb-3">
+                                <span>寵物品種：</span>
+                                <br />
+                                <select class="form-select form-select-sm" aria-label=".form-select-sm example" name="pet_type_ID" :value="selectedPet?.pet_type_ID" >
+                                    <option v-for="pet in pet_types" :key="pet.id" :value="pet.id">
+                                        {{ pet.species + ', ' + pet.breed}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <span>寵物性別：</span>
+                                <br />
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="gender" id="gender1" value=false  :checked="selectedPet?.gender === false">
+                                    <label class="form-check-label" for="inlineRadio1">公</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="gender" id="gender2" value=true  :checked="selectedPet?.gender === true">
+                                    <label class="form-check-label" for="inlineRadio2">母</label>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary justify-content-end">更改</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- postPDetailModal E-->
+    <!-- PDetailModal S-->
+    <div class="modal fade" id="PDetailModal" tabindex="-1" aria-labelledby="PDetailModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">詳細資訊</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-5">
+                            <dl class="row">
+                                <h4>詳細資訊</h4>
+                                <dt class="col-4 col-md-12 ">體重：</dt>
+                                <dd class="col-sm-10">
+                                    <span>{{getSPetW(selectedPet)}}</span>
+                                </dd>
+
+                                <dt class="col-4 col-md-12">已接踵疫苗：</dt>
+                                <dd class="col-sm-10">
+                                        <span>{{selectedPet?.vaccine}}</span>
+                                </dd>
+
+                                <dt class="col-4 col-md-12">
+                                    是否結紮：
+                                </dt>
+                                <dd class="col-sm-10">
+                                    <span>{{getSPetN(selectedPet)}}</span>
+                                </dd>
+                                <dt class="col-4 col-md-12">
+                                    過敏史：
+                                </dt>
+                                <dd class="col-sm-10">
+                                    <span>{{selectedPet?.allergy}}</span>
+                                </dd>
+
+                                <dt class="col-4 col-md-12">
+                                    慢性病：
+                                </dt>
+                                <dd class="col-sm-10">
+                                    <span>{{selectedPet?.chronic_dis}}</span>
+                                </dd>
+
+                                <dt class="col-4 col-md-12">
+                                    備註：
+                                </dt>
+                                <dd class="col-sm-10">
+                                    <span>{{selectedPet?. memo}}</span>
+
+                                </dd>
+                            </dl>
+                            <button class="btn btn-outline-primary btn-sm mx-3"
+                                    type="button"  @@click="openDetailModal()">
+                                修改寵物詳細資訊
+                            </button>
+                         </div>
+                        <div class="col-5">
+                            <div class="row">
+                                <h4>寵物頭像</h4>
+                                <img :src="`/imgs/keeper_img/${selectedPet?.imgurl}`" class="" alt="cat-head">
+                                <button class="btn btn-outline-primary btn-sm mx-3"
+                                        type="button"  @@click="openChangeimgModel(selectedPet)">
+                                    修改寵物頭像
+                                    </button>
+                            </div>
+                            <dl class="row">
+                                    <h4>基礎資訊</h4>
+                                <dt class="col-4 col-md-12 ">寵物編號：</dt>
+                                <dd class="col-sm-10">
+                                        <span>{{selectedPet?.id }}</span>
+                                </dd>
+
+                                <dt class="col-4 col-md-12">姓名：</dt>
+                                <dd class="col-sm-10">
+                                    <span>{{selectedPet?.name}}</span>
+                                </dd>
+
+                                <dt class="col-4 col-md-12">
+                                    晶片編號：
+                                </dt>
+                                <dd class="col-sm-10">
+                                        <span>{{selectedPet?.chip_ID}}</span>
+                                </dd>
+                                <dt class="col-4 col-md-12">
+                                    生日：
+                                </dt>
+                                <dd class="col-sm-10">
+                                    <span>{{selectedPet?.birthday}}</span>
+                                </dd>
+
+                                <dt class="col-4 col-md-12">
+                                    性別：
+                                </dt>
+                                <dd class="col-sm-10">
+                                    <span>{{getGender(selectedPet)}}</span>
+                                </dd>
+
+                                <dt class="col-4 col-md-12">
+                                    年齡：
+                                </dt>
+                                <dd class="col-sm-10">
+                                    <span>{{selectedPet?.age+"歲"}}</span>
+                                </dd>
+
+                                <dt class="col-4 col-md-12">
+                                    加入時間：
+                                </dt>
+                                <dd class="col-sm-10">
+                                        <span>{{selectedPet?.created_at.split('T')[0]}}</span>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+        </div>
+    </div>
+    <!-- PDetailModal E-->
     <div class="container-fluid">
         <div class="row shadow rounded-2 align-content-center mb-4">
             <h2>寵物資訊</h2>
         </div>
-        <!--使用V-for重複載入寵物的卡片-->
         <div class="row shadow rounded-2 align-content-center mb-4">
-            <h2>寵物資訊</h2>
-        </div>
-        <div class="row shadow rounded-2 align-content-center mb-4">
-            <button class="btn btn-outline-primary btn-sm mx-3"
+            <button class="btn btn-outline-primary btn-sm "
             type="button" data-bs-toggle="modal"
-            data-bs-target="#PUpdateModal">
+            data-bs-target="#PUpdateModal"
+            >
             新增寵物
-            </button>
+        </button>
         </div>
+        <!--使用V-for重複載入寵物的卡片-->
+        <div class="row shadow rounded-2 align-content-center mb-4 p-2">
+            <component :is="currentTabComponent" :userID="@ViewBag.loginID" @@data-updated="GetUserimgm"></component>
+            <div class="card mx-1 my-1" style="width: 12rem;" v-for = "pet in pets">
+              <div  class="card-body">
+                <img :src="getPetimg(pet)" class="card-img-top" alt="cat-head">
+                <h5 class="card-title">{{pet.name}}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">{{this.getPetType(pet) +','+pet.age+"歲"}}</h6>
+                <p class="card-text">{{ this.getGender(pet) }}</p>
+                <button class="btn btn-outline-primary btn-sm "
+                type="button" data-bs-toggle="modal"
+                data-bs-target="#PDetailModal"
+                @@click="openModal(pet)">
+                詳細資訊
+                </button>
+              </div>
+            </div>
+        </div>
+
 
     </div>
 </script>
@@ -267,11 +557,139 @@
     <h1>tab-HisPos</h1>
 </script>
 <script type="text/x-template" id="tab-Imgs">
-    <h1>ttab-Imgs</h1>
+    <!-- ITIUpdateModal S-->
+        <div class="modal fade" id="ITIUpdateModal" tabindex="1" aria-labelledby="ITIUpdateModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">上傳圖片</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+            </div>
+            <div class="modal-body">
+                <form id="ITImg"  @@submit.prevent="postITImg" ref="ITIform">
+                    <div class="form-floating mb-3">
+                    <span>上傳圖片：</span>
+                        <input type="file" class="form-control form-control-sm" id="updateImg" name="imgs" accept="image/png, image/jpeg, image/jpg" @@change="handleFileChange" multiple>
+                    </div>
+                <button type="submit" class="btn btn-primary justify-content-end">上傳</button>
+                </form>
+                <div class="form-floating mb-3">
+                    <span>圖片預覽：</span>
+                    <div class="card-container-cas" v-if="fileDatas.length > 0">
+                            <img v-for="fileData in fileDatas" :src="fileData" alt="File Preview" class="card-cas img-thumbnail w-50" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- ITIUpdateModal E-->
+    <!-- ITUpdateModal S-->
+<div class="modal fade" id="ITUpdateModal" tabindex="-1" aria-labelledby="ITUpdateModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">新增相簿</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="UpdateUser"  @@submit.prevent="postItype()" ref="form">
+                        <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="type_name" name="type_name" placeholder="name@example.com">
+                        <label for="type_name">相簿名稱</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary justify-content-end">新增</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+    <!-- ITUpdateModal E-->
+    <!-- ImgDetailModal S-->
+<div class="modal fade" id="ImgDetailModal" tabindex="-1" aria-labelledby=" ImgDetailModal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">圖片資訊</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-8">
+                                <img :src="getTypeCImg(simg.url)" alt="simg" class="img-fluid" />
+                            </div>
+                            <div class="col-3">
+                                <dl>
+                                     <dt class="col-4 col-md-12">
+                                        相片編號：
+                                    </dt>
+                                    <dd class="col-sm-10">
+                                        <span>{{simg?.id}}</span>
+                                    </dd>
+                                    <dt class="col-4 col-md-12">
+                                        相片名稱：
+                                    </dt>
+                                    <dd class="col-sm-10">
+                                        <span>{{simg?.name}}</span>
+                                        
+                                    </dd>
+                                    <dt class="col-4 col-md-12">
+                                        建立時間：
+                                    </dt>
+                                    <dd class="col-sm-10">
+                                        <span>{{simg?.created_at}}</span>
+                                    </dd>
+                                </dl>
+                                <a class="btn btn-primary" @@click="changeimgNane()">更換名稱</a>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- imgDetailModal E-->
+    <div class="container-fluid">
+        <div class="row shadow rounded-2 align-content-center mb-4">
+            <h2>相片庫</h2>
+        </div>
+        <div class="row shadow rounded-2 align-content-center mb-4">
+            <button class="btn btn-outline-primary btn-sm "
+            type="button" data-bs-toggle="modal"
+            data-bs-target="#ITUpdateModal">
+            新增相簿
+            </button>
+        </div>
+        <div class="row shadow rounded-2 mb-4 flex-nowrap  row-cols-1 overflow-auto card-containercas">
+            <div class="card mx-1 my-1 col" style="width: 8rem;" v-for ="imgtype in imgtypes" @@click="cilckType(imgtype)">
+                <img :src="getTypeCImg(imgtype.imgurl)" class="card-img-top" alt="cat-head">
+                <div  class="ccard-body">
+                    <span class="card-text">相簿名稱：</span>
+                     <p class="card-text">{{imgtype.typename}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="align-content-center mb-4" v-if="selectedtype !== ''">
+             <div class="row shadow rounded-2 align-content-center mb-4">
+                <button class="btn btn-outline-primary btn-sm "
+                type="button" data-bs-toggle="modal"
+                data-bs-target="#ITIUpdateModal">
+                在這個相簿新增相片
+                </button>
+            </div>
+            <div class="card-container-cas shadow rounded-2 align-content-center mb-4 p-3" >
+                <div class="card-cas" v-for="img in selectrdtypeimgs" @@click="putname(img)">
+                    <img :src="getTypeCImg(img.url)" class="img-thumbnail" alt="cat-head">
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    </div>
 </script>
 
 @section scripts{
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.js"></script>
     <script src="~/js/userInfo/UserInfo.js"></script>
 }   
 

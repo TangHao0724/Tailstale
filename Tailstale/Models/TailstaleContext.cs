@@ -923,6 +923,10 @@ public partial class TailstaleContext : DbContext
 
             entity.Property(e => e.name).HasMaxLength(128);
 
+            entity.HasOne(d => d.FK_Business).WithMany(p => p.person_tags)
+                .HasForeignKey(d => d.FK_Business_ID)
+                .HasConstraintName("FK__person_ta__FK_Bu__19AACF41");
+
             entity.HasOne(d => d.FK_Keeper).WithMany(p => p.person_tags)
                 .HasForeignKey(d => d.FK_Keeper_ID)
                 .HasConstraintName("FK__person_ta__FK_Ke__02C769E9");

@@ -30,7 +30,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddDbContext<TailstaleContext>(options =>
     options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("Tailstale")));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
