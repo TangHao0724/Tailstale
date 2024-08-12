@@ -9,17 +9,13 @@ public partial class medicine
 {
     public int id { get; set; }
 
-    public string generic_name { get; set; }
+    public string medicine_name { get; set; }
 
-    public string brand_name { get; set; }
-
-    public string route { get; set; }
-
-    public string timing { get; set; }
-
-    public string indication { get; set; }
+    public string effects { get; set; }
 
     public string side_effects { get; set; }
 
-    public virtual ICollection<medicine_order_record> medicine_order_records { get; set; } = new List<medicine_order_record>();
+    public string notice { get; set; }
+
+    public virtual ICollection<medicine_order> medicine_orders { get; set; } = new List<medicine_order>();
 }

@@ -13,6 +13,10 @@ public partial class person_tag
 
     public string name { get; set; }
 
+    public int? FK_Business_ID { get; set; }
+
+    public virtual business FK_Business { get; set; }
+
     public virtual keeper FK_Keeper { get; set; }
 
     public virtual ICollection<using_person_tag> using_person_tags { get; set; } = new List<using_person_tag>();

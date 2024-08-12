@@ -1,4 +1,5 @@
-﻿using Humanizer;
+﻿using Azure;
+using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -31,6 +32,8 @@ namespace Tailstale.Controllers
                 // 判斷發文者身分
                 var newArticle = new article { };
                 string article_typename = "article";
+                bool isKeeper = DTO.Keeper_ID != null && DTO.Business_ID == null;
+                bool isBusiness = DTO.Business_ID != null && DTO.Keeper_ID == null;
 
                 // 如果有 parentID 判斷是否有該文章
                 if (DTO.parent_ID != null)
@@ -46,11 +49,11 @@ namespace Tailstale.Controllers
                 }
 
                 // 判斷是 Keeper 還是 Business
-                if (DTO.Keeper_ID != null && DTO.Business_ID == null)
+                if (isKeeper)
                 {
                     newArticle.FK_Keeper_ID = DTO.Keeper_ID;
                 }
-                else if (DTO.Business_ID != null && DTO.Keeper_ID == null)
+                else if (isBusiness)
                 {
                     newArticle.FK_Business_ID = DTO.Business_ID;
                 }
@@ -60,10 +63,51 @@ namespace Tailstale.Controllers
                 }
 
                 newArticle.content = DTO.Content;
-                newArticle.ispublic = DTO.isPublic;
+                newArticle.ispublic = DTO.isPublic ?? false;
 
                 _context.Add(newArticle);
                 await _context.SaveChangesAsync();
+
+                /*存放tag
+                1. 檢查是否有相同ID的tag
+                2.若有，不儲存，有責存入該ID
+                3.存入後，在using_tag建立與newArticle.id2的一筆資料
+                 */
+                if (DTO.PublicTags != null && DTO.PublicTags.Count > 0)
+                {
+                    string[] publicTagsArray = DTO.PublicTags[0].Split(new[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string item in publicTagsArray)
+                    {
+                        var trimmedItem = item.Trim();
+                        // 如果沒有相同，建立新資料
+                        if (!await _context.tags.AnyAsync(n => n.name == trimmedItem))
+                        {
+                            _context.Add(new tag { name = trimmedItem });
+
+                        }
+                        await _context.SaveChangesAsync();
+                        // 檢索tag.name的ID，將其與usingtag相連
+                        var tagID = await _context.tags.Where(n => n.name == trimmedItem).Select(s => s.ID).FirstOrDefaultAsync();
+                        _context.Add(new using_tag
+                        {
+                            FK_article_ID = newArticle.ID,
+                            FK_tags_ID = tagID
+                        });
+                    }
+                    await _context.SaveChangesAsync();
+                }
+                if (DTO.PrivateTags != null && DTO.PrivateTags.Count > 0)
+                {
+                    string[] PrivateTagsArray = DTO.PrivateTags[0].Split(new[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+                    if (isKeeper)
+                    {
+                        await ProcessPrivateTags(PrivateTagsArray, DTO.Keeper_ID, null, newArticle.ID);
+                    }
+                    if (isBusiness)
+                    {
+                        await ProcessPrivateTags(PrivateTagsArray, null, DTO.Business_ID, newArticle.ID);
+                    }
+                }
 
                 // 判斷是否有圖片
                 if (DTO.imgs == null || DTO.imgs.Count == 0)
@@ -72,53 +116,13 @@ namespace Tailstale.Controllers
                 }
 
                 // 處理圖片類型
-                if (DTO.Keeper_ID != null && DTO.Business_ID == null)
+                if (isKeeper)
                 {
-                    if (!_context.keeper_img_types.Where(n => n.FK_Keeper_id == DTO.Keeper_ID).Any(x => x.typename.Equals(article_typename)))
-                    {
-                        var newKeeperImgType = new keeper_img_type
-                        {
-                            FK_Keeper_id = DTO.Keeper_ID,
-                            typename = article_typename,
-                        };
-                        _context.Add(newKeeperImgType);
-                        await _context.SaveChangesAsync();
-                    }
-                    var typeid = await _context.keeper_img_types.Where(n => n.FK_Keeper_id == DTO.Keeper_ID && n.typename.Equals(article_typename)).Select(s => s.ID).FirstAsync();
-                    await save_Kimg_intype((int)DTO.Keeper_ID, typeid, DTO.imgs);
-
-                    var imgsName = await _context.keeper_imgs.Where(f => f.img_type_id == typeid).Select(s => s.ID).ToListAsync();
-                    var articleImgs = imgsName.Select(img => new article_img
-                    {
-                        FK_article_ID = newArticle.ID,
-                        FK_Keeper_img_ID = img
-                    }).ToList();
-
-                    _context.article_imgs.AddRange(articleImgs);
+                    await ProcessImageTypes(DTO.Keeper_ID, null, DTO.imgs, article_typename, newArticle.ID);
                 }
-                else if (DTO.Business_ID != null && DTO.Keeper_ID == null)
+                else if (isBusiness)
                 {
-                    if (!_context.business_img_types.Where(n => n.FK_business_id == DTO.Business_ID).Any(x => x.typename.Equals(article_typename)))
-                    {
-                        var newbusinessImgType = new business_img_type
-                        {
-                            FK_business_id = DTO.Business_ID,
-                            typename = article_typename,
-                        };
-                        _context.Add(newbusinessImgType);
-                        await _context.SaveChangesAsync();
-                    }
-                    var typeid = await _context.business_img_types.Where(n => n.FK_business_id == DTO.Business_ID && n.typename.Equals(article_typename)).Select(s => s.ID).FirstAsync();
-                    await save_Bimg_intype((int)DTO.Business_ID, typeid, DTO.imgs);
-
-                    var imgsName = await _context.business_imgs.Where(f => f.img_type_id == typeid).Select(s => s.ID).ToListAsync();
-                    var articleImgs = imgsName.Select(img => new article_img
-                    {
-                        FK_article_ID = newArticle.ID,
-                        FK_Business_img_ID = img
-                    }).ToList();
-
-                    _context.article_imgs.AddRange(articleImgs);
+                    await ProcessImageTypes(null, DTO.Business_ID, DTO.imgs, article_typename, newArticle.ID);
                 }
 
                 await _context.SaveChangesAsync();
@@ -130,6 +134,50 @@ namespace Tailstale.Controllers
                 return StatusCode(500, new { Message = $"上傳圖片失敗: {ex.Message}" });
             }
         }
+
+        //[HttpGet("GetAllpost")]
+        //public async Task<IActionResult> GetAllpost()
+        //{
+        //    //獲得最新十筆貼文，
+
+        //    //content、userID、 HEAD_url、name、Ptag、Tag
+        //}
+        //讀取全部貼文
+        [HttpPost("GetArticle")]
+        public async Task<IActionResult> GetArticle(int count)
+        {
+            //如果要求數比文章多
+            count = await GetSet(count);
+            //先抓指定數量文章
+            var article =  await _context.articles.Take(count).ToListAsync();
+
+            //抓取指定文章圖片ID，並合併到一起
+            var articleImg = await _context.article_imgs.ToListAsync();
+
+            var  with_img  =article.Select(n =>
+            {
+                //如果商業照片為空，將所有的照片URL以list存入欄位
+                if(articleImg.Where(a=> a.FK_Business_img_ID == null && a.FK_article_ID == n.ID) == null)
+                {
+                    var addimg = articleImg.Where(a => a.FK_article_ID == n.ID)
+                }
+
+            }
+            )
+            //抓TAG
+        }
+
+        private async Task<int> GetSet(int count)
+        {
+            if (count > _context.articles.Count())
+            {
+                count = _context.articles.Count();
+            }
+
+
+            return count;
+        }
+
         private async Task save_Kimg_intype(int userid, int typeid, List<IFormFile> imgs)
         {
             try
@@ -171,6 +219,97 @@ namespace Tailstale.Controllers
             }
             catch (Exception ex) {
                 Console.WriteLine(ex.ToString());
+            }
+        }
+
+        private async Task ProcessPrivateTags(string[] tags, int? keeperId, int? businessId, int articleId)
+        {
+            foreach (string item in tags)
+            {
+                var trimmedItem = item.Trim();
+                // 如果沒有相同，建立新資料
+                if (keeperId.HasValue && !await _context.person_tags.Where(n => n.FK_Keeper_ID == keeperId.Value).AnyAsync(n => n.name == trimmedItem))
+                {
+                    
+                    _context.Add(new person_tag { name = trimmedItem, FK_Keeper_ID = keeperId.Value });
+                    await _context.SaveChangesAsync();
+                }
+                else if (businessId.HasValue && !await _context.person_tags.Where(n => n.FK_Business_ID == businessId.Value).AnyAsync(n => n.name == trimmedItem))
+                {
+                    _context.Add(new person_tag { name = trimmedItem, FK_Business_ID = businessId.Value });
+                    await _context.SaveChangesAsync();
+                }
+                
+
+                // 檢索tag.name的ID，將其與usingtag相連
+                var tagname = await _context.person_tags
+                    .Where(n => (keeperId.HasValue && n.FK_Keeper_ID == keeperId.Value) || 
+                                (businessId.HasValue && n.FK_Business_ID == businessId.Value) && 
+                                n.name == trimmedItem)
+                    .Select(s => s.ID)
+                    .FirstOrDefaultAsync();
+
+                _context.Add(new using_person_tag
+                {
+                    FK_article_ID = articleId,
+                    FK_person_tags_ID = tagname,
+                    FK_Keeper_ID = keeperId,
+                    FK_Business_ID = businessId
+                });
+            }
+            await _context.SaveChangesAsync();
+        }
+        private async Task ProcessImageTypes(int? keeperId, int? businessId, List<IFormFile> imgs, string articleTypename, int articleId)
+        {
+            int typeId;
+
+            if (keeperId.HasValue)
+            {
+                if (!_context.keeper_img_types.Where(n => n.FK_Keeper_id == keeperId.Value).Any(x => x.typename.Equals(articleTypename)))
+                {
+                    var newKeeperImgType = new keeper_img_type
+                    {
+                        FK_Keeper_id = keeperId.Value,
+                        typename = articleTypename,
+                    };
+                    _context.Add(newKeeperImgType);
+                    await _context.SaveChangesAsync();
+                }
+                typeId = await _context.keeper_img_types.Where(n => n.FK_Keeper_id == keeperId.Value && n.typename.Equals(articleTypename)).Select(s => s.ID).FirstAsync();
+                await save_Kimg_intype(keeperId.Value, typeId, imgs);
+
+                var imgsName = await _context.keeper_imgs.Where(f => f.img_type_id == typeId).Select(s => s.ID).ToListAsync();
+                var articleImgs = imgsName.Select(img => new article_img
+                {
+                    FK_article_ID = articleId,
+                    FK_Keeper_img_ID = img
+                }).ToList();
+
+                _context.article_imgs.AddRange(articleImgs);
+            }
+            else if (businessId.HasValue)
+            {
+                if (!_context.business_img_types.Where(n => n.FK_business_id == businessId.Value).Any(x => x.typename.Equals(articleTypename)))
+                {
+                    var newBusinessImgType = new business_img_type
+                    {
+                        FK_business_id = businessId.Value,
+                        typename = articleTypename,
+                    };
+                    _context.Add(newBusinessImgType);
+                    await _context.SaveChangesAsync();
+                }
+                typeId = await _context.business_img_types.Where(n => n.FK_business_id == businessId.Value && n.typename.Equals(articleTypename)).Select(s => s.ID).FirstAsync();
+                await save_Bimg_intype(businessId.Value, typeId, imgs);
+
+                var imgsName = await _context.business_imgs.Where(f => f.img_type_id == typeId).Select(s => s.ID).ToListAsync();
+                var articleImgs = imgsName.Select(img => new article_img
+                {
+                    FK_article_ID = articleId,
+                    FK_Business_img_ID = img
+                }).ToList();
+
+                _context.article_imgs.AddRange(articleImgs);
             }
         }
         private async Task save_Bimg_intype(int userid, int typeid, List<IFormFile> imgs)
@@ -217,11 +356,7 @@ namespace Tailstale.Controllers
                 Console.WriteLine(ex.ToString());
             }
         }
-        [HttpGet("GetAllpost")]
-        public async Task<IActionResult> GetAllpost()
-        {
-            //獲得最新的幾天
-        }
+
 
         private string GenerateRandomString(int length)
         {

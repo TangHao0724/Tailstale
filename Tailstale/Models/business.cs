@@ -61,9 +61,13 @@ public partial class business
 
     public virtual ICollection<memo> memos { get; set; } = new List<memo>();
 
+    public virtual ICollection<person_tag> person_tags { get; set; } = new List<person_tag>();
+
     public virtual ICollection<roomType> roomTypes { get; set; } = new List<roomType>();
 
     public virtual business_type type { get; set; }
+
+    public virtual ICollection<using_person_tag> using_person_tags { get; set; } = new List<using_person_tag>();
 
     public virtual ICollection<vet_information> vet_informations { get; set; } = new List<vet_information>();
 

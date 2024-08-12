@@ -41,3 +41,13 @@ body {
     width: 100%; /* 確保卡片寬度填滿列 */
     margin-bottom: 0.4rem; /* 根據需要調整間距 */
 }
+#editableDiv {
+    border: 1px solid #ccc; /* 添加邊框以便更好地顯示元素邊界 */
+    padding: 10px; /* 添加內邊距 */
+    overflow: auto; /* 超出內容時顯示滾動條 */
+    white-space: pre-wrap; /* 保持空格和換行 */
+}
+[contenteditable=true]:empty:before {
+    content: attr(data-placeholder);
+    color: #aaa;
+}
