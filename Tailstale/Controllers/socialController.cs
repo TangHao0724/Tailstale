@@ -3,6 +3,7 @@ using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 using Tailstale.Models;
 using Tailstale.UserInfoDTO;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -142,29 +143,103 @@ namespace Tailstale.Controllers
 
         //    //content、userID、 HEAD_url、name、Ptag、Tag
         //}
-        //讀取全部貼文
-        [HttpPost("GetArticle")]
+        //讀取全部貼文 ori
+        //[HttpGet("GetArticle")]
+        //public async Task<IActionResult> GetArticle(int count)
+        //{
+        //    //如果要求數比文章多
+        //    count = await GetSet(count);
+        //    //先抓指定數量文章
+        //    var article =  await _context.articles.Take(count).ToListAsync();
+
+        //    //抓取指定文章圖片ID，並合併到一起
+        //    var articleImg = await _context.article_imgs.ToListAsync();
+
+        //    var  with_img  =article.Select(n =>
+        //    {
+        //        //圖片陣列
+        //        List<string> imgurllist = new List<string>();
+        //        //如果商業照片為空，將所有的照片URL以list存入欄位
+        //        if (articleImg.Where(a=> a.FK_Business_img_ID == null && a.FK_article_ID == n.ID) == null)
+        //        {
+        //            var addkimg = articleImg.Where(a => a.FK_article_ID == n.ID).Select(s=>s.FK_Keeper_img_ID).ToList();
+        //            foreach(int imgID in addkimg)
+        //            {
+        //                var url = _context.keeper_imgs.Where(n => n.ID == imgID).Select(s=>s.URL).ToList();
+        //                imgurllist.AddRange(url);
+        //            }
+                    
+        //        }else if(articleImg.Where(a => a.FK_Keeper_img_ID == null && a.FK_article_ID == n.ID) == null)
+        //        {
+        //           var addbimg = articleImg.Where(a => a.FK_article_ID == n.ID).Select(s => s.FK_Business_img_ID).ToList();
+
+        //            foreach (int imgID in addbimg)
+        //            {
+        //                var url = _context.business_imgs.Where(n => n.ID == imgID).Select(s => s.URL).ToList();
+        //                imgurllist.AddRange(url);
+        //            }
+        //        }
+        //        //user的ID
+        //        return new
+        //        {
+        //            n.FK_Business_ID,
+        //            n.FK_Keeper_ID,
+        //            n.created_at,
+        //            n.parent_ID,
+        //            n.ID,
+        //            n.content,
+        //            imgurllist,
+
+        //        };
+        //    }
+            
+        //    ).ToList();
+        //    //抓TAG
+        //    return new JsonResult(with_img);
+        //}GetArticle
+        [HttpGet("GetArticle")]
         public async Task<IActionResult> GetArticle(int count)
         {
             //如果要求數比文章多
             count = await GetSet(count);
             //先抓指定數量文章
-            var article =  await _context.articles.Take(count).ToListAsync();
+            var articles = await _context.articles.Take(count).ToListAsync();
+            //抓取所有文章圖片
+            var articleImgs = await _context.article_imgs.ToListAsync();
+            //抓取所有商業圖片和管理員圖片
+            var keeperImgs = await _context.keeper_imgs.ToListAsync();
+            var businessImgs = await _context.business_imgs.ToListAsync();
+            var business = await _context.businesses.ToListAsync();
+            var keeper = await _context.keepers.ToListAsync();
 
-            //抓取指定文章圖片ID，並合併到一起
-            var articleImg = await _context.article_imgs.ToListAsync();
-
-            var  with_img  =article.Select(n =>
+            var withImg = articles.Select(n =>
             {
-                //如果商業照片為空，將所有的照片URL以list存入欄位
-                if(articleImg.Where(a=> a.FK_Business_img_ID == null && a.FK_article_ID == n.ID) == null)
-                {
-                    var addimg = articleImg.Where(a => a.FK_article_ID == n.ID)
-                }
+                //圖片陣列
+                var imgurllist = articleImgs
+                    .Where(a => a.FK_article_ID == n.ID)
+                    .SelectMany(a =>
+                        a.FK_Business_img_ID != null
+                        ? businessImgs.Where(b => b.ID == a.FK_Business_img_ID).Select(b => b.URL)
+                        : keeperImgs.Where(k => k.ID == a.FK_Keeper_img_ID).Select(k => k.URL)
+                    ).ToList();
+                var BName = business.Where(a=>a.ID == n.FK_Business_ID).Select(s=>s.name).First();
+                var KName = keeper.Where(a => a.ID == n.FK_Keeper_ID).Select(s => s.name).First();
 
-            }
-            )
+                //返回結果
+                return new
+                {
+                    n.FK_Business_ID,
+                    n.FK_Keeper_ID,
+                    n.created_at,
+                    n.parent_ID,
+                    n.ID,
+                    n.content,
+                    imgurllist,
+                };
+            }).ToList();
+
             //抓TAG
+            return new JsonResult(withImg);
         }
 
         private async Task<int> GetSet(int count)

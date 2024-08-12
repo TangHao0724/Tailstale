@@ -7,7 +7,12 @@
             fileDatas: [],
             content: '',
             editableDiv: null,
+            articles: [],
+            count:4,    
         }
+    },
+    created() {
+        this.getarticle(this.count);
     },
     methods: {
         async GetUserimgm(userid) {
@@ -102,6 +107,22 @@
                 , o = '[&\u0026]'
                 , r = '(' + n + ')(' + o + ')(' + m + '*' + l + m + '*)';
             return r;
+        },
+        async getarticle(int) {
+            try {
+               
+                const response =  await axios.get('api/social/GetArticle', {
+                    params: {
+                        count: int,
+                    },
+                });
+                
+            this.articles = response.data; 
+            } catch (err) {
+                console.error('Error fetching user info:', error);
+            }
+
+
         },
     },
     computed: {
