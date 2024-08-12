@@ -44,7 +44,12 @@
             </div>
         <div class="centerrow"><strong>
             <h5>
-                    <a href="#">訂單編號: @Model.booking.bookingID</a>
+                    <form hidden id="KsearchBooking" asp-controller="Hotels" asp-action="KeeperSearchBookingHistory" asp-route-bookingID="@Model.booking.bookingID">
+                    </form>
+                    <a data-bs-toggle="collapse" href="#" onclick="document.getElementById('KsearchBooking').submit(); return false;">
+                        訂單編號: @Model.booking.bookingID
+                    </a>
+                    <a href="#"></a>
             </h5>
            
             </strong></div>
@@ -65,7 +70,7 @@
                         <div class="col-6" style="width: 50%;">
                             <div>下單日期:@Model.booking.bookingDate</div>
                             <div>&nbsp;</div>
-                            <div>付款卡號:@Model.</div>
+                            <div>付款卡號:@ViewBag.cardNumber</div>
                             <div>退房日期</div>
                             <div>@Model.booking.checkoutDate</div>
                         </div>

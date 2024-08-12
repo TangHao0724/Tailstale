@@ -120,19 +120,36 @@
         // console.log(dtCO);
 
         if (checkIndate <= checkOutdate && checkIndate != null && checkOutdate != null) {
+            if (destination != "") {
+                if (Cat != null && Cat > 0 && Dog != null && Dog > 0) {
+                    window.location.href = `/Hotels/SearchHotels?startDate=${checkIndate}&endDate=${checkOutdate}&Cat=${Cat}&Dog=${Dog}&addressorname=${destination}`;
+                }
+                else if (Cat != null && Cat > 0) {
+                    window.location.href = `/Hotels/SearchHotels?startDate=${checkIndate}&endDate=${checkOutdate}&Cat=${Cat}&addressorname=${destination}`;
+                }
+                else if (Dog != null && Dog > 0) {
+                    window.location.href = `/Hotels/SearchHotels?startDate=${checkIndate}&endDate=${checkOutdate}&Dog=${Dog}&addressorname=${destination}`;
+                }
+                else {
+                    window.location.href = `/Hotels/SearchHotels?startDate=${checkIndate}&endDate=${checkOutdate}&addressorname=${destination}`;
+                }
 
-            if (Cat != null && Cat > 0 && Dog != null && Dog > 0) {
-                window.location.href = `/Hotels/SearchHotels?startDate=${checkIndate}&endDate=${checkOutdate}&Cat=${Cat}&Dog=${Dog}`;
-            }
-            else if (Cat != null && Cat > 0) {
-                window.location.href = `/Hotels/SearchHotels?startDate=${checkIndate}&endDate=${checkOutdate}&Cat=${Cat}`;
-            }
-            else if (Dog != null && Dog > 0) {
-                window.location.href = `/Hotels/SearchHotels?startDate=${checkIndate}&endDate=${checkOutdate}&Dog=${Dog}`;
             }
             else {
-                window.location.href = `/Hotels/SearchHotels?startDate=${checkIndate}&endDate=${checkOutdate}`;
+                if (Cat != null && Cat > 0 && Dog != null && Dog > 0) {
+                    window.location.href = `/Hotels/SearchHotels?startDate=${checkIndate}&endDate=${checkOutdate}&Cat=${Cat}&Dog=${Dog}`;
+                }
+                else if (Cat != null && Cat > 0) {
+                    window.location.href = `/Hotels/SearchHotels?startDate=${checkIndate}&endDate=${checkOutdate}&Cat=${Cat}`;
+                }
+                else if (Dog != null && Dog > 0) {
+                    window.location.href = `/Hotels/SearchHotels?startDate=${checkIndate}&endDate=${checkOutdate}&Dog=${Dog}`;
+                }
+                else {
+                    window.location.href = `/Hotels/SearchHotels?startDate=${checkIndate}&endDate=${checkOutdate}`;
+                }
             }
+           
 
         }
         else {

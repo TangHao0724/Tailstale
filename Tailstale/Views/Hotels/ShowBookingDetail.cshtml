@@ -51,7 +51,18 @@
                                 <input value="@Model.book.BookingDate" type="text" class="form-control" readonly />
                             </div>
                         </div>
-
+                        <div>
+                            @if (ViewBag.BookingStatus == 1)
+                            {
+                                <a class="btn btn-success form-control btn-sm confirm-booking" href="javascript:void(0);">確認預約</a>
+                                <a class="btn btn-danger form-control btn-sm cancel-booking" href="javascript:void(0);">取消訂單</a>
+                            }
+                            else if (ViewBag.BookingStatus == 2)
+                            {
+                                <a class="btn btn-danger form-control btn-sm cancel-booking" href="javascript:void(0);">取消訂單</a>
+                            }
+                        </div>
+                       
                     </div>
 
                     <div class="col-12 col-lg-5 offset-lg-1">
@@ -60,15 +71,15 @@
                         </h4>
                         @if (Model.book.BookingStatus.Equals("預約確認中"))
                         {
-                            <label class="btn btn-outline-primary form-control my-2 statusLabel">@Model.book.BookingStatus</label>
+                            <label class="btn btn-outline-primary form-control my-2 " id="statusLabel">@Model.book.BookingStatus</label>
                         }
                         else if (Model.book.BookingStatus.Equals("預約成功"))
                         {
-                            <label class="btn btn-success form-control my-2 statusLabel" >@Model.book.BookingStatus</label>
+                            <label class="btn btn-success form-control my-2 " id="statusLabel">@Model.book.BookingStatus</label>
                         }
                         else if (Model.book.BookingStatus.Equals("預約成功"))
                         {
-                            <label class="btn btn-danger form-control my-2 statusLabel" >@Model.book.BookingStatus</label>
+                            <label class="btn btn-danger form-control my-2 " id="statusLabel">@Model.book.BookingStatus</label>
                         }
 
                         <ul class="list-group mb-3">
@@ -89,6 +100,9 @@
                                 </div>
 
                             </li>
+                            @{
+                                int i = 1;
+                            }
                             @foreach (var bd in Model.bookingDetails){
                                 <li class="list-group-item d-flex justify-content-between p-2">
                                     <div class="row container">
@@ -108,10 +122,10 @@
                                     
                                     <div class="row container">
                                         <h6 class="my-0 text-primary">入住資料</h6>
-                                      
+                                        
                                         @foreach (var cd in bd.checkInDTOs)
                                         {
-                                            int i = 1;
+                                            
                                             <div class="col-8 border-bottom">
                                                 <div><strong>第 @i 隻寵物</strong></div>
                                                 <small class="text-muted">寵物名字: @cd.petName</small><br />
@@ -144,19 +158,29 @@
                                 </div>
                             </li>
                         </ul>
-                        @if (ViewBag.BookingStatus == 1)
+                        @* @if (ViewBag.BookingStatus == 1)
                         {
-                            <a class="btn btn-success form-control btn-sm " id="btnsuccess" href="#">確認預約</a>
-                            <a class="btn btn-danger form-control btn-sm " id="btncancel" href="#">取消訂單</a>
+                            <a class="btn btn-success form-control btn-sm confirm-booking" href="javascript:void(0);">確認預約</a>
+                            <a class="btn btn-danger form-control btn-sm cancel-booking" href="javascript:void(0);">取消訂單</a>
                         }
                         else if (ViewBag.BookingStatus == 2)
                         {
-                            <a class="btn btn-danger form-control btn-sm" id="btncancel" href="#">取消訂單</a>
+                            <a class="btn btn-danger form-control btn-sm cancel-booking" href="javascript:void(0);">取消訂單</a>
                         }
-                        else if (ViewBag.BookingStatus == 3)
+ *@
+                        @* @if (ViewBag.BookingStatus == 1)
+                        {
+                            <a class="btn btn-success form-control btn-sm " id="btnsuccess" href="javascript:void(0);">確認預約</a>
+                            <a class="btn btn-danger form-control btn-sm " id="btncancel" href="javascript:void(0);">取消訂單</a>
+                        }
+                        else if (ViewBag.BookingStatus == 2)
+                        {
+                            <a class="btn btn-danger form-control btn-sm" id="btncancel" href="javascript:void(0);">取消訂單</a>
+                        } *@
+                       @*  else if (ViewBag.BookingStatus == 3)
                         {
                             <a class="btn btn-success form-control btn-sm " id="btnsuccess" href="#">確認預約</a>
-                        }
+                        } *@
                         
 
 
@@ -174,33 +198,64 @@
         $(document).ready(function () {
             var baseAddress = "https://localhost:7112/";
             //var statusNumber = "@ViewBag.BookingStatus"
-            var btnsuccess= document.querySelectorAll("#btnsuccess");
-            var btncancel = document.querySelectorAll("#btncancel");
-            var statusLabel = document.querySelectorAll(".statusLabel").textContent;
+            // var btnsuccess= document.querySelector("#btnsuccess");
+            // var btncancel = document.getElementById("btncancel");
+            const btnSuccess = document.querySelector('.confirm-booking');
+            const btnCancel = document.querySelectorAll('.cancel-booking'); // 獲取所有取消訂單的按鈕
+            //const statusLabel = document.querySelector('.statusLabel');
+            var statusLabel = document.querySelector("#statusLabel");
+           // const bookingID = /* 你的預訂 ID */;
+            //const baseAddress = /* 你的基本地址 */;
             var bookingID = parseInt("@ViewBag.BookingID");
-            btnsuccess.addEventListener('click', function (event) {
-                event.preventDefault();
-                updateBookingStatus(bookingID, 2);
+
+            if (btnSuccess) {
+                btnSuccess.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    updateBookingStatus.call(this, bookingID, 2);
+                });
+            }
+
+            btnCancel.forEach(function (button) {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    updateBookingStatus.call(this, bookingID, 3);
+                });
             });
-            btncancel.addEventListener('click', function (event) {
-                event.preventDefault();
-                updateBookingStatus(bookingID, 3);
-            });
+
+           
+
+
+           
             // btnsuccess.addEventListener('click', function (event) {
             //     event.preventDefault();
             //     updateBookingStatus(bookingID, 2);
             // });
             // btncancel.addEventListener('click', function (event) {
+               
             //     event.preventDefault();
-            //     updateBookingStatus(bookingID, 3);
+            //     alert("123")
+            //     // updateBookingStatus(bookingID, 3);
             // });
+           
             function updateBookingStatus(bookingID, status) {
                 axios.put(`${baseAddress}Hotels/UpdateBookingStatus`, {
                     bookingID: bookingID,
                     status: status
                 })
                     .then(response => {
-                        statusLabel = response.data
+                        if (response.data == "預約成功") {
+                            statusLabel.textContent = response.data;
+                            statusLabel.classList.remove('btn-outline-primary');
+                            statusLabel.classList.add('btn-success');
+                            this.style.display = 'none';
+                        }
+                        else if (response.data == "店家取消"){
+                            statusLabel.textContent = response.data;
+                            statusLabel.classList.remove('btn-outline-primary', 'btn-success');
+                            statusLabel.classList.add('btn-danger');
+                            this.style.display = 'none';
+                        }
+                       // statusLabel = response.data
                     })
                     .catch(error => {
                         console.error('錯誤:', error);

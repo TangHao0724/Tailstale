@@ -1,0 +1,105 @@
+﻿@section Styles{
+    <style>
+        .star {
+            cursor: pointer;
+            font-size: 24px;
+            color: lightgray;
+        }
+
+            .star.active {
+                color: gold;
+            }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+        }
+    </style>
+}
+<div id="app">
+    <h2>撰寫評論</h2>
+    <div>
+        <span v-for="star in 5" :key="star" @@click="setRating(star)" class="star" :class="{ active: star <= reviewRating }">★</span>
+    </div>
+    <textarea v-model="reviewText" placeholder="撰寫你的評論..."></textarea>
+    <button @@click="submitReview">提交評論</button>
+</div>
+
+
+@section Scripts{
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script>
+        const vueApp = {
+            data() {
+                return {
+                    baseAddress: "https://localhost:7112/Hotels/",
+                    reviewRating: 0,
+                    reviewText: '',
+                };
+            },
+            methods: {
+                setRating(star) {
+                    this.reviewRating = star;
+                },
+                async submitReview() {
+                    const review = {
+                        roomID: 101001, // 替換為實際的房間 ID
+                        keeper_ID: 1002, // 替換為實際的管理者 ID
+                        reviewRating: this.reviewRating,
+                        reviewText: this.reviewText,
+                    };
+
+                    await fetch(`${this.baseAddress}PostReview`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(review),
+                    });
+
+                    // 清空表單
+                    this.reviewRating = 0;
+                    this.reviewText = '';
+                },
+            },
+        };
+
+        Vue.createApp(vueApp).mount("#app");
+    </script>
+    <script>
+        //body: JSON.stringify(review),
+        // export default {
+        //     data() {
+        //         return {
+        //             reviewRating: 0,
+        //             reviewText: '',
+        //         };
+        //     },
+        //     methods: {
+        //         setRating(star) {
+        //             this.reviewRating = star;
+        //         },
+        //         async submitReview() {
+        //             const review = {
+        //                 roomID: 1, // 替換為實際的房間 ID
+        //                 keeperID: 1, // 替換為實際的管理者 ID
+        //                 reviewRating: this.reviewRating,
+        //                 reviewText: this.reviewText,
+        //             };
+
+        //             await fetch('/api/reviews', {
+        //                 method: 'POST',
+        //                 headers: {
+        //                     'Content-Type': 'application/json',
+        //                 },
+        //                 body: JSON.stringify(review),
+        //             });
+
+        //             // 清空表單
+        //             this.reviewRating = 0;
+        //             this.reviewText = '';
+        //         },
+        //     },
+        // };
+    </script>
+}
