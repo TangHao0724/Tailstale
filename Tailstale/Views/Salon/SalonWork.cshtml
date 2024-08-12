@@ -1,0 +1,191 @@
+﻿@section Styles{ 
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .petimage-group {
+            position: relative;
+            height: auto;
+            background-color: #ddd;
+        }
+
+        .imagerow {
+            display: flex;
+            flex-wrap: wrap;
+            
+
+            /* justify-content: center; */
+
+        }
+
+        .petimg {
+            max-width: 240px;
+            max-height: 300px;
+            min-height: 300px;
+            cursor: pointer;
+            border: 10px solid #fff;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, .1);
+            overflow: hidden;
+            object-fit: cover;
+            transition: .3s;
+        }
+
+        imghover{
+
+        }
+
+        .imghover:hover img {
+            transform: scale(1.1);
+        }
+
+        .popup-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, .9);
+            height: 100%;
+            width: 100%;
+            z-index: 100;
+            display: none;
+        }
+
+        .popup-image span {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 60px;
+            color: #fff;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .storeh2 {
+            position: absolute;
+            top: 30px;
+            right: 65%;
+            background-color: #fff;
+            color: #fff;
+            font-size: 30px;
+        }
+
+        .popup-image img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 5px;
+            max-height:760px;
+            max-width: 600px;
+            object-fit: cover;
+        }
+
+        .petimage-group .imagerow:not(:first-of-type) {
+            border-top: 2px solid #fa0; /* 边框的样式和颜色 */
+            padding-top: 24px; /* 边框与内容的距离 */
+        }
+
+        
+
+        
+    </style>
+
+    }
+
+
+<div id="app">
+
+
+    
+
+
+    
+    <div class="container petimage-group py-3 px-5">
+        <div v-for="(items, img_type_id) in groupedData" :key="img_type_id" class="row imagerow my-5">
+            <h2>{{items[0].business_name}}</h2>
+            <h4 class="mb-5">門市作品展示</h4>
+            <div v-for="item in items" :key="item.ID" class="col-12 col-md-4 col-lg-3 mb-3 imghover d-flex justify-content-center">
+                <img class="w-100 petimg" :src="`/Salon_img/${item.url}`" v-on:click="showImageClick(item.url)">
+            </div>
+        </div>
+    </div>
+
+    <div class="popup-image">
+        <span v-on:click="closePopup()">&times;</span>
+        <img :src="`/Salon_img/${showPicture}`">
+    </div>
+
+
+</div>
+
+    @section Scripts{
+
+    <script src="https://unpkg.com/vue@3.4.31/dist/vue.global.js"></script>
+
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"
+            integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+
+
+    
+    <script>
+
+
+        var vueApp = {
+            data() {
+                return {
+                    baseAddress: "https://localhost:7112",//結尾不要/
+                    showPicture: "",
+                    SalonPicture: [],
+
+                };
+            },
+            mounted: function () {//初始化,發生呼叫函式,他需要用callback,
+                let _this = this;
+                axios.get(`${_this.baseAddress}/api/SalonApi/GetSalonPicture`).then(response => {
+
+                    _this.SalonPicture = response.data;
+
+                }).catch(err => {
+                    alert(err);
+                });
+
+
+            },
+            methods: {
+                closePopup: function () {
+                    $(".popup-image").hide();
+                    
+                },
+                showImageClick: function (url){
+                    this.showPicture = url,
+                    $(".popup-image").fadeIn();
+                    
+                },
+            },
+            computed: {
+                groupedData() {
+                    const grouped = {};
+                    this.SalonPicture.forEach(item => {
+                        if (!grouped[item.img_type_id]) {
+                            grouped[item.img_type_id] = [];
+                        }
+                        grouped[item.img_type_id].push(item);
+                    });
+                    return grouped;
+                }
+
+            },
+        };
+        var app = Vue.createApp(vueApp).mount("#app");
+
+
+
+    </script>
+    }

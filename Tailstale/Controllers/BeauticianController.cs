@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CRUD_COREMVC;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis;
@@ -10,6 +11,7 @@ using Tailstale.Models;
 
 namespace Tailstale.Controllers
 {
+    [IsLoginFilter]
     public class BeauticianController : Controller
     {
         private readonly TailstaleContext _context;
@@ -26,38 +28,22 @@ namespace Tailstale.Controllers
         {
             //var tailstaleContext = _context.Beautician.Include(b => b.business);
             //return View(await tailstaleContext.ToListAsync());
-            var businesses = await _context.businesses
-        .Where(b => b.type_ID == 2)
-        .ToListAsync();
 
-            ViewData["business_type"] = new SelectList(businesses, "ID", "name");
-            //ViewData["business_type"] = new SelectList(_context.businesses, "type_ID", "name");
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Index(int aid)
-        {
            
-            
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            int? loginType = HttpContext.Session.GetInt32("loginType");
 
-            
+           
 
-            // 查询符合条件的 Beautician 记录
-            var beauticians = _context.Beauticians
-                .Include(bh => bh.business)
-                .Where(bh => bh.business_ID == aid)
-                .ToList();
+            var Beauticians = await _context.Beauticians
+            .Where(b => b.business_ID == loginID)
+            .ToListAsync();
 
-            if (beauticians == null)
-            {
-                // 如果未找到符合条件的 business 记录，返回空的 PartialView
-                return PartialView("_BeauticianPartial", new List<Beautician>());
-            }
-
-            // 返回到前端，假設你的 View 期望接收一段 HTML 作為結果
-            return PartialView("_BeauticianPartial", beauticians);
+           
+            return View(Beauticians);
         }
+
+        
 
 
 
@@ -81,13 +67,14 @@ namespace Tailstale.Controllers
         }
 
         // GET: Beautician/Create
-        public IActionResult Create()
+        public  IActionResult Create()
         {
-            var businesses = _context.businesses
-            .Where(b => b.type_ID == 2)
-            .ToList();
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            var Beauticians =  _context.businesses
+           .Where(b => b.ID == loginID)
+           .ToList();
 
-            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+            ViewData["business_ID"] = new SelectList(Beauticians, "ID", "name");
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
             return View();
         }
@@ -97,11 +84,18 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,name,gender,photo,phone,business_ID,Highest_license,Remark")] Beautician beautician)
+        public async Task<IActionResult> Create([Bind("id,name,gender,photo,phone,business_ID,Highest_license,Remark")] BeauticianViewModel beautician)
         {
             var businesses3 = _context.businesses
             .Where(b => b.type_ID == 2)
             .ToList();
+
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            var Beauticians = _context.businesses
+           .Where(b => b.ID == loginID)
+           .ToList();
+
+            ViewData["business_ID"] = new SelectList(Beauticians, "ID", "name");
             if (ModelState.IsValid)
             {
                 
@@ -117,7 +111,7 @@ namespace Tailstale.Controllers
                         {
                             
 
-                            ViewData["business_ID"] = new SelectList(businesses3, "ID", "name");
+                            ViewData["business_ID"] = new SelectList(Beauticians, "ID", "name");
                             ModelState.AddModelError("photo", "Only image files are allowed for Photo.");
                             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
                             return View(beautician);
@@ -151,7 +145,7 @@ namespace Tailstale.Controllers
                         {
                            
 
-                            ViewData["business_ID"] = new SelectList(businesses3, "ID", "name");
+                            ViewData["business_ID"] = new SelectList(Beauticians, "ID", "name");
                             ModelState.AddModelError("Highest_license", "Only image files are allowed for Highest License.");
                             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
                             return View(beautician);
@@ -172,13 +166,24 @@ namespace Tailstale.Controllers
                         beautician.Highest_license = uniqueFileName;
                     }
                 }
-
+                Beautician a = new Beautician()
+                {
+                    
+                    name = beautician.name,
+                    gender = beautician.gender,
+                    photo = beautician.photo,
+                    phone = beautician.phone,
+                    business_ID = beautician.business_ID,
+                    Highest_license = beautician.Highest_license,
+                    Remark = beautician.Remark
+                };
                 // 将 beautician 对象添加到数据库上下文并保存更改
-                _context.Add(beautician);
+                //_context.Add(beautician);
+                _context.Add(a); //只有寫入資料庫才需要把viewmodel轉model,下面的return其實不會管型態,沒差
                 await _context.SaveChangesAsync();
                 
 
-                ViewData["business_ID"] = new SelectList(businesses3, "ID", "name");
+                ViewData["business_ID"] = new SelectList(Beauticians, "ID", "name");
                 //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
                 // 成功保存后重定向到 Index 页面
                 return RedirectToAction(nameof(Index));
@@ -186,7 +191,7 @@ namespace Tailstale.Controllers
 
             
 
-            ViewData["business_ID"] = new SelectList(businesses3, "ID", "name");
+            ViewData["business_ID"] = new SelectList(Beauticians, "ID", "name");
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
             return View(beautician);
 
@@ -221,14 +226,15 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            
+
 
             //beautician = await _context.Beautician.FirstOrDefaultAsync(b => b.id == id);
-            var businesses = _context.businesses
-            .Where(b => b.type_ID == 2)
-            .ToList();
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            var Beauticians = _context.businesses
+          .Where(b => b.ID == loginID)
+          .ToList();
 
-            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+            ViewData["business_ID"] = new SelectList(Beauticians, "ID", "name");
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
             return View(beautician);
         }
@@ -301,7 +307,7 @@ namespace Tailstale.Controllers
                             }
                         }
                     }
-                    
+                   
 
                     // 更新 Beautician 資料
                     _context.Update(beautician);
@@ -319,20 +325,22 @@ namespace Tailstale.Controllers
                         throw;
                     }
                 }
-                var businesses3 = _context.businesses
-            .Where(b => b.type_ID == 2)
-            .ToList();
+                int? loginID2 = HttpContext.Session.GetInt32("loginID");
+                var Beauticians2 = _context.businesses
+           .Where(b => b.ID == loginID2)
+           .ToList();
 
-                ViewData["business_ID"] = new SelectList(businesses3, "ID", "name");
-               // ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
+                ViewData["business_ID"] = new SelectList(Beauticians2, "ID", "name");
+                // ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
                 return RedirectToAction(nameof(Index));
             }
-            var businesses = _context.businesses
-            .Where(b => b.type_ID == 2)
-            .ToList();
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            var Beauticians = _context.businesses
+          .Where(b => b.ID == loginID)
+          .ToList();
 
-            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
-           // ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
+            ViewData["business_ID"] = new SelectList(Beauticians, "ID", "name");
+            // ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", beautician.business_ID);
             return View(beautician);
 
 

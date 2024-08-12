@@ -1,26 +1,33 @@
-﻿@model Tailstale.Models.Reserve
+﻿@model Tailstale.Models.ReserveViewModel
 
 @{
     ViewData["Title"] = "Create";
 }
 @section Styles {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <link href="~/css/salonfrom.css" rel="stylesheet" />
 }
 <h1>Create</h1>
 
 <h4>Reserve</h4>
 <hr />
-<div class="row">
+<div class="row" id="app">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="keeper_id" class="control-label"></label>
-                <select asp-for="keeper_id" class ="form-control" asp-items="ViewBag.keeper_id"></select>
+               @*  <select asp-for="keeper_id" class ="form-control" asp-items="ViewBag.keeper_id"></select> *@
+                <input class="form-control" v-on:input="callID" v-model="keeper_Name"></input>
+                <input asp-for="keeper_id" class="form-control" v-model="keeper_ID" readonly ></input>
+                <span asp-validation-for="keeper_id" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="pet_name" class="control-label"></label>
-                <input asp-for="pet_name" class="form-control" />
+                @* <input asp-for="pet_name" class="form-control" /> *@
+                <select asp-for="pet_name" class="form-control">
+                    <option v-for="item in petName" :value="item.name">{{item.name}}</option>
+               </select>
                 <span asp-validation-for="pet_name" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -28,13 +35,20 @@
                 <select asp-for="business_ID" class ="form-control" asp-items="ViewBag.business_ID"></select>
             </div>
             <div class="form-group">
+                <input type="text" asp-for="time" class="form-control" v-model="Usetime" readonly></input>
+                <input v-model="day" type="text" id="datepicker" style="display:none;" v-on:change="handleChangetime">
+                <div id="calendar" style="cursor: pointer;">Open Calendar</div>
+                <div v-for="(item, index) in AllTime" :key="index" style="display: inline-block;" class="m-2">
+                    <input type="radio" class="btn-check" name="options" :id="'btn-check-' + index" autocomplete="off" :value="item" v-on:change="handleClick">
+                    <label class="btn btn-primary" :for="'btn-check-' + index">{{item}}</label>
+                </div>
                 <label asp-for="time" class="control-label"></label>
-                <input asp-for="time" class="form-control meeting-time" type="datetime-local" step="3600" />
+               @*  <input asp-for="time" class="form-control meeting-time" type="datetime-local" step="3600" /> *@
                 <span asp-validation-for="time" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="service_name" class="control-label"></label>
-                <input asp-for="service_name" class="form-control" />
+                <select asp-for="service_name" class="form-control" asp-items="ViewBag.servicename"></select>
                 <span asp-validation-for="service_name" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -55,14 +69,176 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://unpkg.com/vue@3.4.31/dist/vue.global.js"></script>
     <script>
+        var viewBagBusinessIdStr = '@Html.Raw(ViewBag.LoginID ?? "0")';
+
+
+        var vueApp = {
+            data() {
+                return {
+                    baseAddress: "https://localhost:7112",//結尾不要/
+                    keeper_Name : "",
+                    keeper_ID : null,
+                    petName:[],
+                    Allday: [],
+                    day: "",
+                    daytime: "",
+                    people: 0,
+                    AllTime: [],
+                    mypeople: 0,
+                    Usetime: "",
+                    business_ID: viewBagBusinessIdStr,
+                };
+            },
+            mounted: function () {//初始化,發生呼叫函式,他需要用callback,
+                 
+                    let _this = this;
+                    axios.get(`${_this.baseAddress}/api/SalonApi/GetBusinessHour`, {
+                        params: {
+                            id: _this.business_ID,
+                        }
+                    }).then(response => {
+                        // this.BusinessHour = response.data;
+                        this.Allday = response.data.map(item => item.business_day);
+                        this.people = response.data.map(item => ({
+                            business_day: item.business_day,
+                            people_limit: item.people_limit
+                        }));
+                    }).catch(err => {
+                        alert(err);
+                    });
+
+               
+
+
+            },
+            methods: {
+                handleClick(event) {
+                    // 获取 checkbox 元素
+                    const checkbox = event.target;
+
+                    // 获取 checkbox 的 value 属性
+                    this.daytime = checkbox.value + ":00";
+
+                    let dateTimeString = `${this.day} ${this.daytime}`;
+
+                    // 将字符串转换为 Date 对象
+                    let utime = new Date(dateTimeString);
+                    this.Usetime = utime.toLocaleString();
+
+
+                },
+                handleChangetime(event) {
+                    // 直接在这里更新 day 值并调用 showTime
+                    this.day = event.target.value;
+                    const foundItem = this.people.find(item => item.business_day === this.day);
+                    this.mypeople = foundItem ? foundItem.people_limit : null;
+                    this.showTime();
+                },
+                showTime: function () {
+                    let _this = this;
+                    console.log('Request params:', {
+                        id: _this.business_ID,
+                        day: _this.day // 确保 day 值正确
+                    });
+                    axios.get(`${_this.baseAddress}/api/SalonApi/GetTimeRange`, {
+                        params: {
+                            id: _this.business_ID,
+                            day: _this.day,
+                            people: _this.mypeople,
+                        }
+                    }).then(response => {
+                        // this.BusinessHour = response.data;
+                        this.AllTime = response.data;
+
+                    }).catch(err => {
+                        console.error('Error:', err.response ? err.response.data : err.message);
+                        alert('An error occurred: ' + (err.response ? err.response.data : err.message));
+                    });
+                },
+                callID: function () {
+                    let _this = this;
+                    _this.petName = [];
+                    if (!_this.keeper_Name.trim()) {
+                        // 如果為空，不發送請求
+                        _this.keeper_ID = null; // 或者其他適當的預設值
+                        return;
+                    }
+                    axios.get(`${_this.baseAddress}/api/SalonApi/SelectKeeperId`, {
+                        params: {
+                            name: _this.keeper_Name // 將 keepname 作為查詢參數傳遞
+                        }
+                    }).then(response => {
+                        _this.keeper_ID = response.data;
+                         _this.callPet(_this.keeper_ID);
+                    }).catch(err => {
+                        alert(err);
+                    });
+                },
+                callPet: function (id) {
+                    let _this = this;
+                    if (id == null || id === '') {
+                        // 如果 id 無效，不發送請求,不然會莫名input每次輸入值就跑一次400
+                        _this.petName = []; // 清空 petName
+                        return;
+                    }
+                    
+                    axios.get(`${_this.baseAddress}/api/SalonApi/SelectPetName`, {
+                        params: {
+                            keeperid: id // 將 keepname 作為查詢參數傳遞
+                        }
+                    }).then(response => {
+
+                        _this.petName = response.data;
+
+                    }).catch(err => {
+                        alert(err);
+                    });
+                }
+            },
+            computed: {
+                
+
+            },
+            watch: {
+                Allday(newAllday) {
+                    if (newAllday.length > 0) {
+                        const today = new Date();
+
+                        // 指定可以选择的日期数组
+                        const allowedDates = newAllday.map(dateStr => new Date(dateStr));
+
+                        flatpickr("#datepicker", {
+                            inline: true,
+                            minDate: today, // 禁用今天之前的日期
+                            disable: [
+                                function (date) {
+                                    // 禁用不在 allowedDates 数组中的日期
+                                    return !allowedDates.some(allowedDate => date.toDateString() === allowedDate.toDateString());
+                                }
+                            ]
+                        });
+
+                        // 绑定点击事件来打开日历
+                        document.getElementById('calendar').addEventListener('click', function () {
+                            document.getElementById('datepicker').click();
+                        });
+                    }
+                }
+            },
+        };
+        var app = Vue.createApp(vueApp).mount("#app");
         
-        document.querySelector('.meeting-time').addEventListener('input', function () {
-            var inputDate = new Date(this.value);
-            inputDate.setMinutes(0);  // 将分钟部分设为 0
-            this.value = inputDate.toISOString().slice(0, 16);  // 格式化为 yyyy-MM-ddTHH:mm
-        });
+        // document.querySelector('.meeting-time').addEventListener('input', function () {
+        //     var inputDate = new Date(this.value);
+        //     inputDate.setMinutes(0);  // 将分钟部分设为 0
+        //     this.value = inputDate.toISOString().slice(0, 16);  // 格式化为 yyyy-MM-ddTHH:mm
+        // });
+
+       
+
         
     </script>
 

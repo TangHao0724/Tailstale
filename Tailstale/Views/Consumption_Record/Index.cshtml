@@ -7,20 +7,110 @@
 <header>
     <partial name="_NavBar" />
 </header>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"> <a asp-area="" asp-controller="Salon" asp-action="Settings">美容設定</a></li>
+        <li class="breadcrumb-item active" aria-current="page">消費紀錄</li>
+    </ol>
+</nav>
 <h1>消費紀錄</h1>
 
 <p>
     <a class="btn btn-info" asp-action="Create"><i class="bi bi-hand-index-thumb"></i>Create New</a>
 </p>
-<h3><i class="bi bi-search"></i>查詢美容門市或會員ID(擇一)</h3>
+<h3><i class="bi bi-search"></i>查詢會員ID</h3>
 <div>
-    <select id="typeIdInput" class="form-control" asp-items="ViewBag.business_type">
-        <option value="">門市搜尋</option>
-    </select>
     <input id="selectuser" type="text" class="form-control" placeholder="會員id搜尋"/>
     <input id="selectday" type="submit" value="查詢" class="btn btn-info mt-2" />
     <div class="mb-3">
-        <div id="orders"></div>
+        <div id="orders">
+            <table class="table border table-striped">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.pet_name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.time)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.service_name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.pet_weight)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.price)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.end_time)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.before_photo)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.after_photo)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.beautician)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.business)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.keeper)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.pet_name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.time)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.service_name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.pet_weight)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.price)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.end_time)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.before_photo)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.after_photo)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.beautician.name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.business.name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.keeper.name)
+                            </td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.id"><i class="bi bi-highlighter"></i>Edit</a> |
+                                <a asp-action="Details" asp-route-id="@item.id"><i class="bi bi-info-circle"></i>Details</a> |
+                                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
     </div>
 </div>
 
@@ -29,14 +119,14 @@
 {
     <script>
         function updateOrders() { //查詢要發送ajax呼叫,不會刷新
-            var selectedDate = document.getElementById("typeIdInput").value;
+          
             var selectuser = document.getElementById("selectuser").value;
             $.ajax({ //ajax呼叫需要接物件當參數,物件用{},物件要填屬性
 
                 type: "post",//動詞get
                 //url:`/Customers/Orders/${CustomerId.value}`,//``可以把變數帶進去, 這段這樣寫發行會有問題,這只能在vs用
                 url: `@Url.Action("Index", "Consumption_Record")`, //這是發行後可以網址正常,Url是urlhelper,負責生成網址列?的內容,這段是server端語法
-                data: { aid: selectedDate,
+                data: { 
                     uid: selectuser
                 },
             }).done(data => {  //成功要做啥,收到結果,如果收到data要拿來做甚麼用,後端送回來的data是html(因為是IActionResult),

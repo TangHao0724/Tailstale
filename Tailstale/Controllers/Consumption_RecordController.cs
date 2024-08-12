@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using Tailstale.Models;
 
 namespace Tailstale.Controllers
@@ -23,34 +24,32 @@ namespace Tailstale.Controllers
         // GET: Consumption_Record
         public async Task<IActionResult> Index()
         {
-            var businesses = await _context.businesses
-            .Where(b => b.type_ID == 2)
+
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            int? loginType = HttpContext.Session.GetInt32("loginType");
+            
+            var Consumption_Record = await _context.Consumption_Records
+            .Where(b => b.business_ID == loginID)
             .ToListAsync();
 
-            ViewData["business_type"] = new SelectList(businesses, "ID", "name");
-            return View();
+            
+            return View(Consumption_Record);
             //var tailstaleContext = _context.Consumption_Record.Include(c => c.beautician).Include(c => c.business).Include(c => c.keeper);
             //return View(await tailstaleContext.ToListAsync());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(int aid,int uid)
+        public async Task<IActionResult> Index(int uid)
         {
 
 
-            var beauticians = _context.Consumption_Records
-                    .Include(bh => bh.business)
-                    .Include(bh => bh.beautician)
-                    .Include(bh => bh.keeper)
-                    .Where(bh => bh.business_ID == aid)
-                    .ToList();
-
+           
 
 
             var business2 = await _context.Consumption_Records
         .FirstOrDefaultAsync(b => b.keeper_id == uid);
 
-            if (beauticians == null && business2 == null)
+            if (business2 == null)
             {
                 // 如果未找到符合条件的 business 记录，返回空的 PartialView
                 return PartialView("_Consumption_RecordPartial", new List<Consumption_Record>());
@@ -58,15 +57,7 @@ namespace Tailstale.Controllers
 
             // 查询符合条件的 Beautician 记录
             
-            var business = await _context.businesses
-            .FirstOrDefaultAsync(b => b.type_ID == 2);
-            if (aid == business.ID)
-            {
-
-              return PartialView("_Consumption_RecordPartial", beauticians);
-            }
-            else
-            {
+            
                 var beauticians2 = _context.Consumption_Records
                .Where(bh => bh.keeper_id == business2.keeper_id)
                .Include(bh => bh.business)
@@ -74,7 +65,7 @@ namespace Tailstale.Controllers
                 .Include(bh => bh.keeper)
                .ToList();
                 return PartialView("_Consumption_RecordPartial", beauticians2);
-            }
+            
             // 返回到前端，假設你的 View 期望接收一段 HTML 作為結果
            
         }
@@ -105,13 +96,18 @@ namespace Tailstale.Controllers
         // GET: Consumption_Record/Create
         public IActionResult Create(int? keeper_id = null, string pet_name = null, int? business_ID = null, DateTime? time = null, string service_name = null)
         {
-            var businesses = _context.businesses
-            .Where(b => b.type_ID == 2)
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            int? loginType = HttpContext.Session.GetInt32("loginType");
+            var business = _context.businesses
+            .Where(b => b.ID == loginID)
             .ToList();
 
-            
+            var service = _context.Services
+           .Where(b => b.business_ID == loginID)
+           .ToList();
 
-            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+            ViewData["servicename"] = new SelectList(service, "service_name", "service_name");
+            ViewData["business_ID"] = new SelectList(business, "ID", "name");
             ViewData["beautician_id"] = new SelectList(_context.Beauticians, "id", "name");
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
             ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name");
@@ -123,15 +119,24 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,keeper_id,pet_name,business_ID,time,beautician_id,service_name,pet_weight,price,end_time,before_photo,after_photo")] Consumption_Record consumption_Record)
+        public async Task<IActionResult> Create([Bind("id,keeper_id,pet_name,business_ID,time,beautician_id,service_name,pet_weight,price,end_time,before_photo,after_photo")] Consumption_RecordViewModel consumption_Record)
         {
-            var businesses = _context.businesses
-            .Where(b => b.type_ID == 2)
+            
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            int? loginType = HttpContext.Session.GetInt32("loginType");
+            var business = _context.businesses
+            .Where(b => b.ID == loginID)
             .ToList();
 
-            
 
-            
+            var service = _context.Services
+           .Where(b => b.business_ID == loginID)
+           .ToList();
+
+            ViewData["servicename"] = new SelectList(service, "service_name", "service_name");
+
+
+
             if (ModelState.IsValid)
             {
                 // 处理第一个上传的文件（Photo）
@@ -146,8 +151,8 @@ namespace Tailstale.Controllers
                         {
                             ModelState.AddModelError("photo", "Only image files are allowed for Photo.");
                             ViewData["beautician_id"] = new SelectList(_context.Beauticians, "id", "name", consumption_Record.beautician_id);
-                            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
-                            
+                            ViewData["business_ID"] = new SelectList(business, "ID", "name");
+
                             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
                             ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name", consumption_Record.keeper_id);
                             return View(consumption_Record);
@@ -180,7 +185,7 @@ namespace Tailstale.Controllers
                         if (!IsImageFile(licenseFile))
                         {
                             ModelState.AddModelError("Highest_license", "Only image files are allowed for Highest License.");
-                            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+                            ViewData["business_ID"] = new SelectList(business, "ID", "name");
                             ViewData["beautician_id"] = new SelectList(_context.Beauticians, "id", "name", consumption_Record.beautician_id);
                             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
                             
@@ -203,13 +208,27 @@ namespace Tailstale.Controllers
                         consumption_Record.after_photo = uniqueFileName;
                     }
                 }
+                Consumption_Record a = new Consumption_Record()
+                {
+                    keeper_id = consumption_Record.keeper_id,
+                    pet_name = consumption_Record.pet_name,
+                    business_ID = consumption_Record.business_ID,
+                    time = consumption_Record.time,
+                    beautician_id = consumption_Record.beautician_id,
+                    service_name = consumption_Record.service_name,
+                    pet_weight = consumption_Record.pet_weight,
+                    price = consumption_Record.price,
+                    end_time = consumption_Record.end_time,
+                    before_photo = consumption_Record.before_photo,
+                    after_photo = consumption_Record.after_photo
+                };
 
                 // 将 beautician 对象添加到数据库上下文并保存更改
-                _context.Add(consumption_Record);
+                _context.Add(a);
                 await _context.SaveChangesAsync();
 
-                
-                ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+
+                ViewData["business_ID"] = new SelectList(business, "ID", "name");
                 ViewData["beautician_id"] = new SelectList(_context.Beauticians, "id", "name", consumption_Record.beautician_id);
                 //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
                 ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name", consumption_Record.keeper_id);
@@ -224,8 +243,8 @@ namespace Tailstale.Controllers
 
 
 
-            
-            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+
+            ViewData["business_ID"] = new SelectList(business, "ID", "name");
             ViewData["beautician_id"] = new SelectList(_context.Beauticians, "id", "gender", consumption_Record.beautician_id);
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
             ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "address", consumption_Record.keeper_id);
@@ -257,19 +276,32 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
-            var businesses = _context.businesses
-            .Where(b => b.type_ID == 2)
-            .ToList();
+            
 
             var pets = _context.pets
             .Where(p => p.keeper_ID == consumption_Record.keeper_id) // 根据 keeper_id 进行过滤
            .ToList();
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            int? loginType = HttpContext.Session.GetInt32("loginType");
+            var business = _context.businesses
+            .Where(b => b.ID == loginID)
+            .ToList();
+            var keeper = _context.keepers
+            .Where(p => p.ID == consumption_Record.keeper_id) // 根据 keeper_id 进行过滤
+            .ToList();
+            var service = _context.Services
+           .Where(b => b.business_ID == loginID)
+           .ToList();
+
+            ViewData["servicename"] = new SelectList(service, "service_name", "service_name");
+
+            ViewData["business_ID"] = new SelectList(business, "ID", "name");
 
             ViewData["pet_name"] = new SelectList(pets, "name", "name");
-            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+            
             ViewData["beautician_id"] = new SelectList(_context.Beauticians, "id", "name", consumption_Record.beautician_id);
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
-            ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name", consumption_Record.keeper_id);
+            ViewData["keeper_id"] = new SelectList(keeper, "ID", "name", consumption_Record.keeper_id);
             return View(consumption_Record);
         }
 
@@ -285,9 +317,24 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var businesses = _context.businesses
-            .Where(b => b.type_ID == 2)
+            
+
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            int? loginType = HttpContext.Session.GetInt32("loginType");
+            var business = _context.businesses
+            .Where(b => b.ID == loginID)
             .ToList();
+
+            var service = _context.Services
+           .Where(b => b.business_ID == loginID)
+           .ToList();
+
+            ViewData["servicename"] = new SelectList(service, "service_name", "service_name");
+
+            var keeper = _context.keepers
+            .Where(p => p.ID == consumption_Record.keeper_id) // 根据 keeper_id 进行过滤
+            .ToList();
+
 
             var pets = _context.pets
             .Where(p => p.keeper_ID == consumption_Record.keeper_id) // 根据 keeper_id 进行过滤
@@ -372,10 +419,10 @@ namespace Tailstale.Controllers
                 }
 
                 ViewData["pet_name"] = new SelectList(pets, "name", "name");
-                ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+                ViewData["business_ID"] = new SelectList(business, "ID", "name");
                 ViewData["beautician_id"] = new SelectList(_context.Beauticians, "id", "name", consumption_Record.beautician_id);
                 //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
-                ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name", consumption_Record.keeper_id);
+                ViewData["keeper_id"] = new SelectList(keeper, "ID", "name", consumption_Record.keeper_id);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -383,10 +430,10 @@ namespace Tailstale.Controllers
 
 
             ViewData["pet_name"] = new SelectList(pets, "name", "name");
-            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+            ViewData["business_ID"] = new SelectList(business, "ID", "name");
             ViewData["beautician_id"] = new SelectList(_context.Beauticians , "id", "name", consumption_Record.beautician_id);
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", consumption_Record.business_ID);
-            ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name", consumption_Record.keeper_id);
+            ViewData["keeper_id"] = new SelectList(keeper, "ID", "name", consumption_Record.keeper_id);
             return View(consumption_Record);
         }
 

@@ -39,7 +39,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="service_name" class="control-label"></label>
-                <input asp-for="service_name" class="form-control" />
+                <select asp-for="service_name" class="form-control" asp-items="ViewBag.servicename"></select>
                 <span asp-validation-for="service_name" class="text-danger"></span>
             </div>
             <div class="form-group">
