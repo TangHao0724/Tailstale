@@ -11,8 +11,9 @@
 
 <div id="app">
 
-    <h2>檢視預約和消費紀錄</h2>
-    <button v-on:click="myReserve()">預約紀錄</button><button class="btn" v-on:click="myConsumption()">消費紀錄</button>
+    <h2 class="mt-4 pt-5">檢視預約和消費紀錄</h2>
+    <button class="btn btn-primary m-3" v-on:click="myReserve()">預約紀錄</button>
+    <button class="btn btn-primary m-3" v-on:click="myConsumption()">消費紀錄</button>
 
     <div class="showReserve">
         <table class="table border table-striped">
@@ -66,7 +67,7 @@
                         {{formatDate(item.created_at)}}
                     </td>
                     <td>
-                        <button class="btn" v-if="item.status !== 10" v-on:click="CancelR(item.id)">取消預約</button>
+                        <button class="btn btn-primary" v-if="item.status !== 10" v-on:click="CancelR(item.id)">取消預約</button>
                     </td>
                 </tr>
             </tbody>

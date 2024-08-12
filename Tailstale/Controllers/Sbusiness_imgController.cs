@@ -29,24 +29,11 @@ namespace Tailstale.Controllers
         {
             int? loginID = HttpContext.Session.GetInt32("loginID");
             int? loginType = HttpContext.Session.GetInt32("loginType");
-            var tailstaleContext = _context.business_imgs.Include(b => b.img_type);
-            var query = from business in _context.businesses
-                        join imgType in _context.business_img_types
-                        on business.ID equals imgType.FK_business_id
-                        where business.ID == loginID
-                        select new
-                        {
-                            ImageTypeID = imgType.ID,
-                            ImageTypeName = imgType.typename
-                        };
-
-            var result = query.ToList();
-
-            ViewData["ImageTypeList"] = new SelectList(result, "ImageTypeID", "ImageTypeName");
-
-
-
-            return View(await tailstaleContext.ToListAsync());
+            var business_img_type = await _context.business_img_types
+           .Where(b => b.FK_business_id == loginID)
+           .ToListAsync();
+            ViewData["img_type"] = new SelectList(business_img_type, "ID", "typename");
+            return View();
         }
 
 
