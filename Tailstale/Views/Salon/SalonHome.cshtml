@@ -8,7 +8,7 @@
     
     <style>
         body {
-            min-height: 120vh;
+            min-height: 150vh;
         }
 
         .app {
@@ -27,6 +27,8 @@
             min-height: 300px !important;
         }
 
+        
+
         .truncate-multiline {
             display: -webkit-box; /* 使用 Flexbox 布局 */
             -webkit-line-clamp: 3; /* 設置顯示的行數 */
@@ -35,6 +37,12 @@
             text-overflow: ellipsis; /* 顯示省略號 */
         }
 
+        .Beauty_Step-2 .border{
+            height:500px;
+        }
+        .border{
+            border-radius: 12px;
+        }
         .showWidth {
             max-width: 40%;
         }
@@ -58,6 +66,34 @@
             -webkit-appearance: none;
             margin: 0;
         }
+
+        .Selectheader{
+            background-color: rgba(255, 172, 124,.6);
+        }
+
+        .storeborder{
+            padding:15px;
+            border: 6px solid #fa0;
+            border-radius: 10px;
+            
+        }
+
+        .btn2{
+           color:black;
+           background-color:#fa0;
+           padding:12px;
+            border-radius: 12px;
+        }
+
+        .btn2:hover {
+            transform: translateY(-3px);
+            box-shadow: 2px 2px 6px 2px #aaa;
+        }
+
+        .btn2:active {
+            transform: translateY(-2px) scale(.98);
+        }
+
 
 
         /* 以下是pic */
@@ -163,23 +199,20 @@
     <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="https://picsum.photos/900/300" class="d-block w-100" alt="...">
-            </div>
-            <div class="carousel-item">
-                <img src="https://picsum.photos/900/300" class="d-block w-100" alt="...">
-            </div>
-            <div class="carousel-item">
-                <img src="https://picsum.photos/900/300" class="d-block w-100" alt="...">
+                <img src="~/salon_img/pexels-pixabay-256632.jpg" class="d-block w-100" style="height:55vh;" alt="...">
             </div>
         </div>
     </div>
 
     <div class="container">
-        
+        <h2 class="p-3 text-center border-bottom border-3 border-warning">寵物美容</h2>
+        <h4 class="p-2 text-center">請輸入縣市和服務項目以搜尋店家</h4>
         <select class="form-select" v-model="selectAddress">
+            <option value="" disabled selected>請選擇地點</option>
             <option v-for="item in newAddress">{{item}}</option>
         </select>
         <select class="form-select" v-model="selectService">
+            <option value="" disabled selected>請選擇寵物</option>
             <option value="幼貓">幼貓</option>
             <option value="短毛貓">短毛貓</option>
             <option value="長毛貓">長毛貓</option>
@@ -188,20 +221,20 @@
             <option value="中型狗">中型狗</option>
             <option value="大型狗">大型狗</option>
         </select>
-        <button v-on:click="SelectStore()">查詢門市</button>
+        <button class="mx-1 btn2" v-on:click="SelectStore()">查詢門市</button>
     </div>
     
 
-    <div class="container row StoreCard">
+    <div class="container row StoreCard mt-3">
         <div class="card col-4 mx-3 divcheck" style="width: 18rem;" v-for="Card in businessCard" v-on:click="showResvice(Card.id)">
-            <img :src="`/Salon_img/${Card.photo_url}`" class="card-img-top w-100" alt="...">
+            <img :src="`/Salon_img/${Card.photo_url}`" class="card-img-top w-100 my-2" style="height:200px;" alt="">
             <div class="card-body">
-                <h5 class="card-title">{{Card.name}}</h5>
+                <h5 class="card-title text-center my-auto">{{Card.name}}</h5>
             </div>
             <ul class="list-group list-group-flush">
-                <li class="list-group-item">{{Card.email}}</li>
-                <li class="list-group-item">{{Card.phone}}</li>
-                <li class="list-group-item">{{Card.address}}</li>
+                <li class="list-group-item">電子信箱:{{Card.email}}</li>
+                <li class="list-group-item">電話:{{Card.phone}}</li>
+                <li class="list-group-item">地址:{{Card.address}}</li>
             </ul>
         </div>
     </div>
@@ -226,12 +259,12 @@
 
 
 
-        <div class="container  my-3 Beauty_Step-1">
-            <div v-for="business in businesses" :key="business.ID" class="row py-5 g-3 mb-3">
+        <div class="container-fluid my-3 Beauty_Step-1 Selectheader">
+            <div v-for="business in businesses" :key="business.ID" class="row p-2 g-3 mb-3">
               <div v-html="business.geoJson" class="col-12 col-md-6">
                 
               </div>
-              <div class="col-12 col-md-6">
+              <div class="storeborder col-12 col-md-6">
                     <img :src="`/Salon_img/${business.photo_url}`" class="w-100" style="height:300px;" alt="">
                     <h3 class="text-center py-2">{{business.name}}</h3>
                     <div v-html="business.description" class="truncate-multiline"></div>
@@ -265,7 +298,7 @@
                      <p class="m-0 pt-3">{{business.address}}</p>
                      <p class="m-0 pt-3">{{business.phone}}</p>
                 
-                    <div class="text-center"><button class="Beauty_btn-1" :value="business.id" v-on:click="selectBusiness(business.id,business.name)">選擇此門市</button></div>
+                    <div class="text-center"><button class="btn2 Beauty_btn-1" :value="business.id" v-on:click="selectBusiness(business.id,business.name)">選擇此門市</button></div>
 
                 </div> 
 
@@ -298,23 +331,19 @@
         <div class="row">
             <div class="col-12 col-md-4 p-0">
                 <div class="border mx-3 p-3">
-                    <img src="https://picsum.photos/600/300" class="w-100" alt="">
-                    <h3>狗</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, quisquam laudantium.
-                        Perspiciatis
-                        incidunt ratione ad modi provident non fugit ipsa magnam. Facere molestiae quis ducimus.</p>
-                    <div class="text-center"><button class="Beauty_btn-2-1 pet_type" id="" :value="dogType" v-on:click="selectPetType(dogType)">選擇</button></div>
+                        <img src="~/salon_img/berkay-gumustekin-ngqyo2ayyne-unsplash.jpg" class="w-100" alt="">
+                    <h3 class="p-2">狗</h3>
+                     <p>選擇「狗」分類，我們提供專為狗狗設計的全面美容服務，包括洗澡、梳毛、剪指甲、清潔耳朵及造型修剪。我們的專業美容師會根據每隻狗狗的需求，提供最舒適、最適合的護理，讓您的毛孩焕然一新！</p>
+                    <div class="text-center"><button class="btn2 Beauty_btn-2-1 pet_type" id="" :value="dogType" v-on:click="selectPetType(dogType)">選擇</button></div>
                 </div>
 
             </div>
             <div class="col-12 col-md-4  p-0">
                 <div class="border mx-3 p-3">
-                    <img src="https://picsum.photos/600/300" class="w-100" alt="">
-                    <h3>貓</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, quisquam laudantium.
-                        Perspiciatis
-                        incidunt ratione ad modi provident non fugit ipsa magnam. Facere molestiae quis ducimus.</p>
-                    <div class="text-center"><button class="Beauty_btn-2-2  pet_type" id="" :value="catType" v-on:click="selectPetType(catType)">選擇</button></div>
+                    <img src="~/salon_img/pexels-cong-h-613161-1404825.jpg" class="w-100" alt="">
+                        <h3 class="p-2">貓</h3>
+                        <p>選擇「貓」分類，我們提供專為貓咪設計的專業美容服務，包括洗澡、梳毛、指甲修剪和耳朵清潔。每項服務都能讓您的貓咪舒適、乾淨，並保持最佳狀態。讓我們的專業團隊照顧您的毛茸茸小夥伴！</p>
+                    <div class="text-center"><button class="btn2 Beauty_btn-2-2  pet_type" id="" :value="catType" v-on:click="selectPetType(catType)">選擇</button></div>
                 </div>
             </div>
         </div>
@@ -352,7 +381,7 @@
                     </div>
 
                     <p>{{service.price}}</p>
-                    <div class="text-center"><button class="Beauty_btn-3-1 dog_service"  :value="service.service_name" v-on:click="changeService(service.service_name)">選擇</button>
+                    <div class="text-center"><button class="btn2 Beauty_btn-3-1 dog_service"  :value="service.service_name" v-on:click="changeService(service.service_name)">選擇</button>
                     </div>
                 </div>
             </div>
@@ -372,7 +401,7 @@
                 <label class="btn btn-primary" :for="'btn-check-' + index">{{item}}</label>
              </div>
             <div class="text-center">
-                <button class="Beauty_btn-4" id="Beauty_date" v-on:click="selectTime()">確定</button>
+                <button class="btn2 Beauty_btn-4" id="Beauty_date" v-on:click="selectTime()">確定</button>
                 <p class="reminder" id="reminder">請按下「確定」按鈕以完成操作</p>
             </div>
     </div>
@@ -401,7 +430,7 @@
                     <label for="time" class="form-label">日期時間：</label>
                         <input type="text" class="form-control" id="time"  :value="Usetime" readonly>
                     </div>
-                        <div class="text-center"><button class="Beauty_btn-5" v-on:click="Reserveinsert()">確定</button>
+                        <div class="text-center"><button class="btn2 Beauty_btn-5" v-on:click="Reserveinsert()">確定</button>
                     </div>
                 @* </form> *@
 
@@ -544,7 +573,8 @@
                         _this.businessCard = response.data;
 
                     }).catch(err => {
-                        alert(err);
+                        // alert(err);
+                        alert("請選擇門市和寵物類型");
                     });
 
                     
@@ -637,7 +667,21 @@
                 showResvice:function(id){
                      $(".showStroe").fadeIn();
                      $(".StoreCard").hide();
-                     this.businesses = [];
+                    $(".Beauty_Step-2").hide();
+                    $(".Beauty_Step-3-1").hide();
+                    $(".Beauty_Step-3-2").hide();
+                    $(".Beauty_Step-4").hide();
+                    $(".Beauty_Step-5").hide();
+                    $(".Beauty_Step-1").fadeIn();
+                    // 設定 active 狀態
+                    $('.nav-link').removeClass('active');
+                    $('#stepbtn-1').addClass('active');
+                    this.businesses = [];
+                    this.business_ID = 0;
+                    this.pet_type = "";
+                    this.serviceName = "";
+                    this.Usetime = "";
+                    this.mypeople = 0;
                      
                      let _this = this;
                       axios.get(`${_this.baseAddress}/api/SalonApi/GetSalonbusiness`, {
@@ -764,12 +808,15 @@
                     var combinedInput = this.day + 'T' + timeInput;
                     // this.Usetime = document.getElementById("datetime-picker").value;
                      console.log(this.Usetime);
-                    // 如果有值，執行程式碼
-                    $(".Beauty_Step-4").hide();
-                    $(".Beauty_Step-5").fadeIn();
-                    $('.nav-link').removeClass('active');
-                    $('#stepbtn-5').addClass('active');
-
+                    if (this.Usetime !== "") {
+                        // 如果有值，執行程式碼
+                        $(".Beauty_Step-4").hide();
+                        $(".Beauty_Step-5").fadeIn();
+                        $('.nav-link').removeClass('active');
+                        $('#stepbtn-5').addClass('active');
+                    } else {
+                        alert("請選擇日期和時間")
+                    }
                 },
                 Reserveinsert: function () {
                     let _this = this;
