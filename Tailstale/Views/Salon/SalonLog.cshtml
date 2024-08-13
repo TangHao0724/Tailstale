@@ -1,5 +1,5 @@
 ﻿@section Styles {
-    <link href="~/css/salonselecttb.css" rel="stylesheet" />
+    
     <style>
         .petimg {
             max-width: 120px;
@@ -7,7 +7,7 @@
             cursor: pointer;
         }
 
-        .showConsumption td {
+        .showConsumption .showConsumption td {
             max-height:150px;
             line-height:150px;
             text-align:center;
@@ -51,7 +51,7 @@
 
 <div id="app">
 
-    <h2 class="mt-4 pt-5">檢視預約和消費紀錄</h2>
+    <h2 class="mt-4 pt-5 text-center">檢視美容的預約和消費紀錄</h2>
     <button class="btn btn-primary m-3" v-on:click="myReserve()">預約紀錄</button>
     <button class="btn btn-primary m-3" v-on:click="myConsumption()">消費紀錄</button>
 
