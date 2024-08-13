@@ -48,11 +48,6 @@ namespace Tailstale.Controllers
             var statusOptions = new List<string> { "預約成功", "完成診療", "院方取消" , "預約未到" };
             ViewBag.StatusOptions = statusOptions;
 
-            var pet_ID = Appointments
-                 .Select(a => a.PetID)
-                 .ToList();
-            ViewBag.PetID = pet_ID;
-
             return View(Appointments);
         }
 

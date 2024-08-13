@@ -4,9 +4,7 @@ namespace Tailstale.MedRecordDTO
 {
     public class MedicalRecordDTO
     {
-        [Display(Name = "編號")]
-        public int id { get; set; }
-
+        //keeper
         [Required(ErrorMessage = "必填")]
         [Display(Name = "飼主")]
         public int keeper_id { get; set; }
@@ -17,23 +15,63 @@ namespace Tailstale.MedRecordDTO
         [Display(Name = "飼主姓名")]
         public string keeper_name { get; set; }
 
-        [Required(ErrorMessage = "必填")]
+
+
+        //pet
         [Display(Name = "寵物")]
         public int pet_id { get; set; }
+
+        [Display(Name = "pet type ID")]
+        public int? pet_type_ID { get; set; }
+
+        [Display(Name = "寵物物種")]
+        public string species { get; set; }
+
+        [Display(Name = "寵物品種")]
+        public string pet_breed { get; set; }
 
         [Display(Name = "寵物名字")]
         public string pet_name { get; set; }
 
-        [Display(Name = "品種")]
-        public string pet_breed { get; set; }
+        [Display(Name = "結紮")]
+        public bool? neutered { get; set; }
+
+        [Display(Name = "過敏")]
+        public string allergy { get; set; }
 
         [Display(Name = "年紀")]
         public int? pet_age { get; set; }
 
-        [Required(ErrorMessage = "必填")]
-        [Display(Name = "就診時間")]
-        public DateTime Datetime { get; set; }
 
+
+        //opc id有了
+        [Display(Name = "診所名稱")]
+        public string outpatient_clinic_name { get; set; }
+
+        [Display(Name = "獸醫名字")]
+        public int? vet_ID { get; set; }
+
+
+
+        //daily opc
+        [Display(Name = "每日預約")]
+        public int daily_outpatient_clinic_schedule_ID { get; set; }
+
+        [Display(Name = "預約看診日")] //真正看診日
+        public DateOnly? date { get; set; }
+
+        //Appointments不需要
+        //從FK_daily_opc去抓keeper,pet的id
+
+
+
+        //medical_record
+        [Display(Name = "編號")]
+        public int id { get; set; }
+
+        [Required(ErrorMessage = "必填")]
+        [Display(Name = "看診時間")]
+        public DateTime Datetime { get; set; }
 
         [Required(ErrorMessage = "必填")]
         [Display(Name = "診別")]
@@ -50,14 +88,61 @@ namespace Tailstale.MedRecordDTO
         [Display(Name = "診斷")]
         public string diagnosis { get; set; }
 
-        [Required(ErrorMessage = "必填")]
-        [Display(Name = "處置")]
-        public string treatment { get; set; }
-
-        [Display(Name = "備註")]
+        [Display(Name = "交代事項")]
         public string? memo { get; set; }
 
         [Display(Name = "費用")]
         public int? fee { get; set; }
+
+
+
+        //vital_sign_record
+
+
+
+        //medical_orders
+
+
+
+        //medicine_orders
+
+        //medicine
+
+
+
+
+        //biological test order
+
+
+        //biological test
+
+
+        //medical imaging order
+
+
+        //medical imaging
+
+        //image files
+
+        //surgery
+
+        //hosp_records
+        [Display(Name = "編號")]
+        public int hosp_id { get; set; }
+
+        [Display(Name = "入院時間")]
+        public DateTime admission_date { get; set; }
+
+        [Display(Name = "入院時間")]
+        public string? admission_date_view { get; set; }
+
+        [Display(Name = "出院時間")]
+        public DateTime? discharge_date { get; set; }
+
+        [Display(Name = "病房")]
+        public int? ward_id { get; set; }
+
+        [Display(Name = "備註")]
+        public string? hosp_memo { get; set; }
     }
 }
