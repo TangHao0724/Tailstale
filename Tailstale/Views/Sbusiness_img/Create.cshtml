@@ -6,9 +6,9 @@
 @section Styles {
     <link href="~/css/salonfrom.css" rel="stylesheet" />
 }
-<h1>Create</h1>
+<h1>新增作品圖片</h1>
 
-<h4>business_img</h4>
+@* <h4>business_img</h4> *@
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -23,11 +23,11 @@
                 <label asp-for="URL" class="control-label">圖片</label>
                 <input asp-for="URL" class="form-control" type="file" accept="image/*" onchange="previewImage(this)" />
                 <span asp-validation-for="URL" class="text-danger"></span>
-                <img id="imgPreview" src="~/Salon_img/111.jpg" width="200" height="200" />
+                <img id="imgPreview" src="~/Salon_img/111.jpg" width="200" height="250" />
             </div>
             <div class="form-group">
                 <label asp-for="name" class="control-label">圖片名稱</label>
-                <input asp-for="name" class="form-control" required />
+                <input asp-for="name" class="form-control" placeholder="需加上關鍵字,如貓或狗" required />
                 <span asp-validation-for="name" class="text-danger"></span>
             </div>
             <div class="form-group">

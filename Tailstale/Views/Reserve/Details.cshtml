@@ -6,11 +6,11 @@
 @section Styles {
     <link href="~/css/sshowdelete.css" rel="stylesheet" />
 }
-<h1>Details</h1>
+<h1>顯示預約紀錄</h1>
 
 
 <div>
-    <h4>Reserve</h4>
+    @* <h4>Reserve</h4> *@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -58,6 +58,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.id">Edit</a> |
+    <a class="btn btn-success" asp-action="Edit" asp-route-id="@Model?.id">修改</a> |
     <a class="btn btn-secondary" asp-action="Index">返回</a>
 </div>

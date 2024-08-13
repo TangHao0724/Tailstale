@@ -46,7 +46,8 @@ namespace Tailstale.Controllers
 
             // 準備查詢
             IQueryable<business_img> query = _context.business_imgs
-                .Include(bh => bh.img_type);
+                .Include(bh => bh.img_type)
+                 .OrderByDescending(bh => bh.ID);
 
 
             // 根據 id 的情況添加條件

@@ -29,6 +29,7 @@ namespace Tailstale.Controllers
             int? loginType = HttpContext.Session.GetInt32("loginType");
             var Business_hours = await _context.Business_hours
             .Where(b => b.business_ID == loginID)
+            .OrderByDescending(b => b.id) // 根据 ID 降序排序
             .ToListAsync();
 
            // ViewData["business_ID"] = new SelectList(Business_hours, "ID", "name");
@@ -49,6 +50,7 @@ namespace Tailstale.Controllers
             IQueryable<Business_hour> query = _context.Business_hours
                 .Include(bh => bh.business);
                 
+
 
             // 根據 id 的情況添加條件
             if (loginID.HasValue)

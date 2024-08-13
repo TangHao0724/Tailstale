@@ -6,9 +6,9 @@
 @section Styles {
     <link href="~/css/salonfrom.css" rel="stylesheet" />
 }
-<h1>Edit</h1>
+<h1>修改作品圖片</h1>
 
-<h4>business_img</h4>
+@* <h4>business_img</h4> *@
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -25,7 +25,7 @@
                 <label asp-for="URL" class="control-label">圖片</label>
                 <input asp-for="URL" class="form-control" type="file" accept="image/*" class="form-control-file" onchange="previewImage(this, 'imgPreviewPhoto')" />
                 <span asp-validation-for="URL" class="text-danger"></span>
-                <img id="imgPreviewPhoto" src="~/Salon_img/@Model.URL" width="300" height="200" />
+                <img id="imgPreviewPhoto" src="~/Salon_img/@Model.URL" width="200" height="250" />
             </div>
             <div class="form-group">
                 <label asp-for="name" class="control-label">圖片名稱</label>
@@ -34,7 +34,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="created_at" class="control-label">建立日期</label>
-                <input asp-for="created_at" class="form-control" />
+                <input asp-for="created_at" class="form-control" readonly />
                 <span asp-validation-for="created_at" class="text-danger"></span>
             </div>
             <div class="form-group">

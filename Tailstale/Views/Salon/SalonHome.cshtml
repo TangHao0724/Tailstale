@@ -183,7 +183,7 @@
             <option value="幼貓">幼貓</option>
             <option value="短毛貓">短毛貓</option>
             <option value="長毛貓">長毛貓</option>
-            <option value="幼狗">幼狗</option>
+            <option value="幼犬">幼犬</option>
             <option value="小型狗">小型狗</option>
             <option value="中型狗">中型狗</option>
             <option value="大型狗">大型狗</option>
@@ -234,9 +234,10 @@
               <div class="col-12 col-md-6">
                     <img :src="`/Salon_img/${business.photo_url}`" class="w-100" style="height:300px;" alt="">
                     <h3 class="text-center py-2">{{business.name}}</h3>
-                    <div class="truncate-multiline">
+                    <div v-html="business.description" class="truncate-multiline"></div>
+                    @* <div class="truncate-multiline">
                         {{business.description}}
-                    </div>
+                    </div> *@
                     <div class="text-end me-5">
                     <button type="button" class="btn btn-warning text-white btn-closec" data-bs-toggle="modal" data-bs-target="#staticBackdrop">顯示更多</button>
                    
@@ -255,7 +256,7 @@
                                 
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
                                 
                                 </div>
                             </div>
@@ -327,10 +328,10 @@
                     <img :src="`/Salon_img/${service.service_img}`" class="w-100" style="height:300px;" alt="">
                     <h3>{{service.service_name}}</h3>
                     <p class="truncate-multiline mb-0">{{service.service_content}}</p>
-                    <button type="button" class="btn btn-link text-white btn-closec" data-bs-toggle="modal" data-bs-target="#serviceBackdrop">顯示更多</button>
+                        <button type="button" class="btn btn-primary text-white btn-closec" data-bs-toggle="modal" :data-bs-target="`#serviceBackdrop${service.id}`">顯示更多</button>
 
                     <!-- Scrollable modal -->
-                    <div class="modal fade" id="serviceBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+                        <div class="modal fade" :id="`serviceBackdrop${service.id}`" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" :aria-labelledby="`staticBackdropLabel${service.id}`" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-scrollable showWidth">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -338,12 +339,12 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <img :src="`/Salon_img/${service.service_img}`" class="w-100" style="height:300px;" alt="">
+                                    <img :src="`/Salon_img/${service.service_img}`" class="w-100" style="height:350px;" alt="">
                                     <div v-html="service.service_content" class="firsttext my-3"></div>
 
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
 
                                 </div>
                             </div>
@@ -383,8 +384,6 @@
                     <div class="form-group">
                        <label for="keeper_id" class="form-label">會員名稱：</label>
                     <input type="text" value="@ViewBag.LoginName" readonly />
-                   
-                   @*      <select asp-items="ViewBag.keeper_ID" asp-for="keeper_id"></select> *@
                     </div>
                   <div class="form-group">
                     <label for="pet_name" class="form-label">寵物名稱：</label>
@@ -393,8 +392,6 @@
                     <div class="form-group">
                         <label for="business_ID" class="form-label">門市：</label>
                         <input type="text" class="form-control" v-model="business_Name" readonly>
-                        @* <input type="hidden" id="business_ID" name="business_ID" v-model="business_ID"> *@
-                       @*  <input type="text" class="form-control" id="business_ID" name="business_ID" v-model="business_ID" readonly> *@
                     </div>
                     <div class="form-group">
                         <label for="service_name" class="form-label">服務類型：</label>
@@ -475,15 +472,6 @@
                 $(".Beauty_Step-5").hide();
                 this.newAddress = this.processAddresses(this.address);
 
-
-                // axios.get(`${_this.baseAddress}/api/SalonApi/GetSalonPicture`).then(response => {
-
-                //     _this.SalonPicture = response.data;
-
-                // }).catch(err => {
-                //     alert(err);
-                // });
-
                 const today = new Date();
 
                 // 指定可以选择的日期数组
@@ -511,28 +499,7 @@
             
         
 
-
-
-                // flatpickr("#datetime-picker", {
-                //     enableTime: true, // 啟用時間選擇
-                //     dateFormat: "Y-m-d H:i", // 日期和時間格式
-                //     minDate: "today", // 最小日期
-                //     // disable: [disableDates],
-                //     minTime: "10:00", // 最小時間
-                //     maxTime: "19:00", // 最大時間
-                //     time_24hr: true // 使用24小時制
-                // });
-
-
-
-
                 this.initializeSelectedValue();
-
-
-
-
-
-
 
 
             },
@@ -549,12 +516,7 @@
                     // 将字符串转换为 Date 对象
                     this.Usetime = new Date(dateTimeString);
 
-
-                    // 格式化为数据库接受的格式
-                    // 使用 toLocaleString 来格式化为期望的格式
-                    
-
-                   
+  
                     
                 },
                 processAddresses(addresses) {
@@ -746,9 +708,6 @@
                         alert('An error occurred: ' + (err.response ? err.response.data : err.message));
                     });
                 },
-                // servicesForBusinessID1004(businessID) {
-                //     return this.service.filter(service => service.business_ID === businessID);
-                // },
                 selectPetType: function (petType) {
                     this.pet_type = petType;
                     this.selectService2(this.business_ID, this.pet_type);
@@ -790,7 +749,7 @@
                     }).catch(err => {
                         alert(err);
                     });
-                    // servicesForBusinessID1004(businessID)
+                    
 
                 },
                 changeService: function (name) {
@@ -878,12 +837,6 @@
                 catServices(petType) {
                     return this.services.filter(item => item.type === petType);
                 },
-                // filteredPictures() {
-                //     return this.SalonPicture.filter(picture => picture.fK_business_id === this.businessId);
-                // }
-                processedAddresses() {
-                   // return this.address.map(item => item.address.substring(0, 3));
-                }
 
             }
         };

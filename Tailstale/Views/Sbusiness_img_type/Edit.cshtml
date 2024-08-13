@@ -6,9 +6,9 @@
 @section Styles {
     <link href="~/css/salonfrom.css" rel="stylesheet" />
 }
-<h1>Edit</h1>
+<h1>修改圖片類型</h1>
 
-<h4>business_img_type</h4>
+@* <h4>business_img_type</h4> *@
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -27,7 +27,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="created_at" class="control-label">建立日期</label>
-                <input asp-for="created_at" class="form-control" />
+                <input asp-for="created_at" class="form-control" readonly />
                 <span asp-validation-for="created_at" class="text-danger"></span>
             </div>
             <div class="form-group">

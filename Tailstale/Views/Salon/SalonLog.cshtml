@@ -3,8 +3,48 @@
     <style>
         .petimg {
             max-width: 120px;
-            max-height: 150px
+            max-height: 150px;
+            cursor: pointer;
         }
+
+        .showConsumption td {
+            max-height:150px;
+            line-height:150px;
+            text-align:center;
+        }
+
+        .popup-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, .9);
+            height: 100%;
+            width: 100%;
+            z-index: 100;
+            display: none;
+        }
+
+        .popup-image span {
+             position: absolute;
+             top: 20px;
+             right: 25px;
+             font-size: 60px;
+             color: #fff;
+             cursor: pointer;
+             z-index: 100;
+         }
+
+         .popup-image img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 5px;
+            max-height: 760px;
+            max-width: 600px;
+            object-fit: cover;
+          }
+
     </style>
 }
 
@@ -142,14 +182,18 @@
                         {{formatDate(item.end_time)}}
                     </td>
                     <td>
-                        <img class="w-100 petimg" :src="`/Salon_img/${item.before_photo}`">
+                        <img class="w-100 petimg" :src="`/Salon_img/${item.before_photo}`" v-on:click="showImageClick(item.before_photo)">
                     </td>
                     <td>
-                        <img class="w-100 petimg" :src="`/Salon_img/${item.after_photo}`">
+                        <img class="w-100 petimg" :src="`/Salon_img/${item.after_photo}`" v-on:click="showImageClick(item.after_photo)">
                     </td>
                 </tr>
             </tbody>
         </table>
+        <div class="popup-image">
+            <span v-on:click="closePopup()">&times;</span>
+            <img :src="`/Salon_img/${showPicture}`">
+        </div>
     </div>
 </div>
 
@@ -177,7 +221,7 @@
                     baseAddress: "https://localhost:7112",//結尾不要/
                     Reserve: [],
                     Consumption: [],
-
+                    showPicture: "",
                 };
             },
             mounted: function () {//初始化,發生呼叫函式,他需要用callback,
@@ -193,6 +237,15 @@
 
             },
             methods: {
+                closePopup: function () {
+                    $(".popup-image").hide();
+
+                },
+                showImageClick: function (url) {
+                    this.showPicture = url,
+                        $(".popup-image").fadeIn();
+
+                },
                 formatDate(datetime) {
                     const date = new Date(datetime);
                     return date.toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }).replace('T', ' ');

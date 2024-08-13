@@ -6,9 +6,9 @@
 @section Styles {
     <link href="~/css/salonfrom.css" rel="stylesheet" />
 }
-<h1>Edit</h1>
+<h1>修改消費紀錄</h1>
 
-<h4>Consumption_Record</h4>
+@* <h4>Consumption_Record</h4> *@
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -59,7 +59,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="end_time" class="control-label"></label>
-                <input asp-for="end_time" class="form-control" />
+                <input asp-for="end_time" class="form-control" readonly />
                 <span asp-validation-for="end_time" class="text-danger"></span>
             </div>
             <div class="form-group">

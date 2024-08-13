@@ -18,7 +18,7 @@
 </nav>
 <h1>美容師資料</h1>
 <p>
-    <a class="btn btn-info" asp-action="Create"><i class="bi bi-hand-index-thumb"></i>Create New</a>
+    <a class="btn btn-info" asp-action="Create"><i class="bi bi-hand-index-thumb"></i>新增美容師</a>
 </p>
 
 <table class="table border table-striped">
@@ -75,9 +75,9 @@
                     @Html.DisplayFor(modelItem => item.business.name)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.id"><i class="bi bi-highlighter"></i>Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.id"><i class="bi bi-info-circle"></i>Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.id"><i class="bi bi-highlighter"></i></a> |
+                    <a asp-action="Details" asp-route-id="@item.id"><i class="bi bi-info-circle"></i></a> |
+                    <a asp-action="Delete" asp-route-id="@item.id"><i class="bi bi-trash-fill"></i></a>
                 </td>
             </tr>
         }

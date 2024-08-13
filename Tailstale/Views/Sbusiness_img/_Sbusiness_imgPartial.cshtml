@@ -39,9 +39,9 @@
                 @Html.DisplayFor(modelItem => item.created_at)
             </td>
             <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID"><i class="bi bi-highlighter"></i>Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.ID"><i class="bi bi-info-circle"></i>Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.ID"><i class="bi bi-highlighter"></i></a> |
+                    <a asp-action="Details" asp-route-id="@item.ID"><i class="bi bi-info-circle"></i></a> |
+                    <a asp-action="Delete" asp-route-id="@item.ID"><i class="bi bi-trash-fill"></i></a>
             </td>
         </tr>
 }

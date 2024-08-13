@@ -7,8 +7,6 @@
 @section Styles {
     
     <link href="~/css/salonselecttb.css" rel="stylesheet" />
-
-    
 }
 
 <header>
@@ -69,7 +67,7 @@
                                 @Html.DisplayFor(modelItem => item.service_content)
                             </td>
                             <td>
-                                <img src="~/Salon_img/@Html.DisplayFor(modelItem => item.service_img)" alt="Alternate Text" style="width:270px;height:240px" />
+                                <img src="~/Salon_img/@Html.DisplayFor(modelItem => item.service_img)" alt="Alternate Text" style="width:240px;height:200px" />
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.price)
@@ -78,9 +76,9 @@
                                 @Html.DisplayFor(modelItem => item.business.name)
                             </td>
                             <td>
-                                <a asp-action="Edit" asp-route-id="@item.id"><i class="bi bi-highlighter"></i>Edit</a> |
-                                <a asp-action="Details" asp-route-id="@item.id"><i class="bi bi-info-circle"></i>Details</a> |
-                                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+                                <a asp-action="Edit" asp-route-id="@item.id"><i class="bi bi-highlighter"></i></a> |
+                                <a asp-action="Details" asp-route-id="@item.id"><i class="bi bi-info-circle"></i></a> |
+                            <a asp-action="Delete" asp-route-id="@item.id"><i class="bi bi-trash-fill"></i></a>
                             </td>
                         </tr>
                     }

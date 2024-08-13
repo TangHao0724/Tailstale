@@ -275,6 +275,7 @@ namespace Tailstale.Controllers
                         join business in _context.businesses on reserve.business_ID equals business.ID
                         join status in _context.order_statuses on reserve.status equals status.ID
                         where reserve.keeper_id == KloginID
+                        orderby reserve.id descending // 按 id 降序排序
                         select new ReserveDTO
                         {
                             id = reserve.id,
@@ -335,6 +336,7 @@ namespace Tailstale.Controllers
                         join business in _context.businesses on Consumption.business_ID equals business.ID
                         join beautician in _context.Beauticians on Consumption.beautician_id equals beautician.id
                         where Consumption.keeper_id == KloginID
+                        orderby Consumption.id descending // 按 id 降序排序
                         select new Consumption_RecordDTO
                         {
                             id = Consumption.id,

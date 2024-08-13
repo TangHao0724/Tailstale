@@ -3,6 +3,34 @@
 @{
     ViewData["Title"] = "Index";
 }
+@section Styles{
+    <style>
+        td {
+            max-width: 160px; /* 设置最大宽度 */
+            overflow: hidden; /* 隐藏超出部分 */
+            text-overflow: ellipsis; /* 使用省略号表示更多内容 */
+            white-space: nowrap; /* 强制文本在同一行显示 */
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        th, td {
+            border: 2px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        .bi {
+            font-size: 22px;
+        }
+
+        
+    </style>
+}
 
 <header>
     <partial name="_NavBar" />
@@ -80,7 +108,7 @@
                                 @Html.DisplayFor(modelItem => item.pet_weight)
                             </td>
                             <td>
-                                @Html.DisplayFor(modelItem => item.price)
+                                @Html.DisplayFor(modelItem => item.price)元
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.end_time)
@@ -101,9 +129,9 @@
                                 @Html.DisplayFor(modelItem => item.keeper.name)
                             </td>
                             <td>
-                                <a asp-action="Edit" asp-route-id="@item.id"><i class="bi bi-highlighter"></i>Edit</a> |
-                                <a asp-action="Details" asp-route-id="@item.id"><i class="bi bi-info-circle"></i>Details</a> |
-                                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+                                <a asp-action="Edit" asp-route-id="@item.id"><i class="bi bi-highlighter"></i></a> |
+                                <a asp-action="Details" asp-route-id="@item.id"><i class="bi bi-info-circle"></i></a> |
+                                <a asp-action="Delete" asp-route-id="@item.id"><i class="bi bi-trash-fill"></i></a>
                             </td>
                         </tr>
                     }

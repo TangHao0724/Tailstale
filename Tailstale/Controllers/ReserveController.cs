@@ -31,6 +31,7 @@ namespace Tailstale.Controllers
 
             var Reserves = await _context.Reserves
             .Where(b => b.business_ID == loginID)
+            .OrderByDescending(b => b.id) // 根据 ID 降序排序
             .ToListAsync();
 
 
