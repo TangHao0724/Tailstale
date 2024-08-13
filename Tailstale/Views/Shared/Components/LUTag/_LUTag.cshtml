@@ -5,27 +5,32 @@
 }
 <!--使用者資訊-->
 <div class="container justify-content-center" id="LUTag">
-    <div class="col-12  ">
-        @switch (@ViewBag.userType)
-        {
-           case 0 :
-                <img :src="imgurlLu" alt="" class="w-75 rounded-circle" />
-                break;
-            case 1:
-                <img src="@ViewBag.hotel_imgurl" alt="" class="w-75 rounded-circle" />
-                break;
-            case 2:
-                <img src="@ViewBag.salon_imgurl" alt="" class="w-75 rounded-circle" />
-                break;
-            case 3:
-                <img src="@ViewBag.hospital_imgurl" alt="" class="w-75 rounded-circle" />
-                break;                  
-        }
-    </div>
-    <div class="col-12"  >編號：@ViewBag.userID</div>
-    <div class="col-12">名稱：@ViewBag.userName</div>
+    @if (@ViewBag.userType != null)
+    {
+        <div class="col-12">
+            @switch (@ViewBag.userType)
+            {
+                case 0:
+                    <img src="@ViewBag.Keeper_imgurl" alt="" class="w-75 rounded-circle" />
+                    break;
+                case 1:
+                    <img src="@ViewBag.hotel_imgurl" alt="" class="w-75 rounded-circle" />
+                    break;
+                case 2:
+                    <img src="@ViewBag.salon_imgurl" alt="" class="w-75 rounded-circle" />
+                    break;
+                case 3:
+                    <img src="@ViewBag.hospital_imgurl" alt="" class="w-75 rounded-circle" />
+                    break;
+            }
+        </div>
+        <div class="col-12">編號：@ViewBag.userID</div>
+        <div class="col-12">名稱：@ViewBag.userName</div>
+    }
+    else
+    {
+        <div class="col-12">加入我們，來參與討論、記錄你的寵物！</div>
+        <a class="btn btn-outline-primary btn-lg" asp-area="" asp-controller="LNR" asp-action="KRegister">加入我們</a>
+    }
+    
 </div>
-
-@section scripts {
-    <script src="~/js/components/LUTagVue.js"></script>
-}   

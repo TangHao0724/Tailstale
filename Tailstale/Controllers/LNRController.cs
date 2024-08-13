@@ -38,10 +38,10 @@ namespace Tailstale.Controllers
         {
             ViewBag.loginID = HttpContext.Session.GetInt32("loginID");
             ViewBag.loginType = HttpContext.Session.GetInt32("loginType");
-            ViewBag.loginName = _context.businesses
+            ViewBag.loginName = await _context.businesses
                                 .Where(b => b.ID == HttpContext.Session.GetInt32("loginID"))
                                 .Select(b => b.name)
-                                .FirstOrDefault();
+                                .FirstOrDefaultAsync();
 
             return View();
         }
@@ -50,10 +50,10 @@ namespace Tailstale.Controllers
         {
             ViewBag.loginID = HttpContext.Session.GetInt32("loginID");
             ViewBag.loginType = HttpContext.Session.GetInt32("loginType");
-            ViewBag.loginName = _context.businesses
+            ViewBag.loginName = await _context.businesses
                     .Where(b => b.ID == HttpContext.Session.GetInt32("loginID"))
                     .Select(b => b.name)
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync();
             return View();
         }
         [IsHospitalFilter]
@@ -62,10 +62,10 @@ namespace Tailstale.Controllers
             
             ViewBag.loginID = HttpContext.Session.GetInt32("loginID");
             ViewBag.loginType = HttpContext.Session.GetInt32("loginType");
-            ViewBag.loginName = _context.businesses
+            ViewBag.loginName = await _context.businesses
                                 .Where(b => b.ID == HttpContext.Session.GetInt32("loginID"))
                                 .Select(b => b.name)
-                                .FirstOrDefault();
+                                .FirstOrDefaultAsync();
             return View();
         }
     }

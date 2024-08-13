@@ -240,7 +240,7 @@ namespace Tailstale.Controllers
             catch (Exception ex)
             {
                 // Log the exception (ex) here if needed
-                return StatusCode(500, "Internal server error");
+                return StatusCode(500, $"{ex}Internal server error");
             }
         }
         //讀取一個相簿的所有圖片

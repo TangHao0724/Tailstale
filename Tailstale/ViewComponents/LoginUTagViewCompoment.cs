@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
+using System.Drawing.Imaging;
+using System.Security.Policy;
 using Tailstale.Models;
 
 namespace Tailstale.ViewComponents
@@ -21,7 +23,11 @@ namespace Tailstale.ViewComponents
             }
             else
             {
-                url = null;
+                int imgtypeld = _context.keeper_img_types.Where(a => a.FK_Keeper_id == id && a.typename == $"{id}_head").Select(s => s.ID).FirstOrDefault();
+                url = _context.keeper_imgs.Where(a => a.img_type_id == imgtypeld && a.name.Contains("head"))
+                            .OrderByDescending(x => x.created_at)
+                            .Select(s => s.URL)
+                            .FirstOrDefault();
             }
             
             //分辨輸入ID。Usertype
@@ -49,7 +55,8 @@ namespace Tailstale.ViewComponents
                     ViewBag.UType = UType;
                     return View("_LoginUTagHospital");
                 default:
-                    ViewBag.Keeper_imgurl = "/imgs/keeper_img/no_head.png";
+                    
+                    ViewBag.Keeper_imgurl = url !=null? $"/imgs/keeper_img/{url}" : "/imgs/keeper_img/no_head.png";
                     ViewBag.UserID = id;
                     return View("_LoginUTagKeeper");
             }

@@ -3,16 +3,25 @@
         return {
             imgurlLu: "",
             useridm: "",
-            usertype:"",
+            usertype: "",
             fileDatas: [],
             content: '',
+            pcontent: '',
             editableDiv: null,
             articles: [],
-            count:4,    
+            parentArt: [],
+            count: 10,
+            selectedArt: null,
+            responseimg: [],
         }
     },
     created() {
-        this.getarticle(this.count);
+
+        this.getarticle(10);
+        $('#articleModal').on('hidden.bs.modal', this.handleModalHidden);
+
+
+
     },
     methods: {
         async GetUserimgm(userid) {
@@ -40,6 +49,9 @@
         bindcontent(event) {
             this.content = event.target.innerText;
         },
+        bindpcontent(event) {
+            this.pcontent = event.target.innerText;
+        },
         handleFileChange(event) {
             const files = event.target.files;
             this.fileDatas = [];
@@ -51,23 +63,70 @@
                 reader.readAsDataURL(file);
             }
         },
+        handleResponseFileChange(event) {
+            const files = event.target.files;
+            this.responseimg = [];
+            for (const file of files) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.responseimg.push(e.target.result); // 將每個文件的數據推入數組
+                };
+                reader.readAsDataURL(file);
+            }
+        },
         async postarticle() {
             try {
                 let formdata = new FormData(this.$refs.postform);
-                formdata.append("Content", this.content);
+                if (this.content !== '') {
+                    this.pcontent = '';
+                    formdata.append("Content", this.content);
+                } else if (this.pcontent !== '') {
+                    this.content = '';
+                    formdata.append("Content", this.pcontent);
+                }
+
                 formdata.append("PublicTags", this.Publichashtags);
                 formdata.append("PrivateTags", this.Privatehashtags);
+                if (this.selectedArt.id !== null) {
+                    formdata.append("parent_ID", this.selectedArt.id);
+                }
+                
                 if (this.usertype == 0) {
                     formdata.append('Keeper_ID', this.useridm);
-                        const response = axios.post("api/social/PostArticle", formdata);
+                    const response = axios.post("api/social/PostArticle", formdata);
+                    this.content = "";
+                    this.pcontent = "";
                     alert(response.data);
                 } else {
                     formdata.append('Business_ID', this.useridm);
                     const response = axios.post("api/social/PostArticle", formdata);
+                    this.content = "";
+                    this.pcontent = "";
                     alert(response.data);
                 }
-            } catch(error) {
+            } catch (error) {
                 console.error('Error fetching user info:', error);
+            }
+        },
+        openPost(input) {
+            this.selectedArt = null;
+            this.parentArt = [];
+            this.selectedArt = input;
+            this.getparentArt(10, null, this.selectedArt.id);
+            $("#articleModal").modal("show");
+
+        },
+        postPar(input) {
+            this.postarticle();
+            this.parentArt = [];
+            this.getparentArt(10, null, input);
+        },
+        bindimgurl(url, uType) {
+            if (uType !== 0) {
+                return `imgs/business_img/${url}`;
+
+            } else {
+                return `imgs/keeper_img/${url}`;
             }
         },
         getPublichashtag() {
@@ -108,22 +167,65 @@
                 , r = '(' + n + ')(' + o + ')(' + m + '*' + l + m + '*)';
             return r;
         },
-        async getarticle(int) {
+        async getarticle(count, userid, parentid) {
             try {
-               
-                const response =  await axios.get('api/social/GetArticle', {
+
+                const response = await axios.get('api/social/GetArticle', {
                     params: {
-                        count: int,
+                        count: count,
+                        id: userid,
+                        parentid: parentid,
                     },
                 });
-                
-            this.articles = response.data; 
+
+                this.articles = response.data;
             } catch (err) {
                 console.error('Error fetching user info:', error);
             }
 
+        },
+        async getparentArt(count, userid, parentid) {
+            try {
+
+                const response = await axios.get('api/social/GetArticle', {
+                    params: {
+                        count: count,
+                        id: userid,
+                        parentid: parentid,
+                    },
+                });
+
+                this.parentArt = response.data;
+            } catch (err) {
+                console.error('Error fetching user info:', error);
+            }
 
         },
+        imgurl(uType, imgurl) {
+            const salonurl = "";
+            const hoturl = "";
+            const hosurl = "";
+            if (imgurl === 'no_head.png') {
+                return `imgs/keeper_img/${imgurl}`;
+            }
+            switch (uType) {
+                case 0:
+                    return `imgs/keeper_img/${imgurl}`;
+                    break;
+                case 1:
+                    return `${salonurl}${imgurl}`;
+                    break;
+                case 2:
+                    return `${hoturl}${imgurl}`;
+                    break;
+                case 3:
+                    return `${hosurl}${imgurl}`;
+                    break;
+            }
+        },
+        handleModalHidden() {
+            this.selectedArt = [];
+        }
     },
     computed: {
         Publichashtags: function () {
@@ -141,12 +243,13 @@
 
     },
     mounted() {
-        this.useridm = $("#user-id").data('user-id');
-        this.usertype = $("#user-id").data("user-type");
+        this.useridm = $("#start").data('user-id');
+        this.usertype = $("#start").data("user-type");
         if (this.usertype == 0) {
             this.GetUserimgm(this.useridm); // 在掛載時調用方法
         }
         this.editableDiv = this.$refs.editableDiv;
+        
     }
 });
 app.mount("#app");

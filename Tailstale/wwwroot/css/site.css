@@ -23,13 +23,13 @@ body {
 
 .card-container-cas {
     column-count: 3; /* 根據需要調整列數 */
-    column-gap: 0.5rem; /* 根據需要調整間距 */
+    column-gap: .01rem; /* 根據需要調整間距 */
 }
 
 .card-cas {
     display: inline-block;
-    width: 100%; /* 確保卡片寬度填滿列 */
-    margin-bottom: 1rem; /* 根據需要調整間距 */
+    width: 30%; /* 確保卡片寬度填滿列 */
+    margin-bottom: .01rem; /* 根據需要調整間距 */
 }
 .card-container-cass-articale {
     column-count: 10; /* 根據需要調整列數 */
@@ -50,4 +50,14 @@ body {
 [contenteditable=true]:empty:before {
     content: attr(data-placeholder);
     color: #aaa;
+}
+.carousel-inner {
+    width: 100%;
+    height: 20rem; /* 你可以根據需要調整高度 */
+}
+.carousel-inner img {
+    width: 100%;
+    height: 20rem;
+    object-position: center;
+    object-fit: scale-down; /* 這樣可以確保圖片覆蓋整個區域 */
 }
