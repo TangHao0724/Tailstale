@@ -43,14 +43,14 @@ namespace Tailstale.ViewComponents
                     ViewBag.UType = UType;
                     return View("_LoginUTagHotel");
                 case 2://美容
-                    string salon_imgurl = "";
-                    ViewBag.salon_imgurl = url != null ? salon_imgurl + url : "/imgs/keeper_img/no_head.png";
+                    string salon_imgurl = "Salon_img/";
+                    ViewBag.salon_imgurl = url != null ? salon_imgurl+url : "/imgs/keeper_img/no_head.png";
                     ViewBag.UserID = id;
                     ViewBag.UType = UType;
                     return View("_LoginUTagSalon");
                 case 3://醫院
                     string hospital_imgurl = "";
-                    ViewBag.hospital_imgurl = url != null ? hospital_imgurl + url : "/imgs/keeper_img/no_head.png";
+                    ViewBag.hospital_imgurl = url != null ? hospital_imgurl+url : "/imgs/keeper_img/no_head.png";
                     ViewBag.UserID = id;
                     ViewBag.UType = UType;
                     return View("_LoginUTagHospital");
