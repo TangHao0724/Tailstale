@@ -28,7 +28,7 @@
                 <div id="editableDiv" ref="editableDiv" contenteditable="true" style="border:1px solid #ccc; padding:5px;" data-placeholder="請輸入內容" @@input="bindcontent">{{ content }}</div>
                 <div class="mb-3 input-group">
                     <button class="btn btn-outline-secondary" type="button" id="button-addon2" @@click="inputFile">添加相片</button>
-                    <input type="file" id="updateImg" name="imgs" accept="image/png, image/jpeg, image/jpg" style="display: none;" @@change="handleFileChange" multiple>
+                    <input type="file" id="updateImg" name="imgs" accept="image/png, image/jpeg, image/jpg" style="display: none;" @@change="handleFile" multiple>
                     <button class="btn btn-primary" type="submit" id="button-addon2">送出</button>
                 </div>
                 <div class="form-check">

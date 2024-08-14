@@ -53,11 +53,11 @@ body {
 }
 .carousel-inner {
     width: 100%;
-    height: 20rem; /* 你可以根據需要調整高度 */
+    height: 18rem; /* 你可以根據需要調整高度 */
 }
 .carousel-inner img {
     width: 100%;
-    height: 20rem;
+    height: 18rem;
     object-position: center;
     object-fit: scale-down; /* 這樣可以確保圖片覆蓋整個區域 */
 }

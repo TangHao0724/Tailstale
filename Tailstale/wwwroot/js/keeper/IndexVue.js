@@ -17,7 +17,7 @@
     },
     created() {
 
-        this.getarticle(10);
+        this.getarticle(15);
         $('#articleModal').on('hidden.bs.modal', this.handleModalHidden);
 
 
@@ -45,6 +45,9 @@
         inputFile() {
             $("#updateImg").click();
         },
+        inputFileR() {
+            $("#updateImgR").click();
+        },
         //tag檢查
         bindcontent(event) {
             this.content = event.target.innerText;
@@ -52,7 +55,8 @@
         bindpcontent(event) {
             this.pcontent = event.target.innerText;
         },
-        handleFileChange(event) {
+        handleFile(event) {
+            alert("aa");
             const files = event.target.files;
             this.fileDatas = [];
             for (const file of files) {
@@ -64,6 +68,7 @@
             }
         },
         handleResponseFileChange(event) {
+            alert("bb");
             const files = event.target.files;
             this.responseimg = [];
             for (const file of files) {
@@ -74,7 +79,7 @@
                 reader.readAsDataURL(file);
             }
         },
-        async postarticle() {
+        async postarticle(  ) {
             try {
                 let formdata = new FormData(this.$refs.postform);
                 if (this.content !== '') {
@@ -84,12 +89,16 @@
                     this.content = '';
                     formdata.append("Content", this.pcontent);
                 }
-
-                formdata.append("PublicTags", this.Publichashtags);
-                formdata.append("PrivateTags", this.Privatehashtags);
+                if (this.Publichashtags !==undefined) {
+                    formdata.append("PublicTags", this.Publichashtags);
+                }
+                if (this.Privatehashtags !== undefined) {
+                    formdata.append("PublicTags", this.Privatehashtags);
+                }
                 if (this.selectedArt.id !== null) {
                     formdata.append("parent_ID", this.selectedArt.id);
                 }
+
                 
                 if (this.usertype == 0) {
                     formdata.append('Keeper_ID', this.useridm);
@@ -112,14 +121,14 @@
             this.selectedArt = null;
             this.parentArt = [];
             this.selectedArt = input;
-            this.getparentArt(10, null, this.selectedArt.id);
+            this.getarticle(10, this.selectedArt.id,null);
             $("#articleModal").modal("show");
 
         },
         postPar(input) {
-            this.postarticle();
             this.parentArt = [];
-            this.getparentArt(10, null, input);
+            this.postarticle();
+            this.getarticle(10, input,null);
         },
         bindimgurl(url, uType) {
             if (uType !== 0) {
@@ -167,7 +176,7 @@
                 , r = '(' + n + ')(' + o + ')(' + m + '*' + l + m + '*)';
             return r;
         },
-        async getarticle(count, userid, parentid) {
+        async getarticle(count, parentid, userid, ispublicOnly) {
             try {
 
                 const response = await axios.get('api/social/GetArticle', {
@@ -175,27 +184,15 @@
                         count: count,
                         id: userid,
                         parentid: parentid,
+                        publicOnly: ispublicOnly
                     },
                 });
-
-                this.articles = response.data;
-            } catch (err) {
-                console.error('Error fetching user info:', error);
-            }
-
-        },
-        async getparentArt(count, userid, parentid) {
-            try {
-
-                const response = await axios.get('api/social/GetArticle', {
-                    params: {
-                        count: count,
-                        id: userid,
-                        parentid: parentid,
-                    },
-                });
-
-                this.parentArt = response.data;
+                if (this.selectedArt !== null) {
+                    this.parentArt = response.data;
+                } else {
+                    this.articles = response.data;
+                }
+                
             } catch (err) {
                 console.error('Error fetching user info:', error);
             }

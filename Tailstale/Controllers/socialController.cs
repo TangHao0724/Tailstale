@@ -199,44 +199,43 @@ namespace Tailstale.Controllers
         //}GetArticle
         
         [HttpGet("GetArticle")]
-        public async Task<IActionResult> GetArticle(int count,int? id,int? parentid,bool? publicOnly)
+        public async Task<IActionResult> GetArticle(int? count,int? id,int? parentid,bool? publicOnly)
         {
             
             try
             {
                 List<article> articles = new List<article>();
                 // 如果要求數比文章多
-                count = await GetSet(count);
+                //判斷公開性
+                //判段是否有userid指定用戶的貼文
+                //判斷從屬文章
+                //判斷數量
+
 
                 // 先抓指定數量文章
-                articles = await _context.articles.Take(count)
-                                                  .Where(n=>n.parent_ID== null)
-                                                  .OrderByDescending(x => x.created_at)
-                                                  .ToListAsync();
-                //如果依據getposttype 選擇顯示內容
-                switch (publicOnly)
-                {
-                    case true:
-                        //只取大眾
-                        articles = articles.Where(n =>n.ispublic == true).ToList();
-                        break;
-                    case false:
-                        //只取私人
-                        articles = articles.Where(n => n.ispublic == false).ToList();
-                        break;
-                    case null:
-                        //取全部
-                        break;
+                articles = await _context.articles
+                                         .Where(n => n.parent_ID == (parentid.HasValue ? parentid.Value : null))
+                                         .OrderByDescending(x => x.created_at)
+                                         .Take(count ?? int.MaxValue) // 取指定數量或全部（如果count為null）
+                                         .ToListAsync();
 
+                // 根據publicOnly標誌過濾
+                if (publicOnly.HasValue)
+                {
+                    articles = articles.Where(n => n.ispublic == publicOnly.Value).ToList();
                 }
 
-                //如果有ID，則只會顯示該ID用戶的內容
-                articles = id != null ? articles.Where(n => n.FK_Keeper_ID == id).ToList() : articles ;
+                // 如果提供了用戶ID，則過濾
+                if (id.HasValue)
+                {
+                    articles = articles.Where(n => n.FK_Keeper_ID == id.Value).ToList();
+                }
 
-                //如果有parendid，則會只顯示該ID的內容;
-                articles = articles.Where(n=> n.parent_ID == parentid).ToList();
-
-                
+                // 如果count超過文章數量，則調整count
+                if (count.HasValue && count.Value < articles.Count)
+                {
+                    articles = articles.Take(count.Value).ToList();
+                }   
 
                 // 抓取所有相關資料
                 var articleImgs = await _context.article_imgs.ToListAsync();
@@ -348,16 +347,7 @@ namespace Tailstale.Controllers
         }
 
 
-        private async Task<int> GetSet(int count)
-        {
-            if (count > _context.articles.Count())
-            {
-                count = _context.articles.Count();
-            }
 
-
-            return count;
-        }
 
         private async Task save_Kimg_intype(int userid, int typeid, List<IFormFile> imgs)
         {
