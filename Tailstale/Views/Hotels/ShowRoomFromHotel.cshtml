@@ -19,7 +19,13 @@
 
 
 <div>
-    <a id="create" class="btn btn-primary" asp-controller="roomTypes" asp-action="Index">管理房間類型</a>
+    <button type="button"
+            class="btn btn-primary btn-lg"
+            data-bs-toggle="modal"
+            data-bs-target="#modalId">
+        管理房間類型
+    </button>
+   @*  <a id="create" class="btn btn-primary" asp-controller="roomTypes" asp-action="Index">管理房間類型</a> *@
 </div>
 
 
@@ -91,16 +97,241 @@
             </tbody>
         </table>
 
+        <div class="row">
+            
+            <div class="modal fade bd-example-modal-lg" tabindex="-1" id="modalId" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalTitleId">
+                                Modal title
+                            </h5>
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            @* vue部分開始 *@
+                            <div id="app">
+                                @* 篩選 *@
+                                <div class="container">
+                                    <div class="row">
+                                        <input type="text" v-model="filter" v-on:keyup="filterBu" />
+                                        <button class="btn btn-primary" v-on:click="ShowModal">
+                                            查詢
+                                        </button>
+                                    </div>
+                                    <div class="row">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="row" v-for="item in roomType">
+                                                    @* 編輯 *@
+                                                    <template v-if="item.Edit==true">
+                                                        <div class="col-3">
+                                                            <h3 class="card-title">房間類型:</h3>
+                                                        </div>
+                                                        <div class="col-5">
+                                                            <input type="text" class="form-control" v-model="item.roomType1" />
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <button class="btn btn-warning me-3" v-on:click="update(item)">修改</button>
+                                                            <button class="btn btn-primary" v-on:click="cancel(item.roomType_ID)">取消</button>
+                                                        </div>
+                                                    </template>
 
+                                                    @* 顯示 *@
+                                                    <template v-else>
+                                                        <div class="col-3">
+                                                            <h3 class="card-title">房間類型:</h3>
+                                                        </div>
+                                                        <div class="col-5">
+                                                            <h3 class="card-title">{{item.roomType1}}</h3>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            <button class="btn btn-warning me-3" v-on:click="edit(item.roomType_ID)">編輯</button>
+                                                            <button class="btn btn-danger" v-on:click="removeroomType(item.roomType_ID)">刪除</button>
+                                                        </div>
+                                                    </template>
+
+                                                </div>
+                                                <div class="row" id="AddRoomType" style="display:none">
+                                                    <div class="col-8">
+                                                        <span class="label-control">房間類型</span>
+                                                        @*    <label class="label-control">房間類型</label> *@
+                                                        <input type="text" class="form-control" v-model="roomType1" />
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <button class="btn btn-primary" v-on:click="Insert">新增</button>
+                                                        <button class="btn btn-primary" v-on:click="hideAdd">取消</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                123
+                                @* 結果 *@
+
+                            </div>
+
+
+                            @* vue部分結束 *@
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button"
+                                    class="btn btn-secondary"
+                                    data-bs-dismiss="modal">
+                                關閉/儲存
+                            </button>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                
+        </div>
+       
     </div>
 </div>
+
+
 
 @* @await Html.PartialAsync("/Bookings/ShowRoom.cshtml")
  *@
 @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script>
+        const myModal = new bootstrap.Modal(
+            document.getElementById("modalId"),
+            
+        );
+        var vueApp = {
+            data() {
+                return {
+                    baseAddress: "https://localhost:7112/Hotels/",
+                    filter: "",
+                    roomType: [],
+                    roomType1: "",
+
+
+                };
+            },
+            mounted: function () {
+                let _this = this;
+                _this.filterBu();
+            },
+            methods: {
+                filterBu: function () {
+                    //alert("filterBu");
+                    let _this = this;
+                    var request = {};
+                    request.roomType_ID = isNaN(Number(_this.filter)) ? -1 : Number(_this.filter);
+                    request.roomType1 = _this.filter;
+
+                    axios.post(`${_this.baseAddress}RoomTypeDetails`, request)
+                        .then(response => {
+                            //alert(JSON.stringify(response.data));
+                            _this.roomType = response.data;
+                            for (var i = 0; i < _this.roomType; i++) {
+                                _this.roomType[i].Edit = false;
+                            }
+
+                        })
+                        .catch(err => { alert(err) })
+                },
+                ShowModal: function () {
+                    //alert("show");
+                    var addbtn = document.querySelector("#AddRoomType");
+                    addbtn.style = "display:block";
+                },
+                hideAdd: function () {
+                    var addbtn = document.querySelector("#AddRoomType");
+                    addbtn.style = "display:none";
+                },
+                edit: function (rtID) {
+                    //alert(`Edit:${rtID}`)
+                    let _this = this;
+                    for (var i = 0; i < _this.roomType.length; i++) {
+                        var item = _this.roomType[i];
+                        if (item.roomType_ID == rtID) {
+                            item.Edit = true;
+                            _this.originalRoomType1 = item.roomType1
+                        }
+                    }
+                },
+                cancel: function (rtID) {
+                    // alert(`Cancel:${rtID}`)
+                    let _this = this;
+                    for (var i = 0; i < _this.roomType.length; i++) {
+                        var item = _this.roomType[i];
+                        if (item.Edit == true) {
+                            item.Edit = false;
+                            item.roomType1 = _this.originalRoomType1;
+                        }
+
+                    }
+                },
+                removeroomType: function (rtID) {
+                    alert("remove")
+                },
+                update: function (roomType) {
+                    //alert("update")
+                    let _this = this;
+                    var form = new FormData();
+                    form.append("roomType_ID", roomType.roomType_ID);
+                    form.append("roomType1", roomType.roomType1);
+                    axios.put(`${_this.baseAddress}RoomTypeEdit`, form, {
+                        Headers: {
+                            "Content-Type": "multipart/formdata"
+                        }
+                    })
+                        .then(response => { //alert(JSON.stringify(response.data));
+                            _this.filterBu();
+                        })
+                        .catch(err => { alert(err) });
+
+                },
+
+                Insert: function () {
+                    // alert(`Insert:`)
+                    let _this = this;
+                    var InsertRT = _this.roomType1;
+                    axios.post(`${_this.baseAddress}RoomTypeInsert`, InsertRT, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(response => {
+                            // alert(JSON.stringify(response.data));
+                            Swal.fire({
+                                title: "新增成功!",
+                                icon: "success"
+                            });
+                            _this.roomType1 = "";
+                            var addbtn = document.querySelector("#AddRoomType");
+                            addbtn.style = "display:none";
+
+                            _this.filterBu();
+                        })
+                        .catch(err => { alert(err) });
+
+                },
+
+            },
+        };
+        var app = Vue.createApp(vueApp).mount("#app");
+    </script>
+
     <script>
 
         window.onload = function () {
+           
+
             // var heading = document.querySelector("h1");
             // heading.textContent = "這是新的標題";
 

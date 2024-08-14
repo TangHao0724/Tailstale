@@ -1,0 +1,210 @@
+﻿@model Tailstale.Hotel_DTO.BookingAndCheckinDTO
+
+@section Styles{
+
+    <style>
+        body {
+            background-color: #f5f7fd;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            justify-items: center;
+        }
+
+
+        .card {
+            padding: 1% 5% 5% 8%;
+            display: flex;
+            justify-content: center;
+            justify-items: center;
+        }
+        .row{
+            
+            --bs-gutter-x: 0;
+        
+        }
+
+       
+    </style>
+    
+
+}
+@if (Model != null)
+{
+    <div class="card-header bg-dark text-light container row" style="width:600px;margin-top:20px">
+        <div class="col-12 d-none d-md-block col-md-6 p-0" style="font-size:18px;">
+             &nbsp; 檢視預訂資料
+        </div>
+        <div class="col-12 col-md-4 offset-md-2 text-right p-0">
+            <form hidden id="BackToAllBooking" asp-controller="Hotels" asp-action="ShowAllBooking" asp-route-id="@ViewBag.HotelID">
+            </form>
+            <a class="btn btn-outline-info form-control btn-sm" href="#" onclick="document.getElementById('BackToAllBooking').submit(); return false;">回訂單清單</a>
+        </div>
+        <div class="">
+           
+        </div>
+    </div>
+    <div class="card row py-2 " style="width:600px">
+        @if (ViewBag.bookingstatus.Contains("取消"))
+        {
+            <div class="row">
+
+                <a class="btn btn-danger form-control btn-sm justify-content-center align-items-center fs-4" href="#">@ViewBag.bookingstatus</a>
+
+
+            </div>
+        }
+        else
+        {
+            <div class="row">
+
+                <a class="btn btn-success form-control btn-sm justify-content-center align-items-center fs-4" href="#">@ViewBag.bookingstatus</a>
+
+
+            </div>
+        }
+        
+        <ul class="list-group list-group-flush mb-3">
+            <li class="list-group-item">
+                <div style="display: flex;align-items: center;justify-content: center;"><h4>預定資料</h4></div>
+                <h5 class="card-title" style="display: flex;align-items: center;justify-content: center;"><strong>旅館名稱:@ViewBag.hotelName</strong></h5>
+                <div class="row centerrow" style="width: 100%;">
+                    <div class="col-6" style="width: 50%;padding-left: 5%;">
+                        <div>訂購人姓名: @ViewBag.keeperName</div>
+                        <div>總價格:@Model.booking.bookingAmountTotal</div>
+                        <div>付款方式:信用卡</div>
+                        <div>入住日期</div>
+                        <div>@Model.booking.checkinDate.Value.ToString("yyyy-MM-dd")</div>
+                    </div>
+                    <div class="col-6" style="width: 50%;padding:0;">
+                        <div>下單日期:@Model.booking.bookingDate.Value.ToString("yyyy-MM-dd HH:mm tt")</div>
+                        <div>訂單編號:@Model.booking.bookingID</div>
+                        <div>付款卡號:@ViewBag.cardNumber</div>
+                        <div>退房日期</div>
+                        <div>@Model.booking.checkoutDate.Value.ToString("yyyy-MM-dd")</div>
+                    </div>
+                </div>
+               
+                
+            </li>
+            <li class="list-group-item">
+                <div class="row centerrow" style="width: 100%;padding-left: 5%;">
+                    <div style="width: 100%;display: flex;
+        justify-content: center;">
+                        <h4>詳細預定資訊</h4>
+                    </div>
+                    @foreach (var bd in Model.bookingDetails)
+                    {
+                        <div class="row">
+                            <div class="col-6"> @bd.roomName x @bd.bdAmount </div>
+                            <div class="col-6">TWD @bd.bdTotal</div>
+                        </div>
+                    }
+
+                </div>
+
+            </li>
+            <li class="list-group-item">
+
+                <div class="row centerrow" style="width: 100%;padding-left: 5%;">
+                    <div style="display: flex;align-items: center;justify-content: center;"><h4>入住資訊</h4></div>
+                    @foreach (var ci in Model.checkinDetails)
+                    {
+                        <div class="row">
+                            <div class="col-6">@ci.roomName - @ci.petType </div>
+                            <div class="col-6">@ci.petName - @ci.petType </div>
+                        </div>
+                    }
+
+                </div>
+
+            </li>
+        </ul>
+        @if (ViewBag.isRate == true)
+        {
+            if (!ViewBag.isReView)
+            {
+                <button class="btn btn-outline-info fs-4" id="reviewBtn">撰寫評論</button>
+            }
+           
+          
+        }
+        else
+        {
+            @if (ViewBag.bookingstatus.Contains("預約"))
+            {
+               
+                <button class="btn btn-outline-danger fs-4" id="cancelbtn">取消訂單</button>
+            }
+        }
+        
+       
+    </div>
+    
+    
+}
+else
+{
+    <div class="row" style="width: 100%;">
+        <div>查無資料</div>
+    </div>
+}
+
+@section Scripts{
+  @*   <script src="https://code.jquery.com/jquery-3.5.1.js"></script> *@
+    <script>
+        $(document).ready(function () {
+            var baseAddress = "https://localhost:7112/Hotels";
+            var cancelBtn = document.querySelector("#cancelbtn");
+            var reviewBtn = document.querySelector("#reviewBtn");
+            var bookingID = parseInt(@Model.booking.bookingID);
+
+            // var bookingID = parseInt();
+            // cancelBtn.addEventListener('click', function () {
+            //     axios.put(`${baseAddress}/UpdateBookingStatus`, {
+            //         bookingID: @Model.booking.bookingID,
+            //         status: 4
+            //     })
+            //         .then(response => {
+            //             alert("123")
+            //         })
+            //         .catch(err => { alert(err) })
+            // });
+
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', function () {
+                    axios.put(`${baseAddress}/UpdateBookingStatus`, {
+                        bookingID: bookingID,
+                        status: 4
+                    })
+                        .then(response => {
+                            alert("訂單已取消");
+                        })
+                        .catch(err => {
+                            alert(err);
+                        });
+                });
+            } else {
+                console.error('Cancel button not found');
+            }
+
+            if (reviewBtn) {
+                $(reviewBtn).on("click", function () {
+                    window.location.href = `/Hotels/PostReview?bookingID=${bookingID}`;
+                });
+            } else {
+                console.error('Review button not found');
+            }
+            // ("#reviewBtn").on("click", function () {
+            //     window.location.href = `/Hotels/PostReview?bookingID=${bookingID}`;
+            // });
+            // reviewBtn.addEventListener('click', function () {
+            //     window.location.href = `/Hotels/PostReview?bookingID=${bookingID}`;
+            // });
+
+        });
+            
+    </script>
+}

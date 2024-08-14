@@ -8,5 +8,7 @@ namespace Tailstale.Tools
         public int? roomPrice {  get; set; }
         public int date {  get; set; }
         public int? onedatePrice { get; set; }
+        public string? hotelRate {  get; set; }
+        
     }
 }

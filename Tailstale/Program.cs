@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Tailstale.Data;
 using Tailstale.Models;
+using Tailstale.Tools;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,10 @@ builder.Services.AddCors(options => {
         policy.WithOrigins("*").WithMethods("*").WithHeaders("*");
     });
 });
+
+
+
+
 builder.Services.AddSession(option =>
 {
     option.Cookie.Name = "Tailstate.Session";
@@ -57,6 +62,8 @@ builder.Services.AddControllersWithViews(options =>//全域過濾器放置處
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+//var ecPaySettings = builder.Configuration.GetSection("ECPay");
+//builder.Services.Configure<ECPaySettings>(ecPaySettings);
 
 var app = builder.Build();
 

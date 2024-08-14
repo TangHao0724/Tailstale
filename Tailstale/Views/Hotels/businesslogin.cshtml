@@ -87,6 +87,9 @@
                 <form asp-controller="Hotels" asp-action="ShowRoomFromHotel" asp-route-id="@ViewBag.hotelID">
                     <button type="submit" class="btn btn-dark"> 房間</button>
                 </form>
+                <form asp-controller="Hotels" asp-action="ShowRoomFromHotel" asp-route-id="@ViewBag.hotelID">
+                    <button type="submit" class="btn btn-dark"> 房間</button>
+                </form>
             </div>
             <div class="col-6 w-100 h-10">
                 <form asp-controller="Hotels" asp-action="ShowBooking">
@@ -96,6 +99,18 @@
             </div>
         </div>
     </div>
+    <div id="app">
+        <h2>測試評論分數</h2>
+        <div>
+            <h3>{{ rate }}</h3>
+        </div>
+        <h2>測試代處理訂單</h2>
+        <div>
+            <h3>{{ newBooking }}</h3>
+        </div>
+        
+    </div>
+
 
     
 </div>
@@ -103,4 +118,57 @@
 
 @section Scripts{
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script>
+        const vueApp = {
+            data() {
+                return {
+                    baseAddress: "https://localhost:7112/Hotels/",
+                    rate:"",
+                    newBooking:0,
+                };
+            },
+            mounted() {
+
+                this.getRate();
+                this.getNewBooking();
+            },
+            methods: {
+                getRate() {
+                    try {
+
+                        axios.post(`${this.baseAddress}CountRating`)
+                            .then(response => {
+                                //alert(JSON.stringify(response.data));
+                                this.rate = response.data;
+
+
+                            })
+                            .catch(err => { alert(err) })
+                        // const response =  axios.post(`${this.baseAddress}GetRoomList`,this.bookingID);
+                        // this.roomList = response.data;
+                    } catch (err) {
+                        alert(err);
+                    }
+                },
+                getNewBooking(){
+                    try{
+                        axios.post(`${this.baseAddress}NewBookingNotice`)
+                        .then(response=>{
+                            this.newBooking = response.data;
+                        }).catch(err=>{
+                            alert(err)
+                        })
+                    }
+                    catch(err){
+
+                    }
+                },
+                
+
+            },
+        };
+
+
+        Vue.createApp(vueApp).mount("#app");
+    </script>
 }
