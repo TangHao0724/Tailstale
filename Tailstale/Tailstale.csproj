@@ -64,6 +64,10 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+    <Content Update="wwwroot\lib\HospitalImages\Business\No_Image.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Folder Include="wwwroot\NewFolder\NewFolder\" />
     <Folder Include="partial\" />
     <Folder Include="wwwroot\js\components\" />

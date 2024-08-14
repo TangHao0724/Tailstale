@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Tailstale.Filter;
 using Tailstale.Hospital_ViewModel;
 using Tailstale.Models;
 
 namespace Tailstale.Controllers
 {
+    [IsHospitalFilter]
     public class AppointmentsController : Controller
     {
         private readonly TailstaleContext _context;
@@ -85,6 +87,7 @@ namespace Tailstale.Controllers
                                           join keeper in _context.keepers on A.keeper_ID equals keeper.ID
                                           join order_status in _context.order_statuses on A.Appointment_status equals order_status.ID
                                           where docs.date < today
+                                          orderby docs.date descending
                                           select new Appointments_ViewModel
                                           {
                                               AppointmentID = A.Appointment_ID,

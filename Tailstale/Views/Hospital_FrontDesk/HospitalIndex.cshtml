@@ -1,0 +1,106 @@
+﻿@model frontDeskHospitalInfo_DTO;
+
+
+@{
+    ViewData["Title"] = "Hospital_FrontDeskIndex";
+}
+
+@section Styles
+{
+    @* <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> *@
+
+    <style>
+
+        
+    </style>
+}
+<div class="" id="header">
+    @* <h3>@Model.hospitalName</h3> *@
+</div>
+
+<div id="app">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-10">
+                <div class="card border-dark mb-3" style="max-width: 100%">
+                    <div class="row g-0">
+                        <div class="col-md-6">
+                            <img src="@Model.photoURL" class="img-fluid rounded-start" alt="尚無圖片">
+                        </div>
+                        <div class="col-md-6 d-flex align-items-center justify-content-center">
+                            <div>
+                                <div class="card-body text-center">
+                                    <h4 class="card-title">@Model.hospitalName</h4>                                    
+                                    <h5 class="card-text"><i class="fa-solid fa-location-dot"></i> @Model.hospitalAddress</h5>
+                                    <h5 class="card-text"> <i class="fa-solid fa-phone"></i> @Model.hospitalPhone</h5>
+                                    <p class="card-text" hidden>@Model.businessId</p>
+                                </div>
+                                <div class="text-center me-3 mb-4">                                    
+                                    <a :href="`/Hospital_FrontDesk/HospitalSchedule?businessID=${hospitalID}`" class="btn btn-outline-secondary">查看門診表</a>
+                                </div>
+                            </div>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row justify-content-center d-flex">
+            <div class="text-center my-5">
+                <h4>本院醫療團隊</h4>
+                <hr>
+            </div>
+            <div v-for="vet in vetInfos" :key="vet.vetName" class="card border-light my-4 mx-3" style="max-width: 45%">
+                <div class="row g-0">
+                    <div class="col-12 col-md-5">
+                        <img :src="vet.vetImageURL" class="img-fluid rounded-start" alt="尚無圖片">
+                    </div>
+                    <div class="col-12 col-md-7">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ vet.vetName }}</h5>
+                            <p class="card-text" style="height100px; overflow:scroll" readonly>{{ vet.profile }}</p>
+                            <p class="card-text"><small class="text-muted">Last updated just now</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        const vueApp = {
+            data() {
+                return {
+                    vetInfos: [], //醫生資訊集合
+                    hospitalID:0
+                }
+            },
+            methods: {                
+                fetchVetInfos() {
+                    const selectedBusinessID = @Model.businessId;
+                    console.log(selectedBusinessID)
+                    axios.get(`/Hospital_FrontDesk/showVetInfos`, {
+                        params: { businessID: selectedBusinessID }
+                    })
+                        .then(response => {
+                            this.vetInfos = response.data;
+                        })
+                        .catch(error => {
+                            console.error("There was an error fetching the vet info!", error);
+                        });
+                }
+            },
+            mounted() {
+                this.fetchVetInfos();
+                this.hospitalID = @Model.businessId;
+            }
+        };
+        var app = Vue.createApp(vueApp).mount('#app');
+    </script>
+
+}

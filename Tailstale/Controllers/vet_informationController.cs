@@ -124,7 +124,7 @@ namespace Tailstale.Controllers
                     var pictureFile = Request.Form.Files["URL"];
 
                     // 新增存圖檔路徑
-                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/lib/HospitalImages/Vet_Info");
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/lib/HospitalImages");
                     // 確保目標目錄存在
                     if (!Directory.Exists(uploadsFolder))
                     {
