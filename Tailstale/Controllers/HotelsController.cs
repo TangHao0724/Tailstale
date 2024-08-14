@@ -1275,10 +1275,10 @@ namespace Tailstale.Controllers
         
         public async Task<GetCardList> SearchPaymentInfo([FromBody]int cardNumber)
         {
-            var p = _context.PaymentInfos.Where(p => p.cardNumber == cardNumber).Select(p => new GetCardList
+            var p = _context.PaymentInfos.Where(p => p.cardNumber.Equals(cardNumber)).Select(p => new GetCardList
             {
                 cardName = p.cardholderName,
-                cardNumber = (int)p.cardNumber,
+                cardNumber = p.cardNumber,
                 cardExpirationDate = p.expirationDate.ToString()
 
             }).FirstOrDefault();
