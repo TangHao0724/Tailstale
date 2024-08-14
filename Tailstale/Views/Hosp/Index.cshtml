@@ -8,15 +8,42 @@
 <br>
 @if (ViewBag.basicInfo != null)
 {
-    <div id="basic_info" style="border:2px solid black;">
-        飼主: @ViewBag.basicInfo.keeper_name
-        寵物: @ViewBag.basicInfo.pet_name
-        @ViewBag.basicInfo.pet_breed
-        年紀: @ViewBag.basicInfo.pet_age 歲
+    <div id="basic_info" style="border: 2px solid #003366; padding: 10px; width: 100%; font-family: Arial, sans-serif; display: flex; justify-content: space-between; align-items: center; color: #003366;">
+        <div style="font-weight: bold;">
+            飼主: <span style="font-weight: normal;">@ViewBag.basicInfo.keeper_name</span>
+        </div>
+        <div style="font-weight: bold;">
+            寵物: <span style="font-weight: normal;">@ViewBag.basicInfo.pet_name</span>
+        </div>
+        <div style="font-weight: bold;">
+            <span style="font-weight: normal;">@ViewBag.basicInfo.species</span>
+            <span style="font-weight: normal;">@ViewBag.basicInfo.pet_breed</span>
+        </div>
+        <div style="font-weight: bold;">
+            年紀: <span style="font-weight: normal;">@ViewBag.basicInfo.pet_age 歲</span>
+        </div>
+        <a asp-controller="medical_record" asp-action="Index" asp-route-pet_id="@ViewBag.pet_id" style="text-decoration: none; color: #003366;">
+            <i class="fa-regular fa-clipboard"></i> 門診記錄
+        </a>
+        <a asp-controller="Hosp" asp-action="Index" asp-route-pet_id="@ViewBag.pet_id" style="text-decoration: none; color: #003366;">
+            <i class="fa-regular fa-hospital"></i> 住院記錄
+        </a>
+        <a asp-controller="Hosp" asp-action="Index" asp-route-id="@ViewBag.pet_id" style="text-decoration: none; color: #003366;">
+            <i class="fa-solid fa-heart-pulse"></i> 生命徵象
+        </a>
+        <a asp-controller="Hosp" asp-action="Index" asp-route-id="@ViewBag.pet_id" style="text-decoration: none; color: #003366;">
+            <i class="fa-solid fa-capsules"></i> 用藥記錄
+        </a>
+        <a asp-controller="Hosp" asp-action="Index" asp-route-id="@ViewBag.pet_id" style="text-decoration: none; color: #003366;">
+            <i class="fa-solid fa-vial-virus"></i> 檢查檢驗
+        </a>
+        <a asp-controller="Hosp" asp-action="Index" asp-route-id="@ViewBag.pet_id" style="text-decoration: none; color: #003366;">
+            <i class="fa-solid fa-circle-radiation"></i> 醫學影像
+        </a>
     </div>
 }
-<br /><br />
-@if (Model.Any()) @* 檢查是否有住院記錄 *@
+<br>
+@if (Model.Any())
 {
     <table class="table">
         <thead>
@@ -66,8 +93,7 @@
                         @Html.DisplayFor(modelItem => item.memo)
                     </td>
                     <td>
-                        @*<a asp-controller="nursing_record" asp-action="Index" asp-route-hosp_record_id="@item.id">護理記錄</a>*@
-                        <a asp-action="Edit" asp-route-medical_records_id="@item.medical_records_id" asp-route-id="@item.id">修改</a>@*修改for出院*@
+                        <a asp-action="Edit" asp-route-id="@item.id">修改</a>@*修改for出院*@
                     </td>
                 </tr>
             }
@@ -77,8 +103,8 @@
 else
 {
     <p>
-        沒有相關的住院資料
+        沒有相關的住院記錄
         <br><br>
-    <a asp-action="Create" asp-route-medical_record_id="@ViewBag.medical_record_id">新增住院記錄</a>
+    <a asp-action="Create" asp-route-medical_records_id="@ViewBag.medical_records_id">新增住院記錄</a>
     </p>
 }

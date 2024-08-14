@@ -5,7 +5,7 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>修改病歷</h1>
+<h1>修改門診記錄</h1>
 
 <hr />
 <div class="row">
@@ -40,16 +40,13 @@
                 <label asp-for="fee" class="control-label"></label>
                 <input asp-for="fee" class="form-control" />
                 <span asp-validation-for="fee" class="text-danger"></span>
-            </div>
+            </div><br>
             <div class="form-group">
                 <button id="submit" type="submit" class="btn btn-primary">儲存</button>
+                <a asp-action="Index">返回</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">返回</a>
 </div>
 
 @section Scripts {

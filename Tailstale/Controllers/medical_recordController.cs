@@ -32,6 +32,7 @@ namespace Tailstale.Controllers
                             keeper_name = k.name,
                             pet_id = p.pet_ID,
                             pet_name = p.name,
+                            species = pet_type.species,
                             pet_breed = pet_type.breed,
                             pet_age = p.age,
                             Datetime = m.Datetime,
@@ -50,6 +51,7 @@ namespace Tailstale.Controllers
                         {
                             keeper_name = p.keeper.name,
                             pet_name = p.name,
+                            species = p.pet_type.species,
                             pet_breed = p.pet_type.breed,
                             pet_age = p.age
                         }).FirstOrDefaultAsync();
@@ -96,11 +98,6 @@ namespace Tailstale.Controllers
         // GET: medical_record/Details/5
         public async Task<IActionResult> Details(int id)
         {
-            //if (id == null)
-            //{
-            //    return NotFound();
-            //}
-
             var medical_record = (from r in _context.medical_records
                                   join o in _context.outpatient_clinics on r.outpatient_clinic_id equals o.outpatient_clinic_ID
                                   join p in _context.pets on r.pet_id equals p.pet_ID
@@ -125,6 +122,10 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
+            ViewBag.medical_records_id = id;
+
+            var pet_id = medical_record.pet_id;
+            ViewBag.pet_id = pet_id;
 
             return View(medical_record);
         }
@@ -181,6 +182,8 @@ namespace Tailstale.Controllers
             var a = new medical_record
             {
                 id = id,
+                pet_id = medicalRecordDTO.pet_id,
+                outpatient_clinic_id = medicalRecordDTO.outpatient_clinic_id,
                 Datetime = medicalRecordDTO.Datetime,
                 weight = medicalRecordDTO.weight,
                 complain = medicalRecordDTO.complain,
@@ -192,21 +195,6 @@ namespace Tailstale.Controllers
             await _context.SaveChangesAsync();
 
             return Redirect($"https://localhost:7112/medical_record?pet_id={a.pet_id}");
-            //}
-            //    catch (DbUpdateConcurrencyException)
-            //    {
-            //        if (!medical_recordExists(MedDTO.id))
-            //        {
-            //            return NotFound();
-            //        }
-            //        else
-            //        {
-            //            throw;
-            //        }
-            //    }
-            //    //return RedirectToAction(nameof(Index));
-            //}
-            //return View(MedDTO); //沒成功
         }
     }
 }

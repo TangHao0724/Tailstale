@@ -4,7 +4,7 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>新增病歷記錄</h1>
+<h1>新增門診記錄</h1>
 
 <hr />
 <div class="row">
@@ -41,16 +41,13 @@
                 <label asp-for="fee" class="control-label"></label>
                 <input asp-for="fee" class="form-control" />
                 <span asp-validation-for="fee" class="text-danger"></span>
-            </div>
+            </div><br>
             <div class="form-group">
                 <input type="submit" value="新增" class="btn btn-primary" />
+                <a asp-action="Index">返回</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">返回</a>
 </div>
 
 @section Scripts {

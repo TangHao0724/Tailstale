@@ -4,7 +4,7 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>修改記錄</h1>
+<h1>修改住院記錄</h1>
 
 <hr />
 <div class="row">
@@ -12,14 +12,15 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="id" />
-            <div class="form-group">
+            <input type="hidden" asp-for="medical_records_id" />
+            @* <div class="form-group">
                 <label asp-for="medical_records_id" class="control-label"></label>
                 <input asp-for="medical_records_id" class="form-control" readonly/>
                 <span asp-validation-for="medical_records_id" class="text-danger"></span>
-            </div>
+            </div> *@
             <div class="form-group">
                 <label asp-for="admission_date" class="control-label"></label>
-                <input asp-for="admission_date_view" class="form-control"/>
+                <input asp-for="admission_date" class="form-control"/>
                 <span asp-validation-for="admission_date" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -36,16 +37,13 @@
                 <label asp-for="memo" class="control-label"></label>
                 <input asp-for="memo" class="form-control" />
                 <span asp-validation-for="memo" class="text-danger"></span>
-            </div>
+            </div><br>
             <div class="form-group">
                 <input type="submit" value="儲存" class="btn btn-primary" />
+                <a asp-action="Index">返回</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">返回</a>
 </div>
 
 @section Scripts {

@@ -125,24 +125,5 @@ namespace Tailstale.MedRecordDTO
         //image files
 
         //surgery
-
-        //hosp_records
-        [Display(Name = "編號")]
-        public int hosp_id { get; set; }
-
-        [Display(Name = "入院時間")]
-        public DateTime admission_date { get; set; }
-
-        [Display(Name = "入院時間")]
-        public string? admission_date_view { get; set; }
-
-        [Display(Name = "出院時間")]
-        public DateTime? discharge_date { get; set; }
-
-        [Display(Name = "病房")]
-        public int? ward_id { get; set; }
-
-        [Display(Name = "備註")]
-        public string? hosp_memo { get; set; }
     }
 }

@@ -1,59 +1,57 @@
-﻿    @model IEnumerable<Tailstale.MedRecordDTO.MedicalRecordDTO>
+﻿@model IEnumerable<Tailstale.MedRecordDTO.MedicalRecordDTO>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>病歷記錄</h1>
+<h1>門診記錄</h1>
 <br>
 
 @if (ViewBag.pet_id != null)
 {
     if (ViewBag.basicInfo != null)
     {
-
-        <div id="basic_info" style="border: 2px solid black; padding: 10px; width: 300px; font-family: Arial, sans-serif;">
-            <div style="margin: 0; font-weight: bold;">
+        <div id="basic_info" style="border: 2px solid #003366; padding: 10px; width: 100%; font-family: Arial, sans-serif; display: flex; justify-content: space-between; align-items: center; color: #003366;">
+            <div style="font-weight: bold;">
                 飼主: <span style="font-weight: normal;">@ViewBag.basicInfo.keeper_name</span>
+            </div>
+            <div style="font-weight: bold;">
                 寵物: <span style="font-weight: normal;">@ViewBag.basicInfo.pet_name</span>
             </div>
-            <div style="margin: 0; font-weight: bold;">
+            <div style="font-weight: bold;">
+                <span style="font-weight: normal;">@ViewBag.basicInfo.species</span>
+                <span style="font-weight: normal;">@ViewBag.basicInfo.pet_breed</span>
             </div>
-            <p style="margin: 0; font-weight: bold;">
-                品種: <span style="font-weight: normal;">@ViewBag.basicInfo.pet_breed</span>
-            </p>
-            <p style="margin: 0; font-weight: bold;">
+            <div style="font-weight: bold;">
                 年紀: <span style="font-weight: normal;">@ViewBag.basicInfo.pet_age 歲</span>
-            </p>
-            <a asp-controller="medical_record" asp-action="Index" asp-route-pet_id="@ViewBag.pet_id" style="display: block; margin-top: 10px; text-align: center; text-decoration: none; color: #000;">
+            </div>
+            <a asp-controller="medical_record" asp-action="Index" asp-route-pet_id="@ViewBag.pet_id" style="text-decoration: none; color: #003366;">
                 <i class="fa-regular fa-clipboard"></i> 門診記錄
             </a>
-            <a asp-controller="Hosp" asp-action="Index" asp-route-pet_id="@ViewBag.pet_id" style="display: block; margin-top: 10px; text-align: center; text-decoration: none; color: #000;">
+            <a asp-controller="Hosp" asp-action="Index" asp-route-pet_id="@ViewBag.pet_id" style="text-decoration: none; color: #003366;">
                 <i class="fa-regular fa-hospital"></i> 住院記錄
             </a>
-            <a asp-controller="Hosp" asp-action="Index" asp-route-id="@ViewBag.pet_id" style="display: block; margin-top: 10px; text-align: center; text-decoration: none; color: #000;">
+            <a asp-controller="Hosp" asp-action="Index" asp-route-id="@ViewBag.pet_id" style="text-decoration: none; color: #003366;">
                 <i class="fa-solid fa-heart-pulse"></i> 生命徵象
             </a>
-            <a asp-controller="Hosp" asp-action="Index" asp-route-id="@ViewBag.pet_id" style="display: block; margin-top: 10px; text-align: center; text-decoration: none; color: #000;">
+            <a asp-controller="Hosp" asp-action="Index" asp-route-id="@ViewBag.pet_id" style="text-decoration: none; color: #003366;">
                 <i class="fa-solid fa-capsules"></i> 用藥記錄
             </a>
-            <a asp-controller="Hosp" asp-action="Index" asp-route-id="@ViewBag.pet_id" style="display: block; margin-top: 10px; text-align: right; text-decoration: none; color: #000;">
+            <a asp-controller="Hosp" asp-action="Index" asp-route-id="@ViewBag.pet_id" style="text-decoration: none; color: #003366;">
                 <i class="fa-solid fa-vial-virus"></i> 檢查檢驗
             </a>
-            <a asp-controller="Hosp" asp-action="Index" asp-route-id="@ViewBag.pet_id" style="display: block; margin-top: 10px; text-align: center; text-decoration: none; color: #000;">
+            <a asp-controller="Hosp" asp-action="Index" asp-route-id="@ViewBag.pet_id" style="text-decoration: none; color: #003366;">
                 <i class="fa-solid fa-circle-radiation"></i> 醫學影像
             </a>
         </div>
     }
     <br>
-    <br>
 }
 
 @if (Model.Any())
 {
-    var today = DateTime.Today;
-    @if (ViewBag.pet_id != null /*&& Model.Any(r => r.Datetime.Date == today)*/)
-    { //現在抓到的是寫入病歷getdate的時間→應改抓daily.opc.date的時間，先放著
+    @if (ViewBag.pet_id != null)
+    {
         <a asp-action="Create" asp-route-pet_id="@ViewBag.pet_id">新增門診記錄</a>
     }
     <table class="table">
@@ -62,7 +60,7 @@
                 <th>@Html.DisplayNameFor(model => model.id)</th>
                 <th>@Html.DisplayNameFor(model => model.Datetime)</th>
                 <th>@Html.DisplayNameFor(model => model.keeper_id)</th>
-                <th>@Html.DisplayNameFor(model => model.pet_name)</th>
+                <th>@Html.DisplayNameFor(model => model.pet_id)</th>
                 <th>@Html.DisplayNameFor(model => model.weight)</th>
                 <th>@Html.DisplayNameFor(model => model.memo)</th>
                 <th>@Html.DisplayNameFor(model => model.outpatient_clinic_id)</th>
@@ -77,7 +75,7 @@
                     <td>
                         <a href="medical_record/Details/@item.id">@item.Datetime.ToString("yyyy-MM-dd HH:mm")</a>
                     </td>
-                    <td>@Html.DisplayFor(modelItem => item.keeper_id)</td>
+                    <td>@Html.DisplayFor(modelItem => item.keeper_name)</td>
                     <td>@Html.DisplayFor(modelItem => item.pet_name)</td>
                     <td>@Html.DisplayFor(modelItem => item.weight)</td>
                     <td>@Html.DisplayFor(modelItem => item.memo)</td>
