@@ -5,6 +5,11 @@
 }
 @section Styles {
     <link href="~/css/salonselecttb.css" rel="stylesheet" />
+    <style>
+        .mybtn{
+            background-color:#fa2;
+        }
+    </style>
 }
 <header>
     <partial name="_NavBar" />
@@ -18,7 +23,7 @@
 </nav>
 <h1>美容師資料</h1>
 <p>
-    <a class="btn btn-info" asp-action="Create"><i class="bi bi-hand-index-thumb"></i>新增美容師</a>
+    <a class="btn mybtn" asp-action="Create"><i class="bi bi-hand-index-thumb"></i>新增美容師</a>
 </p>
 
 <table class="table border table-striped">

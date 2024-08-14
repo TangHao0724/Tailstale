@@ -230,9 +230,10 @@
         }
 
         .flatpickr-calendar {
-            width: 320px;
-            zoom: 1.5;
+            max-width: 310px;
+            zoom: 1.1;
         }
+                 
 
     </style>
     }
@@ -276,7 +277,7 @@
     
 
     <div class="container row StoreCard mt-3">
-        <div class="card col-4 mx-3 divcheck py-2 cardcolor" style="width: 18rem;" v-for="Card in businessCard" v-on:click="showResvice(Card.id)">
+        <div class="card col-4 mx-3 mb-3  divcheck py-2 cardcolor" style="width: 18rem;" v-for="Card in businessCard" v-on:click="showResvice(Card.id)">
             <img :src="`/Salon_img/${Card.photo_url}`" class="card-img-top w-100 my-2" style="height:200px;" alt="">
             <div class="card-body">
                 <h5 class="card-title text-center my-auto">{{Card.name}}</h5>
@@ -379,7 +380,7 @@
 
         <div class="container Beauty_Step-2 Selectheader">
         <div class="row pb-4">
-            <div class="col-12 col-md-4 p-0">
+            <div class="col-12 col-md-4 p-0 mb-3">
                 <div class="myborder mx-3">
                     <img src="~/salon_img/berkay-gumustekin-ngqyo2ayyne-unsplash.jpg" class="w-100" alt="">
                     <h3 class="p-2">狗</h3>
@@ -388,7 +389,7 @@
                 </div>
 
             </div>
-            <div class="col-12 col-md-4 p-0">
+            <div class="col-12 col-md-4 p-0 mb-3">
                     <div class="myborder mx-3">
                     <img src="~/salon_img/pexels-cong-h-613161-1404825.jpg" class="w-100" alt="">
                         <h3 class="m-2">貓</h3>
