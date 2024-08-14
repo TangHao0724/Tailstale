@@ -2,19 +2,20 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Tailstale.Models;
 
 public partial class business_img_type
 {
     public int ID { get; set; }
-
+    
     public int? FK_business_id { get; set; }
-
+    
     public string typename { get; set; }
-
+    
     public DateTime? created_at { get; set; }
-
+    
     public virtual business FK_business { get; set; }
 
     public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();

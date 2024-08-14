@@ -4,7 +4,30 @@
     ViewData["Title"] = "Index";
 }
 @section Styles {
-    <link href="~/css/salonselecttb.css" rel="stylesheet" />
+    <style>
+        td {
+            max-width: 300px; /* 设置最大宽度 */
+            overflow: hidden; /* 隐藏超出部分 */
+            text-overflow: ellipsis; /* 使用省略号表示更多内容 */
+            white-space: nowrap; /* 强制文本在同一行显示 */
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        th, td {
+            border: 2px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        .bi {
+            font-size: 22px;
+        }
+    </style>
 }
 <header>
     <partial name="_NavBar" />
@@ -43,10 +66,12 @@
                             @Html.DisplayNameFor(model => model.created_at)
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.business)
+                            門市
+                            @* @Html.DisplayNameFor(model => model.business) *@
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.keeper)
+                            會員
+                            @* @Html.DisplayNameFor(model => model.keeper) *@
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.status)
@@ -80,9 +105,9 @@
                                 @Html.DisplayFor(modelItem => item.statusNavigation.status_name)
                             </td>
                             <td>
-                                <a asp-action="Edit" asp-route-id="@item.id"><i class="bi bi-highlighter"></i>Edit</a> |
-                                <a asp-action="Details" asp-route-id="@item.id"><i class="bi bi-info-circle"></i>Details</a> |
-                                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+                                <a asp-action="Edit" asp-route-id="@item.id"><i class="bi bi-highlighter"></i></a> |
+                                <a asp-action="Details" asp-route-id="@item.id"><i class="bi bi-info-circle"></i></a> |
+                                <a asp-action="Delete" asp-route-id="@item.id"><i class="bi bi-trash-fill"></i></a>
                                 <a asp-action="Create" asp-controller="Consumption_Record"
                                    asp-route-keeper_id="@item.keeper_id"
                                    asp-route-pet_name="@item.pet_name"

@@ -5,16 +5,20 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.URL)
+                類型名稱
+                @* @Html.DisplayNameFor(model => model.img_type) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.name)
+                圖片
+                @* @Html.DisplayNameFor(model => model.URL) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.created_at)
+                圖片名稱
+                @* @Html.DisplayNameFor(model => model.name) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.img_type)
+                建立日期
+                @* @Html.DisplayNameFor(model => model.created_at) *@
             </th>
             <th></th>
         </tr>
@@ -22,6 +26,9 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+           <td>
+                @Html.DisplayFor(modelItem => item.img_type.typename)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.URL)
             </td>
@@ -32,12 +39,9 @@
                 @Html.DisplayFor(modelItem => item.created_at)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.img_type.ID)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.ID"><i class="bi bi-highlighter"></i></a> |
+                    <a asp-action="Details" asp-route-id="@item.ID"><i class="bi bi-info-circle"></i></a> |
+                    <a asp-action="Delete" asp-route-id="@item.ID"><i class="bi bi-trash-fill"></i></a>
             </td>
         </tr>
 }

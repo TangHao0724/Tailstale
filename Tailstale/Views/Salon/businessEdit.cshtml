@@ -16,42 +16,43 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ID" />
             <div class="form-group">
-                <label asp-for="name" class="control-label"></label>
+                <label asp-for="name" class="control-label">門市名稱</label>
                 <input asp-for="name" class="form-control"></input>
                 <span asp-validation-for="name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="phone" class="control-label"></label>
+                <label asp-for="phone" class="control-label">聯絡電話</label>
                 @*  <input asp-for="pet_name" class="form-control" /> *@
                 <input asp-for="phone" class="form-control"></input>
                 <span asp-validation-for="phone" class="text-danger"></span>
 
             </div>
             <div class="form-group">
-                <label asp-for="address" class="control-label"></label>
+                <label asp-for="address" class="control-label">地址</label>
                 <textarea id="address" name="address" class="form-control">@Model.address</textarea>
                 <span asp-validation-for="address" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="geoJson" class="control-label"></label>
+                <label asp-for="geoJson" class="control-label">地圖</label>
                 <textarea id="geoJson" name="geoJson" class="form-control">@Model.geoJson</textarea>
                 <span asp-validation-for="geoJson" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="license_number" class="control-label"></label>
+                <label asp-for="license_number" class="control-label">許可證號</label>
                 <input asp-for="license_number" class="form-control" />
                 <span asp-validation-for="license_number" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="description" class="control-label"></label>
-                <input asp-for="description" class="form-control" />
+                <label asp-for="description" class="control-label">門市介紹(500字以下)</label>
+                <textarea id="description" name="description" class="form-control">@Model.description</textarea>
+                @* <input asp-for="description" class="form-control" /> *@
                 <span asp-validation-for="description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="photo_url" class="control-label"></label>
+                <label asp-for="photo_url" class="control-label">門市照片</label>
                 <input asp-for="photo_url" class="form-control" type="file" accept="image/*" onchange="previewImage(this)" />
                 <span asp-validation-for="photo_url" class="text-danger"></span>
-                <img id="imgPreview" src="~/Salon_img/111.jpg" width="200" height="200" />
+                <img id="imgPreview" src="~/Salon_img/@Model.photo_url" width="200" height="200" />
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

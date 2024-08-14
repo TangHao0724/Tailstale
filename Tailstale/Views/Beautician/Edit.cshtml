@@ -7,9 +7,9 @@
     <link href="~/css/salonfrom.css" rel="stylesheet" />
 }
 
-<h1>Edit</h1>
+<h1>修改美容師資料</h1>
 
-<h4>Beautician</h4>
+@* <h4>Beautician</h4> *@
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -34,7 +34,7 @@
                 <label asp-for="photo" class="control-label"></label>
                 <input asp-for="photo" type="file" accept="image/*" class="form-control" onchange="previewImage(this, 'imgPreviewPhoto')" />
                 <span asp-validation-for="photo" class="text-danger"></span>
-                <img id="imgPreviewPhoto" src="~/Salon_img/@Model.photo" width="200" height="200" />
+                <img id="imgPreviewPhoto" src="~/Salon_img/@Model.photo" width="220" height="200" />
             </div>
             <div class="form-group">
                 <label asp-for="phone" class="control-label"></label>
@@ -50,7 +50,7 @@
                 <label asp-for="Highest_license" class="control-label"></label>
                 <input asp-for="Highest_license" type="file" accept="image/*" class="form-control" onchange="previewImage(this, 'imgPreviewPicture')" />
                 <span asp-validation-for="Highest_license" class="text-danger"></span>
-                <img id="imgPreviewPicture" src="~/Salon_img/@Model.Highest_license" width="200" height="200" />
+                <img id="imgPreviewPicture" src="~/Salon_img/@Model.Highest_license" width="220" height="200" />
             </div>
             <div class="form-group">
                 <label asp-for="Remark" class="control-label"></label>
@@ -66,7 +66,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-secondary" asp-action="Index">返回</a>
 </div>
 
 @section Scripts {

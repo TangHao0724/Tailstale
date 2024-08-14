@@ -18,7 +18,8 @@
                 @Html.DisplayNameFor(model => model.people_limit)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.business)
+                門市
+                @* @Html.DisplayNameFor(model => model.business) *@
             </th>
             <th></th>
         </tr>
@@ -42,9 +43,9 @@
                 @Html.DisplayFor(modelItem => item.business.name)
             </td>
             <td>
-                    <a asp-action="Edit" asp-route-id="@item.id"><i class="bi bi-highlighter"></i>Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.id"><i class="bi bi-info-circle"></i>Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.id"><i class="bi bi-highlighter"></i></a> |
+                    <a asp-action="Details" asp-route-id="@item.id"><i class="bi bi-info-circle"></i></a> |
+                    <a asp-action="Delete" asp-route-id="@item.id"><i class="bi bi-trash-fill"></i></a>
             </td>
         </tr>
 }

@@ -31,8 +31,11 @@ namespace Tailstale.Controllers
             return View();
         }
 
-        public IActionResult SalonWork()
+
+        [IsLoginFilter]
+        public IActionResult SalonLog()
         {
+
             return View();
         }
 

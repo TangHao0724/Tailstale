@@ -263,6 +263,105 @@ namespace Tailstale.Controllers
 
 
 
+        // GET: api/SalonApi/GetReserve
+        [HttpGet("GetReserve")]
+        public async Task<IEnumerable<ReserveDTO>> GetReserve()
+        {
+            int? KloginID = HttpContext.Session.GetInt32("KloginID");
+            var businesses = await _context.businesses.ToListAsync();
+
+            var query = from reserve in _context.Reserves
+                        join keeper in _context.keepers on reserve.keeper_id equals keeper.ID
+                        join business in _context.businesses on reserve.business_ID equals business.ID
+                        join status in _context.order_statuses on reserve.status equals status.ID
+                        where reserve.keeper_id == KloginID
+                        orderby reserve.id descending // 按 id 降序排序
+                        select new ReserveDTO
+                        {
+                            id = reserve.id,
+                            keeper_id = reserve.keeper_id,
+                            keeper_name = keeper.name,
+                            pet_name = reserve.pet_name,
+                            business_ID = reserve.business_ID,
+                            business_name = business.name,
+                            time = reserve.time.ToString("o"),
+                            service_name = reserve.service_name,
+                            status = reserve.status,
+                            status_name = status.status_name,
+                            created_at = reserve.created_at.HasValue ? reserve.created_at.Value.ToString("o") : null,
+                        };
+
+            return await query.ToListAsync();
+        }
+
+
+        // PUT: api/Reserve/CancelReservation/5
+        [HttpPut("CancelReservation/{id}")]
+        public async Task<IActionResult> CancelReservation(int id)
+        {
+            // 查找指定 ID 的 Reserve 項目
+            var reserve = await _context.Reserves.FindAsync(id);
+
+            if (reserve == null)
+            {
+                return NotFound(); // 如果找不到該項目，返回 404 Not Found
+            }
+
+            // 更新 status 欄位
+            reserve.status = 10;
+
+            // 保存更改到資料庫
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                // 處理資料庫更新異常
+                return StatusCode(500, "Internal server error. Could not update reservation.");
+            }
+
+            return NoContent(); // 返回 204 No Content 表示成功更新
+        }
+
+        // GET: api/SalonApi/GetConsumption
+        [HttpGet("GetConsumption")]
+        public async Task<IEnumerable<Consumption_RecordDTO>> GetConsumption()
+        {
+            int? KloginID = HttpContext.Session.GetInt32("KloginID");
+            var businesses = await _context.businesses.ToListAsync();
+
+            var query = from Consumption in _context.Consumption_Records
+                        join keeper in _context.keepers on Consumption.keeper_id equals keeper.ID
+                        join business in _context.businesses on Consumption.business_ID equals business.ID
+                        join beautician in _context.Beauticians on Consumption.beautician_id equals beautician.id
+                        where Consumption.keeper_id == KloginID
+                        orderby Consumption.id descending // 按 id 降序排序
+                        select new Consumption_RecordDTO
+                        {
+                            id = Consumption.id,
+                            keeper_id = Consumption.keeper_id,
+                            keeper_name = keeper.name,
+                            pet_name = Consumption.pet_name,
+                            business_ID = Consumption.business_ID,
+                            business_name = business.name,
+                            beautician_id = Consumption.beautician_id,
+                            beautician_name = beautician.name,
+                            time = Consumption.time.ToString("o"),
+                            service_name = Consumption.service_name,
+                            pet_weight = Consumption.pet_weight,
+                            price = Consumption.price,
+                            before_photo = Consumption.before_photo,
+                            after_photo = Consumption.after_photo,
+                            end_time = Consumption.end_time.HasValue ? Consumption.end_time.Value.ToString("o") : null,
+                        };
+
+            return await query.ToListAsync();
+        }
+
+
+
+
 
     }
 }
