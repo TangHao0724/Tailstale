@@ -5,47 +5,62 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>修改門診記錄</h1>
+<h4>修改門診記錄</h4>
+<hr>
+<div class="container">
+    <div class="row">
+        <div class="list-group col-2 text-start">
+            <a asp-action="Index" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item active">預約記錄管理</a>
+            <a asp-action="Details" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item">過去預約記錄檢視</a>
+            <a asp-action="Index" asp-controller="outpatient_clinic" class="list-group-item list-group-item-action sidebar-item ">門診資訊管理</a>
+            <a asp-action="Index" asp-controller="daily_outpatient_clinic_schedule" class="list-group-item list-group-item-action sidebar-item">門診表管理</a>
+            <a asp-action="Index" asp-controller="departments" class="list-group-item list-group-item-action sidebar-item">科別管理</a>
+            <a asp-action="Index" asp-controller="vet_information" class="list-group-item list-group-item-action sidebar-item">醫師資訊管理</a>
+            <a asp-action="Index" asp-controller="ward" class="list-group-item list-group-item-action sidebar-item">院內病房管理</a>
+            <a asp-action="Index" asp-controller="medical_record" class="list-group-item list-group-item-action sidebar-item">病歷資料</a>
+            <a asp-action="Index" asp-controller="Hosp" class="list-group-item list-group-item-action sidebar-item">住院診療</a>
+        </div>
+        <div class="col-10">
 
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="id" />
-            <input type="hidden" asp-for="pet_id" />
-            <input type="hidden" asp-for="Datetime" />
-            <input type="hidden" asp-for="outpatient_clinic_id" />
-            <div class="form-group">
-                <label asp-for="weight" class="control-label"></label>
-                <input asp-for="weight" class="form-control" />
-                <span asp-validation-for="weight" class="text-danger"></span>
+            <div class="col-md-3">
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="id" />
+                    <input type="hidden" asp-for="pet_id" />
+                    <input type="hidden" asp-for="Datetime" />
+                    <input type="hidden" asp-for="outpatient_clinic_id" />
+                    <div class="form-group">
+                        <label asp-for="weight" class="control-label"></label>
+                        <input asp-for="weight" class="form-control" />
+                        <span asp-validation-for="weight" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="complain" class="control-label"></label>
+                        <input asp-for="complain" class="form-control" />
+                        <span asp-validation-for="complain" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="diagnosis" class="control-label"></label>
+                        <input asp-for="diagnosis" class="form-control" />
+                        <span asp-validation-for="diagnosis" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="memo" class="control-label"></label>
+                        <input asp-for="memo" class="form-control" />
+                        <span asp-validation-for="memo" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="fee" class="control-label"></label>
+                        <input asp-for="fee" class="form-control" />
+                        <span asp-validation-for="fee" class="text-danger"></span>
+                    </div><br>
+                    <div class="form-group">
+                        <button id="submit" type="submit" class="btn btn-primary">儲存</button>
+                        <a asp-action="Index" asp-route-pet_id="@Model.pet_id">返回</a>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="complain" class="control-label"></label>
-                <input asp-for="complain" class="form-control" />
-                <span asp-validation-for="complain" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="diagnosis" class="control-label"></label>
-                <input asp-for="diagnosis" class="form-control" />
-                <span asp-validation-for="diagnosis" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="memo" class="control-label"></label>
-                <input asp-for="memo" class="form-control" />
-                <span asp-validation-for="memo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="fee" class="control-label"></label>
-                <input asp-for="fee" class="form-control" />
-                <span asp-validation-for="fee" class="text-danger"></span>
-            </div><br>
-            <div class="form-group">
-                <button id="submit" type="submit" class="btn btn-primary">儲存</button>
-                <a asp-action="Index">返回</a>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 

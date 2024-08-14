@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Versioning;
 using Tailstale.MedRecordDTO;
 using Tailstale.Models;
 
@@ -14,6 +15,12 @@ namespace Tailstale.Controllers
         public medical_recordController(TailstaleContext context)
         {
             _context = context;
+        }
+
+        // GET: medical_record
+        public async Task<IActionResult> ALLrecord()
+        { //全部病歷+查詢?
+            return View();
         }
 
         // GET: medical_record
@@ -53,7 +60,8 @@ namespace Tailstale.Controllers
                             pet_name = p.name,
                             species = p.pet_type.species,
                             pet_breed = p.pet_type.breed,
-                            pet_age = p.age
+                            pet_age = p.age,
+                            
                         }).FirstOrDefaultAsync();
                 ViewBag.basicInfo = basicInfo;
             }
@@ -67,8 +75,20 @@ namespace Tailstale.Controllers
         [HttpGet]
         public IActionResult Create(int pet_id)
         {
-            ViewBag.pet_id = pet_id;
-            return View();
+            var p = _context.pets
+                    .Where(p => p.pet_ID == pet_id).FirstOrDefault();
+                        
+            var model = new MedicalRecordDTO()
+            {
+                keeper_name = p.keeper.name,
+                pet_name = p.name,
+                pet_id = p.pet_ID,
+                species = p.pet_type.species,
+                pet_breed = p.pet_type.breed,
+                pet_age = p.age
+            };
+
+            return View(model);
         }
 
         // POST: medical_record/Create
@@ -89,6 +109,7 @@ namespace Tailstale.Controllers
                 memo = medicalRecordDTO.memo,
                 fee = medicalRecordDTO.fee
             };
+
             _context.Add(a);
             await _context.SaveChangesAsync();
             return Redirect($"https://localhost:7112/medical_record?pet_id={a.pet_id}");

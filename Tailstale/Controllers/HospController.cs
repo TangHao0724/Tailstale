@@ -17,6 +17,13 @@ namespace Tailstale.Controllers
 
         // GET: Hosp
         [HttpGet]
+        public async Task<IActionResult> inpatient()
+        {
+            return View();
+        }
+
+        // GET: Hosp
+        [HttpGet]
         public async Task<IActionResult> Index(int medical_records_id)
         {
             var Hosp = await (from h in _context.hosp_records
@@ -67,9 +74,9 @@ namespace Tailstale.Controllers
         { //初始化器
             var model = new HospDTO
             {
-                admission_date = DateTime.Now,
+                medical_records_id = medical_records_id,
+                admission_date = DateTime.Now
             };
-            ViewBag.medical_records_id = medical_records_id;
 
             return View(model);
         }

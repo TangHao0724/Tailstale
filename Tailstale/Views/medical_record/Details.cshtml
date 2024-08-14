@@ -4,62 +4,108 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>門診記錄</h1>
-
-<div>
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.keeper_id)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.keeper_name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.pet_id)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.pet_name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Datetime)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Datetime)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.weight)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.weight)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.complain)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.complain)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.diagnosis)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.diagnosis)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.memo)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.memo)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.fee)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.fee)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-controller="medical_record" asp-action="Edit" asp-route-id="@Model.id">修改</a> |
-    <a asp-controller="Hosp" asp-action="Index" asp-route-medical_records_id="@Model.id">住院</a> |
-    <a asp-action="Index" asp-route-pet_id="@ViewBag.pet_id">返回</a>
+<h4>門診記錄</h4>
+<hr>
+<div class="container">
+    <div class="row">
+        <div class="list-group col-2 text-start">
+            <a asp-action="Index" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item active">預約記錄管理</a>
+            <a asp-action="Details" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item">過去預約記錄檢視</a>
+            <a asp-action="Index" asp-controller="outpatient_clinic" class="list-group-item list-group-item-action sidebar-item ">門診資訊管理</a>
+            <a asp-action="Index" asp-controller="daily_outpatient_clinic_schedule" class="list-group-item list-group-item-action sidebar-item">門診表管理</a>
+            <a asp-action="Index" asp-controller="departments" class="list-group-item list-group-item-action sidebar-item">科別管理</a>
+            <a asp-action="Index" asp-controller="vet_information" class="list-group-item list-group-item-action sidebar-item">醫師資訊管理</a>
+            <a asp-action="Index" asp-controller="ward" class="list-group-item list-group-item-action sidebar-item">院內病房管理</a>
+            <a asp-action="Index" asp-controller="medical_record" class="list-group-item list-group-item-action sidebar-item">病歷資料</a>
+            <a asp-action="Index" asp-controller="Hosp" class="list-group-item list-group-item-action sidebar-item">住院診療</a>
+        </div>
+        <div class="col-10">
+            <div id="basic_info" style="border: 2px solid #003366; padding: 10px; width: 100%; font-family: Arial, sans-serif; display: flex; justify-content: space-between; align-items: center; color: #003366;">
+                <div style="font-weight: bold;">
+                    飼主: <span style="font-weight: normal;">@ViewBag.basicInfo.keeper_name</span>
+                </div>
+                <div style="font-weight: bold;">
+                    寵物: <span style="font-weight: normal;">@ViewBag.basicInfo.pet_name</span>
+                </div>
+                <div style="font-weight: bold;">
+                    <span style="font-weight: normal;">@ViewBag.basicInfo.species</span>
+                    <span style="font-weight: normal;">@ViewBag.basicInfo.pet_breed</span>
+                </div>
+                <div style="font-weight: bold;">
+                    年紀: <span style="font-weight: normal;">@ViewBag.basicInfo.pet_age 歲</span>
+                </div>
+                <a asp-controller="medical_record" asp-action="Index" asp-route-pet_id="@ViewBag.pet_id" style="text-decoration: none; color: #003366;">
+                    <i class="fa-regular fa-clipboard"></i> 門診記錄
+                </a>
+                <a asp-controller="Hosp" asp-action="Index" asp-route-medical_records_id="@ViewBag.medical_records_id" style="text-decoration: none; color: #003366;">
+                    <i class="fa-regular fa-hospital"></i> 住院記錄
+                </a>
+                <a asp-controller="Hosp" asp-action="Index" asp-route-id="@ViewBag.pet_id" style="text-decoration: none; color: #003366;">
+                    <i class="fa-solid fa-heart-pulse"></i> 生命徵象
+                </a>
+                <a asp-controller="Hosp" asp-action="Index" asp-route-id="@ViewBag.pet_id" style="text-decoration: none; color: #003366;">
+                    <i class="fa-solid fa-capsules"></i> 用藥記錄
+                </a>
+                <a asp-controller="Hosp" asp-action="Index" asp-route-id="@ViewBag.pet_id" style="text-decoration: none; color: #003366;">
+                    <i class="fa-solid fa-vial-virus"></i> 檢查檢驗
+                </a>
+                <a asp-controller="Hosp" asp-action="Index" asp-route-id="@ViewBag.pet_id" style="text-decoration: none; color: #003366;">
+                    <i class="fa-solid fa-circle-radiation"></i> 醫學影像
+                </a>
+            </div>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.keeper_id)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.keeper_name)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.pet_id)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.pet_name)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Datetime)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Datetime)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.weight)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.weight)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.complain)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.complain)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.diagnosis)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.diagnosis)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.memo)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.memo)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.fee)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.fee)
+            </dd>
+            <div>
+                <a asp-controller="medical_record" asp-action="Edit" asp-route-id="@Model.id">修改</a> |
+                <a asp-controller="Hosp" asp-action="Index" asp-route-medical_records_id="@Model.id">住院</a> |
+                <a asp-action="Index" asp-route-pet_id="@ViewBag.pet_id">返回</a>
+            </div>
+        </div>
+    </div>
 </div>
