@@ -138,6 +138,10 @@
             border-top: 5px double rgb(168, 165, 254);
         }
 
+        .atext {
+            text-decoration: none;
+        }
+
         /* 以下是pic */
         .petimage-group {
             position: relative;
@@ -245,7 +249,13 @@
     </div>
 
     <div class="container">
-        <h2 class="p-3 text-center border-bottom border-3 border-warning">寵物美容</h2>
+        <div class="position-relative">
+            <h2 class="p-3 text-center border-bottom border-3 border-warning">寵物美容</h2>
+            <div class="position-absolute" style="right: 0px; top: 50%; transform: translateY(-50%);">
+                <a class="btn2 atext" asp-area="" asp-controller="Salon" asp-action="SalonLog" v-on:click="ifLogin()">會員查看紀錄</a>
+            </div>
+        </div>
+        
         <h4 class="p-2 text-center">請輸入縣市和服務項目以搜尋店家</h4>
         <select class="form-select" v-model="selectAddress">
             <option value="" disabled selected>請選擇地點</option>
@@ -573,6 +583,13 @@
 
             },
             methods: {
+                ifLogin: function () {
+                    if (this.keeper_id != 0) {
+
+                    } else {
+                        alert("請先登入後再查看")
+                    }
+                },
                 handleClick(event) {
                     // 获取 checkbox 元素
                     const checkbox = event.target;
