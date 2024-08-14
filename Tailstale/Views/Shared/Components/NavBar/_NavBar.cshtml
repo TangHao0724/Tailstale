@@ -1,7 +1,7 @@
-﻿
+﻿@model int?[]
 @{
-    int? ID = ViewBag.userID;
-    int? userType = ViewBag.userType;
+    var ID = Model.Length > 0 ? Model[0] : 0;
+    var type = Model.Length > 1 ? Model[1] : 0;
 }
 <div class="container-fluid">
     <div class="navbar navbar-expand-lg navbar-light sticky-top  ">
@@ -10,19 +10,17 @@
         </div>
         <a class="col nav-item nav-link" asp-controller="User" asp-action="Index">紀錄&社交</a>
         <a class=" col nav-item nav-link" asp-controller="Salon" asp-action="SalonHome">寵物美容</a>
-        <a class=" col nav-item nav-link" asp-controller="" asp-action="">寵物醫療</a>
+        <a class=" col nav-item nav-link" asp-controller="Appointments" asp-action="Index">寵物醫療</a>
         <a class=" col nav-item nav-link" asp-controller="Hotels" asp-action="postdatetosearch">寵物旅館</a>
         <div class="col-2 nav-item align-self-end ">
-
             @if (ID != null)
             {
-                @await Component.InvokeAsync("LoginUTag", new { id = ID, UType = userType })
+                @await Component.InvokeAsync("LoginUTag", new { id = ID, UType = type })
             }
             else
             {
                 @await Html.PartialAsync("_UnLoginUTag")
             }
-            
         </div>
     </div>
 </div>

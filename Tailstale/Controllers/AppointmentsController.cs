@@ -25,30 +25,35 @@ namespace Tailstale.Controllers
         public async Task<IActionResult> Index()//只顯示今天以後(包含今天)的查詢結果
         {
             var today = DateOnly.FromDateTime(DateTime.Today);//當天日期
-            var Appointments = await(from A in _context.Appointments
-                                   join docs in _context.daily_outpatient_clinic_schedules on A.daily_outpatient_clinic_schedule_ID equals docs.daily_outpatient_clinic_schedule_ID
-                                   join opc in _context.outpatient_clinics on docs.outpatient_clinic_ID equals opc.outpatient_clinic_ID
-                                   join opct in _context.outpatient_clinic_timeslots on opc.outpatient_clinic_timeslot_ID equals opct.outpatient_clinic_timeslot_ID
-                                   join vInfo in _context.vet_informations on opc.vet_ID equals vInfo.vet_ID
-                                   join pet in _context.pets on A.pet_ID equals pet.pet_ID
-                                   join keeper in _context.keepers on A.keeper_ID equals keeper.ID
-                                   join order_status in _context.order_statuses on A.Appointment_status equals order_status.ID
-                                   where docs.date >= today
-                                   select new Appointments_ViewModel
-                                   {
-                                       AppointmentID=A.Appointment_ID,
-                                       Date = (DateOnly)docs.date,
-                                       OutpatientClinicName = opc.outpatient_clinic_name,
-                                       OutpatientClinicTimeslotName = opct.outpatient_clinic_timeslot_name,
-                                       VetName = vInfo.vet_name,
-                                       KeeperName = keeper.name,
-                                       PetName = pet.name,
-                                       PetID = pet.pet_ID, //連到病歷用
-                                       AppointmentStatus = order_status.status_name
-                                   }).ToListAsync();
+            var Appointments = await (
+                   from A in _context.Appointments
+                   join docs in _context.daily_outpatient_clinic_schedules on A.daily_outpatient_clinic_schedule_ID equals docs.daily_outpatient_clinic_schedule_ID
+                   join opc in _context.outpatient_clinics on docs.outpatient_clinic_ID equals opc.outpatient_clinic_ID
+                   join opct in _context.outpatient_clinic_timeslots on opc.outpatient_clinic_timeslot_ID equals opct.outpatient_clinic_timeslot_ID
+                   join vInfo in _context.vet_informations on opc.vet_ID equals vInfo.vet_ID
+                   join pet in _context.pets on A.pet_ID equals pet.pet_ID
+                   join keeper in _context.keepers on A.keeper_ID equals keeper.ID
+                   join order_status in _context.order_statuses on A.Appointment_status equals order_status.ID
+                   where docs.date >= today
+                   select new Appointments_ViewModel
+                   {
+                       AppointmentID = A.Appointment_ID,
+                       Date = (DateOnly)docs.date,
+                       OutpatientClinicName = opc.outpatient_clinic_name,
+                       OutpatientClinicTimeslotName = opct.outpatient_clinic_timeslot_name,
+                       VetName = vInfo.vet_name,
+                       KeeperName = keeper.name,
+                       PetName = pet.name,
+                       PetID = pet.pet_ID, // 連到病歷用
+                       AppointmentStatus = order_status.status_name
+                   }
+               ).ToListAsync();
 
             var statusOptions = new List<string> { "預約成功", "完成診療", "院方取消" , "預約未到" };
             ViewBag.StatusOptions = statusOptions;
+            ViewBag.userID = await Task.Run(() => HttpContext.Session.GetInt32("loginID"));
+            ViewBag.userType = await Task.Run(() => HttpContext.Session.GetInt32("loginType"));
+
 
             return View(Appointments);
         }

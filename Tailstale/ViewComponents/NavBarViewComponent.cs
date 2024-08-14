@@ -6,11 +6,11 @@ namespace Tailstale.ViewComponents
     {
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            ViewBag.userID = await Task.Run(() => HttpContext.Session.GetInt32("loginID"));
-            ViewBag.userType = await Task.Run(() => HttpContext.Session.GetInt32("loginType"));
+            var I = await Task.Run(() => HttpContext.Session.GetInt32("loginID"));
+            var T = await Task.Run(() => HttpContext.Session.GetInt32("loginType"));
+            int?[] ints = new int?[] { I, T };
 
-
-            return View("_NavBar");
+            return View("_NavBar",ints);
         }
     }
 }

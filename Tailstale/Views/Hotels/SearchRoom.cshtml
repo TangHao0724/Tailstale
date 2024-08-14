@@ -28,7 +28,7 @@
             justify-content: center;
 
         }
-        div img{
+        .hotimg{
             height: 100%;
             width: auto;
         }
@@ -134,24 +134,24 @@
         <div class="row" style="height: 300px; position: relative;">
                 <!-- 設定行的高度 -->
                 <div class="col-6" style="height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                    <img src="~/@ViewBag.ImageList[0]" alt="" style="width: 100%; height: auto; object-fit: cover;">
+                <img src="~/@ViewBag.ImageList[0]" alt="" class="hotimg" style="width: 100%; height: auto; object-fit: cover;">
                 </div>
 
                 <div class="col-3" style="height: 100%;">
                     <div class="col imgblock" style="height: 50%; overflow: hidden;">
-                        <img src="~/@ViewBag.ImageList[1]" alt="" style="width: 100%; height: auto; object-fit: cover;">
+                    <img src="~/@ViewBag.ImageList[1]" alt="" class="hotimg" style="width: 100%; height: auto; object-fit: cover;">
                     </div>
                     <div class="col imgblock" style="height: 50%; overflow: hidden;">
-                        <img src="~/@ViewBag.ImageList[2]" alt="" style="width: 100%; height: auto; object-fit: cover;">
+                    <img src="~/@ViewBag.ImageList[2]" alt="" class="hotimg" style="width: 100%; height: auto; object-fit: cover;">
                     </div>
                 </div>
 
                 <div class="col-3" style="height: 100%; position: relative;">
                     <div class="imgblock" style="height: 50%; overflow: hidden;">
-                        <img src="~/@ViewBag.ImageList[3]" alt="" style="width: 100%; height: auto; object-fit: cover;">
+                    <img src="~/@ViewBag.ImageList[3]" alt="" class="hotimg" style="width: 100%; height: auto; object-fit: cover;">
                     </div>
                     <div class="imgblock myModal" style="height: 50%; position: relative; overflow: hidden;" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                        <img src="~/@ViewBag.ImageList[4]" alt="" style="width: 100%; height: auto; object-fit: cover;">
+                    <img src="~/@ViewBag.ImageList[4]" alt="" class="hotimg"  style="width: 100%; height: auto; object-fit: cover;">
                         <div class="bg-mask" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(161, 161, 161, 0.5); display: flex; align-items: center; justify-content: center;">
                             <span style="color: white; font-size: 20px;">+@imgCount 相片</span>
                         </div>
@@ -181,7 +181,7 @@
                                 {
                                     var activeClass = (i == 5) ? "active" : "";
                                     <div class="carousel-item @activeClass">
-                                        <img src="~/@ViewBag.ImageList[i]" class="d-block w-100" alt="...">
+                                        <img src="~/@ViewBag.ImageList[i]" class="d-block w-100 hotimg"  alt="...">
                                         <div class="carousel-caption d-none d-md-block">
                                             <h5 style="margin: 0;">Slide @i</h5>
                                         </div>
@@ -399,7 +399,7 @@
                             const imageUrls = response.data.map(image => `${baseAddress}${image}`);
                             const carouselItems = imageUrls.map((url, index) => `
                             <div class="carousel-item ${index === 0 ? 'active' : ''}">
-                                <img src="${url}" class="d-block w-100" alt="Room Image" onerror="this.style.display='none'">
+                                    <img src="${url}" class="d-block w-100 hotimg" alt="Room Image" onerror="this.style.display='none'">
                             </div>
                         `).join('');
 

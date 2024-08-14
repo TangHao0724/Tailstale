@@ -346,9 +346,11 @@ app.component('tab-歷史訂單', {
 });
 
 app.component('tab-歷史貼文', {
-    template: `#tab-HisPost`
+    template: `#tab-HisPost`,
     data() {
-
+        return {
+            mal:"",
+        }
     },
     created() {
 
