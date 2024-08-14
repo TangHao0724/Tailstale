@@ -37,7 +37,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddSession(options =>
 {
-    // 設定Session名稱
+    // 設定Session名稱12
     options.Cookie.Name = "LoginSession";
     // 表示Cookie很重要
     options.Cookie.IsEssential = true;
