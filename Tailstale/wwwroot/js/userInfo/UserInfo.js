@@ -347,6 +347,18 @@ app.component('tab-歷史訂單', {
 
 app.component('tab-歷史貼文', {
     template: `#tab-HisPost`
+    data() {
+
+    },
+    created() {
+
+    },
+    props: {
+        userid: Number,
+    },
+    methods: {
+
+    },
 });
 
 app.component('tab-相片集', {

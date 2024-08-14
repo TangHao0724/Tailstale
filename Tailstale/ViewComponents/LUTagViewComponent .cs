@@ -53,7 +53,7 @@ namespace Tailstale.ViewComponents
             switch (loginType)
             {
                 case 1://旅館
-                    string hotel_imgurl = "";
+                    string hotel_imgurl = "images/business/";
                     ViewBag.hotel_imgurl = url != null ? hotel_imgurl + url : "imgs/keeper_img/no_head.png";
                     break;
                 case 2://美容

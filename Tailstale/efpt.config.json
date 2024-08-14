@@ -139,14 +139,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[myChoice]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[nursing_record]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[order_status]",
          "ObjectType": 0
       },

@@ -725,7 +725,7 @@ namespace Tailstale.Controllers
                     reviewRating = r.reviewRating,
                     reviewText = r.reviewText,
                     reviewDate = DateTime.Now,
-                    bookingID = r.bookingID,
+                    //bookingID = r.bookingID,
                 };
                 _context.Reviews.Add(newreview);
             }
@@ -763,8 +763,9 @@ namespace Tailstale.Controllers
         [HttpGet]
         public async Task<IActionResult> SearchHotels([FromQuery] InputDate iD, int? Cat, int? Dog, string? addressorname)
         {
-            var keeperID = 1002;
-            HttpContext.Session.SetInt32("KeeperID", keeperID);
+            var keeperID = HttpContext.Session.GetInt32("loginID") ;
+
+            HttpContext.Session.SetInt32("KeeperID", (int)keeperID);
             var cookie = new 
             {
                 startdate = iD.startDate.ToString("yyyy-MM-dd"),
@@ -1192,29 +1193,29 @@ namespace Tailstale.Controllers
         }
 
         //[Route("Hotels/businesslogin/{hotelID:int}")]
-        [HttpGet]
-        [Route("Hotels/FindPet/{id:int}")]
-        public async Task<IActionResult> FindPet(int id)
-        {
-            var a = _context.pets.Where(p => p.pet_ID == id).Select(k => new CheckInDTO
-            {
-                petID = k.pet_ID,
-                petName = k.name,
-                petChipID = k.chip_ID,
-                petBirthDay = k.birthday.Value == null ? null : k.birthday.Value,
-                petType = k.pet_type.species
+        //[HttpGet]
+        //[Route("Hotels/FindPet/{id:int}")]
+        //public async Task<IActionResult> FindPet(int id)
+        //{
+        //    var a = _context.pets.Where(p => p.pet_ID == id).Select(k => new CheckInDTO
+        //    {
+        //        petID = k.pet_ID,
+        //        petName = k.name,
+        //        petChipID = k.chip_ID,
+        //        petBirthDay = k.birthday.Value == null ? null : k.birthday.Value,
+        //        petType = k.pet_type.species
 
-            }).FirstOrDefault();
+        //    }).FirstOrDefault();
 
-            if (a == null)
-            {
-                return NotFound(); // 返回 404 Not Found
-            }
+        //    if (a == null)
+        //    {
+        //        return NotFound(); // 返回 404 Not Found
+        //    }
 
-            return Ok(a);
+        //    return Ok(a);
 
 
-        }
+        //}
 
        
 
@@ -1621,7 +1622,7 @@ namespace Tailstale.Controllers
             var p = _context.PaymentInfos.Where(p => p.cardNumber.Equals(mycard.cardNumber)).Select(p => new GetCardList
             {
                 cardName = p.cardholderName,
-                cardNumber = p.cardNumber,
+                //cardNumber = p.cardNumber,
                 cardExpirationDate = p.expirationDate.ToString()
 
             }).FirstOrDefault();
@@ -1662,7 +1663,7 @@ namespace Tailstale.Controllers
                 keeper_ID = keepID,
                 hotelID = hotelID,
                 checkinDate = DateTime.Parse(finalCondition.startdate),
-                checkoutDate = DateTime.Parse(finalCondition.enddate),
+                checkoutDate = DateTime.Parse(finalCondition.enddate),  
                 bookingAmountTotal = bookingAmountTotal,
                 bookingStatus = 1,
                 bookingDate = DateTime.Now
@@ -1697,7 +1698,7 @@ namespace Tailstale.Controllers
                 business_ID = hotelID,
                 keeper_ID = keepID,
                 bookingID = mybooking.bookingID,
-                cardNumber= getpayment.cardNumber,
+                //cardNumber= getpayment.cardNumber,
                 cardholderName = getpayment.cardName,
                 expirationDate = DateOnly.Parse(getpayment.cardExpirationDate),
                 cvvNumber = getpayment.cvvNumber,
@@ -1743,8 +1744,8 @@ namespace Tailstale.Controllers
         [HttpPost]
         public async Task<IActionResult> KeeperSearchBookingHistory(int bookingID)
         {
-            //var keeperID = HttpContext.Session.GetInt32("loginID");
-            var keeperID = 1002;
+            var keeperID = HttpContext.Session.GetInt32("loginID");
+           // var keeperID = 1002;
             var getBookingHistory = _context.Bookings.Where(book => book.keeper_ID == keeperID && book.bookingID == bookingID).FirstOrDefault();
            
             if (getBookingHistory != null)

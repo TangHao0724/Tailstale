@@ -37,7 +37,7 @@ namespace Tailstale.ViewComponents
             {
                 
                 case 1://旅館
-                    string hotel_imgurl = "";
+                    string hotel_imgurl = "images/business/";
                     ViewBag.hotel_imgurl = url != null ?hotel_imgurl+url : "/imgs/keeper_img/no_head.png";
                     ViewBag.UserID = id;
                     ViewBag.UType = UType;
