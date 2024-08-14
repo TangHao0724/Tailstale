@@ -27,6 +27,9 @@ namespace Tailstale.Hospital_ViewModel
 
         [Display(Name = "寵物")]
         public string PetName { get; set; } //form pet
+
+        [Display(Name = "寵物ID")]
+        public int PetID { get; set; } //用來連到病歷
     }
 
     public class Edit_Appointments_ViewModel

@@ -43,6 +43,7 @@ namespace Tailstale.Controllers
                                        VetName = vInfo.vet_name,
                                        KeeperName = keeper.name,
                                        PetName = pet.name,
+                                       PetID = pet.pet_ID, //連到病歷用
                                        AppointmentStatus = order_status.status_name
                                    }).ToListAsync();
 

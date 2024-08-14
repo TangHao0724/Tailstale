@@ -98,7 +98,7 @@ namespace Tailstale.Controllers
             return View(v_Infovm);
         }
 
-        // GET: vet_information/Create
+        // GET: vet_information/Createwq
         public IActionResult Create(int id)
         {
             ViewBag.typename = new SelectList(_context.business_img_types.Where(t=>t.FK_business_id==id), "ID", "typename");
