@@ -2,7 +2,6 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Tailstale.Models;
 
@@ -10,25 +9,18 @@ public partial class Reserve
 {
     public int id { get; set; }
 
-    [Display(Name = "會員")]
     public int keeper_id { get; set; }
 
-    [Display(Name = "寵物名稱")]
     public string pet_name { get; set; }
 
-    [Display(Name = "門市")]
     public int business_ID { get; set; }
 
-    [Display(Name = "預約時間")]
     public DateTime time { get; set; }
 
-    [Display(Name = "服務項目")]
     public string service_name { get; set; }
 
-    [Display(Name = "創建日期")]
     public DateTime? created_at { get; set; }
 
-    [Display(Name = "狀態")]
     public int? status { get; set; }
 
     public virtual business business { get; set; }

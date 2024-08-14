@@ -2,34 +2,25 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Tailstale.Models;
 
 public partial class Beautician
 {
-    
     public int id { get; set; }
 
-    [Display(Name = "姓名")]
     public string name { get; set; }
 
-    [Display(Name = "性別")]
     public string gender { get; set; }
 
-    [Display(Name = "照片")]
     public string photo { get; set; }
 
-    [Display(Name = "聯絡電話")]
     public string phone { get; set; }
 
-    [Display(Name = "門市")]
     public int business_ID { get; set; }
 
-    [Display(Name = "證照")]
     public string Highest_license { get; set; }
 
-    [Display(Name = "備註")]
     public string Remark { get; set; }
 
     public virtual ICollection<Consumption_Record> Consumption_Records { get; set; } = new List<Consumption_Record>();

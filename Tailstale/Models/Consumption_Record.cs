@@ -2,7 +2,6 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace Tailstale.Models;
 
@@ -10,37 +9,26 @@ public partial class Consumption_Record
 {
     public int id { get; set; }
 
-    [Display(Name = "會員")]
     public int keeper_id { get; set; }
 
-    [Display(Name = "寵物名稱")]
     public string pet_name { get; set; }
 
-    [Display(Name = "門市")]
     public int business_ID { get; set; }
 
-    [Display(Name = "預約時間")]
     public DateTime time { get; set; }
 
-    [Display(Name = "美容師")]
     public int beautician_id { get; set; }
 
-    [Display(Name = "服務項目")]
     public string service_name { get; set; }
 
-    [Display(Name = "寵物體重")]
     public decimal pet_weight { get; set; }
 
-    [Display(Name = "消費金額")]
     public int price { get; set; }
 
-    [Display(Name = "完成時間")]
     public DateTime? end_time { get; set; }
 
-    [Display(Name = "服務前")]
     public string before_photo { get; set; }
 
-    [Display(Name = "服務後")]
     public string after_photo { get; set; }
 
     public virtual Beautician beautician { get; set; }
