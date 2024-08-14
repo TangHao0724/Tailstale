@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Tailstale.Filter;
 using Tailstale.Hospital_DTO;
 using Tailstale.Models;
 
 namespace Tailstale.Controllers
 {
+    [IsHospitalFilter]
     public class daily_outpatient_clinic_scheduleController : Controller
     {
         private readonly TailstaleContext _context;
