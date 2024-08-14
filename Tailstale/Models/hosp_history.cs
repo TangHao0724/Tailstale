@@ -15,13 +15,15 @@ public partial class hosp_history
 
     public DateTime? discharge_date { get; set; }
 
+    public int? nursing_record_id { get; set; }
+
     public int? ward_id { get; set; }
 
     public string memo { get; set; }
 
     public virtual medical_record medical_record { get; set; }
 
-    public virtual ICollection<nursing_record> nursing_records { get; set; } = new List<nursing_record>();
+    public virtual nursing_record nursing_record { get; set; }
 
     public virtual ward ward { get; set; }
 }

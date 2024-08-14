@@ -26,6 +26,8 @@ using Moq;
 using Microsoft.Build.Experimental.FileAccess;
 using Microsoft.Extensions.Options;
 using Microsoft.CodeAnalysis.CSharp;
+using System.Security.Cryptography.Xml;
+using ECPay.Payment.Integration;
 
 
 
@@ -37,6 +39,7 @@ namespace Tailstale.Controllers
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly TailstaleContext _context;
+       // private readonly ECPaySettings _ecPaySettings;
         private readonly IMapper _mapper;
         public static List<FindRoomResultDTO> getMyResult;
         //public static int businessID;
@@ -47,9 +50,15 @@ namespace Tailstale.Controllers
             _context = context;
             _mapper = mapper;
             _webHostEnvironment = webHostEnvironment;
-
+           
         }
+        //public HotelsController(TailstaleContext context, IMapper mapper, IWebHostEnvironment webHostEnvironment)
+        //{
+        //    _context = context;
+        //    _mapper = mapper;
+        //    _webHostEnvironment = webHostEnvironment;
 
+        //}
 
         public IActionResult Index()
         {
@@ -79,6 +88,30 @@ namespace Tailstale.Controllers
             return View();
         }
 
+        [HttpPost] 
+        public async Task<string> CountRating()
+        {
+            var businessID = HttpContext.Session.GetInt32("loginID");
+            return getRateForOneHotel(businessID);
+        }
+
+        private string getRateForOneHotel(int? businessID)
+        {
+            var ListroomID = _context.Rooms.Where(r => r.hotelID == businessID).Select(r => r.roomID).ToList();
+            var ratingSum = _context.Reviews.Where(r => ListroomID.Contains((int)r.roomID)).Average(r => r.reviewRating);
+            string rating = Math.Round(Convert.ToDecimal(ratingSum), 1).ToString();
+            return rating;
+        }
+
+        [HttpPost]
+        public async Task<int> NewBookingNotice()
+        {
+            var businessID = HttpContext.Session.GetInt32("loginID");
+            var CountNewBooking = _context.Bookings.Where(b => b.hotelID == businessID && b.bookingStatus == 1).Count();
+
+
+            return CountNewBooking;
+        }
         // GET: Rooms/Details/5
         public async Task<IActionResult> RoomDetails(int? id)
         {
@@ -655,34 +688,48 @@ namespace Tailstale.Controllers
 
              
         }
-
-        [HttpGet]
-        public IActionResult PostReview()
+        [HttpPost]
+        public async Task<IActionResult> GetRoomList([FromBody] BookingID getbookingID)
         {
-            int bookingID = 111;
-            var roomList = _context.BookingDetails.Where(b => b.bookingID == bookingID).Select(b => new
+            // int bookingID = 111;
+            var roomList = _context.BookingDetails.Where(b => b.bookingID == getbookingID.bookingID).Select(b => new
             {
                 roomID = b.roomID,
                 roomName = b.room.FK_roomType.roomType1
             }).ToList();
-
-            return View();
+            
+            return Json(roomList);
         }
 
+        [HttpGet]
+        public IActionResult PostReview([FromQuery]int? bookingID)
+        {
+           // int bookingID = 111;
+            
+            return View();
+            
+        }
 
-        [HttpPost]
-        public async Task<IActionResult> PostReview([FromBody] ReviewDTO review)
+        [Route("Hotels/[action]")]
+        [HttpPost("CreateReview")]
+        public async Task<IActionResult> CreateReview([FromBody] List<ReviewDTO> review)
         {
             var keeperID = HttpContext.Session.GetInt32("loginID");
-            Review newreview = new Review()
+            //var keeperID = 1002;
+            foreach(var r in review)
             {
-                roomID=review.roomID,
-                keeper_ID= keeperID,
-                reviewRating=review.reviewRating,
-                reviewText=review.reviewText,
-                reviewDate=DateTime.Now,
-            };
-            _context.Reviews.Add(newreview);
+                Review newreview = new Review()
+                {
+                    roomID = r.roomID,
+                    keeper_ID = keeperID,
+                    reviewRating = r.reviewRating,
+                    reviewText = r.reviewText,
+                    reviewDate = DateTime.Now,
+                    bookingID = r.bookingID,
+                };
+                _context.Reviews.Add(newreview);
+            }
+           
             await _context.SaveChangesAsync(); 
             return Ok();
         }
@@ -735,7 +782,7 @@ namespace Tailstale.Controllers
 
             };
 
-
+            
           
 
             string convertcookie = JsonSerializer.Serialize(setSearchSession);
@@ -757,7 +804,10 @@ namespace Tailstale.Controllers
 
             var hotelslist = _context.businesses.AsNoTracking().Where(h => hotels.Contains(h.ID)).ToList();
 
-            
+            var myhotelrate= await CountRatingToAllHotel(hotels);
+
+           // var withrate = hotelslist.Join(myhotelrate,h=>(int)h.ID,m=)
+
 
             if (Cat != null || Dog != null)
             {
@@ -767,15 +817,26 @@ namespace Tailstale.Controllers
                     price = r.Select(r => r.priceTotal).FirstOrDefault(),
                     date = dateCount,
                     onedatePrice = r.Select(r => r.priceTotal).FirstOrDefault() / dateCount,
+
                 });
+                
+
+
                 var finalresult = hotelslist.Join(resultgroupbyhotel, b => b.ID, r => r.hotelID, (b, r) => new hotelResult
                 {
                     businesse = b,
                     roomPrice = r.price,
                     date = r.date,
-                    onedatePrice = r.onedatePrice
+                    onedatePrice = r.onedatePrice,
+                    hotelRate = myhotelrate.FirstOrDefault(hr => hr.hotelID == b.ID)?.rate
 
                 }).ToList();
+               //var finalresultWithRate = finalresult.Join(myhotelrate,f=>f.businesse.ID, myhotelrat => m.id(myhotelrate))
+
+                // 現在 finalresultWithRating 包含了每個商業的評分
+                // return View(finalresultWithRating);
+
+                //var ff = finalresult.Join(myhotelrate,f=>f.businesse.ID ,m=>m.Key,(final,my))
                 return View(finalresult);
 
             }
@@ -783,7 +844,7 @@ namespace Tailstale.Controllers
             {
                 businesse = h,
                 date = dateCount,
-
+                hotelRate= myhotelrate.FirstOrDefault(hr => hr.hotelID == h.ID)?.rate
             });
 
 
@@ -795,6 +856,28 @@ namespace Tailstale.Controllers
             // return PartialView("_SearchRoom", finalresult);
             return View(noCatDog);
         }
+
+        public async Task<IEnumerable<hotelRate>> CountRatingToAllHotel(List<int> hotelList)
+        {
+            // var businessID = HttpContext.Session.GetInt32("loginID");
+            List<hotelRate> hotelRateDict = new List<hotelRate>();
+            foreach (var hotel in hotelList) {
+                
+                var ListroomID = _context.Rooms.Where(r => r.hotelID == hotel).Select(r => r.roomID).ToList();
+                var ratingSum = _context.Reviews.Where(r => ListroomID.Contains((int)r.roomID)).Average(r => r.reviewRating);
+                string rating = Math.Round(Convert.ToDecimal(ratingSum), 1).ToString();
+                hotelRate onehotel = new hotelRate()
+                {
+                    hotelID = hotel,
+                    rate = rating,
+                };
+                hotelRateDict.Add(onehotel);
+
+            }
+            
+            return hotelRateDict;
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> SearchRoom(int ID)
@@ -819,11 +902,22 @@ namespace Tailstale.Controllers
             ViewBag.ImageList= i2;
             
             ViewBag.listCount = useResult.Count;
+            ViewBag.thisHotelRate =  getRateForOneHotel(ID);
 
-            
+            var ListroomID = _context.Rooms.Where(r => r.hotelID == ID).Select(r => r.roomID).ToList();
+            var review= _context.Reviews.Where(r => ListroomID.Contains((int)r.roomID)).OrderByDescending(r=>r.reviewDate).Select(r=> new ReViewTrans
+            {
+                keeperName=r.keeper.name,
+                reviewRating=(int)r.reviewRating,
+                reviewText=r.reviewText,
+                reviewDate=r.reviewDate.Value.ToString("yyyy-MM-dd")
+            }).ToList();
+            ViewBag.reviewList = review;
+            // var showHotelReview = _context.Reviews
+
             //var result = await RoomAvailabilityAndRoom(iD, Cat, Dog, address);
             // var hotels = await result.GroupBy(h => h.hotelID).Select(h => h.Key).ToList();
-             var findhotels = _context.businesses.Where(h => ID == h.ID).Select(h => new HotelInfo
+            var findhotels = _context.businesses.Where(h => ID == h.ID).Select(h => new HotelInfo
              {
                  hotelID = h.ID,
                  hotelname= h.name,
@@ -1318,6 +1412,7 @@ namespace Tailstale.Controllers
             //取得房間設量統計
             List<roomInfo> getroomList = JsonSerializer.Deserialize<List<roomInfo>>(getSelected);
 
+            var total = getroomList.Sum(r => r.roomPriceTotal);
 
             //json轉中文解碼
             var options = new JsonSerializerOptions
@@ -1348,13 +1443,137 @@ namespace Tailstale.Controllers
             //return RedirectToAction(nameof(ReviewBooking), "Hotels", new { Review = ReviewMyBooking });
             string reviewtojson = JsonSerializer.Serialize(ReviewMyBooking, options);
             HttpContext.Session.SetString("ReView",reviewtojson);
+            BookingIDAndTotal booking = new BookingIDAndTotal()
+            {
+                ToTalAmount = total,
+            };
             
             return Json(new
             {
                 redirectUrl = Url.Action("ReviewBooking", "Hotels")
             });
         }
-        
+
+        [HttpGet]
+        public IActionResult TestReturn()
+        {
+            return View();
+        }
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+
+            List<string> enErrors = new List<string>();
+            try
+            {
+                using (AllInOne oPayment = new AllInOne())
+                {
+                    /* 服務參數 */
+                    oPayment.ServiceMethod = ECPay.Payment.Integration.HttpMethod.HttpPOST;//介接服務時，呼叫 API 的方法
+                    oPayment.ServiceURL = "https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5";//要呼叫介接服務的網址
+                    oPayment.HashKey = "pwFHCqoQZGmho4w6";//ECPay提供的Hash Key
+                    oPayment.HashIV = "EkRm7iFT261dpevs";//ECPay提供的Hash IV
+                    oPayment.MerchantID = "3002607";//ECPay提供的特店編號
+
+                    /* 基本參數 */
+                    oPayment.Send.ReturnURL = "http://example.com";//付款完成通知回傳的網址
+                    oPayment.Send.ClientBackURL = "http://www.ecpay.com.tw/";//瀏覽器端返回的廠商網址
+                    oPayment.Send.OrderResultURL = "http://localhost:52413/CheckOutFeedback.aspx";//瀏覽器端回傳付款結果網址
+                    oPayment.Send.MerchantTradeNo = "ECPay" + new Random().Next(0, 99999).ToString();//廠商的交易編號
+                    oPayment.Send.MerchantTradeDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");//廠商的交易時間
+                    oPayment.Send.TotalAmount = Decimal.Parse("3280");//交易總金額
+                    oPayment.Send.TradeDesc = "交易描述";//交易描述
+                    oPayment.Send.ChoosePayment = PaymentMethod.Credit;//使用的付款方式
+                    oPayment.Send.Remark = "";//備註欄位
+                    oPayment.Send.ChooseSubPayment = PaymentMethodItem.None;//使用的付款子項目
+                    oPayment.Send.NeedExtraPaidInfo = ExtraPaymentInfo.Yes;//是否需要額外的付款資訊
+                    oPayment.Send.DeviceSource = DeviceType.PC;//來源裝置
+                   
+                    oPayment.Send.EncryptType = 1;
+
+                    //訂單的商品資料
+                    oPayment.Send.Items.Add(new Item()
+                    {
+                        Name = "蘋果",//商品名稱
+                        Price = Decimal.Parse("3280"),//商品單價
+                        Currency = "新台幣",//幣別單位
+                        Quantity = Int32.Parse("1"),//購買數量
+                    });
+
+
+
+                    /* 產生訂單 */
+                    enErrors.AddRange(new List<string> { oPayment.CheckOut().ToString() });
+                }
+            }
+            catch (Exception ex)
+            {
+                // 例外錯誤處理。
+                enErrors.Add(ex.Message);
+            }
+            finally
+            {
+                // 顯示錯誤訊息。
+                if (enErrors.Count() > 0)
+                {
+                    // string szErrorMessage = String.Join("\\r\\n", enErrors);
+                }
+            }
+
+        }
+
+        //[HttpPost]
+        //public IActionResult Test(BookingIDAndTotal booking)
+        //{
+        //    var payment = new ECPayPayment
+        //    {
+        //        MerchantID = _ecPaySettings.MerchantID,
+        //        MerchantTradeNo = Guid.NewGuid().ToString(),
+        //        MerchantTradeDate = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"),
+        //        PaymentType = "aio",
+        //        TotalAmount = booking.ToTalAmount,
+        //        TradeDesc = $"旅館預訂付款 {booking.bookingID}",
+        //        ItemName = $"訂單 {Guid.NewGuid().ToString()}",
+        //        ReturnURL = "https://localhost:7112/Hotels/TestReturn",
+        //        ChoosePayment = "Credit",
+        //        EncryptType = 1,
+        //    };
+
+        //    var formHtml = GeneratePaymentForm(payment);
+
+        //    return Content(formHtml, "text/html");
+        //}
+
+        //private string GeneratePaymentForm(ECPayPayment payment)
+        //{
+        //    // 手動構建表單https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5
+        //    var formHtml = "<form id='ECPayForm' action='https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5' method='post'>";
+
+        //    // 添加隱藏字段
+        //    formHtml += $"<input type='hidden' name='MerchantID' value='{payment.MerchantID}' />";
+        //    formHtml += $"<input type='hidden' name='MerchantTradeNo' value='{payment.MerchantTradeNo}' />";
+        //    formHtml += $"<input type='hidden' name='MerchantTradeDate' value='{payment.MerchantTradeDate}' />";
+        //    formHtml += $"<input type='hidden' name='PaymentType' value='{payment.PaymentType}' />";
+        //    formHtml += $"<input type='hidden' name='TotalAmount' value='{payment.TotalAmount}' />";
+        //    formHtml += $"<input type='hidden' name='TradeDesc' value='{payment.TradeDesc}' />";
+        //    formHtml += $"<input type='hidden' name='ItemName' value='{payment.ItemName}' />";
+        //    formHtml += $"<input type='hidden' name='ReturnURL' value='{payment.ReturnURL}' />";
+        //    formHtml += $"<input type='hidden' name='ChoosePayment' value='{payment.ChoosePayment}' />";
+        //    formHtml += $"<input type='hidden' name='EncryptType' value='{payment.EncryptType}' />";
+
+        //    formHtml += "<input type='submit' value='前往付款' />";
+        //    formHtml += "</form>";
+
+        //    // 添加自動提交的 JavaScript
+        //    formHtml += "<script>document.getElementById('ECPayForm').submit();</script>";
+
+        //    return formHtml;
+
+            
+        //}
+
+
+
 
         [HttpGet]
         public async Task<IActionResult> ReviewBooking()
@@ -1396,13 +1615,13 @@ namespace Tailstale.Controllers
             return View(review);
         }
 
-        
-        public async Task<GetCardList> SearchPaymentInfo([FromBody]int cardNumber)
+        [HttpPost]
+        public async Task<GetCardList> SearchPaymentInfo([FromBody] card mycard)
         {
-            var p = _context.PaymentInfos.Where(p => p.cardNumber == cardNumber).Select(p => new GetCardList
+            var p = _context.PaymentInfos.Where(p => p.cardNumber.Equals(mycard.cardNumber)).Select(p => new GetCardList
             {
                 cardName = p.cardholderName,
-                cardNumber = (int)p.cardNumber,
+                cardNumber = p.cardNumber,
                 cardExpirationDate = p.expirationDate.ToString()
 
             }).FirstOrDefault();
@@ -1537,11 +1756,19 @@ namespace Tailstale.Controllers
                 var bookingstatus=getBookingHistory.bookingStatusNavigation.status_name;
                 var isRate = false;
                 var nowdate = DateTime.Now;
-                if(nowdate>= getBookingHistory.checkoutDate && bookingstatus.Equals("預約成功"))
+                var ReView = _context.Bookings.FirstOrDefault(b => b.bookingID == bookingID);
+                if (nowdate>= getBookingHistory.checkoutDate && bookingstatus.Equals("預約成功") )
                 {
                     isRate = true;
                 };
-                ViewBag.isRate = isRate; 
+                ViewBag.isRate = isRate;
+                
+                var isReView = false;
+                if (ReView != null ) { 
+                    isReView = true;
+                
+                }
+                ViewBag.isReView= isReView;
                 BookingAndCheckinDTO bc = new BookingAndCheckinDTO
                 {
                     booking = getBookingHistory,
@@ -1604,4 +1831,6 @@ namespace Tailstale.Controllers
 
 
     }
+
+  
 }

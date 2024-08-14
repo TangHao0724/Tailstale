@@ -36,7 +36,16 @@
         .ctrl {
             width: 100% !important;
         }
-        
+
+        .rate {
+            color: white;
+            padding: 5% 10%;
+            font-size: 24px;
+            display: inline;
+            border: 1px solid black;
+            border-radius: 5px 5px 5px 5px;
+            background-color: rgb(65, 65, 215);
+        }
     </style>
    
 
@@ -108,9 +117,13 @@
 
     <!--飯店資料-->
     <div class="row m-4 p-0" style="font-size:30px;line-height:auto;">
-        <div><i class="fa-regular fa-thumbs-up fa-lg" style="color: #64aa70;"></i></i></div>
-        <div>@ViewBag.SelectedHotel.hotelname</div>
-        <div style="font-size:18px;"><i class="fa-solid fa-location-dot"></i>@ViewBag.SelectedHotel.hotelAddress</div>
+        <div class="col-10">
+            <div><i class="fa-regular fa-thumbs-up fa-lg" style="color: #64aa70;"></i></i></div>
+            <div>@ViewBag.SelectedHotel.hotelname</div>
+            <div style="font-size:18px;"><i class="fa-solid fa-location-dot"></i>@ViewBag.SelectedHotel.hotelAddress</div>
+        </div>
+        <div class="col-2 d-flex justify-content-center align-items-center" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample"><div class="rate ">@ViewBag.thisHotelRate</div></div>
+        
     </div>
 
 
@@ -280,6 +293,45 @@
                     </div>
                 </div>
             </div>
+    </div>
+</div>
+
+
+<!--彈出評論區-->
+@* <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <h5 id="offcanvasRightLabel">Offcanvas right</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        ...
+    </div>
+</div> *@
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">評論區</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        @foreach(var review in ViewBag.reviewList)
+        {
+            <div class="card" style="width: 100%;">
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-9">
+                            姓名:@review.keeperName
+                            <small>評論日期:@review.reviewDate</small>
+                        </div>
+                        <div class="col-3"><div class="rate">@review.reviewRating</div> </div>
+                    </div>
+                    <div class="row">
+                        <p>@review.reviewText</p>
+                    </div>
+                </div>
+            </div>
+        }
+        
+
     </div>
 </div>
 

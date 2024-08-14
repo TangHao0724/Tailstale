@@ -25,6 +25,16 @@
             max-height: 180px;
             border: dotted 2px
         }
+
+        .rate {
+            color: white;
+            padding: 5% 10%;
+            font-size: 24px;
+            display: inline;
+            border: 1px solid black;
+            border-radius: 5px 5px 5px 5px;
+            background-color: rgb(65, 65, 215);
+        }
     </style>
 }
 
@@ -89,15 +99,20 @@
             {
                 <div class="card mb-3 p-0 col-11">
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-3">
                             <div class="p-2">
                                 <img src="~/images/noimg.jpg" />
                             </div>
                             
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-8">
                             <div class="card-body ">
-                                <h5 class="card-title">@hotel.businesse.name</h5>
+                                <div class="row">
+                                    <div class="col-10"> <h5 class="card-title">@hotel.businesse.name</h5></div>
+                                    <div class="col-2"><div class="rate">@hotel.hotelRate</div></div>
+
+                                </div>
+                               
                                 <h6>每晚房價:@hotel.onedatePrice X @hotel.date 天</h6>
 
                                 <h5 class="card-title">@String.Format("{0:N0}", hotel.roomPrice) 元</h5>
@@ -114,12 +129,17 @@
             {
                 <div class="card mb-3 p-0 col-11">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-3">
                             <img  src="~/images/noimg.jpg" />
                         </div>
-                        <div class="col-md-8">
+                        <div class="col-9">
                             <div class="card-body">
-                                <h5 class="card-title">@hotel.businesse.name</h5>
+                                <div class="row">
+                                    <div class="col-10"> <h5 class="card-title">@hotel.businesse.name</h5></div>
+                                    <div class="col-2"><div class="rate">@hotel.hotelRate</div></div>
+
+                                </div>
+                                
                                 <form asp-controller="Hotels" asp-action="SearchRoom" method="get">
                                     <button type="submit" asp-route-id="@hotel.businesse.ID" asp-controller="Hotels" asp-action="SearchRoom" class="btn-primary">查看訂房狀態</button>
                                 </form>
@@ -130,12 +150,17 @@
             }
         }
     </div>
+
+   
 </div>
 
 
 
 
+
 @section Scripts{
+   
+    
     <script src="~/js/numberspinner.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>

@@ -11,8 +11,6 @@ public partial class nursing_record
 
     public int? pet_id { get; set; }
 
-    public int? hosp_history_id { get; set; }
-
     public DateTime datetime { get; set; }
 
     public decimal? weight { get; set; }
@@ -21,7 +19,7 @@ public partial class nursing_record
 
     public int? vital_sign_record_id { get; set; }
 
-    public virtual hosp_history hosp_history { get; set; }
+    public virtual ICollection<hosp_history> hosp_histories { get; set; } = new List<hosp_history>();
 
     public virtual pet pet { get; set; }
 

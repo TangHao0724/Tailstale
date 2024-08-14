@@ -18,26 +18,26 @@ namespace Tailstale.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var Hosp = from h in _context.hosp_histories
-                       join m in _context.medical_records on h.medical_record_id equals m.id
-                       join w in _context.wards on h.ward_id equals w.ward_ID into wardGroup
-                       from w in wardGroup.DefaultIfEmpty()
-                       join n in _context.nursing_records on h.id equals n.hosp_history_id into nursingGroup
-                       from n in nursingGroup.DefaultIfEmpty()
-                       orderby h.admission_date descending
-                       select new HospDTO
-                       {
-                           id = h.id,
-                           medical_record_id = m.id,
-                           admission_date = h.admission_date,
-                           discharge_date = h.discharge_date,
-                           created_at = m.created_at,
-                           nursing_record_id = n != null ? n.id : (int?)null,
-                           nursing_record_datetime = n != null ? n.datetime : (DateTime?)null,
-                           ward_id = w != null ? w.ward_ID : null,
-                           memo = h.memo,
-                       };
-            return View(Hosp);
+            //var Hosp = from h in _context.hosp_histories
+            //           join m in _context.medical_records on h.medical_record_id equals m.id
+            //           join w in _context.wards on h.ward_id equals w.ward_ID into wardGroup
+            //           from w in wardGroup.DefaultIfEmpty()
+            //           join n in _context.nursing_records on h.id equals n.hosp_history_id into nursingGroup
+            //           from n in nursingGroup.DefaultIfEmpty()
+            //           orderby h.admission_date descending
+            //           select new HospDTO
+            //           {
+            //               id = h.id,
+            //               medical_record_id = m.id,
+            //               admission_date = h.admission_date,
+            //               discharge_date = h.discharge_date,
+            //               created_at = m.created_at,
+            //               nursing_record_id = n != null ? n.id : (int?)null,
+            //               nursing_record_datetime = n != null ? n.datetime : (DateTime?)null,
+            //               ward_id = w != null ? w.ward_ID : null,
+            //               memo = h.memo,
+            //           };
+            return View();
         }
 
         // GET: Hosp/Create

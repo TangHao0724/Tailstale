@@ -124,9 +124,12 @@
         </ul>
         @if (ViewBag.isRate == true)
         {
-            <form hidden id="CreateComment" asp-controller="Hotels" asp-action="CreateComment" asp-route-id="@Model.booking.keeper_ID">
-            </form>
-            <a class="btn btn-outline-info form-control btn-sm" href="#" onclick="document.getElementById('CreateComment').submit(); return false;">撰寫評論</a>
+            if (!ViewBag.isReView)
+            {
+                <button class="btn btn-outline-info fs-4" id="reviewBtn">撰寫評論</button>
+            }
+           
+          
         }
         else
         {
@@ -150,23 +153,58 @@ else
 }
 
 @section Scripts{
+  @*   <script src="https://code.jquery.com/jquery-3.5.1.js"></script> *@
     <script>
-        $(document).ready(function () { 
+        $(document).ready(function () {
             var baseAddress = "https://localhost:7112/Hotels";
             var cancelBtn = document.querySelector("#cancelbtn");
-           // var bookingID = parseInt();
-            cancelBtn.addEventListener('click', function () {
-                axios.put(`${baseAddress}/UpdateBookingStatus`, {
-                    bookingID: @Model.booking.bookingID,
-                    status: 4
-                })
-                    .then(response => {
-                        alert("123")
+            var reviewBtn = document.querySelector("#reviewBtn");
+            var bookingID = parseInt(@Model.booking.bookingID);
+
+            // var bookingID = parseInt();
+            // cancelBtn.addEventListener('click', function () {
+            //     axios.put(`${baseAddress}/UpdateBookingStatus`, {
+            //         bookingID: @Model.booking.bookingID,
+            //         status: 4
+            //     })
+            //         .then(response => {
+            //             alert("123")
+            //         })
+            //         .catch(err => { alert(err) })
+            // });
+
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', function () {
+                    axios.put(`${baseAddress}/UpdateBookingStatus`, {
+                        bookingID: bookingID,
+                        status: 4
                     })
-                    .catch(err => { alert(err) })
-            });
-            
-        })
+                        .then(response => {
+                            alert("訂單已取消");
+                        })
+                        .catch(err => {
+                            alert(err);
+                        });
+                });
+            } else {
+                console.error('Cancel button not found');
+            }
+
+            if (reviewBtn) {
+                $(reviewBtn).on("click", function () {
+                    window.location.href = `/Hotels/PostReview?bookingID=${bookingID}`;
+                });
+            } else {
+                console.error('Review button not found');
+            }
+            // ("#reviewBtn").on("click", function () {
+            //     window.location.href = `/Hotels/PostReview?bookingID=${bookingID}`;
+            // });
+            // reviewBtn.addEventListener('click', function () {
+            //     window.location.href = `/Hotels/PostReview?bookingID=${bookingID}`;
+            // });
+
+        });
             
     </script>
 }

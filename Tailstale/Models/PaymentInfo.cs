@@ -17,7 +17,7 @@ public partial class PaymentInfo
 
     public string cardholderName { get; set; }
 
-    public int? cardNumber { get; set; }
+    public string cardNumber { get; set; }
 
     public DateOnly? expirationDate { get; set; }
 

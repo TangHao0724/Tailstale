@@ -108,7 +108,66 @@
                     </div>
 
                 </li>
+                <li>
+                    <button id="Pay">
+                        付款
+                    </button>
+                </li>
             </ul>
         </div>
     </div>
 </div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            var baseAddress = "https://localhost:7112/";
+            var bt = document.querySelector('#Pay');
+            bt.addEventListener('click', function () {
+                sendPaymentInfo();
+            });
+           
+
+            function sendPaymentInfo() {
+                var payment = [];
+                
+                if (month) {
+                    const [year, monthValue] = month.split('-'); // 分割年份和月份
+                    const lastDate = new Date(year, parseInt(monthValue), 0); // 獲取該月的最後一天
+
+                    // 將年份、月份和最後一天組合成 YYYY-MM-DD 格式
+                    formattedDate = `${lastDate.getFullYear()}-${String(lastDate.getMonth() + 1).padStart(2, '0')}-${String(lastDate.getDate()).padStart(2, '0')}`;
+
+
+                }
+                payment.push({ "cardName": cardholdername, "cardNumber": cardnumber, "cardExpirationDate": formattedDate, "cvvNumber": cvv });
+                console.log(payment);
+                //alert(payment);
+
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `${baseAddress}Hotels/SaveBooking`; // 目標 URI
+
+                // 將 payment 陣列轉換為 JSON 字串
+                const ConvertPayment = JSON.stringify(payment);
+
+                // 創建一個隱藏的輸入元素來存放 JSON 字串
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'payment'; // 你可以根據需要修改這個名稱
+                input.value = ConvertPayment;
+
+                // 將輸入元素添加到表單中
+                form.appendChild(input);
+
+                // 將表單添加到文檔中並提交
+                document.body.appendChild(form);
+                form.submit(); // 提交表單
+
+            };
+
+
+           
+        });
+    </script>
+}

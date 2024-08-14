@@ -170,6 +170,7 @@
                         快好了！只要在標有*的欄位填入資訊
                         請以中文或英文輸入您的資料
                     </label>
+                    付款價格:<input type="number" value="ViewBag.BookingTotal" class="form-control" id="total" readonly>
                     @if (ViewBag.IsCard >0)
                     {
 
@@ -179,40 +180,13 @@
                             </select>
                         
                     }
-
+                    
                     訂購人姓名:<input type="text" value="@ViewBag.KeeperName" class="form-control" readonly>
                     持卡人姓名（以英文填寫）:<input type="text" id="cardholdername" class="form-control" >
                         卡號:<input type="number" id="credit-card" class="form-control" name="credit-card" required>
                         有效年月:<input type="month" class="form-control" id="month" name="month" required>
                         CVV:<input type="password" maxlength="3" id="cvv" class="form-control">
                         <button id="sendInfoBtn" type="submit" class="btn btn-primary">送出入住資料</button>
-                 
-                    
-
-                    <!-- <label for="year">選擇年份：</label>
-                    <select id="year" class="form-control" name="year" required>
-                        <script>
-                            const currentYear = new Date().getFullYear();
-                            for (let year = currentYear; year<=currentYear+20; year++) {
-                                document.write(`<option value="${year}">${year}年</option>`);
-                            }
-                        </script>
-                    </select>
-                    <label for="month">選擇月份：</label>
-                    <select id="month" class="form-control" name="month" required>
-                        <option value="01">一月</option>
-                        <option value="02">二月</option>
-                        <option value="03">三月</option>
-                        <option value="04">四月</option>
-                        <option value="05">五月</option>
-                        <option value="06">六月</option>
-                        <option value="07">七月</option>
-                        <option value="08">八月</option>
-                        <option value="09">九月</option>
-                        <option value="10">十月</option>
-                        <option value="11">十一月</option>
-                        <option value="12">十二月</option>
-                    </select> -->
                 </div>
             </div>
         </div>
@@ -239,7 +213,7 @@
                 const paymentInfo = document.querySelector('.paymentInfo');
                 var cardholdername = "";
                 cardholdername= paymentInfo.querySelector('#cardholdername').value;
-                const cardnumber = parseInt(paymentInfo.querySelector('#credit-card').value);
+                const cardnumber = paymentInfo.querySelector('#credit-card').value;
                 const month = paymentInfo.querySelector('#month').value;
                 const cvv = parseInt(paymentInfo.querySelector('#cvv').value);
                 var formattedDate = "";
@@ -297,9 +271,10 @@
             
 
             function getCardInfo() {
-                var cardNumber = event.target.value;
-                
-                axios.post(`${baseAddress}Hotels/SearchPaymentInfo`, cardNumber, {
+                var mycardNumber = event.target.value;
+                var cardInfo = { cardNumber: mycardNumber };
+
+                axios.post(`${baseAddress}Hotels/SearchPaymentInfo`, cardInfo, {
                              headers: { 'Content-Type': 'application/json' }
                          })
                     .then(response => {

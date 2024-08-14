@@ -16,53 +16,107 @@
         }
     </style>
 }
+
 <div id="app">
     <h2>撰寫評論</h2>
-    <div>
-        <span v-for="star in 5" :key="star" @@click="setRating(star)" class="star" :class="{ active: star <= reviewRating }">★</span>
+    <div v-for="room in roomList" :key="room.roomID">
+        <h3>{{ room.roomName }}</h3>
+        <div>
+            <span v-for="star in 5" :key="star" @@click="setRating(star)" class="star" :class="{ active: star <= reviewRating }">★</span>
+        </div>
+        <textarea v-model="reviewText" placeholder="撰寫你的評論..."></textarea>
     </div>
-    <textarea v-model="reviewText" placeholder="撰寫你的評論..."></textarea>
     <button @@click="submitReview">提交評論</button>
 </div>
 
 
 @section Scripts{
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    @* <script src="https://code.jquery.com/jquery-3.5.1.js"></script> *@
     <script>
         const vueApp = {
             data() {
                 return {
                     baseAddress: "https://localhost:7112/Hotels/",
+                    roomList: [],
                     reviewRating: 0,
                     reviewText: '',
+                    bookingID: 0, // 初始值設為 0
                 };
             },
+            mounted() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const bookingID = urlParams.get('bookingID'); // 從 URL 查詢參數中獲取
+                this.bookingID = bookingID ? parseInt(bookingID) : 0; // 確保轉換為整數，若未定義則設為 0
+                this.getRoomList(); // 在組件掛載時獲取房間列表
+            },
             methods: {
+                getRoomList() {
+                    try {
+                        var request = {};
+                        request.bookingID = this.bookingID;
+                        axios.post(`${this.baseAddress}GetRoomList`, request)
+                            .then(response => {
+                                //alert(JSON.stringify(response.data));
+                                this.roomList = response.data;
+                                
+
+                            })
+                            .catch(err => { alert(err) })
+                        // const response =  axios.post(`${this.baseAddress}GetRoomList`,this.bookingID);
+                        // this.roomList = response.data;
+                    } catch (err) {
+                        alert(err);
+                    }
+                },
                 setRating(star) {
                     this.reviewRating = star;
                 },
-                async submitReview() {
-                    const review = {
-                        roomID: 101001, // 替換為實際的房間 ID
-                        keeper_ID: 1002, // 替換為實際的管理者 ID
-                        reviewRating: this.reviewRating,
-                        reviewText: this.reviewText,
-                    };
-
-                    await fetch(`${this.baseAddress}PostReview`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(review),
+                submitReview() {
+                    const review = this.roomList.map(room => {
+                        return {
+                            roomID: room.roomID,
+                            bookingID:this.bookingID,
+                            reviewRating: this.reviewRating,
+                            reviewText: this.reviewText,
+                        };
                     });
+                    alert(JSON.stringify(review));
+                    axios.post(`${this.baseAddress}CreateReview`, review)
+                        .then(response => {
+                            alert("123");
+                            //alert(JSON.stringify(response.data));
+                           // this.roomList = response.data;
 
-                    // 清空表單
-                    this.reviewRating = 0;
-                    this.reviewText = '';
+
+                        })
+                        .catch(err => { alert(err) })
+                    // fetch(`${this.baseAddress}CreateReview`, {
+                    //     method: 'POST',
+                    //     headers: {
+                    //         'Content-Type': 'application/json',
+                    //     },
+                    //     body: JSON.stringify(review), // 將所有評論一起發送
+                    // })
+                    //     .then(response => {
+                    //         if (!response.ok) {
+                    //             throw new Error('提交評論失敗: ' + response.statusText);
+                    //         }
+                    //         return response.json();
+                    //     })
+                    //     .then(data => {
+                    //         // 成功處理
+                    //         this.reviewRating = 0;
+                    //         this.reviewText = '';
+                    //         console.log('評論提交成功:', data);
+                    //     })
+                    //     .catch(err => {
+                    //         console.error('發生錯誤:', err);
+                    //     });
                 },
+
             },
         };
+
 
         Vue.createApp(vueApp).mount("#app");
     </script>

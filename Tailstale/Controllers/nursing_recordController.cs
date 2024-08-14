@@ -45,29 +45,29 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var records = from n in _context.nursing_records
-                          join p in _context.pets on n.pet_id equals p.pet_ID
-                          join v in _context.vital_sign_records on n.vital_sign_record_id equals v.id into vsrGroup
-                          from v in vsrGroup.DefaultIfEmpty()
-                          join h in _context.hosp_histories on n.hosp_history_id equals h.id
-                          orderby n.datetime descending
-                          select new NursingDTO
-                          {
-                              id = n.id,
-                              pet_id = p.pet_ID,
-                              hosp_history_id = h.id,
-                              datetime = n.datetime,
-                              weight = n.weight,
-                              memo = n.memo,
-                              vs_id = v.id
-                          };
+            //var records = from n in _context.nursing_records
+            //              join p in _context.pets on n.pet_id equals p.pet_ID
+            //              join v in _context.vital_sign_records on n.vital_sign_record_id equals v.id into vsrGroup
+            //              from v in vsrGroup.DefaultIfEmpty()
+            //              join h in _context.hosp_histories on n.hosp_history_id equals h.id
+            //              orderby n.datetime descending
+            //              select new NursingDTO
+            //              {
+            //                  id = n.id,
+            //                  pet_id = p.pet_ID,
+            //                  hosp_history_id = h.id,
+            //                  datetime = n.datetime,
+            //                  weight = n.weight,
+            //                  memo = n.memo,
+            //                  vs_id = v.id
+            //              };
 
-            if (records == null || !records.Any())
-            {
-                return NotFound();
-            }
+            //if (records == null || !records.Any())
+            //{
+            //    return NotFound();
+            //}
 
-            return View(records);
+            return View();
         }
 
 
@@ -91,7 +91,7 @@ namespace Tailstale.Controllers
             {
                 id = nursingDTO.id,
                 pet_id = nursingDTO.pet_id,
-                hosp_history_id = nursingDTO.hosp_history_id,
+               // hosp_histories = nursingDTO.hosp_history_id,
                 datetime = nursingDTO.datetime,
                 weight = nursingDTO.weight,
                 memo = nursingDTO.memo,
@@ -146,16 +146,16 @@ namespace Tailstale.Controllers
                 return NotFound();
             }
 
-            var record = new nursing_record
-            {
-                id = nursingDTO.id,
-                pet_id = nursingDTO.pet_id,
-                hosp_history_id = nursingDTO.id,
-                datetime = nursingDTO.datetime,
-                weight = nursingDTO.weight,
-                memo = nursingDTO.memo,
-                vital_sign_record_id = nursingDTO.vs_id
-            };
+            //var record = new nursing_record
+            //{
+            //    id = nursingDTO.id,
+            //    pet_id = nursingDTO.pet_id,
+            //    hosp_history_id = nursingDTO.id,
+            //    datetime = nursingDTO.datetime,
+            //    weight = nursingDTO.weight,
+            //    memo = nursingDTO.memo,
+            //    vital_sign_record_id = nursingDTO.vs_id
+            //};
             _context.Update(record);
             await _context.SaveChangesAsync();
             return RedirectToAction("Info");

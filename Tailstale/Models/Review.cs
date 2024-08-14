@@ -19,6 +19,10 @@ public partial class Review
 
     public DateTime? reviewDate { get; set; }
 
+    public int? bookingID { get; set; }
+
+    public virtual Booking booking { get; set; }
+
     public virtual keeper keeper { get; set; }
 
     public virtual Room room { get; set; }
