@@ -25,7 +25,7 @@
                 <label asp-for="pet_name" class="control-label">寵物名稱</label>
                 @* <input asp-for="pet_name" class="form-control" /> *@
                 <select asp-for="pet_name" class="form-control">
-                    <option v-for="item in petName" :value="item">{{item}}</option>
+                    <option v-for="item in petName" :value="item.name">{{item.name}}</option>
                 </select>
                 <span asp-validation-for="pet_name" class="text-danger"></span>
             </div>

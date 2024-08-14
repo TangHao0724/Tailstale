@@ -27,6 +27,12 @@
         .bi {
             font-size: 22px;
         }
+
+        
+        .mybtn {
+            background-color: #fa2;
+        }
+    
     </style>
 }
 <header>
@@ -41,13 +47,13 @@
 <h1>預約紀錄</h1>
 
 <p>
-    <a class="btn btn-info" asp-action="Create"><i class="bi bi-hand-index-thumb"></i>Create New</a>
+    <a class="btn mybtn" asp-action="Create"><i class="bi bi-hand-index-thumb"></i>新增預約</a>
 </p>
 <div>
     <h3><i class="bi bi-search"></i>依據日期查詢預約</h3>
     
     <input type="date" class="form-control" id="time" name="time" value="" />
-    <input id="selectday" type="submit" value="查詢" class="btn btn-info mt-2" />
+    <input id="selectday" type="submit" value="查詢" class="btn mybtn mt-2" />
     <div class="mb-3">
         <div id="orders">
             <table class="table border table-striped">
