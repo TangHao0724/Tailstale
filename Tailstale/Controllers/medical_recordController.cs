@@ -88,6 +88,19 @@ public async Task<IActionResult> Index(int? pet_id)
                 pet_age = p.age
             };
 
+            var basicInfo = _context.pets
+                        .Where(p => p.pet_ID == pet_id)
+                        .Select(p => new
+                        {
+                            keeper_name = p.keeper.name,
+                            pet_name = p.name,
+                            species = p.pet_type.species,
+                            pet_breed = p.pet_type.breed,
+                            pet_age = p.age,
+
+                        }).FirstOrDefault();
+            ViewBag.basicInfo = basicInfo;
+
             return View(model);
         }
 
@@ -145,6 +158,19 @@ public async Task<IActionResult> Index(int? pet_id)
             }
             ViewBag.medical_records_id = id;
 
+            var basicInfo = await _context.pets
+                        .Where(p => p.pet_ID == medical_record.pet_id)
+                        .Select(p => new
+                        {
+                            keeper_name = p.keeper.name,
+                            pet_name = p.name,
+                            species = p.pet_type.species,
+                            pet_breed = p.pet_type.breed,
+                            pet_age = p.age,
+
+                        }).FirstOrDefaultAsync();
+            ViewBag.basicInfo = basicInfo;
+
             var pet_id = medical_record.pet_id;
             ViewBag.pet_id = pet_id;
 
@@ -181,6 +207,20 @@ public async Task<IActionResult> Index(int? pet_id)
             {
                 return NotFound();
             }
+
+            var basicInfo = await _context.pets
+                        .Where(p => p.pet_ID == record.pet_id)
+                        .Select(p => new
+                        {
+                            keeper_name = p.keeper.name,
+                            pet_name = p.name,
+                            species = p.pet_type.species,
+                            pet_breed = p.pet_type.breed,
+                            pet_age = p.age,
+
+                        }).FirstOrDefaultAsync();
+            ViewBag.basicInfo = basicInfo;
+            ViewBag.pet_id = record.pet_id;
 
             return View(record);
         }

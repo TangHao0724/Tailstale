@@ -37,7 +37,7 @@
                 <a asp-controller="medical_record" asp-action="Index" asp-route-pet_id="@Model.pet_id" style="text-decoration: none; color: #003366;">
                     <i class="fa-regular fa-clipboard"></i> 門診記錄
                 </a>
-                <a asp-controller="Hosp" asp-action="Index" asp-route-pet_id="@Model.id" style="text-decoration: none; color: #003366;">
+                <a asp-controller="Hosp" asp-action="hosp_history" asp-route-pet_id="@Model.pet_id" style="text-decoration: none; color: #003366;">
                     <i class="fa-regular fa-hospital"></i> 住院記錄
                 </a>
                 <a asp-controller="Hosp" asp-action="Index" asp-route-id="@Model.pet_id" style="text-decoration: none; color: #003366;">

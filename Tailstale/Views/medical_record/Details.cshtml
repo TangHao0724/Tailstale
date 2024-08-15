@@ -37,7 +37,7 @@
                 <a asp-controller="medical_record" asp-action="Index" asp-route-pet_id="@ViewBag.pet_id" style="text-decoration: none; color: #003366;">
                     <i class="fa-regular fa-clipboard"></i> 門診記錄
                 </a>
-                <a asp-controller="Hosp" asp-action="Index" asp-route-medical_records_id="@ViewBag.medical_records_id" style="text-decoration: none; color: #003366;">
+                <a asp-controller="Hosp" asp-action="hosp_history" asp-route-pet_id="@ViewBag.pet_id" style="text-decoration: none; color: #003366;">
                     <i class="fa-regular fa-hospital"></i> 住院記錄
                 </a>
                 <a asp-controller="Hosp" asp-action="Index" asp-route-id="@ViewBag.pet_id" style="text-decoration: none; color: #003366;">
@@ -52,7 +52,7 @@
                 <a asp-controller="Hosp" asp-action="Index" asp-route-id="@ViewBag.pet_id" style="text-decoration: none; color: #003366;">
                     <i class="fa-solid fa-circle-radiation"></i> 醫學影像
                 </a>
-            </div>
+            </div><br>
             <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => model.keeper_id)
             </dt>

@@ -17,9 +17,45 @@ namespace Tailstale.Controllers
 
         // GET: Hosp
         [HttpGet]
-        public async Task<IActionResult> inpatient()
+        public async Task<IActionResult> hosp_history(int pet_id)
         {
-            return View();
+            var query = await (from p in _context.pets
+                               join m in _context.medical_records on p.pet_ID equals m.pet_id
+                               join h in _context.hosp_records on m.id equals h.medical_records_id
+                               join w in _context.wards on h.ward_id equals w.ward_ID into wardGroup
+                               from w in wardGroup.DefaultIfEmpty()
+                               where p.pet_ID == pet_id
+                               select new HospDTO
+                               {
+                                   pet_id = pet_id,
+                                   id = h.id,
+                                   medical_records_id = m.id,
+                                   Datetime = m.Datetime,
+                                   admission_date = h.admission_date,
+                                   discharge_date = h.discharge_date,
+                                   ward_id = w != null ? w.ward_ID : null,
+                               })
+                                .GroupBy(h => h.id)
+                                .Select(g => g.First())
+                                .ToListAsync();
+
+            var sorted = query.OrderByDescending(h => h.admission_date);
+
+            var basicInfo = await _context.pets
+                        .Where(p => p.pet_ID == pet_id)
+                        .Select(p => new
+                        {
+                            keeper_name = p.keeper.name,
+                            pet_name = p.name,
+                            species = p.pet_type.species,
+                            pet_breed = p.pet_type.breed,
+                            pet_age = p.age,
+
+                        }).FirstOrDefaultAsync();
+            ViewBag.basicInfo = basicInfo;
+            ViewBag.pet_id = pet_id;
+
+            return View(sorted);
         }
 
         // GET: Hosp
@@ -47,7 +83,10 @@ namespace Tailstale.Controllers
                         .ToListAsync();
 
             var sortedHosp = Hosp.OrderByDescending(h => h.admission_date);
-
+            if (Hosp == null)
+            {
+                return NotFound();
+            }
             var basicInfo = await _context.medical_records.Where(b => b.id == medical_records_id)
                     .Include(b => b.pet)
                         .ThenInclude(p => p.keeper)
@@ -62,8 +101,12 @@ namespace Tailstale.Controllers
                         pet_age = b.pet.age
                     }).FirstOrDefaultAsync();
             ViewBag.basicInfo = basicInfo;
+            ViewBag.medical_records_id = medical_records_id;
 
-            ViewBag.medical_records_id = medical_records_id; //用來傳medical_record_id給新增的記錄
+            var pet_id = await _context.medical_records.Where(m => m.id == medical_records_id)
+                                                .Include(m => m.pet)
+                                                .Select(m => m.pet.pet_ID).FirstOrDefaultAsync();
+            ViewBag.pet_id = pet_id;
 
             return View(sortedHosp);
         }
@@ -77,6 +120,21 @@ namespace Tailstale.Controllers
                 medical_records_id = medical_records_id,
                 admission_date = DateTime.Now
             };
+
+            var basicInfo = _context.medical_records.Where(b => b.id == medical_records_id)
+                    .Include(b => b.pet)
+                        .ThenInclude(p => p.keeper)
+                    .Include(b => b.pet)
+                        .ThenInclude(p => p.pet_type)
+                    .Select(b => new
+                    {
+                        keeper_name = b.pet.keeper.name,
+                        pet_name = b.pet.name,
+                        species = b.pet.pet_type.species,
+                        pet_breed = b.pet.pet_type.breed,
+                        pet_age = b.pet.age
+                    }).FirstOrDefault();
+            ViewBag.basicInfo = basicInfo;
 
             return View(model);
         }
@@ -117,6 +175,27 @@ namespace Tailstale.Controllers
                                   ward_id = w.ward_ID,
                                   memo = h.memo
                               }).FirstOrDefaultAsync();
+
+            var medical_records_id = _context.hosp_records.Where(h => h.id == id)
+                                                          .Select(h => h.medical_records.id)
+                                                          .FirstOrDefault();
+
+            var basicInfo = _context.medical_records.Where(b => b.id == medical_records_id)
+                    .Include(b => b.pet)
+                        .ThenInclude(p => p.keeper)
+                    .Include(b => b.pet)
+                        .ThenInclude(p => p.pet_type)
+                    .Select(b => new
+                    {
+                        keeper_name = b.pet.keeper.name,
+                        pet_name = b.pet.name,
+                        pet_id = b.pet.pet_ID,
+                        species = b.pet.pet_type.species,
+                        pet_breed = b.pet.pet_type.breed,
+                        pet_age = b.pet.age
+                    }).FirstOrDefault();
+            ViewBag.basicInfo = basicInfo;
+            ViewBag.pet_id = basicInfo.pet_id;
 
             return View(hosp);
         }
