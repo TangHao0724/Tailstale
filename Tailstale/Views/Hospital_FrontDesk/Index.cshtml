@@ -74,7 +74,7 @@
             </div>
         </div>
 
-        <div class="container">
+        <div class="container mb-5">
             <!-- 搜尋結果表格 -->
             <div v-if="showResults">
                 <div v-if="searchingResult.length > 0" class="table-responsive">
@@ -96,24 +96,21 @@
                         </thead>
                         <tbody>
                             <tr v-for="result in searchingResult" :key="result.date + result.clinicName + result.vetName">
-                                <td>{{ result.date }}</td>
-                                <td>{{ result.clinicName }}</td>
-                                <td>{{ result.outpatientClinicName }}</td>
-                                <td>{{ result.timeslotName }}</td>
-                                <td>{{ result.vetName }}</td>
-                                <td>{{ result.startAt }}</td>
-                                <td>{{ result.endAt }}</td>
-                                <td>{{ result.clinicPhone }}</td>
-                                <td>{{ result.clincAddress }}</td>
-                                <td class="d-none">{{ result.businessId }}</td>
-                                <td class="d-none">{{ result.maxPatients }}</td>
-                                <td class="d-none">{{ result.appointmentCount }}</td>                                
+                                <td class="Date">{{ result.date }}</td>
+                                <td class="ClinicName">{{ result.clinicName }}</td>
+                                <td class="OutpatientClinicName">{{ result.outpatientClinicName }}</td>
+                                <td class="TimeslotName">{{ result.timeslotName }}</td>
+                                <td class="VetName">{{ result.vetName }}</td>
+                                <td class="StartAt">{{ result.startAt }}</td>
+                                <td class="EndAt">{{ result.endAt }}</td>
+                                <td class="ClinicPhone">{{ result.clinicPhone }}</td>
+                                <td class="ClincAddress">{{ result.clincAddress }}</td>
+                                <td class="d-none BusinessId">{{ result.businessId }}</td>
                                 <td>
-                                    <button v-if="result.maxPatients > result.appointmentCount" class="btn btn-outline-success"
-                                            v-on:click="appointmentInfo.dailyOutpatientClinicScheduleID = result.outpatientClinicScheduleId" data-bs-toggle="modal" data-bs-target="#appointmentModal">
+                                    <button v-if="result.maxPatients > result.appointmentCount" class="btn btn-outline-success" v-on:click="fetchAppointmentInfo(result.outpatientClinicScheduleId)" data-bs-toggle="modal" data-bs-target="#appointmentModal">
                                         預約看診
                                     </button>
-                                    <span v-else id="blockAppointment" class="">已額滿</span>
+                                    <span v-else id="blockAppointment">已額滿</span>
                                 </td>
                             </tr>
                         </tbody>
@@ -155,35 +152,43 @@
         </div>
     </div>
     <!-- hospitalCards end-->
-</div>
 
-<!--Modal start-->
-<div class="modal fade" tabindex="-1" id="appointmentModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">確認預約資訊</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p>飼主：{{ appointmentInfo.keeperName }}</p>
-                <select>
-                    <option class="" selected disabled>選擇要接受診療的寵物</option>
-                    <option v-for="pet in petInfos">{{ pet }}</option>
-                </select>
-                <p>醫療院所：{{ appointmentInfo.clinicName }}</p>
-                <p>預約門診：{{ appointmentInfo.outpatientClinicName }}</p>
-                <p>預約日期：{{appointmentInfo.date}}</p>
-                <p>門診時間：{{ appointmentInfo.startAt }}~{{ appointmentInfo.endAt }}</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消預約</button>
-                <button type="button" class="btn btn-primary">送出預約</button>
+
+    <!--Modal start-->
+    <div class="modal fade" tabindex="-1" id="appointmentModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">確認預約資訊</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <p>飼主：{{appointmentInfo.keeperName}}</p>
+                        <select>
+                            <option selected>選擇要預約診療服務的寵物</option>
+                            <option v-for="petInfos.petName"></option>
+                        </select>
+
+                    </div>
+                    <p hidden>{{ appointmentInfo.businessId }}</p>
+                    <p>醫療院所：{{ appointmentInfo.clinicName }}</p>
+                    <p>預約門診：{{ appointmentInfo.outpatientClinicName }}</p>
+                    <p>預約日期：{{ appointmentInfo.date }}</p>
+                    <p>門診時間：{{ appointmentInfo.startAt }}~{{ appointmentInfo.endAt }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消預約</button>
+                    <button type="button" class="btn btn-primary" v-on:click="handleAppointment">送出預約</button>
+                </div>
             </div>
         </div>
     </div>
+    <!--Modal end-->
+
 </div>
-<!--Modal end-->
+
+
 
 @section Scripts
 {
@@ -237,10 +242,15 @@
                     },
                     searchingResult: [], // 門診搜尋結果集合
                     showResults: false, // 搜尋結果初始為隱藏
-                    petInfos:[
-                        { petID: '', petName: '' },
-                        { petID: '', petName: '' }
-                    ],
+                    appointmentRequest:{
+                        keeperID:'',
+                        dailyOutpatientClinicScheduleID:''
+                    },
+                    // keeperInfo: {
+                    //     keeperID: '',
+                    //     keeperName: ''
+                    // },
+                    petInfos:[],
                     appointmentInfo: { // 初始化預約門診資料
                         keeperName: '',
                         clinicName: '',
@@ -250,7 +260,7 @@
                         endAt: '',
                         keeperID: '',
                         dailyOutpatientClinicScheduleID: ''
-                    },
+                    },                  
                     hospitals: [], // 院所資料集合
                     showCards: true, // 院所資料卡片
                     isModalVisible: false // 控制 Modal 顯示的狀態
@@ -271,6 +281,11 @@
                         console.error('Error fetching hospital cards:', error);
                     });
                 },
+                handleSearch() {
+                    this.criteria.startDate_front = $('#startDate').val() == "" ? null : $('#startDate').val()
+                    this.criteria.endDate_front = $('#endDate').val() == "" ? null : $('#endDate').val()
+                    this.fetchSearchingResult();
+                },
                 fetchSearchingResult() {
                     this.searchingResult = [];
                     axios.post('Hospital_FrontDesk/showSearchingResult', this.criteria, {
@@ -286,20 +301,55 @@
                     .catch(error => {
                         console.error('Error fetching data:', error);
                     });
-                },
-                handleSearch() {  
-                    this.criteria.startDate_front = $('#startDate').val() == "" ? null : $('#startDate').val()
-                    this.criteria.endDate_front = $('#endDate').val() == "" ? null : $('#endDate').val()
-                    this.fetchSearchingResult();                    
-                },
+                },                
                 resultClear() {
                     this.showResults = false;
                     this.searchingResult = [];
-                },            
-                handleAppointment() {
-                    // 其他與預約相關的邏輯可以放在這裡
+                    this.criteria={
+                        region_front: '',
+                        address_front: '',
+                        startDate_front: null,
+                        endDate_front: null,
+                        timeSlotName_front: '',
+                        clinicName_front: '',
+                        opcName_front: '',
+                        vetName_front: ''
+                    }
                 },
-            
+                // fetchPetInfo() {
+                //     axios.get(`Hospital_FrontDesk/fetchPetInfo`)
+                //         .then(response => {
+                //             this.petInfos = response.data;
+                //         })
+                //         .catch(error => {
+                //             console.error('Error fetching keeperInfo:', error);
+                //         });
+                // },
+                fetchAppointmentInfo(currentDOCSID) {
+                    console.log(currentDOCSID)
+                    axios.post('Hospital_FrontDesk/fetchAppointmentInfo',{
+                        "dailyOutpatientClinicScheduleID": currentDOCSID
+                    })
+                         // .then(response => {
+                         //    this.appointmentInfo: {
+                         //        keeperID: response.keeperID,
+                         //        keeperName: response.keeperName,
+                         //        clinicName: response.clinicName,
+                         //        outpatientClinicName: response.outpatientClinicName,
+                         //        date: response.data,
+                         //        startAt: response.startAt,
+                         //        endAt: response.endAt,
+                         //        dailyOutpatientClinicScheduleID: response.dailyOutpatientClinicScheduleID
+                         //    },
+                         //     this.petInfos: [{ 
+                         //      petID:'',petName:''
+                         //     }]
+                        //console.log(response.data)
+                        //})
+                        .catch(error => {
+                            console.error('Error fetching keeperInfo:', error);
+                        });
+                },
                 // 預約請求
                 makeAppointment() {
                     const appointmentRequest = {
@@ -307,7 +357,7 @@
                         dailyOutpatientClinicScheduleID: this.appointmentInfo.dailyOutpatientClinicScheduleID
                     };
 
-                    axios.post('Hospital_FrontDesk/makeAppointment', appointmentRequest, {
+                    axios.post('/Hospital_FrontDesk/makeAppointment', appointmentRequest, {
                         headers: {
                             'Content-Type': 'application/json'
                         }

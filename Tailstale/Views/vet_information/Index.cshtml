@@ -51,7 +51,7 @@
                         <th>
                             @Html.DisplayNameFor(model => model.employment_status)
                         </th>
-
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -72,13 +72,13 @@
                             </td>
                             <td>
                                 @if (item.employment_status == true)
-                                    {
-                                        <p>在職</p>
-                                    }
-                                    else
-                                    {
-                                        <p>離職</p>
-                                    }
+                                {
+                                    <p>在職</p>
+                                }
+                                else
+                                {
+                                    <p>離職</p>
+                                }
                             </td>
                             <td>
                                 <div class="text-end">

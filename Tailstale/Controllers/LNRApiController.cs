@@ -135,6 +135,7 @@ namespace Tailstale.Controllers
 
 
             HttpContext.Session.SetInt32("loginID", selectID);//登入成功，建立session
+            
             HttpContext.Session.SetInt32("loginType", 0);
 
 

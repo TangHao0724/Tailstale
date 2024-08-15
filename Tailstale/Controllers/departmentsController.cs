@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Tailstale.Filter;
 using Tailstale.Models;
 
 namespace Tailstale.Controllers
 {
+    [IsHospitalFilter]
     public class departmentsController : Controller
     {
         private readonly TailstaleContext _context;
