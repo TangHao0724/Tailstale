@@ -59,7 +59,9 @@
                     <input type="hidden" asp-for="pet_id" />
                     <div class="form-group">
                         <label asp-for="outpatient_clinic_id" class="control-label"></label>
-                        <input asp-for="outpatient_clinic_id" class="form-control" />
+                        <select asp-for="outpatient_clinic_id" asp-items="ViewBag.selectOPC" class="form-control">
+                            <option value="">選擇科別</option>
+                        </select>
                         <span asp-validation-for="outpatient_clinic_id" class="text-danger"></span>
                     </div>
                     <div class="form-group">

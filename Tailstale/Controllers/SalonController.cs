@@ -65,7 +65,7 @@ namespace Tailstale.Controllers
             ViewBag.LoginType = loginType.HasValue ? loginType.Value : (int?)null;
             ViewData["keeper_ID"] = new SelectList(_context.keepers, "ID", "name");
 
-            if (KloginID.HasValue)
+            if (KloginID.HasValue)  
             {
                 // loginID 有值，進行查詢
                 var pets = _context.pets
