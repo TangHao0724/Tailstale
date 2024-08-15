@@ -72,7 +72,7 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Update="Views\Shared\_UnLoginUTag.cshtml">
+    <Content Update="Views\Shared\Components\LoginUTag\_LoginUTagUn.cshtml">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>

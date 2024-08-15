@@ -12,7 +12,7 @@ using Tailstale.Models;
 
 namespace Tailstale.Controllers
 {
-    [IsHospitalFilter]
+
     public class daily_outpatient_clinic_scheduleController : Controller
     {
         private readonly TailstaleContext _context;

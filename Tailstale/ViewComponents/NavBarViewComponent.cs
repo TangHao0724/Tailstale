@@ -9,11 +9,11 @@ namespace Tailstale.ViewComponents
 
             var I = await Task.Run(() => HttpContext.Session.GetInt32("loginID"));
             var T = await Task.Run(() => HttpContext.Session.GetInt32("loginType"));
-            int?[] ints = new int?[] { I, T };
+            //List<int?> ints = new List<int?> { I ,T};
             ViewBag.loginID = I;
             ViewBag.loginType = T;
 
-            return View("_NavBar",ints);
+            return View("_NavBar");
         }
     }
 }

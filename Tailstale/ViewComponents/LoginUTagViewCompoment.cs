@@ -14,7 +14,7 @@ namespace Tailstale.ViewComponents
         {
             _context = context;
         }
-        public async Task<IViewComponentResult> InvokeAsync(int id,int UType)
+        public async Task<IViewComponentResult> InvokeAsync(int? id,int? UType)
         {
             string? url;
             if (UType != 0)
@@ -35,7 +35,10 @@ namespace Tailstale.ViewComponents
             // 傳遞資訊到 View
             switch (UType)
             {
-                
+                case 0:
+                    ViewBag.Keeper_imgurl = url != null ? $"/imgs/keeper_img/{url}" : "/imgs/keeper_img/no_head.png";
+                    ViewBag.UserID = id;
+                    return View("_LoginUTagKeeper");
                 case 1://旅館
                     string hotel_imgurl = "images/business/";
                     ViewBag.hotel_imgurl = url != null ?hotel_imgurl+url : "/imgs/keeper_img/no_head.png";
@@ -43,7 +46,7 @@ namespace Tailstale.ViewComponents
                     ViewBag.UType = UType;
                     return View("_LoginUTagHotel");
                 case 2://美容
-                    string salon_imgurl = "Salon_img/";
+                    string salon_imgurl = " https://localhost:7112/Salon_img/";
                     ViewBag.salon_imgurl = url != null ? salon_imgurl+url : "/imgs/keeper_img/no_head.png";
                     ViewBag.UserID = id;
                     ViewBag.UType = UType;
@@ -55,10 +58,9 @@ namespace Tailstale.ViewComponents
                     ViewBag.UType = UType;
                     return View("_LoginUTagHospital");
                 default:
+                    return View("_LoginUTagUn");
                     
-                    ViewBag.Keeper_imgurl = url !=null? $"/imgs/keeper_img/{url}" : "/imgs/keeper_img/no_head.png";
-                    ViewBag.UserID = id;
-                    return View("_LoginUTagKeeper");
+
             }
 
         }

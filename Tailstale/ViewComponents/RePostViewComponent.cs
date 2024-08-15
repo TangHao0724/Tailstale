@@ -16,6 +16,8 @@ namespace Tailstale.ViewComponents
             int? loginId = HttpContext.Session.GetInt32("loginID");
 
             ViewBag.userID = loginId;
+
+
             return View("_Repost");
         }
     }
