@@ -12,6 +12,8 @@
     <style>
         body {
             min-height: 150vh;
+            background: linear-gradient( rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6) ), url('/Salon_img/landscape-7283516_1920.jpg') no-repeat center center;
+            background-size: cover;
         }
 
         .app {
@@ -150,6 +152,21 @@
 
         .atext {
             text-decoration: none;
+        }
+
+        .Beauty_Step-1{
+            position: relative;
+        }
+
+        .workA{
+            position: absolute;
+            background-color: rgba(255, 172, 124,.4);
+            padding:15px;
+            border-radius: 0 20px 20px 0;
+            text-decoration: none;
+            writing-mode: vertical-rl; /* 垂直顯示，從右到左 */
+            text-align: center; /* 文字對齊方式 */
+            right:-53px;
         }
 
         /* 以下是pic */
@@ -321,6 +338,7 @@
 
 
         <div class="container-fluid my-3 Beauty_Step-1 Selectheader pb-3">
+            <a class="workA" href="#showWorks">門市作品</a>
             <div v-for="business in businesses" :key="business.ID" class="row p-2 g-3 mb-3">
               <div v-html="business.geoJson" class="col-12 col-md-6">
                 
@@ -364,7 +382,8 @@
                 </div> 
 
                 <div class="row mybordertop">
-                <h4 class="py-3 text-center">顯示門市作品</h4>
+                <h4 id="showWorks" class="py-3 text-center">顯示門市作品</h4>
+                    <p class="fs-5 pb-2 text-center">點選寵物類型以查看作品</p>
                     <button class="btn btn-primary TypePetPic col-5" value="貓" v-on:click="storePic($event,business.id)">貓</button><button class="btn btn-primary TypePetPic col-5" value="狗" v-on:click="storePic($event,business.id)">狗</button><button class="btn btn-primary col-2" v-on:click="hidepic()">關閉</button>
                 <div class="container petimage-group px-5">
                     <div class="row imagerow">
