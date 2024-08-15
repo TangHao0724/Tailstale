@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Tailstale.Filter;
 using Tailstale.Hospital_ViewModel;
 using Tailstale.Models;
 
 namespace Tailstale.Controllers
 {
+    [IsHospitalFilter]
     public class outpatient_clinicController : Controller
     {
         private readonly TailstaleContext _context;

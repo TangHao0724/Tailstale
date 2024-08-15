@@ -2,12 +2,14 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Tailstale.Filter;
 using Tailstale.Hospital_DTO;
 using Tailstale.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Tailstale.Controllers
 {
+    //[IsKeeperFilter]
     public class Hospital_FrontDeskController : Controller
     {
         private readonly TailstaleContext _context;
@@ -23,20 +25,20 @@ namespace Tailstale.Controllers
         public IActionResult Index()//搜尋頁面
         {
             return View();
-        }        
+        }
 
         //POST:Hospital_FrontDesk/showSearchingResult
         //https://localhost:7112/Hospital_FrontDesk/showSearchingResult
         [HttpPost]
-        public async Task<IEnumerable<frontDeskSearchingResult_DTO>> showSearchingResult([FromBody]frontDeskSearchingCriteria_DTO criteria)//搜尋門診結果
-        {            
+        public async Task<IEnumerable<frontDeskSearchingResult_DTO>> showSearchingResult([FromBody] frontDeskSearchingCriteria_DTO criteria)//搜尋門診結果
+        {
             var searchingResult = new List<frontDeskSearchingResult_DTO>();
-            if (criteria.region_front == "" && criteria.address_front=="" && criteria.startDate_front==null && criteria.endDate_front==null && criteria.timeSlotName_front=="" && criteria.opcName_front=="" && criteria.vetName_front=="" && criteria.clinicName_front=="")
+            if (criteria.region_front == "" && criteria.address_front == "" && criteria.startDate_front == null && criteria.endDate_front == null && criteria.timeSlotName_front == "" && criteria.opcName_front == "" && criteria.vetName_front == "" && criteria.clinicName_front == "")
             {
                 return null;
             }
             else
-            {                
+            {
                 string region = criteria.region_front;
                 string address = criteria.address_front;
                 DateOnly today = DateOnly.FromDateTime(DateTime.Now);
@@ -76,7 +78,7 @@ namespace Tailstale.Controllers
                                              clinicPhone = b.phone,
                                              clincAddress = b.address,
                                              maxPatients = opc.max_patients,
-                                             appointmentCount = _context.Appointments.Where(a=>a.daily_outpatient_clinic_schedule_ID== docs.daily_outpatient_clinic_schedule_ID).Count()
+                                             appointmentCount = _context.Appointments.Where(a => a.daily_outpatient_clinic_schedule_ID == docs.daily_outpatient_clinic_schedule_ID).Count()
                                          }).ToListAsync();
 
                 if (startDate.HasValue && endDate.HasValue)
@@ -88,7 +90,7 @@ namespace Tailstale.Controllers
                 else
                 {
                     searchingResult = searchingResult;
-                }               
+                }
                 return searchingResult;
             }
         }
@@ -96,21 +98,19 @@ namespace Tailstale.Controllers
         //GET:Hospital_FrontDesk/loadHospitalCards
         [HttpPost]
         public async Task<IEnumerable<frontDeskHospitalCard_DTO>> loadHospitalCards([FromBody] frontDeskSearchingCriteria_DTO criteria)//首頁院所資料卡片
-        
-        
         {
             string region = criteria.region_front;
             string address = criteria.address_front;
             var imageURL = $"{_configuration["BaseAddress"]}/lib/HospitalImages";
             var hospitals = await (from b in _context.businesses
-                                   where b.type_ID==3
+                                   where b.type_ID == 3
                                    select new frontDeskHospitalCard_DTO
                                    {
                                        businessId = b.ID,
                                        hospitalName = b.name,
                                        hospitalAddress = b.address,
                                        hospitalPhone = b.phone,
-                                       photoURL=b.photo_url
+                                       photoURL = b.photo_url
                                    }).ToListAsync();
             if (region != null || address != null)//判斷搜尋欄篩選條件
             {
@@ -120,7 +120,7 @@ namespace Tailstale.Controllers
             {
                 return null;
             }
-            else 
+            else
             {
                 foreach (var h in hospitals)
                 {
@@ -134,7 +134,7 @@ namespace Tailstale.Controllers
                     }
                 }
             }
-            
+
             return hospitals;
         }
 
@@ -179,20 +179,20 @@ namespace Tailstale.Controllers
         {
             var imageURL = $"{_configuration["BaseAddress"]}/lib/HospitalImages";
             var vetInfos = await (from v in _context.vet_informations
-                                 join b in _context.business_imgs
-                                 on v.business_img_ID equals b.ID
-                                 where v.business_ID == businessID
-                                 select new frontDeskVetInfo_DTO
-                                 { 
-                                  vetName=v.vet_name,
-                                  profile=v.profile,
-                                  vetImageURL=b.URL,
-                                 }).ToListAsync();
+                                  join b in _context.business_imgs
+                                  on v.business_img_ID equals b.ID
+                                  where v.business_ID == businessID
+                                  select new frontDeskVetInfo_DTO
+                                  {
+                                      vetName = v.vet_name,
+                                      profile = v.profile,
+                                      vetImageURL = b.URL,
+                                  }).ToListAsync();
             if (vetInfos == null)
             {
                 return null;
             }
-            else 
+            else
             {
                 foreach (var v in vetInfos)
                 {
@@ -230,7 +230,7 @@ namespace Tailstale.Controllers
         }
 
         //GET:Hospital_FrontDesk/getSchedules/businessID
-        [HttpGet("getSchedules")]//取得當月及下個月門診資訊
+        [HttpGet]//取得當月及下個月門診資訊
         public async Task<IEnumerable<frontDeskDailyOutPatientClinicSchedule_DTO>> getSchedules(int businessID)
         {
             int currentYear = DateTime.Now.Year;
@@ -269,59 +269,73 @@ namespace Tailstale.Controllers
             return schedules;
         }
 
-        
-        //Post:Hospital_FrontDesk/showAppointmentInfo
+
+        //Post:Hospital_FrontDesk/fetchAppointmentInfo
+
         [HttpPost]//取得飼主及門診資訊顯示在預約確認表單
-        public async Task<AppointmentComfrim_DTO> showAppointmentInfo([FromBody] appointmentRequest_DTO appointmentRequest)
+        public async Task<AppointmentComfrim_DTO> fetchAppointmentInfo([FromBody] int dailyOutpatientClinicScheduleID)
         {
-            var keeperInfo =await(from k in _context.keepers
-                                  where k.ID== appointmentRequest.keeperID
-                                  select new KeeperInfo_DTO
-                                  { 
-                                   keeperID = k.ID,
-                                   keeperName=k.name,
-                                  }).SingleOrDefaultAsync();
+            //int keeperID = (int)HttpContext.Session.GetInt32("loginID");
+            int keeperID = 1001;
+            var keeperInfo = await (from k in _context.keepers
+                                    where k.ID == keeperID
+                                    select new KeeperInfo_DTO
+                                    {
+                                        keeperID = k.ID,
+                                        keeperName = k.name,
+                                    }).SingleOrDefaultAsync();
+            var petInfo = await (from p in _context.pets
+                                 where p.keeper_ID==keeperID
+                                 select new PetInfo_DTO
+                                 { 
+                                  petID=p.pet_ID,
+                                  petName = p.name,
+                                 }).ToListAsync();
 
             var newAppointment = await (from docs in _context.daily_outpatient_clinic_schedules
-                                    join opc in _context.outpatient_clinics
-                                    on docs.outpatient_clinic_ID equals opc.outpatient_clinic_ID
-                                    join vInfo in _context.vet_informations
-                                    on opc.vet_ID equals vInfo.vet_ID
-                                    join opct in _context.outpatient_clinic_timeslots
-                                    on opc.outpatient_clinic_timeslot_ID equals opct.outpatient_clinic_timeslot_ID
-                                    join b in _context.businesses
-                                    on vInfo.business_ID equals b.ID
-                                    where docs.daily_outpatient_clinic_schedule_ID == appointmentRequest.dailyOutpatientClinicScheduleID
+                                        join opc in _context.outpatient_clinics
+                                        on docs.outpatient_clinic_ID equals opc.outpatient_clinic_ID
+                                        join vInfo in _context.vet_informations
+                                        on opc.vet_ID equals vInfo.vet_ID
+                                        join opct in _context.outpatient_clinic_timeslots
+                                        on opc.outpatient_clinic_timeslot_ID equals opct.outpatient_clinic_timeslot_ID
+                                        join b in _context.businesses
+                                        on vInfo.business_ID equals b.ID
+                                        where docs.daily_outpatient_clinic_schedule_ID == dailyOutpatientClinicScheduleID
                                         select new AppointmentComfrim_DTO
                                         {
-                                        dailyOutpatientClinicScheduleID=docs.daily_outpatient_clinic_schedule_ID,
-                                        date=(DateOnly)docs.date,
-                                        outpatientClinicName=opc.outpatient_clinic_name,
-                                        clinicName=b.name,
-                                        vetName =vInfo.vet_name,
-                                        outpatientClinicTimeslotName=opct.outpatient_clinic_timeslot_name,
-                                        startAt=(TimeOnly)opct.startat,
-                                        endAt=(TimeOnly)opct.endat,
-                                        keeperInfo= keeperInfo
-                                    }).SingleOrDefaultAsync();
+                                            dailyOutpatientClinicScheduleID = docs.daily_outpatient_clinic_schedule_ID,
+                                            date = (DateOnly)docs.date,
+                                            outpatientClinicName = opc.outpatient_clinic_name,
+                                            clinicName = b.name,
+                                            vetName = vInfo.vet_name,
+                                            outpatientClinicTimeslotName = opct.outpatient_clinic_timeslot_name,
+                                            startAt = (TimeOnly)opct.startat,
+                                            endAt = (TimeOnly)opct.endat,
+                                            keeperID = keeperInfo.keeperID,
+                                            keeperName = keeperInfo.keeperName,
+                                            petInfos= petInfo
+                                        }).SingleOrDefaultAsync();
             if (newAppointment == null)
-            { 
+            {
                 return null;
             }
             return newAppointment;
         }
 
+        //GET:Hospital_FrontDesk/fetchPetInfo
         [HttpGet]//取飼主的寵物資訊顯示在下拉選單
-        public async Task<bool> showPetInfo(int keeperID, int petID)
+        public async Task<IEnumerable<PetInfo_DTO>> fetchPetInfo()
         {
+            int keeperID = (int)HttpContext.Session.GetInt32("loginID");
             var petInfos = await (from p in _context.pets
-                                  where keeperID == keeperID
+                                  where p.keeper_ID == keeperID
                                    select new PetInfo_DTO
                                    { 
-                                    petID=petID,
+                                    petID=p.pet_ID,
                                     petName=p.name,
                                    }).ToListAsync();
-            return true;
+            return petInfos;
         }
 
         //POST:Hospital_FrontDesk/newAppointment

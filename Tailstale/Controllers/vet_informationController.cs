@@ -7,12 +7,15 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using Tailstale.Filter;
 using Tailstale.Hospital_ViewModel;
 using Tailstale.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Tailstale.Controllers
 {
+    [IsHospitalFilter]
     public class vet_informationController : Controller
     {
         private readonly TailstaleContext _context;
@@ -25,15 +28,15 @@ namespace Tailstale.Controllers
         // GET: vet_information
         public async Task<IActionResult> Index()
         {
+            int LoginID= (int)HttpContext.Session.GetInt32("loginID");
             try
             {
-                var tailstaleContext = _context.vet_informations.Include(v => v.business).Include(v => v.department);
+                //var tailstaleContext = _context.vet_informations.Include(v => v.business).Include(v => v.department);
 
                 var v_Infovm = from v_info in _context.vet_informations
                                join b_img in _context.business_imgs
-                               on v_info.business_img_ID equals b_img.ID
-                               join b_img_types in _context.business_img_types
-                               on b_img.img_type_id equals b_img_types.ID
+                               on v_info.business_img_ID equals b_img.ID                               
+                               where v_info.business_ID == LoginID
                                orderby v_info.employment_status descending
                                select new vet_information_ViewModel
                                {
@@ -47,7 +50,6 @@ namespace Tailstale.Controllers
                                    department = v_info.department,
                                    business_img_ID = b_img.ID,
                                    business_img= b_img,
-                                   img_type_id = b_img_types.ID,
                                    URL = b_img.URL,
                                    name = b_img.name,
                                    employment_status= (bool)v_info.employment_status,
@@ -65,7 +67,7 @@ namespace Tailstale.Controllers
 
         // GET: vet_information/Details/5
         public async Task<IActionResult> Details(int? id)
-        {
+        {            
             if (id == null)
             {
                 return NotFound();
@@ -89,7 +91,6 @@ namespace Tailstale.Controllers
                                       department = v_info.department,
                                       business_img_ID = b_img.ID,
                                       business_img = b_img,
-                                      img_type_id = b_img_types.ID,
                                       URL = b_img.URL,
                                       name = b_img.name,
                                       employment_status= (bool)v_info.employment_status,
@@ -101,8 +102,8 @@ namespace Tailstale.Controllers
         // GET: vet_information/Createwq
         public IActionResult Create(int id)
         {
-            ViewBag.typename = new SelectList(_context.business_img_types.Where(t=>t.FK_business_id==id), "ID", "typename");
-            ViewData["business_ID"] = new SelectList(_context.businesses.Where(b=>b.ID==id), "ID", "name");
+            int LoginID = (int)HttpContext.Session.GetInt32("loginID");
+            ViewData["business_ID"] = LoginID.ToString();
             ViewData["department_ID"] = new SelectList(_context.departments.Where(d=>d.business_ID==id), "department_ID", "department_name");
             return View();
         }
@@ -115,6 +116,7 @@ namespace Tailstale.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(insert_vet_information_ViewModel v_Infovm/*, IFormFile? file*/)
         {
+            int LoginID = (int)HttpContext.Session.GetInt32("loginID");
             if (ModelState.IsValid)
             {                
                 // 判斷是否有上傳檔案
@@ -150,50 +152,45 @@ namespace Tailstale.Controllers
 
                 business_img business_Img = new business_img
                 {
-                    URL = v_Infovm.URL,
-                    //name = v_Infovm.name,
+                    URL = v_Infovm.URL,                    
                     name = v_Infovm.URL,
-                    img_type_id=v_Infovm.img_type_id,
                 };
                 _context.Add(business_Img);
                 await _context.SaveChangesAsync();
 
-                //vet_Information vet_Information = new vet_Information
-                //{
-                //    vet_name = v_Infovm.vet_name,
-                //    business_ID = v_Infovm.business_ID,
-                //    license_number = v_Infovm.license_number,
-                //    department_ID = v_Infovm.department_ID,
-                //    profile = v_Infovm.profile,
-                //    business_img_ID = business_Img.ID,
-                //    employment_status=v_Infovm.employment_status,
-                //};
-                //_context.Add(vet_Information);
+                vet_information vet_Information = new vet_information
+                {
+                    vet_name = v_Infovm.vet_name,
+                    business_ID = LoginID,
+                    license_number = v_Infovm.license_number,
+                    department_ID = v_Infovm.department_ID,
+                    profile = v_Infovm.profile,
+                    business_img_ID = business_Img.ID,
+                    employment_status=v_Infovm.employment_status,
+                };
+                _context.Add(vet_Information);
                 await _context.SaveChangesAsync();
             }
             else
             {
                 return View(v_Infovm);
             }
-            ViewBag.typename= new SelectList(_context.business_img_types, "ID","typename");
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", v_Infovm.business_ID);
+            ViewData["business_ID"] = LoginID.ToString();
             ViewData["department_ID"] = new SelectList(_context.departments, "department_ID", "department_name", v_Infovm.department_ID);
             return RedirectToAction(nameof(Index));
         }
 
         // GET: vet_information/Edit
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-
+            int LoginID = (int)HttpContext.Session.GetInt32("loginID");
             if (id == null)
             {
                 return NotFound();
             }
             var v_Infovm = await(from v_info in _context.vet_informations
                            join b_img in _context.business_imgs
-                           on v_info.business_img_ID equals b_img.ID
-                           join b_img_types in _context.business_img_types
-                           on b_img.img_type_id equals b_img_types.ID
+                           on v_info.business_img_ID equals b_img.ID                           
                            where v_info.vet_ID== id
                            select new vet_information_ViewModel
                            {
@@ -201,19 +198,18 @@ namespace Tailstale.Controllers
                                vet_name = v_info.vet_name,
                                license_number = v_info.license_number,
                                profile = v_info.profile,
-                               business_ID = v_info.business_ID,
+                               business_ID = LoginID,
                                business = v_info.business,
                                department_ID = v_info.department_ID,
                                department = v_info.department,
                                business_img_ID = b_img.ID,
                                business_img = b_img,
-                               img_type_id = b_img_types.ID,
                                URL = b_img.URL,
                                name = b_img.name,
                                employment_status=(bool)v_info.employment_status,
                            }).FirstOrDefaultAsync();
 
-            ViewData["business_ID"] = new SelectList(_context.businesses.Where(b=>b.type_ID==3), "ID", "name");
+            ViewData["business_ID"] = LoginID.ToString();
             ViewData["department_ID"] = new SelectList(_context.departments, "department_ID", "department_name", v_Infovm.department_ID);
 
             return View(v_Infovm);
@@ -224,8 +220,9 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("vet_ID,vet_name,business_ID,license_number,department_ID,business_img_ID,profile,ID,img_type_id,URL,name,employment_status")] vet_information_ViewModel v_Infovm)
+        public async Task<IActionResult> Edit(int id, [Bind("vet_ID,vet_name,business_ID,license_number,department_ID,business_img_ID,profile,ID,URL,name,employment_status")] vet_information_ViewModel v_Infovm)
         {
+            int LoginID = (int)HttpContext.Session.GetInt32("loginID");
             if (id != v_Infovm.vet_ID)
             {
                 return NotFound();
@@ -244,7 +241,7 @@ namespace Tailstale.Controllers
                         var pictureFile = Request.Form.Files["URL"];
 
                         // 新增存圖檔路徑
-                        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/lib/HospitalImages/Vet_Info");
+                        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/lib/HospitalImages");
                         // 確保目標目錄存在
                         if (!Directory.Exists(uploadsFolder))
                         {
@@ -275,7 +272,7 @@ namespace Tailstale.Controllers
                     if (Request.Form.Files["URL"] != null)
                     {
                         // 取得當前目錄,圖片存放路徑, 去掉路徑開頭的 / 符號，以防止路徑不正確
-                        var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/lib/HospitalImages/Vet_Info", b_img.URL.TrimStart('/'));
+                        var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/lib/HospitalImages", b_img.URL.TrimStart('/'));
                         // 檢查舊圖片文件是否存在
                         if (System.IO.File.Exists(oldFilePath))
                         {
@@ -291,24 +288,23 @@ namespace Tailstale.Controllers
                     {                        
                         ID= b_img.ID,
                         URL = v_Infovm.URL,
-                        img_type_id = v_Infovm.img_type_id,
                         name = v_Infovm.URL,
                     };
                     _context.Update(business_ImgUpdate);
                     await _context.SaveChangesAsync();
 
-                    //vet_Information vet_InformationUpdate = new vet_Information
-                    //{
-                    //    vet_ID=v_Infovm.vet_ID,
-                    //    vet_name = v_Infovm.vet_name,
-                    //    business_ID = v_Infovm.business_ID,
-                    //    license_number = v_Infovm.license_number,
-                    //    department_ID = v_Infovm.department_ID,
-                    //    profile = v_Infovm.profile,
-                    //    employment_status=v_Infovm.employment_status,
-                    //    business_img_ID = business_ImgUpdate.ID,
-                    //};
-                    //_context.Update(vet_InformationUpdate);
+                    vet_information vet_InformationUpdate = new vet_information
+                    {
+                        vet_ID=v_Infovm.vet_ID,
+                        vet_name = v_Infovm.vet_name,
+                        business_ID = LoginID,
+                        license_number = v_Infovm.license_number,
+                        department_ID = v_Infovm.department_ID,
+                        profile = v_Infovm.profile,
+                        employment_status=(bool)v_Infovm.employment_status,
+                        business_img_ID = business_ImgUpdate.ID,
+                    };
+                    _context.Update(vet_InformationUpdate);
                     await _context.SaveChangesAsync(); 
                 }
                 catch (DbUpdateConcurrencyException)
@@ -324,7 +320,7 @@ namespace Tailstale.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", v_Infovm.business_ID);
+            ViewData["business_ID"] = LoginID;
             ViewData["department_ID"] = new SelectList(_context.departments, "department_ID", "department_name", v_Infovm.department_ID);
             
             return RedirectToAction(nameof(Index));
@@ -341,8 +337,6 @@ namespace Tailstale.Controllers
             var v_Infovm = await (from v_info in _context.vet_informations
                                    join b_img in _context.business_imgs
                                    on v_info.business_img_ID equals b_img.ID
-                                   join b_img_types in _context.business_img_types
-                                   on b_img.img_type_id equals b_img_types.ID
                                    where v_info.vet_ID == id
                                    select new vet_information_ViewModel
                                    {
@@ -356,7 +350,6 @@ namespace Tailstale.Controllers
                                        department = v_info.department,
                                        business_img_ID = b_img.ID,
                                        business_img = b_img,
-                                       img_type_id = b_img_types.ID,
                                        URL = b_img.URL,
                                        name = b_img.name
                                    }).FirstOrDefaultAsync();
@@ -382,7 +375,7 @@ namespace Tailstale.Controllers
                     if (!string.IsNullOrEmpty(business_img.URL))
                     {
                         // 取得當前目錄,圖片存放路徑, 去掉路徑開頭的 / 符號，以防止路徑不正確
-                        var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/lib/HospitalImages/Vet_Info", business_img.URL.TrimStart('/'));
+                        var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/lib/HospitalImages", business_img.URL.TrimStart('/'));
                         // 檢查舊圖片文件是否存在
                         if (System.IO.File.Exists(oldFilePath))
                         {

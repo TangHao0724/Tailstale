@@ -2,10 +2,10 @@
 {
     public class appointmentRequest_DTO
     { 
-        public int keeperID { get; set; }
+        
         public int dailyOutpatientClinicScheduleID { get; set; }
     }
-    
+
     public class AppointmentComfrim_DTO
     {
         public int dailyOutpatientClinicScheduleID { get; set; }//from daily_outpatient_clinic_schedule        
@@ -19,8 +19,10 @@
         public TimeOnly startAt { get; set; }//from outpatient_clinic_timeslot
 
         public TimeOnly endAt { get; set; }//from outpatient_clinic_timeslot
+        public int keeperID { get; set; }
+        public string keeperName { get; set; }
 
-        public KeeperInfo_DTO keeperInfo { get; set; }
+        public List<PetInfo_DTO> petInfos {get;set;}
     }
 
     public class KeeperInfo_DTO

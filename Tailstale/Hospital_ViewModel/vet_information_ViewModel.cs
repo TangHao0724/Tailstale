@@ -32,8 +32,6 @@ namespace Tailstale.Hospital_ViewModel
         public int? business_img_ID { get; set; }
         public virtual business_img? business_img { get; set; }
 
-        public int? img_type_id { get; set; }
-
         [Display(Name = "醫師照片")]
         public string? URL { get; set; }
 
@@ -60,15 +58,12 @@ namespace Tailstale.Hospital_ViewModel
         public string profile { get; set; }
 
         [Display(Name = "院所名稱")]
-        public int? business_ID { get; set; }
+        public int business_ID { get; set; }
         [Display(Name = "科別名稱")]
-        public int? department_ID { get; set; }
+        public int department_ID { get; set; }
 
         [Display(Name = "醫師照片")]
-        public string? URL { get; set; }   
-
-        [Display(Name = "影像類別")]
-        public int? img_type_id { get; set; }
+        public string URL { get; set; }   
 
         [Display(Name = "狀態")]
         public bool employment_status { get; set; }
