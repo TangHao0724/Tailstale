@@ -125,7 +125,7 @@ app.component('tab-使用者資訊', {
                 console.error('Error fetching user info:', error);
             }
         },
-        //更新會員資料
+        //更新會員資料x
         async postuserinfo(userid) {
             try {
                 const formData = new FormData(this.$refs.userinfoform);
@@ -342,25 +342,122 @@ app.component('tab-寵物資訊', {
 });
 
 app.component('tab-歷史訂單', {
-    template: `#tab-HisOrder`
-});
-
-app.component('tab-歷史貼文', {
-    template: `#tab-HisPost`,
+    template: `#tab-HisOrder`,
     data() {
         return {
-            mal:"",
+            userOrder: [],
+            selectedtype: "",
+            selectedorderID: null,
+            
         }
     },
     created() {
+        this.getAllOrder();
+        $(document).ready(function () {
+            const table = $('#orderTable').DataTable({
+                language: {
+                    "sProcessing": "處理中...",
+                    "sLengthMenu": "顯示 _MENU_ 項結果",
+                    "sZeroRecords": "沒有匹配結果",
+                    "sInfo": "顯示第 _START_ 至 _END_ 項結果，共 _TOTAL_ 項",
+                    "sInfoEmpty": "顯示第 0 至 0 項結果，共 0 項",
+                    "sInfoFiltered": "(由 _MAX_ 項結果過濾)",
+                    "sSearch": "搜尋：",
+                    "sEmptyTable": "表中數據為空",
+                    "sLoadingRecords": "載入中...",
+                    "oPaginate": {
+                        "sFirst": "首頁",
+                        "sPrevious": "上一頁",
+                        "sNext": "下一頁",
+                        "sLast": "末頁"
+                    },
+                    "oAria": {
+                        "sSortAscending": "以升序排列此列",
+                        "sSortDescending": "以降序排列此列"
+                    }
+                },
+                "order": [[0, "desc"]],
+                columns: [
+                    { title: "編號", data: "orderID" },
+                    { title: "寵物名稱", data: "orderPet" },
+                    { title: "服務種類", data: "orderType" },
+                    { title: "店家名稱", data: "businessName" },
+                    { title: "服務名稱", data: "serviceName" },
+                    { title: "預約時間", data: "orderDate" },
+                    { title: "預約狀態", data: "orderStatus" },
+                    {
+                        title: "查看詳情",
+                        data: null,
+                        defaultContent: '<button class="btn btn-outline-primary btn-action" @@click="switchUrl">詳情</button>',
+                        orderable: false
+                    }
+                ],
+                createdRow: function (row, data, dataIndex) {
+                    $('td:eq(7)', row).html('<button class="btn btn-outline-primary btn-action" @@click="switchUrl">詳情</button>');
+                }
 
+            }); 
+            $('#orderTable tbody').on('click', 'button.btn-action', (event) => {
+                alert("aa");
+                const datas = table.row($(event.currentTarget).parents('tr')).data();
+                var oID = parseInt(datas.orderID);
+                var oT = datas.orderType;
+                alert(oID);
+                if (oT === "寵物美容") {
+                    // 處理寵物美容的邏輯
+                } else if (oT === "寵物醫療") {
+
+                } else {
+                    // 處理其他類型的邏輯
+                    try {
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = `Hotels/ShowBookingDetail`; // 目標 URI
+
+                        // 將 payment 陣列轉換為 JSON 字串
+                        // const ConvertID = JSON.stringify(bookingID);
+
+                        // 創建一個隱藏的輸入元素來存放 JSON 字串
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'BookingID'; // 你可以根據需要修改這個名稱
+                        input.value = oID;
+
+                        // 將輸入元素添加到表單中
+                        form.appendChild(input);
+
+                        // 將表單添加到文檔中並提交
+                        document.body.appendChild(form);
+                        form.submit(); // 提交表單
+                    } catch (error) {
+                        console.error('Error fetching booking history:', error);
+                    }
+                }
+            });
+
+
+        });
     },
     props: {
         userid: Number,
     },
     methods: {
 
-    },
+        async getAllOrder() {
+            try {
+                const response = await axios.get(`api/UserInfoApi/UserOrder/${this.userid}`);
+                this.userOrder = response.data;
+                this.populateTable(this.userOrder);
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
+        },
+        populateTable(data) {
+            const table = $('#orderTable').DataTable();
+            table.clear();
+            table.rows.add(data).draw();
+        },
+    },  
 });
 
 app.component('tab-相片集', {
@@ -481,6 +578,7 @@ app.component('tab-相片集', {
             
         }
     }
+
 });
 
 

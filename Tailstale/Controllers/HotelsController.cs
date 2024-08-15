@@ -1740,11 +1740,11 @@ namespace Tailstale.Controllers
 
             return View(bc);
         }
-
+        
         [HttpPost]
-        public async Task<IActionResult> KeeperSearchBookingHistory(int bookingID)
+        public async Task<IActionResult> KeeperSearchBookingHistory([FromForm]int bookingID)
         {
-            var keeperID = HttpContext.Session.GetInt32("loginID");
+                var keeperID = HttpContext.Session.GetInt32("loginID");
            // var keeperID = 1002;
             var getBookingHistory = _context.Bookings.Where(book => book.keeper_ID == keeperID && book.bookingID == bookingID).FirstOrDefault();
            

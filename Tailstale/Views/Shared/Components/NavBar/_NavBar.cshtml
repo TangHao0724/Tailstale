@@ -15,7 +15,7 @@
         <div class="col-2 nav-item align-self-end ">
             @if (ID != null)
             {
-                @await Component.InvokeAsync("LoginUTag", new { id = ID, UType = type })
+                @await Component.InvokeAsync("LoginUTag", new { id =  ID ,  UType = type})
             }
             else
             {
@@ -24,3 +24,4 @@
         </div>
     </div>
 </div>
+ 

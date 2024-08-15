@@ -11,7 +11,7 @@ using Tailstale.Models;
 
 namespace Tailstale.Controllers
 {
-    [IsHospitalFilter]
+    //[IsHospitalFilter]
     public class AppointmentsController : Controller
     {
         private readonly TailstaleContext _context;
@@ -24,6 +24,7 @@ namespace Tailstale.Controllers
         // GET: Appointments
         public async Task<IActionResult> Index()//只顯示今天以後(包含今天)的查詢結果
         {
+            ViewBag.HideElement = true;
             var today = DateOnly.FromDateTime(DateTime.Today);//當天日期
             var Appointments = await (
                    from A in _context.Appointments
@@ -51,8 +52,6 @@ namespace Tailstale.Controllers
 
             var statusOptions = new List<string> { "預約成功", "完成診療", "院方取消" , "預約未到" };
             ViewBag.StatusOptions = statusOptions;
-            ViewBag.userID = await Task.Run(() => HttpContext.Session.GetInt32("loginID"));
-            ViewBag.userType = await Task.Run(() => HttpContext.Session.GetInt32("loginType"));
 
 
             return View(Appointments);

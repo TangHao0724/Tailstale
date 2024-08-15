@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Tailstale.Models;
 using Tailstale.UserInfoDTO;
 using System.Reflection.PortableExecutable;
+using MailKit.Search;
+using AutoMapper.Internal;
 
 namespace Tailstale.Controllers
 {
@@ -320,6 +322,53 @@ namespace Tailstale.Controllers
             return NoContent();
         }
 
+        [HttpGet("UserOrder/{id}")]
+        public async Task<IActionResult> UsertOrder(int id)
+        {
+            var bookings = await _context.Bookings.ToListAsync();
+            var reserves = await _context.Reserves.ToListAsync();
+            var appointments = await _context.Appointments.ToListAsync();
+            var pets = await _context.pets.ToListAsync();
+            var businesses = await _context.businesses.ToListAsync();
+            var status = await _context.order_statuses.ToListAsync();
+
+            var bookingResult = bookings.Where(n => n.keeper_ID == id).Select(s => new
+            {
+                orderID = s.bookingID,
+                orderPet = pets.FirstOrDefault(p => p.pet_ID == s.CheckinDetails.FirstOrDefault(cd => cd.bookingID == s.bookingID).pet_ID)?.name,
+                orderType = "寵物旅館",
+                businessName = s.hotel.name,
+                serviceName = "旅館住宿",
+                orderDate = s.bookingDate.Value.ToLongDateString(),
+                orderStatus = status.FirstOrDefault(n=>n.ID == s.bookingStatus).status_name,
+            }).ToList();
+
+            var reserveResult = reserves.Where(n => n.keeper_id == id).Select(s => new
+            {
+                orderID = s.id,
+                orderPet = s.pet_name,
+                orderType = "寵物美容",
+                businessName = s.business.name,
+                serviceName = s.service_name,
+                orderDate = s.created_at.Value.ToLongDateString(),
+                orderStatus = status.FirstOrDefault(n => n.ID == s.status).status_name,
+            }).ToList();
+
+            var appointmentResult = appointments.Where(n => n.keeper_ID == id).Select(s => new
+            {
+                orderID = s.Appointment_ID,
+                orderPet = s.pet.name,
+                orderType = "寵物醫療",
+                businessName = businesses.FirstOrDefault(b => b.ID == s.daily_outpatient_clinic_schedule.outpatient_clinic.vet.business_ID)?.name,
+                serviceName = $"看診：{s.daily_outpatient_clinic_schedule.outpatient_clinic.outpatient_clinic_name}",
+                orderDate = s.registration_time.Value.ToLongDateString(),
+                orderStatus = status.FirstOrDefault(n => n.ID == s.Appointment_status).status_name,
+            }).ToList();
+
+            var combinedResult = bookingResult.Concat(reserveResult).Concat(appointmentResult).ToList();
+
+            return Ok(combinedResult);
+        }
         private bool keeperExists(int id)
         {
             return _context.keepers.Any(e => e.ID == id);
