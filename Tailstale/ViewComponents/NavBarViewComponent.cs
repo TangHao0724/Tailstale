@@ -40,27 +40,24 @@ namespace Tailstale.ViewComponents
             {
                 case 0:
                     ViewBag.Keeper_imgurl = url != null ? $"/imgs/keeper_img/{url}" : "/imgs/keeper_img/no_head.png";
-                    ViewBag.UserID = ids;
                     break;
                 case 1://旅館
                     string hotel_imgurl = "images/business/";
                     ViewBag.hotel_imgurl = url != null ?hotel_imgurl+url : "/imgs/keeper_img/no_head.png";
-                    ViewBag.UserID = ids;
-                    ViewBag.UType = UTypes;
                     break;
                 case 2://美容
                     string salon_imgurl = " https://localhost:7112/Salon_img/";
                     ViewBag.salon_imgurl = url != null ? salon_imgurl+url : "/imgs/keeper_img/no_head.png";
-                    ViewBag.UserID = ids;
-                    ViewBag.UType = UTypes;
+
                     break;
                 case 3://醫院
-                    string hospital_imgurl = "";
+                    string hospital_imgurl = " https://localhost:7112/lib/HospitalImages";
                     ViewBag.hospital_imgurl = url != null ? hospital_imgurl+url : "/imgs/keeper_img/no_head.png";
-                    ViewBag.UserID = ids;
-                    ViewBag.UType = UTypes;
+
                     break;
             }
+            ViewBag.UserID = ids;
+            ViewBag.UType = UTypes;
             return View("_NavBar");
         }
     }

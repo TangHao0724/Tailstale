@@ -79,40 +79,41 @@
                 reader.readAsDataURL(file);
             }
         },
-        async postarticle(  ) {
+        async postarticle() {
             try {
                 let formdata = new FormData(this.$refs.postform);
-                if (this.content !== '') {
-                    this.pcontent = '';
-                    formdata.append("Content", this.content);
-                } else if (this.pcontent !== '') {
+
+                // 合併 content 和 pcontent 的處理
+                const content = this.content || this.pcontent;
+                if (content) {
+                    formdata.append("Content", content);
                     this.content = '';
-                    formdata.append("Content", this.pcontent);
+                    this.pcontent = '';
                 }
-                if (this.Publichashtags !==undefined) {
-                    formdata.append("PublicTags", this.Publichashtags);
+
+                // 合併 PublicTags 和 PrivateTags 的處理
+                const hashtags = this.Publichashtags || this.Privatehashtags;
+                if (hashtags) {
+                    formdata.append("PublicTags", hashtags);
                 }
-                if (this.Privatehashtags !== undefined) {
-                    formdata.append("PublicTags", this.Privatehashtags);
-                }
-                if (this.selectedArt.id !== null) {
+
+                // 處理 selectedArt.id
+                if (this.selectedArt?.id !== undefined) {
                     formdata.append("parent_ID", this.selectedArt.id);
                 }
 
-                
-                if (this.usertype == 0) {
-                    formdata.append('Keeper_ID', this.useridm);
-                    const response = axios.post("api/social/PostArticle", formdata);
-                    this.content = "";
-                    this.pcontent = "";
-                    alert(response.data);
-                } else {
-                    formdata.append('Business_ID', this.useridm);
-                    const response = axios.post("api/social/PostArticle", formdata);
-                    this.content = "";
-                    this.pcontent = "";
-                    alert(response.data);
-                }
+                // 根據 usertype 添加相應的 ID
+                formdata.append(this.usertype == 0 ? 'Keeper_ID' : 'Business_ID', this.useridm);
+
+                // 發送請求
+                const response = await axios.post("api/social/PostArticle", formdata);
+
+                // 清空內容
+                this.content = "";
+                this.pcontent = "";
+
+                // 獲取文章
+                this.getarticle(10, null, null, null);
             } catch (error) {
                 console.error('Error fetching user info:', error);
             }
