@@ -56,12 +56,9 @@
                                 <div class="card-header bg-light text-nowrap" @@click="openPost(at)">
                                     <img :src="imgurl(at.uType,at.imgurl)" alt="mdo" width="32" height="32" class="rounded-circle d-inline mx-2">
                                     <h6 class="d-inline">{{at.kName ?? at.bName}}</h6>
-                                        <i class="bi bi-people-fill"></i>
-                                        <div class="text-end">
-                                            <i class="bi bi-person-circle" v-if="!at.ispublic "></i>
-                                            <i class="bi bi-people-fill" v-if="at.ispublic "></i>
-                                        
-                                        </div>
+                                        <i class="bi bi-person-circle" v-if="!at.ispublic "></i>
+                                        <i class="bi bi-people-fill" v-if="at.ispublic "></i>
+
                                 </div>
                                 <div class="card-body">
                                     <div class="row" @@click="openPost(at)">

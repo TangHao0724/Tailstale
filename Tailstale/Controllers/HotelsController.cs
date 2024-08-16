@@ -1410,7 +1410,7 @@ namespace Tailstale.Controllers
             ViewBag.totalDays = totalDays;
             HttpContext.Session.SetInt32("totalDays", totalDays);
             var CatList = b.Where(b => b.petType.Contains("貓")).ToList();
-            var DogList = b.Where(b => b.petType == "狗").ToList();
+            var DogList = b.Where(b => b.petType.Contains("狗")|| b.petType.Contains("犬")).ToList();
             ViewBag.CatList = new SelectList(CatList, "petID", "petName", "petType");
             ViewBag.DogList = new SelectList(DogList, "petID", "petName", "petType");
 
@@ -1819,7 +1819,7 @@ namespace Tailstale.Controllers
                 var bookingstatus=getBookingHistory.bookingStatusNavigation.status_name;
                 var isRate = false;
                 var nowdate = DateTime.Now;
-                var ReView = _context.Bookings.FirstOrDefault(b => b.bookingID == bookingID);
+                var ReView = _context.Reviews.FirstOrDefault(b => b.bookingID == bookingID);
                 if (nowdate>= getBookingHistory.checkoutDate && bookingstatus.Equals("預約成功") )
                 {
                     isRate = true;
