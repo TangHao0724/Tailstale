@@ -14,81 +14,83 @@
 <header>
     <partial name="_NavBar" />
 </header>
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"> <a asp-area="" asp-controller="Salon" asp-action="Settings">美容設定</a></li>
+            <li class="breadcrumb-item active" aria-current="page">美容師</li>
+        </ol>
+    </nav>
+    <h1>美容師資料</h1>
+    <p>
+        <a class="btn mybtn" asp-action="Create"><i class="bi bi-hand-index-thumb"></i>新增美容師</a>
+    </p>
 
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-        <li class="breadcrumb-item"> <a asp-area="" asp-controller="Salon" asp-action="Settings">美容設定</a></li>
-    <li class="breadcrumb-item active" aria-current="page">美容師</li>
-  </ol>
-</nav>
-<h1>美容師資料</h1>
-<p>
-    <a class="btn mybtn" asp-action="Create"><i class="bi bi-hand-index-thumb"></i>新增美容師</a>
-</p>
-
-<table class="table border table-striped">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.gender)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.photo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.phone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Highest_license)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Remark)
-            </th>
-            <th>
-                門市
-                @* @Html.DisplayNameFor(model => model.business) *@
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <table class="table border table-striped">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.gender)
-                </td>
-                <td>
-                    <img src="~/Salon_img/@Html.DisplayFor(modelItem => item.photo)" alt="Alternate Text" style="max-width:180px; max-height:180px" />
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.phone)
-                </td>
-                <td>
-
-                    <img src="~/Salon_img/@Html.DisplayFor(modelItem => item.Highest_license)" alt="Alternate Text" style="max-width:180px;max-height:180px" />
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Remark)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.business.name)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.id"><i class="bi bi-highlighter"></i></a> |
-                    <a asp-action="Details" asp-route-id="@item.id"><i class="bi bi-info-circle"></i></a> |
-                    <a asp-action="Delete" asp-route-id="@item.id"><i class="bi bi-trash-fill"></i></a>
-                </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.gender)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.photo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.phone)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Highest_license)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Remark)
+                </th>
+                <th>
+                    門市
+                    @* @Html.DisplayNameFor(model => model.business) *@
+                </th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.gender)
+                    </td>
+                    <td>
+                        <img src="~/Salon_img/@Html.DisplayFor(modelItem => item.photo)" alt="Alternate Text" style="max-width:180px; max-height:180px" />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.phone)
+                    </td>
+                    <td>
+
+                        <img src="~/Salon_img/@Html.DisplayFor(modelItem => item.Highest_license)" alt="Alternate Text" style="max-width:180px;max-height:180px" />
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Remark)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.business.name)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.id"><i class="bi bi-highlighter"></i></a> |
+                        <a asp-action="Details" asp-route-id="@item.id"><i class="bi bi-info-circle"></i></a> |
+                        <a asp-action="Delete" asp-route-id="@item.id"><i class="bi bi-trash-fill"></i></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
 
 
 
