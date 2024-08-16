@@ -7,11 +7,7 @@
             background-color: #f5f7fd;
         }
 
-        .containerSB {
-            display: flex;
-            justify-content: center;
-            justify-items: center;
-        }
+       
 
         img {
             max-height: 200px;
@@ -33,8 +29,8 @@
 
 }
 
-<div class="container containerSB">
-    <div class="row" style="width: 80%;">
+<div class="container">
+    <div class="row mx-auto" style="width: 80%;">
         <div class="centerrow">
             <img src="~/images/tickcirclelinear_106244.png" />
            </div>
@@ -44,7 +40,8 @@
             </div>
         <div class="centerrow"><strong>
             <h5>
-                    <form hidden id="KsearchBooking" asp-controller="Hotels" asp-action="KeeperSearchBookingHistory" asp-route-bookingID="@Model.booking.bookingID">
+                    <form hidden id="KsearchBooking" asp-controller="Hotels" asp-action="KeeperSearchBookingHistory">
+                        <input type="number" name="bookingID" value="@Model.booking.bookingID" />
                     </form>
                     <a data-bs-toggle="collapse" href="#" onclick="document.getElementById('KsearchBooking').submit(); return false;">
                         訂單編號: @Model.booking.bookingID

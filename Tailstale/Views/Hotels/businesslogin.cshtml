@@ -2,130 +2,109 @@
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 @section Styles{
-    <link href="~/css/kaiadmin.min.css" rel="stylesheet" />
+  
    
-    <style></style>
+    <style>
+        .todolist {
+            transform: translate(-80%, -50%) !important
+        }
+        .heart{
+            transform: translate(150%, -50%) !important
+           /*  transform: translate(200%, -50%) !important */
+        }
+    </style>
 }
 
-<div class="wrapper">
-    <div class="col-4">
-        <div class="sidebar" data-background-color="dark">
-            <div class="sidebar-logo">
-                <!-- Logo Header -->
-                <div class="logo-header" data-background-color="dark">
-                    <a href="#" class="logo">
-                        <img src="assets/img/kaiadmin/logo_light.svg"
-                             alt="navbar brand"
-                             class="navbar-brand"
-                             height="20" />
-                    </a>
-                    <div class="nav-toggle">
-                        <button class="btn btn-toggle toggle-sidebar">
-                            <i class="gg-menu-right"></i>
-                        </button>
-                        <button class="btn btn-toggle sidenav-toggler">
-                            <i class="gg-menu-left"></i>
-                        </button>
-                    </div>
-                    <button class="topbar-toggler more">
-                        <i class="gg-more-vertical-alt"></i>
-                    </button>
-                </div>
-                <!-- End Logo Header -->
-            </div>
-            <div class="sidebar-wrapper scrollbar scrollbar-inner">
-                <div class="sidebar-content">
-                    <ul class="nav nav-secondary">
+<div id="app">
+<div class="container-fluid">
+    <div class="row flex-nowrap">
+        <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0" style="background:	#D9B3B3">
+            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+                <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                    <span class="fs-4 d-none d-sm-inline" style="color:black;">Menu</span>
+                </a>
+                <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
+                  
+                    <li class="nav-item  mb-3">
+                        <form hidden id="roomForm" asp-controller="Hotels" asp-action="ShowRoomFromHotel" asp-route-id="@ViewBag.hotelID">
+                        </form>
+                        
+                        <a data-bs-toggle="collapse" href="#" onclick="document.getElementById('roomForm').submit(); return false;" class="align-middle" style="text-decoration:none;color:black;">
+                            <i class="fas fs-5 fa-layer-group"></i> <span class="ms-1 fs-5 d-none d-sm-inline">房間管理</span>
+                        </a>
+                    </li>
 
-                        <li class="nav-section">
-                            <span class="sidebar-mini-icon">
-                                <i class="fa fa-ellipsis-h"></i>
-                            </span>
-                            <h4 class="text-section">旅館管理</h4>
-                        </li>
-                        <li class="nav-item">
-                            <form hidden id="roomForm" asp-controller="Hotels" asp-action="ShowRoomFromHotel" asp-route-id="@ViewBag.hotelID">
-                            </form>
-                            <a data-bs-toggle="collapse" href="#" onclick="document.getElementById('roomForm').submit(); return false;">
-                                <i class="fas fa-layer-group"></i>
-                                <p>房間</p>
-                                <span class="caret"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <form hidden id="booking2Form" asp-controller="Hotels" asp-action="ShowBooking" asp-route-id="@ViewBag.hotelID">
-                            </form>
-                            <a data-bs-toggle="collapse" href="#" onclick="document.getElementById('booking2Form').submit(); return false;" >
-                                <i class="fas fa-th-list"></i>
-                                <p>訂單管理2</p>
-                                <span class="caret"></span>
-                            </a>
+                    <li class="nav-item  mb-3">
+                        <form hidden id="bookingForm" asp-controller="Hotels" asp-action="ShowAllBooking">
+                        </form>
 
-                        </li> 
-                        <li class="nav-item">
+                        <a data-bs-toggle="collapse" href="#" onclick="document.getElementById('bookingForm').submit(); return false;" class="align-middle" style="text-decoration:none;color:black;">
+                            <i class="fas fs-5 fa-th-list"></i> <span class="ms-1 fs-5 d-none d-sm-inline">訂單管理</span>
+                        </a>
+                    </li>
+                        <li class="nav-item  mb-3">
                             <form hidden id="bookingForm" asp-controller="Hotels" asp-action="ShowAllBooking">
                             </form>
-                            <a data-bs-toggle="collapse" href="#" onclick="document.getElementById('bookingForm').submit(); return false;">
-                                <i class="fas fa-th-list"></i>
-                                <p>訂單管理</p>
-                                <span class="caret"></span>
-                            </a>
 
+                            <a data-bs-toggle="collapse" href="#" onclick="document.getElementById('bookingForm').submit(); return false;" class="align-middle" style="text-decoration:none;color:black;">
+                                <i class="fas fs-5 fa-th-list"></i> <span class="ms-1 fs-5 d-none d-sm-inline">修改飯店資訊</span>
+                            </a>
+                        </li>
+                        <li class="nav-item  mb-3" @@click="logout()">
+                            <a data-bs-toggle="collapse" href="#" class="align-middle" style="text-decoration:none;color:black;">
+                                <i class="fa-solid  fs-5 fa-right-from-bracket fa-rotate-180"></i> <span class="ms-1 fs-5 d-none d-sm-inline">登出</span>
+                            </a>
                         </li>
 
-                    </ul>
+                </ul>
+                
+                <hr>
+
+            </div>
+        </div>
+            <div class="col py-3">
+                <div class="container my-5">
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-5">
+                            <div class="position-relative todolistbox " style="max-width: 200px;" @@click="gotoBookingList()">
+                                <img src="~/images/to-do-list.png" class="img-fluid" alt="To-do list" />
+
+                                <span class="position-absolute top-0 start-75 todolist translate-middle badge rounded-circle bg-danger p-3" style="font-size: 2rem;">
+                                    {{ newBooking }}
+                                </span>
+                            </div>
+                            <h2 class="px-2">待處理訂單數</h2>
+                        </div>
+                        <div class="col-5">
+                            <div class="position-relative heartbox" style="max-width: 200px;">
+                                <img src="~/images/like.svg" class="img-fluid" alt="Like" />
+
+                                <span class="position-absolute top-0 start-75 todolist translate-middle badge rounded-circle bg-danger p-3" style="font-size: 2rem;">
+                                    {{ rate }}
+                                </span>
+                            </div>
+                            <h2 style="margin-left:30px">評論分數</h2>
+                        </div>
+
+                    </div>
+
                 </div>
-            </div>
-
-
         </div>
     </div>
-    <div class="col-8">
-
-        <div class="d-flex col-12">
-            <div class="col-6 w-100 h-10">
-                <form asp-controller="Hotels" asp-action="ShowRoomFromHotel" asp-route-id="@ViewBag.hotelID">
-                    <button type="submit" class="btn btn-dark"> 房間</button>
-                </form>
-                <form asp-controller="Hotels" asp-action="ShowRoomFromHotel" asp-route-id="@ViewBag.hotelID">
-                    <button type="submit" class="btn btn-dark"> 房間</button>
-                </form>
-            </div>
-            <div class="col-6 w-100 h-10">
-                <form asp-controller="Hotels" asp-action="ShowBooking">
-                    <!-- form fields -->
-                    <button class="btn btn-dark" type="submit">訂單</button>
-                </form>
-            </div>
-        </div>
-    </div>
-    <div id="app">
-        <h2>測試評論分數</h2>
-        <div>
-            <h3>{{ rate }}</h3>
-        </div>
-        <h2>測試代處理訂單</h2>
-        <div>
-            <h3>{{ newBooking }}</h3>
-        </div>
-        
-    </div>
-
-
-    
+</div>
 </div>
 
-
 @section Scripts{
-    <script src="js/kaiadmin.min.js"></script>
+   @*  <script src="js/kaiadmin.min.js"></script> *@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script>
         const vueApp = {
+
             data() {
                 return {
                     baseAddress: "https://localhost:7112/Hotels/",
-                    rate:"",
-                    newBooking:0,
+                    rate: "",
+                    newBooking: 0,
                 };
             },
             mounted() {
@@ -139,37 +118,54 @@
 
                         axios.post(`${this.baseAddress}CountRating`)
                             .then(response => {
-                                //alert(JSON.stringify(response.data));
+
                                 this.rate = response.data;
-
-
                             })
                             .catch(err => { alert(err) })
-                        // const response =  axios.post(`${this.baseAddress}GetRoomList`,this.bookingID);
-                        // this.roomList = response.data;
+
                     } catch (err) {
                         alert(err);
                     }
                 },
-                getNewBooking(){
-                    try{
+                getNewBooking() {
+                    try {
                         axios.post(`${this.baseAddress}NewBookingNotice`)
-                        .then(response=>{
-                            this.newBooking = response.data;
-                        }).catch(err=>{
-                            alert(err)
-                        })
+                            .then(response => {
+                                this.newBooking = response.data;
+                            }).catch(err => {
+                                alert(err)
+                            })
                     }
-                    catch(err){
+                    catch (err) {
 
                     }
                 },
-                
+                logout() {
+                    
+                    axios.delete('https://localhost:7112/api/LNRApi/Logout')
+                        .then(response => {
+                            if (response.status === 200) {
+                                window.location.href = 'https://localhost:7112/User/Index';
+                            } else {
+                                console.error('Logout failed');
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                },
+                gotoBookingList(){
+                    document.getElementById('bookingForm').submit();
+                    
+
+                },
+
+
+
 
             },
         };
 
-
         Vue.createApp(vueApp).mount("#app");
+
+
     </script>
 }
