@@ -131,11 +131,26 @@
                                     <div class="col-3 list-group-item border">
                                         <label class="control-label">入住寵物</label>
                                     </div>
-                                    <div class="col-6 list-group-item border">
-                                        <select class="form-control getPet" onchange="updateOptions(this)" asp-items="ViewBag.PetList">
+                                    @if (item.RoomName.Contains("貓"))
+                                    {
+                                         <div class="col-6 list-group-item border">
+                                        <select class="form-control getPet" onchange="updateOptions(this)" asp-items="ViewBag.CatList">
                                             <option>請選擇寵物</option>
+                                          
                                         </select>
-                                    </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-6 list-group-item border">
+                                            <select class="form-control getPet" onchange="updateOptions(this)" asp-items="ViewBag.DogList">
+                                                <option>請選擇寵物</option>
+
+                                            </select>
+                                        </div>
+
+                                    }
+
                                 </div>
                             </div>
                         </li>
@@ -145,22 +160,30 @@
 
                         <li class="list-group-item canclear">
                             <label asp-for="petName" class="control-label"></label>
-                            <input class="form-control petName" />
+                            <input class="form-control bg-light petName" />
 
                             <span asp-validation-for="petName" class="text-danger"></span>
                         </li>
                         <li class="list-group-item canclear">
                             <label asp-for="petType" class="control-label"></label>
-                            <input class="form-control petType" />
+                            @if (item.RoomName.Contains("貓"))
+                            {
+                                <input class="form-control petType bg-light" value="貓" readonly />
+                            }
+                            else
+                            {
+                                <input class="form-control petType  bg-light" value="狗" readonly />
+                            }
+                           
                             <span asp-validation-for="petType" class="text-danger"></span>
                         </li>
                         <li class="list-group-item canclear">
                             <label asp-for="petChipID" class="control-label"></label>
-                            <input class="form-control petChipID" />
+                            <input class="form-control bg-light petChipID" />
                         </li>
                         <li class="list-group-item canclear">
-                            <label class="control-label"></label>
-                            <input type="date" class="form-control petBirthDay" />
+                            <label asp-for="petBirthDay" class="control-label"></label>
+                            <input type="date" class="form-control bg-light petBirthDay" />
                         </li>
                     </ul>
                 </div>
@@ -190,7 +213,7 @@
             const selectedValue = selectedSelect.value;
             // const selectedValues = Array.from(getPetSelect).map(select => select.value);
             getPetSelect.forEach(select => {
-                if (select !== selectedSelect && select.value === selectedValue) {
+                if (select !== selectedSelect && select.value === selectedValue || select.value == "請選擇寵物") {
                     select.options[0].selected = true;
                     const container = select.closest('.card.petinfo');
                     if (container) {
@@ -235,12 +258,16 @@
                         const petBirthDay = cardContainer.querySelector('.petBirthDay');
 
                         petNameInput.value = data.petName;
+                        petNameInput.readOnly = true;
                         petTypeInput.value = data.petType;
+                        petTypeInput.readOnly = true;
                         petChipIDInput.value = data.petChipID;
+                        petChipIDInput.readOnly = true;
 
                         if (data.petBirthDay != null) {
                             petBirthDay.value = data.petBirthDay;
                         }
+                        petBirthDay.readOnly = true;
 
                     })
                     .catch(err => { alert(err) });
@@ -262,7 +289,9 @@
 
 
                 var roomID = parseInt(roomIDInput.value);
-                var petID = parseInt(petSelect.value);
+                var petID = isNaN(Number(petSelect.value)) ? null : Number(petSelect.value);
+                
+              //  var petID = parseInt(petSelect.value);
                 var petName = petNameInput.value;
                 var petType = petTypeInput.value;
                 var petChipID = petTypeInput.value;

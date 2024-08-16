@@ -510,7 +510,34 @@ namespace Tailstale.Controllers
             }
             else
             {
-                var tailstaleContext = _context.Rooms.Include(r => r.hotel).Include(r => r.FK_roomType).Where(r => r.hotelID == id);
+            //     < td >
+            //                @Html.DisplayFor(modelItem => item.roomSpecies)
+            //            </ td >
+            //            < td >
+            //                @Html.DisplayFor(modelItem => item.FK_roomType.roomType1)
+            //            </ td >
+            //            < td >
+            //                @Html.DisplayFor(modelItem => item.roomPrice)
+            //            </ td >
+            //            < td >
+            //                @Html.DisplayFor(modelItem => item.roomDiscount)
+            //            </ td >
+            //            < td >
+            //                @Html.DisplayFor(modelItem => item.roomReserve)
+            //            </ td >
+            //            < td >
+            //                @Html.DisplayFor(modelItem => item.roomDescrep)
+            //            </ td >
+                var tailstaleContext = _context.Rooms.Include(r => r.hotel).Include(r => r.FK_roomType).Where(r => r.hotelID == id).Select(r=>new RoomDTO
+                {
+                    roomID=r.roomID,
+                    roomSpecies=r.roomSpecies,
+                    roomType=r.FK_roomType,
+                    roomPrice=r.roomPrice,
+                    roomDescrep=r.roomDescrep,
+                    roomReserve=r.roomReserve,
+                    roomDiscount=r.roomDiscount
+                }).ToList();
                 //var tailstaleContext = _context.Rooms.Include(r => r.hotel).Where(r=>r.hotelID==hotelID);
 
                 string hotelName = _context.businesses.Where(b => b.ID == id).Select(c => c.name).FirstOrDefault();
@@ -560,96 +587,87 @@ namespace Tailstale.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ShowBookingDetail(int BookingID)
+        public async Task<IActionResult> ShowBookingDetail([FromForm]int BookingID)
         {
-            ViewBag.HotelID = HttpContext.Session.GetInt32("hotelID11");
-            ViewBag.BookingID = BookingID;
-            ViewBag.BookingStatus = _context.Bookings.Where(b => b.bookingID == BookingID).Select(b => b.bookingStatus).FirstOrDefault() ?? 0;
-            var keeperID = _context.Bookings.Where(b => b.bookingID == BookingID).Select(b => b.keeper_ID).FirstOrDefault() ?? 0;
-            DateTime checkinDate = (DateTime)_context.Bookings.Where(b => b.bookingID == BookingID).Select(b => b.checkinDate).FirstOrDefault();
-            DateTime checkoutDate = (DateTime)_context.Bookings.Where(b => b.bookingID == BookingID).Select(b => b.checkoutDate).FirstOrDefault();
-
-            //var parsedstartdate = DateTime.Parse(startdate);
-            //var parsedenddate = DateTime.Parse(enddate);
-            //// 計算日期差
-            TimeSpan dateCount = checkoutDate - checkinDate;
-
-            //// 取得天數並轉換為整數
-           int totalDays = (int)dateCount.TotalDays;
-
-
-            ViewBag.KeeperInfo = _context.keepers.Where(k=>k.ID==keeperID).FirstOrDefault() ?? null;
-            var booking = _context.Bookings.Where(b => b.bookingID == BookingID).Select(b => new BookingDTO1
+            var loginTYpe = HttpContext.Session.GetInt32("loginType");
+            if (loginTYpe == 1)
             {
-                BookingID = b.bookingID,
-                KeeperName = b.keeper.name,
-                CheckinDate = b.checkinDate.Value.ToString("yyyy-MM-dd"),
-                CheckoutDate = b.checkoutDate.Value.ToString("yyyy-MM-dd"),
-                BookingStatus = b.bookingStatusNavigation.status_name,
-                BookingTotal = (int)b.bookingAmountTotal,
-                BookingDate = b.bookingDate.Value.ToString("yyyy-MM-dd"),
-                datecount= totalDays,
-            }).FirstOrDefault();
+                ViewBag.HotelID = HttpContext.Session.GetInt32("hotelID11");
+                ViewBag.BookingID = BookingID;
+                ViewBag.BookingStatus = _context.Bookings.Where(b => b.bookingID == BookingID).Select(b => b.bookingStatus).FirstOrDefault() ?? 0;
+                var keeperID = _context.Bookings.Where(b => b.bookingID == BookingID).Select(b => b.keeper_ID).FirstOrDefault() ?? 0;
+                DateTime checkinDate = (DateTime)_context.Bookings.Where(b => b.bookingID == BookingID).Select(b => b.checkinDate).FirstOrDefault();
+                DateTime checkoutDate = (DateTime)_context.Bookings.Where(b => b.bookingID == BookingID).Select(b => b.checkoutDate).FirstOrDefault();
 
-            var bookingdetail = _context.BookingDetails.Where(bd => bd.bookingID == BookingID).Select(bd => new BookingDetailDTO
+                //var parsedstartdate = DateTime.Parse(startdate);
+                //var parsedenddate = DateTime.Parse(enddate);
+                //// 計算日期差
+                TimeSpan dateCount = checkoutDate - checkinDate;
+
+                //// 取得天數並轉換為整數
+                int totalDays = (int)dateCount.TotalDays;
+
+
+                ViewBag.KeeperInfo = _context.keepers.Where(k => k.ID == keeperID).FirstOrDefault() ?? null;
+                var booking = _context.Bookings.Where(b => b.bookingID == BookingID).Select(b => new BookingDTO1
+                {
+                    BookingID = b.bookingID,
+                    KeeperName = b.keeper.name,
+                    CheckinDate = b.checkinDate.Value.ToString("yyyy-MM-dd"),
+                    CheckoutDate = b.checkoutDate.Value.ToString("yyyy-MM-dd"),
+                    BookingStatus = b.bookingStatusNavigation.status_name,
+                    BookingTotal = (int)b.bookingAmountTotal,
+                    BookingDate = b.bookingDate.Value.ToString("yyyy-MM-dd"),
+                    datecount = totalDays,
+                }).FirstOrDefault();
+
+                var bookingdetail = _context.BookingDetails.Where(bd => bd.bookingID == BookingID).Select(bd => new BookingDetailDTO
+                {
+                    roomPrice = (int)bd.room.roomPrice,
+                    bdAmount = bd.bdAmount,
+                    bdTotal = bd.bdTotal,
+                    roomID = (int)bd.roomID,
+                    roomName = bd.room.FK_roomType.roomType1,
+                }).ToList();
+
+                var checkinD = _context.CheckinDetails.Where(c => c.bookingID == BookingID).Select(c => new CheckInDTO
+                {
+                    petID = (int)c.pet_ID,
+                    petName = c.pet.name,
+                    petType = c.pet.pet_type.species,
+                    petBirthDay = DateOnly.Parse(c.pet.birthday.Value.ToString("yyyy-MM-dd")),
+                    roomName = c.room.FK_roomType.roomType1,
+                    roomID = c.roomID,
+                    petChipID = c.pet.chip_ID,
+                }).ToList() ?? null;
+
+                var bookingDetailAndCheckins = bookingdetail.Select(bd => new BookingDetailAndCheckin
+                {
+                    bookingDetail = bd,
+                    checkInDTOs = checkinD.Where(c => c.roomID == bd.roomID).ToList()
+                }).ToList();
+
+
+                BBDC getaBooking = new BBDC()
+                {
+                    book = booking,
+                    bookingDetails = bookingDetailAndCheckins,
+                };
+
+                ViewBag.Keeper = _context.keepers.Where(k => k.ID == keeperID).FirstOrDefault();
+
+
+                //return Json(booking);
+                return View(getaBooking);
+            }
+            else if (loginTYpe==2)
             {
-                roomPrice=(int)bd.room.roomPrice,
-                bdAmount=bd.bdAmount,
-                bdTotal=bd.bdTotal,
-                roomID=(int)bd.roomID,
-                roomName =bd.room.FK_roomType.roomType1,
-            }).ToList();
+                return null;
+              //  return RedirectToAction(nameof(ReviewBooking), "Hotels");
+              //  return RedirectToActionPreserveMethod(nameof(ShowRoomFromHotel), "Hotels", new { id = InthotelID });
+            }
+            return RedirectToActionPreserveMethod(nameof(KeeperSearchBookingHistory), "Hotels", new { bookingID = BookingID });
 
-            var checkinD = _context.CheckinDetails.Where(c => c.bookingID == BookingID).Select(c => new CheckInDTO
-            {
-                petID = (int)c.pet_ID,
-                petName = c.pet.name,
-                petType = c.pet.pet_type.species,
-                petBirthDay = DateOnly.Parse(c.pet.birthday.Value.ToString("yyyy-MM-dd")),
-                roomName = c.room.FK_roomType.roomType1,
-                roomID=c.roomID,
-                petChipID = c.pet.chip_ID,
-            }).ToList() ?? null;
-
-            var bookingDetailAndCheckins = bookingdetail.Select(bd => new BookingDetailAndCheckin
-            {
-                bookingDetail = bd,
-                checkInDTOs = checkinD.Where(c => c.roomID== bd.roomID).ToList()
-            }).ToList();
-
-            //var convertBD = ;
-
-            //foreach(var bd in bookingdetail)
-            //{
-            //    BookingDetailAndCheckin bc = new BookingDetailAndCheckin()
-            //    {
-            //        bookingDetail = bd,
-            //        checkInDTOs = _context.CheckinDetails.Where(c => c.bookingID == bd.bookingID && c.roomID == bd.roomID).Select(c => new CheckInDTO
-            //        {
-            //            petID = (int)c.pet_ID,
-            //            petName = c.pet.name,
-            //            petType = c.pet.pet_type.species,
-            //            petBirthDay = DateOnly.Parse(c.pet.birthday.Value.ToString("yyyy-MM-dd")),
-            //            roomName = c.room.FK_roomType.roomType1,
-            //            petChipID = c.pet.chip_ID,
-            //        }).FirstOrDefault()
-            //    };
-            //}
-
-
-
-
-            BBDC getaBooking = new BBDC()
-            {
-                book = booking,
-                bookingDetails= bookingDetailAndCheckins,
-            };
-
-            ViewBag.Keeper = _context.keepers.Where(k => k.ID == keeperID).FirstOrDefault();
-
-
-            //return Json(booking);
-            return View(getaBooking);
         }
 
         //變更狀態
@@ -764,98 +782,107 @@ namespace Tailstale.Controllers
         public async Task<IActionResult> SearchHotels([FromQuery] InputDate iD, int? Cat, int? Dog, string? addressorname)
         {
             var keeperID = HttpContext.Session.GetInt32("loginID") ;
-
-            HttpContext.Session.SetInt32("KeeperID", (int)keeperID);
-            var cookie = new 
+            if (keeperID != null)
             {
-                startdate = iD.startDate.ToString("yyyy-MM-dd"),
-                enddate = iD.endDate.ToString("yyyy-MM-dd"),
-                cat = Cat == null ? 0 : Cat,
-                dog = Dog == null ? 0 : Dog
-            };
-            
-            SearchCondition setSearchSession = new SearchCondition
-            {
-                startdate = iD.startDate.ToString("yyyy-MM-dd"),
-                enddate = iD.endDate.ToString("yyyy-MM-dd"),
-                cat = Cat ==null ? 0 : (int)Cat,
-                dog = Dog == null ? 0 : (int)Dog
 
-            };
-
-            
-          
-
-            string convertcookie = JsonSerializer.Serialize(setSearchSession);
-            HttpContext.Session.SetString("SearchCondition", convertcookie);
-            //SearchCondition jsontos = new SearchCondition();
-            //jsontos = JsonSerializer.Deserialize<SearchCondition>(convertcookie);
-            //HttpContext.Session.Set<string>("SessionKeyTime", address);
-            //HttpContext.Session.Set<SearchCondition>("11", setSearchSession);
-
-            ViewBag.Cookie = cookie;
-            var result = await RoomAvailabilityAndRoom(iD, Cat, Dog, addressorname);
-            getMyResult = result.ToList();
-            var dateCount = (int)ViewBag.totalDays;
-            HttpContext.Session.SetInt32("totalDays", dateCount);
-
-
-            var hotels = result.GroupBy(h => h.hotelID).Select(h => h.Key).ToList();
-            // var hotelslist = _context.businesses.Where(h =>( result.GroupBy(h => h.hotelID).Select(h => h.Key)).Contains(h.ID)).ToList();
-
-            var hotelslist = _context.businesses.AsNoTracking().Where(h => hotels.Contains(h.ID)).ToList();
-
-            var myhotelrate= await CountRatingToAllHotel(hotels);
-
-           // var withrate = hotelslist.Join(myhotelrate,h=>(int)h.ID,m=)
-
-
-            if (Cat != null || Dog != null)
-            {
-                var resultgroupbyhotel = result.GroupBy(r => r.hotelID).Select(r => new
+                HttpContext.Session.SetInt32("KeeperID", (int)keeperID);
+                var cookie = new
                 {
-                    hotelID = r.Key,
-                    price = r.Select(r => r.priceTotal).FirstOrDefault(),
+                    startdate = iD.startDate.ToString("yyyy-MM-dd"),
+                    enddate = iD.endDate.ToString("yyyy-MM-dd"),
+                    cat = Cat == null ? 0 : Cat,
+                    dog = Dog == null ? 0 : Dog
+                };
+
+                SearchCondition setSearchSession = new SearchCondition
+                {
+                    startdate = iD.startDate.ToString("yyyy-MM-dd"),
+                    enddate = iD.endDate.ToString("yyyy-MM-dd"),
+                    cat = Cat == null ? 0 : (int)Cat,
+                    dog = Dog == null ? 0 : (int)Dog
+
+                };
+
+
+
+
+                string convertcookie = JsonSerializer.Serialize(setSearchSession);
+                HttpContext.Session.SetString("SearchCondition", convertcookie);
+                //SearchCondition jsontos = new SearchCondition();
+                //jsontos = JsonSerializer.Deserialize<SearchCondition>(convertcookie);
+                //HttpContext.Session.Set<string>("SessionKeyTime", address);
+                //HttpContext.Session.Set<SearchCondition>("11", setSearchSession);
+
+                ViewBag.Cookie = cookie;
+                var result = await RoomAvailabilityAndRoom(iD, Cat, Dog, addressorname);
+                getMyResult = result.ToList();
+                var dateCount = (int)ViewBag.totalDays;
+                HttpContext.Session.SetInt32("totalDays", dateCount);
+
+
+                var hotels = result.GroupBy(h => h.hotelID).Select(h => h.Key).ToList();
+                // var hotelslist = _context.businesses.Where(h =>( result.GroupBy(h => h.hotelID).Select(h => h.Key)).Contains(h.ID)).ToList();
+
+                var hotelslist = _context.businesses.AsNoTracking().Where(h => hotels.Contains(h.ID)).ToList();
+
+                var myhotelrate = await CountRatingToAllHotel(hotels);
+
+                // var withrate = hotelslist.Join(myhotelrate,h=>(int)h.ID,m=)
+
+
+                if (Cat != null || Dog != null)
+                {
+                    var resultgroupbyhotel = result.GroupBy(r => r.hotelID).Select(r => new
+                    {
+                        hotelID = r.Key,
+                        price = r.Select(r => r.priceTotal).FirstOrDefault(),
+                        date = dateCount,
+                        onedatePrice = r.Select(r => r.priceTotal).FirstOrDefault() / dateCount,
+
+                    });
+
+
+
+                    var finalresult = hotelslist.Join(resultgroupbyhotel, b => b.ID, r => r.hotelID, (b, r) => new hotelResult
+                    {
+                        businesse = b,
+                        roomPrice = r.price,
+                        date = r.date,
+                        onedatePrice = r.onedatePrice,
+                        hotelRate = myhotelrate.FirstOrDefault(hr => hr.hotelID == b.ID)?.rate
+
+                    }).ToList();
+                    //var finalresultWithRate = finalresult.Join(myhotelrate,f=>f.businesse.ID, myhotelrat => m.id(myhotelrate))
+
+                    // 現在 finalresultWithRating 包含了每個商業的評分
+                    // return View(finalresultWithRating);
+
+                    //var ff = finalresult.Join(myhotelrate,f=>f.businesse.ID ,m=>m.Key,(final,my))
+                    return View(finalresult);
+
+                }
+                var noCatDog = hotelslist.Select(h => new hotelResult
+                {
+                    businesse = h,
                     date = dateCount,
-                    onedatePrice = r.Select(r => r.priceTotal).FirstOrDefault() / dateCount,
-
+                    hotelRate = myhotelrate.FirstOrDefault(hr => hr.hotelID == h.ID)?.rate
                 });
-                
 
 
-                var finalresult = hotelslist.Join(resultgroupbyhotel, b => b.ID, r => r.hotelID, (b, r) => new hotelResult
-                {
-                    businesse = b,
-                    roomPrice = r.price,
-                    date = r.date,
-                    onedatePrice = r.onedatePrice,
-                    hotelRate = myhotelrate.FirstOrDefault(hr => hr.hotelID == b.ID)?.rate
+                //var hotelslist=_context.businesses.Where(h=>hotels.Contains(h.ID)).ToList();
 
-                }).ToList();
-               //var finalresultWithRate = finalresult.Join(myhotelrate,f=>f.businesse.ID, myhotelrat => m.id(myhotelrate))
 
-                // 現在 finalresultWithRating 包含了每個商業的評分
-                // return View(finalresultWithRating);
 
-                //var ff = finalresult.Join(myhotelrate,f=>f.businesse.ID ,m=>m.Key,(final,my))
-                return View(finalresult);
+
+                // return PartialView("_SearchRoom", finalresult);
+                return View(noCatDog);
 
             }
-            var noCatDog = hotelslist.Select(h => new hotelResult
+            else
             {
-                businesse = h,
-                date = dateCount,
-                hotelRate= myhotelrate.FirstOrDefault(hr => hr.hotelID == h.ID)?.rate
-            });
+                return RedirectToAction("Index", "LNR");
+            }
 
-
-            //var hotelslist=_context.businesses.Where(h=>hotels.Contains(h.ID)).ToList();
-
-
-
-
-            // return PartialView("_SearchRoom", finalresult);
-            return View(noCatDog);
         }
 
         public async Task<IEnumerable<hotelRate>> CountRatingToAllHotel(List<int> hotelList)
@@ -1382,6 +1409,10 @@ namespace Tailstale.Controllers
 
             ViewBag.totalDays = totalDays;
             HttpContext.Session.SetInt32("totalDays", totalDays);
+            var CatList = b.Where(b => b.petType.Contains("貓")).ToList();
+            var DogList = b.Where(b => b.petType == "狗").ToList();
+            ViewBag.CatList = new SelectList(CatList, "petID", "petName", "petType");
+            ViewBag.DogList = new SelectList(DogList, "petID", "petName", "petType");
 
 
             ViewBag.Selected = getSelectCondition;
@@ -1390,7 +1421,7 @@ namespace Tailstale.Controllers
             var gethotel = _context.businesses.Where(h => h.ID == getHotelID).Select(h => new {hotelname=h.name,address=h.address,}).FirstOrDefault();
             ViewBag.HotelInfo = gethotel;
             ViewBag.roomList = a;
-            ViewBag.PetList = new SelectList(b, "petID", "petName");
+            ViewBag.PetList = new SelectList(b, "petID", "petName", "petType");
             ViewBag.roomCount = c;
             ViewBag.roomInfo = d;
             ViewBag.BookingTotal = getRoomList.Sum(r => r.roomPriceTotal);
@@ -1398,6 +1429,8 @@ namespace Tailstale.Controllers
 
 
         }
+
+       
 
 
         //List<RoomInfoDTO> Review = new List<RoomInfoDTO>();
@@ -1421,7 +1454,18 @@ namespace Tailstale.Controllers
                 WriteIndented = true,
                 Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             };
-            var getReviewCheckinDetails = newRCD;
+            // var checkPetIsHaveID = 
+            List<ReViewCheckinDetail> myList = new List<ReViewCheckinDetail>();
+                foreach (var pet in newRCD)
+                {
+                    if (pet.petID == null)
+                    {
+                    pet.petID = (int?)await AddPet(pet);
+                    
+                    }
+                    myList.Add(pet);
+                }
+            var getReviewCheckinDetails = myList;
 
             string CheckinDetails = JsonSerializer.Serialize(getReviewCheckinDetails, options);
             HttpContext.Session.SetString("CheckinDetails", CheckinDetails);
@@ -1453,6 +1497,24 @@ namespace Tailstale.Controllers
             {
                 redirectUrl = Url.Action("ReviewBooking", "Hotels")
             });
+        }
+
+        public async  Task<int> AddPet(ReViewCheckinDetail petInfo)
+        {
+
+            var petSpecID = _context.pet_types.Where(pt => petInfo.petType.Contains(pt.species)).Select(pt => pt.ID).FirstOrDefault();
+            pet anewpet = new pet()
+            {
+                pet_type_ID = petSpecID,
+                keeper_ID = HttpContext.Session.GetInt32("loginID"),
+                name = petInfo.petName,
+                chip_ID= petInfo.petChipID,
+                birthday= DateOnly.Parse(petInfo.petBirthDay),
+            };
+            _context.pets.Add(anewpet);
+            await _context.SaveChangesAsync();
+            
+            return anewpet.pet_ID;
         }
 
         [HttpGet]
@@ -1622,7 +1684,7 @@ namespace Tailstale.Controllers
             var p = _context.PaymentInfos.Where(p => p.cardNumber.Equals(mycard.cardNumber)).Select(p => new GetCardList
             {
                 cardName = p.cardholderName,
-                //cardNumber = p.cardNumber,
+                cardNumber = p.cardNumber,
                 cardExpirationDate = p.expirationDate.ToString()
 
             }).FirstOrDefault();
@@ -1744,7 +1806,7 @@ namespace Tailstale.Controllers
         [HttpPost]
         public async Task<IActionResult> KeeperSearchBookingHistory([FromForm]int bookingID)
         {
-                var keeperID = HttpContext.Session.GetInt32("loginID");
+           var keeperID = HttpContext.Session.GetInt32("loginID");
            // var keeperID = 1002;
             var getBookingHistory = _context.Bookings.Where(book => book.keeper_ID == keeperID && book.bookingID == bookingID).FirstOrDefault();
            

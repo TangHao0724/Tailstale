@@ -42,9 +42,15 @@
              &nbsp; 檢視預訂資料
         </div>
         <div class="col-12 col-md-4 offset-md-2 text-right p-0">
-            <form hidden id="BackToAllBooking" asp-controller="Hotels" asp-action="ShowAllBooking" asp-route-id="@ViewBag.HotelID">
+                        <form hidden id="BackToAllBooking" asp-controller="UserInfo" asp-action="Index">
+                        </form>
+                        <a class="btn text-light border form-control btn-sm" href="#" onclick="document.getElementById('BackToAllBooking').submit(); return false;">回訂單清單</a>
+     @*    <form hidden id="BackToAllBooking" asp-controller="Hotels" asp-action="ShowAllBooking" asp-route-id="@ViewBag.HotelID">Index
             </form>
-            <a class="btn btn-outline-info form-control btn-sm" href="#" onclick="document.getElementById('BackToAllBooking').submit(); return false;">回訂單清單</a>
+                        <a class="btn text-light border form-control btn-sm" href="#" onclick="document.getElementById('BackToAllBooking').submit(); return false;">回訂單清單</a> *@
+
+                        
+        @*  <a class="btn text-light border form-control btn-sm" controller="UserInfo" action="Index" href="#" >回訂單清單</a> *@
         </div>
         <div class="">
            

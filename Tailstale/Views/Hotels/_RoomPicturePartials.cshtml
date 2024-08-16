@@ -5,12 +5,30 @@
 }
 else
 {
-    @foreach (var i in Model.roomImg)
-    {
-        <img style="max-height:200px" src="~/@i.URL" title="@i.URL" />
+    int index = 0; // 計數器
 
 
-    }
-    
+    <div id="carouselExampleControls" class="carousel carousel-dark slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            @foreach (var i in Model.roomImg)
+            {
+                // 判斷是否為第一張圖片
+                var isActive = index == 0 ? "active" : "";
+                <div class="carousel-item @isActive">
+                    <img style="max-height:200px" src="~/@i.URL" title="@i.URL" />
+                </div>
+                index++; // 增加計數器
+            }
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+            <span class="carousel-control-next-icon text-color-info" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
 }
 
