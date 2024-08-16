@@ -22,9 +22,9 @@
     <div v-for="room in roomList" :key="room.roomID">
         <h3>{{ room.roomName }}</h3>
         <div>
-            <span v-for="star in 5" :key="star" @@click="setRating(star)" class="star" :class="{ active: star <= reviewRating }">★</span>
+            <span v-for="star in 5" :key="star" @@click="setRating(room.roomID,star)" class="star" :class="{ active: star <= setstar(room.roomID,reviewRating) }">★</span>
         </div>
-        <textarea v-model="reviewText" placeholder="撰寫你的評論..."></textarea>
+        <textarea v-model="room.reviewText" placeholder="撰寫你的評論..."></textarea>
     </div>
     <button @@click="submitReview">提交評論</button>
 </div>
@@ -68,8 +68,23 @@
                         alert(err);
                     }
                 },
-                setRating(star) {
-                    this.reviewRating = star;
+                setRating(roomID, star) {
+                    const room = this.roomList.find(r => r.roomID === roomID);
+                    if (room) {
+                        room.rating = star;
+                    }
+                    //alert(room.reviewRating);
+                   this.reviewRating = room.rating;
+                   // alert(room.rating);
+                },
+                setstar(roomID, reviewRating){
+                    const room = this.roomList.find(r => r.roomID === roomID);
+                    if (room) {
+                        room.rating = star;
+                    }
+                    //alert(room.reviewRating);
+                    this.reviewRating = room.rating;
+                    alert(room.rating);
                 },
                 submitReview() {
                     const review = this.roomList.map(room => {
@@ -80,10 +95,10 @@
                             reviewText: this.reviewText,
                         };
                     });
-                    alert(JSON.stringify(review));
+                   // alert(JSON.stringify(review));
                     axios.post(`${this.baseAddress}CreateReview`, review)
                         .then(response => {
-                            alert("123");
+                            //alert("123");
                             //alert(JSON.stringify(response.data));
                            // this.roomList = response.data;
 

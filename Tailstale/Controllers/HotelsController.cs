@@ -1819,7 +1819,7 @@ namespace Tailstale.Controllers
                 var bookingstatus=getBookingHistory.bookingStatusNavigation.status_name;
                 var isRate = false;
                 var nowdate = DateTime.Now;
-                var ReView = _context.Bookings.FirstOrDefault(b => b.bookingID == bookingID);
+                var ReView = _context.Reviews.FirstOrDefault(b => b.bookingID == bookingID);
                 if (nowdate>= getBookingHistory.checkoutDate && bookingstatus.Equals("預約成功") )
                 {
                     isRate = true;
