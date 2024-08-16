@@ -17,6 +17,13 @@ namespace Tailstale.Controllers
 
         // GET: Hosp
         [HttpGet]
+        public async Task<IActionResult> Inpatient()
+        {
+            return View();
+        }
+
+            // GET: Hosp
+            [HttpGet]
         public async Task<IActionResult> hosp_history(int pet_id)
         {
             var query = await (from p in _context.pets
