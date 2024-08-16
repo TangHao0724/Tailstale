@@ -12,6 +12,8 @@ EX；「public DbSet<Tailstale.Models.{{選擇要的Model}}> 選擇要得Model { get; set;
 
 7. 如果有任何問題，直接問群組。或者GPT。
 
-
+驗證信帳號：tailstale05@gmail.com
+驗證信密碼：talestail_05
+應用程式密碼：bntx beoh ueqa dpyn 
 
 (負責部分EX：Hotel/Salon/Hospital/med-record/Socal/Index)

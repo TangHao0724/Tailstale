@@ -29,13 +29,16 @@
                 @Html.DisplayNameFor(model => model.after_photo)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.beautician)
+                美容師
+                @* @Html.DisplayNameFor(model => model.beautician) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.business)
+                門市
+                @* @Html.DisplayNameFor(model => model.business) *@
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.keeper)
+                會員
+                @* @Html.DisplayNameFor(model => model.keeper) *@
             </th>
             <th></th>
         </tr>
@@ -77,9 +80,9 @@
                 @Html.DisplayFor(modelItem => item.keeper.name)
             </td>
             <td>
-                    <a asp-action="Edit" asp-route-id="@item.id"><i class="bi bi-highlighter"></i>Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.id"><i class="bi bi-info-circle"></i>Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.id"><i class="bi bi-highlighter"></i></a> |
+                    <a asp-action="Details" asp-route-id="@item.id"><i class="bi bi-info-circle"></i></a> |
+                    <a asp-action="Delete" asp-route-id="@item.id"><i class="bi bi-trash-fill"></i></a>
             </td>
         </tr>
 }

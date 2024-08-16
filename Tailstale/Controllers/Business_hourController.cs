@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CRUD_COREMVC;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Tailstale.Controllers
 {
+    [IsLoginFilter]
     public class Business_hourController : Controller
     {
         private readonly TailstaleContext _context;
@@ -23,19 +25,22 @@ namespace Tailstale.Controllers
         //GET: Business_hour 
         public async Task<IActionResult> Index()
         {
-            var businesses = await _context.businesses
-       .Where(b => b.type_ID == 2)
-       .ToListAsync();
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            int? loginType = HttpContext.Session.GetInt32("loginType");
+            var Business_hours = await _context.Business_hours
+            .Where(b => b.business_ID == loginID)
+            .OrderByDescending(b => b.id) // 根据 ID 降序排序
+            .ToListAsync();
 
-            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
-            return View();
+           // ViewData["business_ID"] = new SelectList(Business_hours, "ID", "name");
+            return View(Business_hours);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(int? id,string business_day)
+        public async Task<IActionResult> Index(string business_day)
         {
-            
-            if (!id.HasValue && string.IsNullOrEmpty(business_day))
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            if (!loginID.HasValue && string.IsNullOrEmpty(business_day))
             {
 
                 return PartialView("_hourPartial", new List<Business_hour>());
@@ -46,10 +51,11 @@ namespace Tailstale.Controllers
                 .Include(bh => bh.business);
                 
 
+
             // 根據 id 的情況添加條件
-            if (id.HasValue)
+            if (loginID.HasValue)
             {
-                query = query.Where(bh => bh.business_ID == id);
+                query = query.Where(bh => bh.business_ID == loginID);
             }
 
             // 根據 time 的情況添加條件
@@ -103,11 +109,14 @@ namespace Tailstale.Controllers
         // GET: Business_hour/Create
         public IActionResult Create()
         {
-            var businesses = _context.businesses
-            .Where(b => b.type_ID == 2)
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            int? loginType = HttpContext.Session.GetInt32("loginType");
+            var business = _context.businesses
+            .Where(b => b.ID == loginID)
             .ToList();
 
-            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+
+            ViewData["business_ID"] = new SelectList(business, "ID", "name");
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
             return View();
         }
@@ -117,7 +126,7 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,business_ID,business_day,open_time,close_time,people_limit")] Business_hour business_hour)
+        public async Task<IActionResult> Create([Bind("id,business_ID,business_day,open_time,close_time,people_limit")] Business_hourViewModel business_hour)
         {
             //if (ModelState.IsValid)
             //{
@@ -150,9 +159,18 @@ namespace Tailstale.Controllers
                             close_time = business_hour.close_time,//new TimeOnly(19, 0, 0),
                             people_limit = business_hour.people_limit
                         };
+                    Business_hour a = new Business_hour()
+                    {
+                        business_ID = businessHour.business_ID,
+                        business_day = businessHour.business_day,
+                        open_time = businessHour.open_time,//new TimeOnly(10, 0, 0),  // 預設開門時間，设置为早上10点
+                        close_time = businessHour.close_time,//new TimeOnly(19, 0, 0),
+                        people_limit = businessHour.people_limit
+                    };
 
-                        _context.Add(businessHour);
-                    }
+                    //_context.Add(businessHour);
+                    _context.Add(a);
+                }
                 
 
                 await _context.SaveChangesAsync();
@@ -160,11 +178,17 @@ namespace Tailstale.Controllers
             }
 
             // 如果 ModelState 不合法，则需要重新加载视图
-            var businesses = _context.businesses
-                .Where(b => b.type_ID == 2)
-                .ToList();
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            int? loginType = HttpContext.Session.GetInt32("loginType");
+            
+            var business = _context.businesses
+            .Where(b => b.ID == loginID)
+            .ToList();
 
-            ViewData["Business_ID"] = new SelectList(businesses, "ID", "Name", business_hour.business_ID);
+            
+
+
+            ViewData["business_ID"] = new SelectList(business, "ID", "name", business_hour.business_ID);
             return View();
         }
 
@@ -181,11 +205,14 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
-            var businesses = _context.businesses
-            .Where(b => b.type_ID == 2)
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            int? loginType = HttpContext.Session.GetInt32("loginType");
+            
+            var business = _context.businesses
+            .Where(b => b.ID == loginID)
             .ToList();
 
-            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+            ViewData["business_ID"] = new SelectList(business, "ID", "name");
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", business_hour.business_ID);
             return View(business_hour);
         }
@@ -222,11 +249,13 @@ namespace Tailstale.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            var businesses = _context.businesses
-            .Where(b => b.type_ID == 2)
-            .ToList();
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            int? loginType = HttpContext.Session.GetInt32("loginType");
+            var business = _context.businesses
+           .Where(b => b.ID == loginID)
+           .ToList();
 
-            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+            ViewData["business_ID"] = new SelectList(business, "ID", "name");
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", business_hour.business_ID);
             return View(business_hour);
         }

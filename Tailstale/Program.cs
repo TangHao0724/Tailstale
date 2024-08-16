@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Tailstale.Data;
 using Tailstale.Models;
+using Tailstale.Tools;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,10 @@ builder.Services.AddCors(options => {
         policy.WithOrigins("*").WithMethods("*").WithHeaders("*");
     });
 });
+
+
+
+
 builder.Services.AddSession(option =>
 {
     option.Cookie.Name = "Tailstate.Session";
@@ -30,14 +35,14 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddDbContext<TailstaleContext>(options =>
     options.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("Tailstale")));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddSession(options =>
 {
-    // 設定Session名稱
+    // 設定Session名稱12
     options.Cookie.Name = "LoginSession";
     // 表示Cookie很重要
     options.Cookie.IsEssential = true;
@@ -57,6 +62,8 @@ builder.Services.AddControllersWithViews(options =>//全域過濾器放置處
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+//var ecPaySettings = builder.Configuration.GetSection("ECPay");
+//builder.Services.Configure<ECPaySettings>(ecPaySettings);
 
 var app = builder.Build();
 

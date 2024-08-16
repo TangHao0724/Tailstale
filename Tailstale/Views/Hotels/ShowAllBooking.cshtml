@@ -27,7 +27,7 @@ ShowAllbooking
 <button id="a2">預約成功</button>
 <button id="a3">店家取消</button>
 <button id="a4">顧客取消</button> *@
-<table id="tableArray" class="display" style="width:100%"></table>
+<table id="tableArray" class="display table table-striped table-bordered dt-responsive nowrap" style="width:100%"></table>
 
 @section Scripts{
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
@@ -65,6 +65,7 @@ ShowAllbooking
                             "sSortDescending": "以降序排列此列"
                         }
                     },
+                    "order": [[0, "desc"]],
                     "data": reponse.data, // 確保使用 Response.data
                     "columns": [
                         { title: "訂單編號", data: "bookingID" }, // 使用小寫

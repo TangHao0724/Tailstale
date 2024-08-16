@@ -16,3 +16,14 @@ th, td {
     text-align: left;
     padding: 8px;
 }
+.bi{
+    font-size:22px;
+}
+
+tbody td {
+    height: 200px;
+    line-height: 200px;
+    text-align: center;
+}
+
+

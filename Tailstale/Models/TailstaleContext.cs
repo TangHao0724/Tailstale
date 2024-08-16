@@ -302,6 +302,7 @@ public partial class TailstaleContext : DbContext
 
             entity.ToTable("PaymentInfo");
 
+            entity.Property(e => e.cardNumber).HasMaxLength(16);
             entity.Property(e => e.cardholderName).HasMaxLength(20);
             entity.Property(e => e.paymentStatus)
                 .HasMaxLength(1)
@@ -361,6 +362,10 @@ public partial class TailstaleContext : DbContext
 
             entity.Property(e => e.reviewDate).HasColumnType("datetime");
             entity.Property(e => e.reviewText).HasMaxLength(255);
+
+            entity.HasOne(d => d.booking).WithMany(p => p.Reviews)
+                .HasForeignKey(d => d.bookingID)
+                .HasConstraintName("FK__Review__bookingI__2CBDA3B5");
 
             entity.HasOne(d => d.keeper).WithMany(p => p.Reviews)
                 .HasForeignKey(d => d.keeper_ID)
@@ -922,6 +927,10 @@ public partial class TailstaleContext : DbContext
             entity.HasKey(e => e.ID).HasName("PK__person_t__3214EC27EA0EF155");
 
             entity.Property(e => e.name).HasMaxLength(128);
+
+            entity.HasOne(d => d.FK_Business).WithMany(p => p.person_tags)
+                .HasForeignKey(d => d.FK_Business_ID)
+                .HasConstraintName("FK__person_ta__FK_Bu__19AACF41");
 
             entity.HasOne(d => d.FK_Keeper).WithMany(p => p.person_tags)
                 .HasForeignKey(d => d.FK_Keeper_ID)

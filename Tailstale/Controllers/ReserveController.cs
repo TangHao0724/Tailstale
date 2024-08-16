@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
+using CRUD_COREMVC;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Tailstale.Models;
 
 namespace Tailstale.Controllers
 {
+    [IsLoginFilter]
     public class ReserveController : Controller
     {
         private readonly TailstaleContext _context;
@@ -24,17 +26,20 @@ namespace Tailstale.Controllers
         {
             //var tailstaleContext = _context.Reserve.Include(r => r.business).Include(r => r.keeper);
             //return View(await tailstaleContext.ToListAsync());
-            var businesses = await _context.businesses
-       .Where(b => b.type_ID == 2)
-       .ToListAsync();
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            int? loginType = HttpContext.Session.GetInt32("loginType");
 
-            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
-       
-            return View();
+            var Reserves = await _context.Reserves
+            .Where(b => b.business_ID == loginID)
+            .OrderByDescending(b => b.id) // 根据 ID 降序排序
+            .ToListAsync();
+
+
+            return View(Reserves);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(int? id,string time)
+        public async Task<IActionResult> Index(string time)
         {
             //var tailstaleContext = _context.Business_hours.Include(b => b.business);
             //return View(await tailstaleContext.ToListAsync());
@@ -44,9 +49,15 @@ namespace Tailstale.Controllers
             //    ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
             //    return PartialView("_ReservehourPartial", new List<Reserve>());
             //}
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            int? loginType = HttpContext.Session.GetInt32("loginType");
+
+            var Reserves = await _context.Reserves
+            .Where(b => b.business_ID == loginID)
+            .ToListAsync();
 
 
-            if (!id.HasValue && string.IsNullOrEmpty(time))
+            if (!loginID.HasValue && string.IsNullOrEmpty(time))
             {
                 
                 return PartialView("_ReservehourPartial", new List<Reserve>());
@@ -59,9 +70,9 @@ namespace Tailstale.Controllers
             .Include(bh => bh.statusNavigation);
 
             // 根據 id 的情況添加條件
-            if (id.HasValue)
+            if (loginID.HasValue)
             {
-                query = query.Where(bh => bh.business_ID == id);
+                query = query.Where(bh => bh.business_ID == loginID);
             }
 
             // 根據 time 的情況添加條件
@@ -121,19 +132,28 @@ namespace Tailstale.Controllers
         // GET: Reserve/Create
         public IActionResult Create()
         {
-            var businesses = _context.businesses
-            .Where(b => b.type_ID == 2)
-            .ToList();
+            
             var orderstatus = _context.order_statuses
                .Where(b => b.business_type_ID == 2)
                .ToList();
 
-            ViewData["Orderstatus_ID"] = new SelectList(orderstatus, "ID", "status_name");
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            var businesses = _context.businesses
+           .Where(b => b.ID == loginID)
+           .ToList();
 
+            var service = _context.Services
+           .Where(b => b.business_ID == loginID)
+           .ToList();
+
+            ViewData["servicename"] = new SelectList(service, "service_name", "service_name");
+            ViewBag.LoginID = loginID.HasValue ? loginID.Value : (int?)null;
             ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+            ViewData["Orderstatus_ID"] = new SelectList(orderstatus, "ID", "status_name");
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name");
             ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name");
             return View();
+
         }
 
         // POST: Reserves/Create
@@ -141,24 +161,47 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,keeper_id,pet_name,business_ID,time,service_name,created_at,status")] Reserve reserve)
+        public async Task<IActionResult> Create([Bind("id,keeper_id,pet_name,business_ID,time,service_name,created_at,status")] ReserveViewModel reserve)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(reserve);
+                Reserve a = new Reserve()
+                {
+                    keeper_id = reserve.keeper_id,
+                    pet_name = reserve.pet_name,
+                    business_ID = reserve.business_ID,
+                    time = reserve.time,
+                    service_name = reserve.service_name,
+                    status = reserve.status,
+
+                };
+
+
+                _context.Add(a);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            var businesses = _context.businesses
-            .Where(b => b.type_ID == 2)
-            .ToList();
+            
 
             var orderstatus = _context.order_statuses
                 .Where(b => b.business_type_ID == 2)
                 .ToList();
 
-            ViewData["Orderstatus_ID"] = new SelectList(orderstatus, "ID", "status_name");
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            var businesses = _context.businesses
+           .Where(b => b.ID == loginID)
+           .ToList();
+            var service = _context.Services
+           .Where(b => b.business_ID == loginID)
+           .ToList();
+
+            ViewData["service_name"] = new SelectList(service, "service_name", "service_name");
+
             ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+
+            ViewData["Orderstatus_ID"] = new SelectList(orderstatus, "ID", "status_name");
+
+            
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", reserve.business_ID);
             //ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "address", reserve.keeper_id);
             ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name");
@@ -178,26 +221,40 @@ namespace Tailstale.Controllers
             {
                 return NotFound();
             }
-            var businesses = _context.businesses
-            .Where(b => b.type_ID == 2)
-            .ToList();
+            
 
             var pets = _context.pets
             .Where(p => p.keeper_ID == reserve.keeper_id) // 根据 keeper_id 进行过滤
            .ToList();
 
+            var keeper = _context.keepers
+           .Where(p => p.ID == reserve.keeper_id) // 根据 keeper_id 进行过滤
+          .ToList();
+
             var orderstatus = _context.order_statuses
                .Where(b => b.business_type_ID == 2)
                .ToList();
+
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            var businesses = _context.businesses
+           .Where(b => b.ID == loginID)
+           .ToList();
+            var service = _context.Services
+           .Where(b => b.business_ID == loginID)
+           .ToList();
+
+            ViewData["servicename"] = new SelectList(service, "service_name", "service_name");
+
+            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
 
             ViewData["Orderstatus_ID"] = new SelectList(orderstatus, "ID", "status_name", reserve.status);
 
             ViewData["pet_name"] = new SelectList(pets, "name", "name");
 
-            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
+            
             //ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", reserve.business_ID);
             //ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "address", reserve.keeper_id);
-            ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name");
+            ViewData["keeper_id"] = new SelectList(keeper, "ID", "name");
             return View(reserve);
         }
 
@@ -233,9 +290,7 @@ namespace Tailstale.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            var businesses = _context.businesses
-            .Where(b => b.type_ID == 2)
-            .ToList();
+            
             var pets = _context.pets
             .Where(p => p.keeper_ID == reserve.keeper_id) // 根据 keeper_id 进行过滤
            .ToList();
@@ -243,10 +298,24 @@ namespace Tailstale.Controllers
                .Where(b => b.business_type_ID == 2)
                .ToList();
 
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            var businesses = _context.businesses
+           .Where(b => b.ID == loginID)
+           .ToList();
+
+            var keeper = _context.keepers
+           .Where(p => p.ID == reserve.keeper_id) // 根据 keeper_id 进行过滤
+          .ToList();
+            var service = _context.Services
+           .Where(b => b.business_ID == loginID)
+           .ToList();
+
+            ViewData["servicename"] = new SelectList(service, "service_name", "service_name");
+
+            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
             ViewData["Orderstatus_ID"] = new SelectList(orderstatus, "ID", "status_name", reserve.status);
             ViewData["pet_name"] = new SelectList(pets, "name", "name");
-            ViewData["business_ID"] = new SelectList(businesses, "ID", "name");
-            ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "name");
+            ViewData["keeper_id"] = new SelectList(keeper, "ID", "name");
             //ViewData["keeper_id"] = new SelectList(_context.keepers, "ID", "address", reserve.keeper_id);
             return View(reserve);
         }

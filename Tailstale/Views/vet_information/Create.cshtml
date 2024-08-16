@@ -31,7 +31,7 @@
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="form-group mb-2">
                             <label asp-for="business_ID" class="control-label"></label>
-                            <select asp-for="business_ID" class="form-control" asp-items="ViewBag.business_ID" readonly ></select>
+                            <input asp-for="business_ID" class="form-control" asp-items="ViewBag.business_ID" readonly ></input>
                         </div>
                         <div class="form-group mb-2">
                             <label asp-for="vet_name" class="control-label"></label>
@@ -61,31 +61,14 @@
                         </div>
                         <div class="form-group mb-2">
                             <div class="row">
-                            <div class="col-6">
-                                <label asp-for="URL" class="control-label"></label>
-                                <input asp-for="URL" type="file" accept="image/*" class="form-control" />
-                                <span asp-validation-for="URL" class="text-danger"></span>
-                            </div>
-                            <div class="col-6">
-                                    <label asp-for="img_type_id" class="control-label"></label>
-                                <div class="row">
-                                    <div class="col-7"><select asp-for="img_type_id" class="form-control" asp-items="ViewBag.typename"></select></div>
-                                    <div class="col-5 text-end"><a asp-action="Index" asp-controller="" class="btn btn-outline-secondary">管理影像類別</a></div>
-                                    
-                                </div>
-                                @* <label asp-for="img_type_id" class="control-label"></label>
-                                <select asp-for="img_type_id" class="form-control" asp-items="ViewBag.typename"></select> *@
-                            </div>
+                                <div class="col-6">
+                                    <label asp-for="URL" class="control-label"></label>
+                                    <input asp-for="URL" type="file" accept="image/*" class="form-control" />
+                                    <span asp-validation-for="URL" class="text-danger"></span>
+                                </div>                            
                             </div>
                         </div>
-                        @* <div class="form-group mb-2">
-                            <input asp-for="name" class="form-control" type="hidden" value="1001"/>
-                            <span asp-validation-for="name" class="text-danger"></span>
-                        </div> *@
-                        @* <div class="form-group mb-2">
-                            <input asp-for="img_type_id" class="form-control"/>
-                            <input asp-for="typename" class="form-control"/>
-                        </div> *@                        
+                                              
                         <div class="form-group mt-5 text-end">      
                             <input id="submit" type="submit" value="新增" class="btn btn-outline-primary" />
                             <a asp-action="Index" class="btn btn-outline-primary">返回醫師列表</a>

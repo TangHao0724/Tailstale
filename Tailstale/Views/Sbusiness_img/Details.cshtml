@@ -7,33 +7,37 @@
     <link href="~/css/sshowdelete.css" rel="stylesheet" />
 }
 
-<h1>Details</h1>
+<h1>顯示作品圖片</h1>
 
 <div>
-    <h4>business_img</h4>
+    @* <h4>business_img</h4> *@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.URL)
+            圖片
+            @* @Html.DisplayNameFor(model => model.URL) *@
         </dt>
         <dd class = "col-sm-10">
-            <img src="~/Salon_img/@Html.DisplayFor(model => model.URL)" alt="Alternate Text" style="width:320px;height:500px" />
+            <img src="~/Salon_img/@Html.DisplayFor(model => model.URL)" alt="Alternate Text" style="width:360px;height:500px" />
            
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.name)
+            圖片名稱
+            @* @Html.DisplayNameFor(model => model.name) *@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.created_at)
+            建立日期
+            @* @Html.DisplayNameFor(model => model.created_at) *@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.created_at)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.img_type)
+            類型名稱
+           @*  @Html.DisplayNameFor(model => model.img_type) *@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.img_type.typename)
@@ -41,6 +45,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-success" asp-action="Edit" asp-route-id="@Model?.ID">修改</a> |
+    <a class="btn btn-secondary" asp-action="Index">返回</a>
 </div>

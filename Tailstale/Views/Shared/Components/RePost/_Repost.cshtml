@@ -1,0 +1,56 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@if (ViewBag.userID != null)
+{
+                //普通輸入框
+    <div class="col-1 d-flex justify-content-center">
+        @switch (@ViewBag.loginType)
+        {
+            case 0:
+                <img :src="imgurlLu" alt="mdo" width="48" height="48" class="rounded-circle">
+                break;
+            case 1:
+                <img src="@ViewBag.hotel_imgurl" width="48" height="48" alt="" class=" rounded-circle" />
+                break;
+            case 2:
+                <img src="@ViewBag.salon_imgurl" width="48" height="48" alt="" class=" rounded-circle" />
+                break;
+            case 3:
+                <img src="@ViewBag.hospital_imgurl" width="48" height="48" alt="" class=" rounded-circle" />
+                break;
+
+        }
+    </div>
+    <div class="col-10">
+        <div class="row">
+            <form id="postarticle" ref="postform" V-on:submit.prevent="postPar(selectedArt.id)">
+                <div id="editableDiv" ref="editableDiv" contenteditable="true" style="border:1px solid #ccc; padding:5px;" data-placeholder="請輸入內容" @@input="bindpcontent">{{ pcontent }}</div>
+                <div class="mb-3 input-group">
+                    <button class="btn btn-outline-secondary" type="button" id="button-addon2" @@click="inputFileR">添加相片</button>
+                    <input type="file" id="updateImgR" name="imgs" accept="image/png, image/jpeg, image/jpg" style="display: none;" @@change="handleResponseFileChange" multiple>
+                    <button class="btn btn-primary" type="submit" id="button-addon2">送出</button>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="ispublic" value="true" id="flexCheckDefault">
+                    <label class="form-check-label" for="flexCheckDefault">
+                        設為公開
+                    </label>
+                </div>
+            </form>
+        </div>
+        <div class="row">
+            <span>圖片預覽：</span>
+            <div class="card-container-cas-articale" v-if="responseimg.length > 0">
+                <img v-for="fileData in responseimg" :src="fileData" alt="File Preview" class="card-cas img-thumbnail w-25" />
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="col-12">加入我們，來參與討論、記錄你的寵物！</div>
+    <a class="btn btn-outline-primary  btn-lg" asp-area="" asp-controller="LNR" asp-action="KRegister">加入並立刻回復</a>
+}

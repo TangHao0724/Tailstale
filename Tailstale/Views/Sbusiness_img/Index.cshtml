@@ -4,22 +4,57 @@
     ViewData["Title"] = "Index";
 }
 @section Styles {
-    <link href="~/css/salonselecttb.css" rel="stylesheet" />
+    <style>
+        td {
+            max-width: 300px; /* 设置最大宽度 */
+            overflow: hidden; /* 隐藏超出部分 */
+            text-overflow: ellipsis; /* 使用省略号表示更多内容 */
+            white-space: nowrap; /* 强制文本在同一行显示 */
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        th, td {
+            border: 2px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        .bi {
+            font-size: 22px;
+        }
+
+        
+        .mybtn {
+            background-color: #fa2;
+        }
+    
+    </style>
 }
-<header>
+@* <header>
     <partial name="_NavBar" />
-</header>
+</header> *@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"> <a asp-area="" asp-controller="Salon" asp-action="Settings">美容設定</a></li>
+        <li class="breadcrumb-item active" aria-current="page">作品上傳</li>
+    </ol>
+</nav>
 <h1>作品圖上傳</h1>
 
 <p>
-    <a class="btn btn-info" asp-action="Create"><i class="bi bi-hand-index-thumb"></i>Create New</a>
+    <a class="btn mybtn" asp-action="Create"><i class="bi bi-hand-index-thumb"></i>新增作品圖片</a>
 </p>
 
 
 <div>
     <h3><i class="bi bi-search"></i>查詢已上傳美容門市圖片</h3>
-    <select id="IdInput" class="form-control" asp-items="ViewBag.ImageTypeList"></select>
-    <input id="selectday" type="submit" value="查詢" class="btn btn-info mt-2" />
+    <select id="IdInput" class="form-control" asp-items="ViewBag.img_type"></select>
+    <input id="selectday" type="submit" value="查詢" class="btn mybtn mt-2" />
     <div class="mb-3">
         <div id="orders"></div>@*局部顯示會在這裡*@
     </div>
@@ -59,46 +94,3 @@
 }
 
 
-
-@* <table class="table border table-striped">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.URL)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.created_at)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.img_type)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.URL)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.created_at)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.img_type.typename)
-            </td>
-            <td>
-                    <a asp-action="Edit" asp-route-id="@item.ID"><i class="bi bi-highlighter"></i>Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.ID"><i class="bi bi-info-circle"></i>Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table> *@

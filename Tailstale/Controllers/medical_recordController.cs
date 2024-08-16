@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Versioning;
+using System.Drawing;
 using Tailstale.MedRecordDTO;
 using Tailstale.Models;
 
@@ -24,7 +25,7 @@ namespace Tailstale.Controllers
         }
 
         // GET: medical_record
-        public async Task<IActionResult> Index(int? pet_id)
+public async Task<IActionResult> Index(int? pet_id)
         { //渲染
             var query = from m in _context.medical_records
                         join o in _context.outpatient_clinics on m.outpatient_clinic_id equals o.outpatient_clinic_ID
@@ -73,7 +74,7 @@ namespace Tailstale.Controllers
 
         // GET: medical_record/Create
         [HttpGet]
-        public IActionResult Create(int pet_id)
+        public async Task<IActionResult> Create(int pet_id)
         {
             var p = _context.pets
                     .Where(p => p.pet_ID == pet_id).FirstOrDefault();
@@ -100,7 +101,13 @@ namespace Tailstale.Controllers
 
                         }).FirstOrDefault();
             ViewBag.basicInfo = basicInfo;
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            var selectOPC = await _context.outpatient_clinics.Where(s => s.vet.business_ID == loginID).Select(s => new {
+                            s.outpatient_clinic_timeslot_ID,
+                             CombinedName = s.outpatient_clinic_name + " - " + s.vet.vet_name + " - " + s.outpatient_clinic_timeslot.outpatient_clinic_timeslot_name
+                            }).ToListAsync();
 
+            ViewBag.selectOPC = new SelectList(selectOPC, "outpatient_clinic_timeslot_ID", "CombinedName");
             return View(model);
         }
 

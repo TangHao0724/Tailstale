@@ -1,26 +1,53 @@
 ﻿
-@{
-    int? ID = ViewBag.userID;
-    int? userType = ViewBag.userType;
-}
 <div class="container-fluid">
     <div class="navbar navbar-expand-lg navbar-light sticky-top  ">
         <div class="col-4 nav-item  ">
             <a asp-controller="Home" asp-action="Index"><img src="/imgs/LNR_img/logo2.png" width="160" height="44"></a>
         </div>
-        <a class="col-3 nav-item nav-link" href="#">紀錄&社交</a>
-        <a class=" col-3 nav-item nav-link" href="#">服務&查詢</a>
+        <a class="col nav-item nav-link" asp-controller="User" asp-action="Index">紀錄&社交 </a>
+        <a class=" col nav-item nav-link" asp-controller="Salon" asp-action="SalonHome">寵物美容</a>
+        <a class=" col nav-item nav-link" asp-controller="Hospital_FrontDesk" asp-action="Index">寵物醫療</a>
+        <a class=" col nav-item nav-link" asp-controller="Hotels" asp-action="postdatetosearch">寵物旅館</a>
         <div class="col-2 nav-item align-self-end ">
-
-            @if (ID != null)
+            @switch (@ViewBag.UType)
             {
-                @await Component.InvokeAsync("LoginUTag", new { id = ID, UType = userType })
-            }
-            else
-            {
-                @await Html.PartialAsync("_UnLoginUTag")
-            }
+                case 0:
+                    <div class="dropdown text-end" id="UserTag">
+                        <a class="d-block link-dark text-decoration-none " id="dropdownUser1" asp-area="" asp-controller="UserInfo" asp-action="Index">
+                            <img src="@ViewBag.Keeper_imgurl" alt="mdo" width="32" height="32" class="rounded-circle" id="user-id" data-user-id="@ViewBag.UserID" data-user-type="0">
+                        </a>
+                    </div>
+                    break;
+                case 1:
+                    <a class="d-block link-dark text-decoration-none " id="dropdownUser1" asp-area="" asp-controller="Hotels" asp-action="businesslogin">
+                        <img src="@ViewBag.hotel_imgurl" alt="mdo" width="32" height="32" class="rounded-circle"
+                             id="user-id" data-user-id="@ViewBag.UserID" data-user-type="@ViewBag.UType">
+                    </a>
+                    break;
+                case 2:
+                    <div class="dropdown text-end" id="UserTag">
+                        <a class="d-block link-dark text-decoration-none " id="dropdownUser1" asp-area="" asp-controller="Salon" asp-action="Settings">
+                            <img src="@ViewBag.salon_imgurl" alt="mdo" width="32" height="32" class="rounded-circle"
+                                 id="user-id" data-user-id="@ViewBag.UserID" data-user-type="@ViewBag.UType">
+                        </a>
+                    </div>
+                    break;
+                case 3:
+                    <div class="dropdown text-end" id="UserTag">
+                                <a class="d-block link-dark text-decoration-none " id="dropdownUser1" asp-area="" asp-controller="Appointments">
+                            <img src="@ViewBag.hospital_imgurl" alt="mdo" width="32" height="32" class="rounded-circle">
+                        </a>
+                    </div>
+                    break;
+                default:
+                    <a class="btn btn-warning btn-sm" asp-area="" asp-controller="LNR" asp-action="Index">登入</a>
+                    <a class="text-decoration-none link-secondary" asp-area="" asp-controller="LNR" asp-action="KRegister">註冊</a>
 
+                    break;
+
+
+            }
         </div>
     </div>
 </div>
+ 

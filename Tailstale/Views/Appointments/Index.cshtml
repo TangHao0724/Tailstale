@@ -1,5 +1,5 @@
 ﻿@using Tailstale.Hospital_ViewModel;
-@model IEnumerable<Tailstale.Hospital_ViewModel.Appointments_ViewModel>
+@model IEnumerable<Tailstale.Hospital_ViewModel.Appointments_ViewModel>;
 
 @{
     ViewData["Title"] = "Index";
@@ -197,6 +197,21 @@
 
                 // 啟用所有編輯按鈕
                 $('.edit-status').prop('disabled', false);
+            });
+            $("#logout").on("click", function () {
+                axios.delete('api/LNRApi/Logout')
+                    .then(response => {
+                        console.log(response); // 檢查完整的響應對象
+                        if (response.status === 200) {
+                            window.location.href = '/User/Index';
+                        } else {
+                            console.error('Logout failed with status:', response.status);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error during logout:', error);
+                    });
+
             });
         });
     </script>

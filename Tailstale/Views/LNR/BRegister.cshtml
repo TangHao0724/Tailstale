@@ -49,7 +49,6 @@
 
 @section scripts
 {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"></script>
     <script>
         $("#register").submit(function () {
             let formdata = new FormData(this);
@@ -65,7 +64,7 @@
 
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                window.location.replace("/LNR/Index");
+                                window.location.replace("/LNR/BLogin");
                             }
                         });
 

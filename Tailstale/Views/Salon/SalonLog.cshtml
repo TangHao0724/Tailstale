@@ -1,0 +1,313 @@
+﻿@section Styles {
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Danfo&family=Noto+Sans+HK:wght@100..900&family=Noto+Sans+TC:wght@100..900&display=swap" rel="stylesheet">
+
+    <style>
+        .petimg {
+            max-width: 120px;
+            max-height: 150px;
+            cursor: pointer;
+        }
+
+        .showConsumption .showConsumption td {
+            max-height:150px;
+            line-height:150px;
+            text-align:center;
+        }
+
+        .popup-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, .9);
+            height: 100%;
+            width: 100%;
+            z-index: 100;
+            display: none;
+        }
+
+        .popup-image span {
+             position: absolute;
+             top: 20px;
+             right: 25px;
+             font-size: 60px;
+             color: #fff;
+             cursor: pointer;
+             z-index: 100;
+         }
+
+         .popup-image img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 5px;
+            max-height: 760px;
+            max-width: 600px;
+            object-fit: cover;
+          }
+
+        h2 {
+            font-family: "Noto Sans HK", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 700;
+            font-style: normal;
+        }
+    </style>
+}
+
+
+<div id="app">
+
+    <h2 class="mt-4 pt-5 text-center">檢視美容的預約和消費紀錄</h2>
+    <button class="btn btn-primary m-3" v-on:click="myReserve()">預約紀錄</button>
+    <button class="btn btn-primary m-3" v-on:click="myConsumption()">消費紀錄</button>
+
+    <div class="showReserve">
+        <table class="table border table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        會員名稱
+                    </th>
+                    <th>
+                        寵物名稱
+                    </th>
+                    <th>
+                        門市
+                    </th>
+                    <th>
+                        預約時間
+                    </th>
+                    <th>
+                        服務項目名稱
+                    </th>
+                    <th>
+                        狀態
+                    </th>
+                    <th>
+                        預約建立日期
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in Reserve">
+                    <td>
+                        {{item.keeper_name}}
+                    </td>
+                    <td>
+                        {{item.pet_name}}
+                    </td>
+                    <td>
+                        {{item.business_name}}
+                    </td>
+                    <td>
+                        {{formatDate(item.time)}}
+                    </td>
+                    <td>
+                        {{item.service_name}}
+                    </td>
+                    <td>
+                        {{item.status_name}}
+                    </td>
+                    <td>
+                        {{formatDate(item.created_at)}}
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" v-if="item.status !== 10" v-on:click="CancelR(item.id)">取消預約</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="showConsumption">
+        <table class="table border table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        會員名稱
+                    </th>
+                    <th>
+                        寵物名稱
+                    </th>
+                    <th>
+                        寵物體重
+                    </th>
+                    <th>
+                        門市
+                    </th>
+                    <th>
+                        預約時間
+                    </th>
+                    <th>
+                        服務項目名稱
+                    </th>
+                    <th>
+                        美容師
+                    </th>
+                    <th>
+                        價錢
+                    </th>
+                    <th>
+                        消費日期
+                    </th>
+                    <th>
+                        服務前
+                    </th>
+                    <th>
+                        服務後
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in Consumption">
+                    <td>
+                        {{item.keeper_name}}
+                    </td>
+                    <td>
+                        {{item.pet_name}}
+                    </td>
+                    <td>
+                        {{item.pet_weight}}
+                    </td>
+                    <td>
+                        {{item.business_name}}
+                    </td>
+                    <td>
+                        {{formatDate(item.time)}}
+                    </td>
+                    <td>
+                        {{item.service_name}}
+                    </td>
+                    <td>
+                        {{item.beautician_name}}
+                    </td>
+                    <td>
+                        {{item.price}}元
+                    </td>
+                    <td>
+                        {{formatDate(item.end_time)}}
+                    </td>
+                    <td>
+                        <img class="w-100 petimg" :src="`/Salon_img/${item.before_photo}`" v-on:click="showImageClick(item.before_photo)">
+                    </td>
+                    <td>
+                        <img class="w-100 petimg" :src="`/Salon_img/${item.after_photo}`" v-on:click="showImageClick(item.after_photo)">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="popup-image">
+            <span v-on:click="closePopup()">&times;</span>
+            <img :src="`/Salon_img/${showPicture}`">
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <script src="https://unpkg.com/vue@3.4.31/dist/vue.global.js"></script>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"
+            integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+
+
+
+    <script>
+
+
+        var vueApp = {
+            data() {
+                return {
+                    baseAddress: "https://localhost:7112",//結尾不要/
+                    Reserve: [],
+                    Consumption: [],
+                    showPicture: "",
+                };
+            },
+            mounted: function () {//初始化,發生呼叫函式,他需要用callback,
+                $(".showConsumption").hide();
+                let _this = this;
+                axios.get(`${_this.baseAddress}/api/SalonApi/GetReserve`).then(response => {
+
+                    _this.Reserve = response.data;
+
+                }).catch(err => {
+                    alert(err);
+                });
+
+            },
+            methods: {
+                closePopup: function () {
+                    $(".popup-image").hide();
+
+                },
+                showImageClick: function (url) {
+                    this.showPicture = url,
+                        $(".popup-image").fadeIn();
+
+                },
+                formatDate(datetime) {
+                    const date = new Date(datetime);
+                    return date.toLocaleString('zh-TW', { timeZone: 'Asia/Taipei' }).replace('T', ' ');
+                
+                },
+                CancelR: function (id) {
+                    let _this = this;
+                    axios.put(`${_this.baseAddress}/api/SalonApi/CancelReservation/${id}`).then(response => {
+
+                        alert("取消完成");
+                        axios.get(`${_this.baseAddress}/api/SalonApi/GetReserve`).then(response => {
+
+                            _this.Reserve = response.data;
+
+                        }).catch(err => {
+                            alert(err);
+                        });
+
+                    }).catch(err => {
+                        alert(err);
+                    });
+
+                },
+                myConsumption: function () {
+                    let _this = this;
+                    axios.get(`${_this.baseAddress}/api/SalonApi/GetConsumption`).then(response => {
+                        _this.Consumption = response.data;
+
+                    }).catch(err => {
+                        alert(err);
+                    });
+                    $(".showReserve").hide();
+                    $(".showConsumption").fadeIn();
+                },
+                myReserve: function () {
+                    $(".showConsumption").hide();
+                    $(".showReserve").fadeIn();
+                    this.Consumption = [];
+                },
+
+            },
+            computed: {
+
+
+            },
+        };
+        var app = Vue.createApp(vueApp).mount("#app");
+
+
+
+    </script>
+}
+
+

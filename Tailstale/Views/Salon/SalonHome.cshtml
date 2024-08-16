@@ -1,0 +1,970 @@
+﻿@model Tailstale.Models.Reserve
+@section Styles{
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Danfo&family=Noto+Sans+HK:wght@100..900&family=Noto+Sans+TC:wght@100..900&display=swap" rel="stylesheet">
+
+    
+    <style>
+        body {
+            min-height: 150vh;
+        }
+
+        .app {
+            margin-left: 10px;
+
+        }
+        h2,h4{
+            font-family: "Noto Sans HK", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 700;
+        font-style: normal;
+    
+        }
+
+        .hand {
+            cursor: pointer;
+        }
+
+        iframe{
+            border: 0 !important;
+            height: 100% !important;
+            width: 100% !important;
+            min-height: 300px !important;
+        }
+
+        .btn-primary{
+            background-color: rgb(197, 194, 238) !important;
+            border: 3px solid rgb(204, 172, 207);
+            color: #222;
+        }
+
+        .nav-pills .active{
+            background-color: rgb(168, 165, 254) !important;
+        }
+
+        .btn-primary:hover {
+            background-color: rgb(197, 194, 238) !important;
+                border: 3px solid rgb(0, 172, 207) !important;
+                
+        }
+        
+
+        .truncate-multiline {
+            display: -webkit-box; /* 使用 Flexbox 布局 */
+            -webkit-line-clamp: 3; /* 設置顯示的行數 */
+            -webkit-box-orient: vertical; /* 垂直排列 */
+            overflow: hidden; /* 隱藏超出的內容 */
+            text-overflow: ellipsis; /* 顯示省略號 */
+        }
+
+        .Beauty_Step-2 .border{
+            height:500px;
+        }
+        .border{
+            border-radius: 12px;
+        }
+        .showWidth {
+            max-width: 40%;
+        }
+
+        .firsttext {
+            
+           line-height:2;
+        }
+
+        .myborder{
+            border:3px solid #fa0;
+            border-radius: 12px;
+        }
+        
+        .btn-closec:focus, .btn-closec:active {
+                outline: none !important; /* 去掉焦點輪廓 */
+                box-shadow: none !important; /* 去掉點擊時的圓形背景效果 */
+
+        }
+
+        .btop{
+            border-top:3px solid rgba(255,255,255,.7);
+           /*  padding:10px 0; */
+           overflow:hidden;
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .Selectheader{
+            background-color: rgba(255, 172, 124,.4);
+            border-radius:0 0 20px 20px;
+        }
+
+        .storeborder{
+            padding:20px;
+            border: 6px double #fa0;
+            border-radius: 10px;
+            
+        }
+
+        .cardcolor{
+            background-color: rgba(255, 172, 124,.4) !important;
+        }
+
+        .list-group-item{
+            background-color: rgb(255, 222, 203) !important;
+        }
+
+        .btn2{
+           color:black;
+           background-color:#fa0;
+           padding:6px 13px;
+           border:2px solid #ccc;
+            border-radius: 12px;
+        }
+
+        .btn2:hover {
+            background-color:antiquewhite;
+            /* transform: translateY(-3px); */
+            box-shadow: 2px 2px 6px 2px #aaa;
+        }
+
+        .btn2:active {
+            /* transform: translateY(-2px) scale(.98); */
+        }
+
+        .selectbg{
+            background-color: rgba(255, 172, 124,.4);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .mybordertop{
+            margin:20px 0 0 0;
+            border-top: 5px double rgb(168, 165, 254);
+        }
+
+        .atext {
+            text-decoration: none;
+        }
+
+        /* 以下是pic */
+        .petimage-group {
+            position: relative;
+            height: auto;
+            background-color: rgba(197, 194, 238,.3);
+        }
+
+        .imagerow {
+            display: flex;
+            flex-wrap: wrap;
+            /* justify-content: center; */
+        }
+
+        .petimg {
+            max-width: 240px;
+            max-height: 300px;
+            min-height: 300px;
+            cursor: pointer;
+            border: 10px solid #fff;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, .1);
+            overflow: hidden;
+            object-fit: cover;
+            transition: .3s;
+        }
+
+        imghover {
+        }
+
+        .imghover:hover img {
+            transform: scale(1.1);
+        }
+
+        .popup-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, .9);
+            height: 100%;
+            width: 100%;
+            z-index: 100;
+            display: none;
+        }
+
+            .popup-image span {
+                position: absolute;
+                top: 20px;
+                right: 25px;
+                font-size: 60px;
+                color: #fff;
+                cursor: pointer;
+                z-index: 100;
+            }
+
+        .storeh2 {
+            position: absolute;
+            top: 30px;
+            right: 65%;
+            background-color: #fff;
+            color: #fff;
+            font-size: 30px;
+        }
+
+        .popup-image img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 5px;
+            max-height: 760px;
+            max-width: 600px;
+            object-fit: cover;
+        }
+
+        .petimage-group .imagerow:not(:first-of-type) {
+            border-top: 2px solid #fa0; /* 边框的样式和颜色 */
+            padding-top: 24px; /* 边框与内容的距离 */
+        }
+
+        .divcheck{
+            cursor: pointer;
+        }
+
+        .form-select{
+            width:45% !important;
+            display:inline;
+        }
+
+        .flatpickr-calendar {
+            max-width: 310px;
+            zoom: 1.1;
+        }
+                 
+
+    </style>
+    }
+
+
+<div id="app">
+
+    <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="~/salon_img/pexels-pixabay-256632.jpg" class="d-block w-100" style="height:60vh;" alt="...">
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="position-relative">
+            <h2 class="p-3 text-center border-bottom border-3 border-warning">寵物美容</h2>
+            <div class="position-absolute" style="right: 0px; top: 50%; transform: translateY(-50%);">
+                <a class="btn2 atext" asp-area="" asp-controller="Salon" asp-action="SalonLog" v-on:click="ifLogin()">會員查看紀錄</a>
+            </div>
+        </div>
+        
+        <h4 class="p-2 text-center">請輸入縣市和服務項目以搜尋店家</h4>
+        <select class="form-select" v-model="selectAddress">
+            <option value="" disabled selected>請選擇地點</option>
+            <option v-for="item in newAddress">{{item}}</option>
+        </select>
+        <select class="form-select" v-model="selectService">
+            <option value="" disabled selected>請選擇寵物</option>
+            <option value="幼貓">幼貓</option>
+            <option value="短毛貓">短毛貓</option>
+            <option value="長毛貓">長毛貓</option>
+            <option value="幼犬">幼犬</option>
+            <option value="小型狗">小型狗</option>
+            <option value="中型狗">中型狗</option>
+            <option value="大型狗">大型狗</option>
+        </select>
+        <button class="mx-1 btn2" v-on:click="SelectStore()">查詢門市</button>
+    </div>
+    
+
+    <div class="container row StoreCard mt-3">
+        <div class="card col-4 mx-3 mb-3  divcheck py-2 cardcolor" style="width: 18rem;" v-for="Card in businessCard" v-on:click="showResvice(Card.id)">
+            <img :src="`/Salon_img/${Card.photo_url}`" class="card-img-top w-100 my-2" style="height:200px;" alt="">
+            <div class="card-body">
+                <h5 class="card-title text-center my-auto">{{Card.name}}</h5>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">信箱:{{Card.email}}</li>
+                <li class="list-group-item">電話:{{Card.phone}}</li>
+                <li class="list-group-item">地址:{{Card.address}}</li>
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="showStroe">
+        <div class="container mt-5 py-4 selectbg">
+        <div class="row">
+            <div class="col">
+                <nav class="nav nav-pills nav-fill">
+                    <a class="nav-link hand active" id="stepbtn-1" aria-current="page" v-on:click="clickNav1">門市選擇</a>
+                    <a class="nav-link hand" id="stepbtn-2" v-on:click="clickNav2">寵物類型</a>
+                    <a class="nav-link hand" id="stepbtn-3" v-on:click="clickNav3">服務類型</a>
+                    <a class="nav-link hand" id="stepbtn-4" v-on:click="clickNav4">日期時間</a>
+                    <a class="nav-link hand" id="stepbtn-5" v-on:click="clickNav5">確認預約</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    
+
+
+
+        <div class="container-fluid my-3 Beauty_Step-1 Selectheader pb-3">
+            <div v-for="business in businesses" :key="business.ID" class="row p-2 g-3 mb-3">
+              <div v-html="business.geoJson" class="col-12 col-md-6">
+                
+              </div>
+              <div class="storeborder col-12 col-md-6">
+                    <img :src="`/Salon_img/${business.photo_url}`" class="w-100" style="height:300px;" alt="">
+                    <h3 class="text-center py-3">{{business.name}}</h3>
+                    <div v-html="business.description" class="truncate-multiline btop pt-3 mb-2"></div>
+                    @* <div class="truncate-multiline">
+                        {{business.description}}
+                    </div> *@
+                    <div class="text-end me-3">
+                    <button type="button" class="mb-2 btn btn-warning  btn-closec" data-bs-toggle="modal" data-bs-target="#staticBackdrop">顯示更多</button>
+                   
+                    </div>
+                    <!-- Scrollable modal -->
+                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-scrollable showWidth">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <img :src="`/Salon_img/${business.photo_url}`" class="w-100" style="height:300px;" alt="">
+                                    <div v-html="business.description" class="firsttext"></div>
+                                
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <p class="m-0 py-3 btop text-center">地址:{{business.address}}</p>
+                    <p class="m-0 py-3 btop text-center">電話:{{business.phone}}</p>
+                
+                    <div class="text-center"><button class="btn2 Beauty_btn-1" :value="business.id" v-on:click="selectBusiness(business.id,business.name)">選擇此門市</button></div>
+
+                </div> 
+
+                <div class="row mybordertop">
+                <h4 class="py-3 text-center">顯示門市作品</h4>
+                    <button class="btn btn-primary TypePetPic col-5" value="貓" v-on:click="storePic($event,business.id)">貓</button><button class="btn btn-primary TypePetPic col-5" value="狗" v-on:click="storePic($event,business.id)">狗</button><button class="btn btn-primary col-2" v-on:click="hidepic()">關閉</button>
+                <div class="container petimage-group px-5">
+                    <div class="row imagerow">
+                            <div v-for="item in SalonPicture" class="col-12 col-md-4 col-lg-3 mb-3 my-4">
+                            <div v-if="item.url" class="imghover d-flex justify-content-center">
+                                <img class="w-100 petimg" :src="`/Salon_img/${item.url}`" v-on:click="showImageClick(item.url)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+
+
+    
+
+    <div class="popup-image">
+        <span v-on:click="closePopup()">&times;</span>
+        <img :src="`/Salon_img/${showPicture}`">
+    </div>
+
+
+        <div class="container Beauty_Step-2 Selectheader">
+        <div class="row pb-4">
+            <div class="col-12 col-md-4 p-0 mb-3">
+                <div class="myborder mx-3">
+                    <img src="~/salon_img/berkay-gumustekin-ngqyo2ayyne-unsplash.jpg" class="w-100" alt="">
+                    <h3 class="p-2">狗</h3>
+                    <p class="mx-3">選擇「狗」分類，我們提供專為狗狗全面美容服務，包括洗澡、梳毛、剪指甲、清潔耳朵及造型修剪。我們的專業美容師會根據每隻狗狗的需求，提供最舒適、最適合的護理，讓您的毛孩焕然一新！</p>
+                    <div class="text-center mb-auto pb-2"><button class="btn2 Beauty_btn-2-1 pet_type" id="" :value="dogType" v-on:click="selectPetType(dogType)">選擇</button></div>
+                </div>
+
+            </div>
+            <div class="col-12 col-md-4 p-0 mb-3">
+                    <div class="myborder mx-3">
+                    <img src="~/salon_img/pexels-cong-h-613161-1404825.jpg" class="w-100" alt="">
+                        <h3 class="m-2">貓</h3>
+                        <p class="mx-3">選擇「貓」分類，我們提供專為貓咪設計的專業美容服務，包括洗澡、梳毛、指甲修剪和耳朵清潔。每項服務都能讓您的貓咪舒適、乾淨，並保持最佳狀態。讓我們的專業團隊照顧您的毛茸茸小夥伴！</p>
+                        <div class="text-center mb-auto pb-2"><button class="btn2 Beauty_btn-2-2  pet_type" id="" :value="catType" v-on:click="selectPetType(catType)">選擇</button></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3 -->
+        <div class="container Beauty_Step-3-1 Selectheader">
+        <div class="row">
+            <div v-for="service in services" class="col-12 col-md-4 p-0 mb-3">
+                  <div class="myborder mx-3">
+                    <img :src="`/Salon_img/${service.service_img}`" class="w-100" style="height:300px;" alt="">
+                    <h3 class="m-3">{{service.service_name}}</h3>
+                    <p class="truncate-multiline m-3">{{service.service_content}}</p>
+                        <button type="button" class="mx-3 btn btn-primary btn-closec" data-bs-toggle="modal" :data-bs-target="`#serviceBackdrop${service.id}`">顯示更多</button>
+
+                    <!-- Scrollable modal -->
+                        <div class="modal fade" :id="`serviceBackdrop${service.id}`" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" :aria-labelledby="`staticBackdropLabel${service.id}`" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-scrollable showWidth">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel2">Modal title</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <img :src="`/Salon_img/${service.service_img}`" class="w-100" style="height:350px;" alt="">
+                                    <div v-html="service.service_content" class="firsttext my-3"></div>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="m-3">價格:{{service.price}}</p>
+                    <div class="text-center"><button class="mb-3 btn2 Beauty_btn-3-1 dog_service"  :value="service.service_name" v-on:click="changeService(service.service_name)">選擇</button>
+                    </div>
+                </div>
+            </div>
+           </div>
+        </div>
+
+
+
+
+
+        <div class="container Beauty_Step-4 p-3 Selectheader">
+            <h4>預約時間:</h4>
+            <input v-model="day" type="text" id="datepicker" style="display:none;" v-on:change="handleChangetime">
+            <div id="calendar" style="cursor: pointer;">@* Open Calendar *@</div>
+            <div v-for="(item, index) in AllTime" :key="index" style="display: inline-block;" class="my-4 mx-2">
+                <input type="radio" class="btn-check" name="options" :id="'btn-check-' + index" autocomplete="off" :value="item" v-on:change="handleClick">
+                <label class="btn btn-primary" :for="'btn-check-' + index">{{item}}</label>
+             </div>
+            <div class="text-center">
+                <button class="btn2 Beauty_btn-4" id="Beauty_date" v-on:click="selectTime()">確定</button>
+                <p class="reminder" id="reminder">請按下「確定」按鈕以完成操作</p>
+            </div>
+    </div>
+
+        <div class="container Beauty_Step-5 Selectheader">
+        <div class="row p-4 ">
+            <div class="col-12 col-md-12 p-0">
+               @*  <form id="contactForm" action="" class="needs-validation" novalidate> *@
+                    <div class="form-group">
+                       <label for="keeper_id" class="form-label">會員名稱：</label>
+                        <input class="form-control" type="text" value="@ViewBag.LoginName" readonly />
+                    </div>
+                  <div class="form-group">
+                    <label for="pet_name" class="form-label">寵物名稱：</label>
+                    <select class="form-select d-block" asp-items="ViewBag.pet_name" asp-for="pet_name" v-on:change="handleChange"></select>
+                  </div>
+                    <div class="form-group">
+                        <label for="business_ID" class="form-label">門市：</label>
+                        <input type="text" class="form-control" v-model="business_Name" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="service_name" class="form-label">服務類型：</label>
+                        <input type="text" class="form-control" id="service_name"  v-model="serviceName" readonly>
+                    </div>
+                    <div class="form-group">
+                    <label for="time" class="form-label">日期時間：</label>
+                        <input type="text" class="form-control" id="time"  :value="Usetime" readonly>
+                    </div>
+                        <div class="text-center"><button class="my-3 btn2 Beauty_btn-5" v-on:click="Reserveinsert()">確定</button>
+                    </div>
+                @* </form> *@
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+    @section Scripts{
+    <script src="https://unpkg.com/vue@3.4.31/dist/vue.global.js"></script>
+   
+   
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.2/axios.min.js"
+            integrity="sha512-JSCFHhKDilTRRXe9ak/FJ28dcpOJxzQaCd3Xg8MyF6XFjODhy/YMCM8HW0TFDckNHWUewW+kfvhin43hKtJxAw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    
+
+    <script>
+        var viewBagKeeperIdStr = '@Html.Raw(ViewBag.KLoginID ?? "0")';
+        // var viewBagKeeperId = @Html.Raw(ViewBag.KLoginID);
+        var viewBagKeeperId = parseInt(viewBagKeeperIdStr, 10);
+        var addresses = @Html.Raw(Json.Serialize(ViewBag.Addresses));
+
+        var vueApp = {
+            data() {
+                return {
+                    baseAddress: "https://localhost:7112",//結尾不要/
+                    business_ID: 0,
+                    dogType: '狗',
+                    catType: '貓',
+                    pet_type: "",
+                    business_Name: "",
+                    businesses: [],
+                    business_hour: [],
+                    services: [],
+                    serviceName: "",
+                    Usetime: "",
+                    keeper_id: viewBagKeeperId,
+                    pet_name: "",
+                    BusinessHour: [],
+                    showPicture: "",
+                    SalonPicture: [],
+                    address: addresses,
+                    newAddress: [],
+                    selectService: "",
+                    selectAddress: "",
+                    businessCard: [],
+                    Allday:[],
+                    
+                    day:"",
+                    daytime:"",
+                    people:0,
+                    AllTime: [],
+                    mypeople: 0,
+                };
+            },
+            mounted: function () {//初始化,發生呼叫函式,他需要用callback,
+                $(".showStroe").hide();
+               
+                $(".Beauty_Step-2").hide();
+                $(".Beauty_Step-3-1").hide();
+                $(".Beauty_Step-3-2").hide();
+                $(".Beauty_Step-4").hide();
+                $(".Beauty_Step-5").hide();
+                this.newAddress = this.processAddresses(this.address);
+
+                const today = new Date();
+
+                // 指定可以选择的日期数组
+                const allowedDates = [
+                    '2024-08-11',
+                    '2024-08-15',
+                    '2024-08-20'
+                ].map(dateStr => new Date(dateStr));
+
+                flatpickr("#datepicker", {
+                    inline: true,
+                    minDate: today, // 禁用今天之前的日期
+                    disable: [
+                        function (date) {
+                            // 禁用不在 allowedDates 数组中的日期
+                            return !allowedDates.some(allowedDate => date.toDateString() === allowedDate.toDateString());
+                        }
+                    ]
+                });
+
+                // 绑定点击事件来打开日历
+                document.getElementById('calendar').addEventListener('click', function () {
+                    document.getElementById('datepicker').click();
+                });
+            
+        
+
+                this.initializeSelectedValue();
+
+
+            },
+            methods: {
+                ifLogin: function () {
+                    if (this.keeper_id != 0) {
+
+                    } else {
+                        alert("請先登入後再查看")
+                    }
+                },
+                handleClick(event) {
+                    // 获取 checkbox 元素
+                    const checkbox = event.target;
+
+                    // 获取 checkbox 的 value 属性
+                    this.daytime = checkbox.value + ":00";
+
+                    const dateTimeString = `${this.day} ${this.daytime}`;
+
+                    // 将字符串转换为 Date 对象
+                    this.Usetime = new Date(dateTimeString);
+
+  
+                    
+                },
+                processAddresses(addresses) {
+                    // 提取地址的前面三个字符
+                    const shortAddresses = addresses.map(addr => addr.substring(0, 3));
+
+                    // 去重
+                    const uniqueAddresses = new Set(shortAddresses);
+
+                    // 转换为数组
+                    return Array.from(uniqueAddresses);
+                },
+                SelectStore: function () {
+                      $(".showStroe").hide();
+                      $(".StoreCard").fadeIn();
+                     this.businesses = [];
+                    let _this = this;
+                    axios.get(`${_this.baseAddress}/api/SalonApi/SelectStore`, {
+                        params: {
+                            address: _this.selectAddress,
+                            serve: _this.selectService
+                        }
+                    }).then(response => {
+
+                        _this.businessCard = response.data;
+
+                    }).catch(err => {
+                        // alert(err);
+                        alert("請選擇門市和寵物類型");
+                    });
+
+                    
+                },
+                hidepic: function () {
+                    $(".petimage-group").slideUp();
+
+                },
+                closePopup: function () {
+                    $(".popup-image").hide();
+
+                },
+                showImageClick: function (url) {
+                    this.showPicture = url,
+                        $(".popup-image").fadeIn();
+
+                },
+                clickNav1: function () {
+                    $(".Beauty_Step-2").hide();
+                    $(".Beauty_Step-3-1").hide();
+                    $(".Beauty_Step-3-2").hide();
+                    $(".Beauty_Step-4").hide();
+                    $(".Beauty_Step-5").hide();
+                    $(".Beauty_Step-1").fadeIn();
+                    // 設定 active 狀態
+                    $('.nav-link').removeClass('active');
+                    $('#stepbtn-1').addClass('active');
+                },
+                clickNav2: function () {
+                    if (this.business_ID !== 0) {
+                        $(".Beauty_Step-1").hide();
+                        $(".Beauty_Step-3-1").hide();
+                        $(".Beauty_Step-3-2").hide();
+                        $(".Beauty_Step-4").hide();
+                        $(".Beauty_Step-5").hide();
+                        $(".Beauty_Step-2").fadeIn();
+
+                        // 設定 active 狀態
+                        $('.nav-link').removeClass('active');
+                        $('#stepbtn-2').addClass('active');
+                    } else {
+                        alert("請選擇門市")
+                    }
+                },
+                clickNav3: function () {
+                    if (this.pet_type !== "") {
+                        $(".Beauty_Step-1").hide();
+                        $(".Beauty_Step-2").hide();
+                        $(".Beauty_Step-4").hide();
+                        $(".Beauty_Step-5").hide();
+                        $(".Beauty_Step-3-1").fadeIn();
+
+                        // 設定 active 狀態
+                        $('.nav-link').removeClass('active');
+                        $('#stepbtn-3').addClass('active');
+                    } else {
+                        alert("請選擇寵物類型")
+                    }
+                },
+                clickNav4: function () {
+                    if (this.serviceName !== "") {
+                        $(".Beauty_Step-1").hide();
+                        $(".Beauty_Step-3-1").hide();
+                        $(".Beauty_Step-2").hide();
+                        $(".Beauty_Step-5").hide();
+                        $(".Beauty_Step-4").fadeIn();
+
+                        // 設定 active 狀態
+                        $('.nav-link').removeClass('active');
+                        $('#stepbtn-4').addClass('active');
+                    } else {
+                        alert("請選擇服務項目")
+                    }
+                },
+                clickNav5: function () {
+                    if (this.Usetime !== "") {
+                        $(".Beauty_Step-1").hide();
+                        $(".Beauty_Step-2").hide();
+                        $(".Beauty_Step-3-1").hide();
+                        $(".Beauty_Step-4").hide();
+                        $(".Beauty_Step-5").fadeIn();
+
+                        // 設定 active 狀態
+                        $('.nav-link').removeClass('active');
+                        $('#stepbtn-5').addClass('active');
+                    } else {
+                        alert("請選擇預約時間")
+                    }
+                },
+                showResvice:function(id){
+                     $(".showStroe").fadeIn();
+                     $(".StoreCard").hide();
+                    $(".Beauty_Step-2").hide();
+                    $(".Beauty_Step-3-1").hide();
+                    $(".Beauty_Step-3-2").hide();
+                    $(".Beauty_Step-4").hide();
+                    $(".Beauty_Step-5").hide();
+                    $(".Beauty_Step-1").fadeIn();
+                    // 設定 active 狀態
+                    $('.nav-link').removeClass('active');
+                    $('#stepbtn-1').addClass('active');
+                    this.businesses = [];
+                    this.business_ID = 0;
+                    this.pet_type = "";
+                    this.serviceName = "";
+                    this.Usetime = "";
+                    this.mypeople = 0;
+                     
+                     let _this = this;
+                      axios.get(`${_this.baseAddress}/api/SalonApi/GetSalonbusiness`, {
+                        params: {
+                            id: id,
+                        }
+                    }).then(response => {
+
+                        _this.businesses = response.data;
+
+                    }).catch(err => {
+                        alert(err);
+                    });
+
+                },
+                selectBusiness: function (businessID, businessName) {
+
+                    this.business_Name = businessName;
+                    this.business_ID = businessID;
+                    this.BusinessHour = [];
+                    let _this = this;
+                    console.log(businessID)
+                    $(".Beauty_Step-1").hide();
+                    $(".Beauty_Step-2").fadeIn();
+                    $('.nav-link').removeClass('active');
+                    $('#stepbtn-2').addClass('active');
+                    axios.get(`${_this.baseAddress}/api/SalonApi/GetBusinessHour`, {
+                        params: {
+                            id: _this.business_ID,
+                        }
+                    }).then(response => {
+                        // this.BusinessHour = response.data;
+                        this.Allday = response.data.map(item => item.business_day);
+                        this.people = response.data.map(item => ({
+                            business_day: item.business_day,
+                            people_limit: item.people_limit
+                        }));
+                    }).catch(err => {
+                        alert(err);
+                    });
+                    
+                },
+                handleChangetime(event) {
+                    // 直接在这里更新 day 值并调用 showTime
+                    this.day = event.target.value;
+                    const foundItem = this.people.find(item => item.business_day === this.day);
+                    this.mypeople = foundItem ? foundItem.people_limit : null;
+                    this.showTime();
+                },
+                showTime:function() {
+                    let _this = this;
+                    console.log('Request params:', {
+                        id: _this.business_ID,
+                        day: _this.day // 确保 day 值正确
+                    });
+                    axios.get(`${_this.baseAddress}/api/SalonApi/GetTimeRange`, {
+                        params: {
+                            id: _this.business_ID,
+                            day: _this.day,
+                            people: _this.mypeople,
+                        }
+                    }).then(response => {
+                        // this.BusinessHour = response.data;
+                        this.AllTime = response.data;
+                       
+                    }).catch(err => {
+                        console.error('Error:', err.response ? err.response.data : err.message);
+                        alert('An error occurred: ' + (err.response ? err.response.data : err.message));
+                    });
+                },
+                selectPetType: function (petType) {
+                    this.pet_type = petType;
+                    this.selectService2(this.business_ID, this.pet_type);
+                    $(".Beauty_Step-2").hide();
+                    $(".Beauty_Step-3-1").fadeIn();
+
+                    $('.nav-link').removeClass('active');
+                    $('#stepbtn-3').addClass('active');
+
+                    const today = new Date();
+
+                    // 指定可以选择的日期数组
+                    const allowedDates = this.Allday.map(dateStr => new Date(dateStr));
+
+                    flatpickr("#datepicker", {
+                        inline: true,
+                        minDate: today, // 禁用今天之前的日期
+                        disable: [
+                            function (date) {
+                                // 禁用不在 allowedDates 数组中的日期
+                                return !allowedDates.some(allowedDate => date.toDateString() === allowedDate.toDateString());
+                            }
+                        ]
+                    });
+
+                    // 绑定点击事件来打开日历
+                    document.getElementById('calendar').addEventListener('click', function () {
+                        document.getElementById('datepicker').click();
+                    });
+
+
+                },
+                selectService2: function (businessID, petType) {
+                    let _this = this;
+                    axios.get(`${_this.baseAddress}/api/SalonApi/GetService`).then(response => {
+
+                        _this.services = response.data.filter(item => item.business_ID === businessID && item.category === petType);
+
+                    }).catch(err => {
+                        alert(err);
+                    });
+                    
+
+                },
+                changeService: function (name) {
+                    this.serviceName = name;
+                    $(".Beauty_Step-3-1").hide();
+                    $(".Beauty_Step-4").fadeIn();
+                    $('.nav-link').removeClass('active');
+                    $('#stepbtn-4').addClass('active');
+                },
+                selectTime: function () { 
+                    var timeInput = this.time + ":00";
+                    var combinedInput = this.day + 'T' + timeInput;
+                    // this.Usetime = document.getElementById("datetime-picker").value;
+                     console.log(this.Usetime);
+                    if (this.Usetime !== "") {
+                        // 如果有值，執行程式碼
+                        $(".Beauty_Step-4").hide();
+                        $(".Beauty_Step-5").fadeIn();
+                        $('.nav-link').removeClass('active');
+                        $('#stepbtn-5').addClass('active');
+                    } else {
+                        alert("請選擇日期和時間")
+                    }
+                },
+                Reserveinsert: function () {
+                    let _this = this;
+                    if (_this.keeper_id !== 0 && _this.pet_name !== "" && _this.business_ID !== 0 && _this.Usetime !== "" && _this.serviceName !== "") {
+
+                        var form = new FormData();//準備上船的物件,把檔案上傳的內容放到form裡面,form如果要送到Server端,每一個資料都要有name(就類似input屬性的那個name,但此處獎的name是下幾行的CategoryId和CategoryName這幾個...)
+                        //照著你函式用的型態(dto或model)欄位名稱來寫
+                        form.append("id", 0);
+                        form.append("keeper_id", _this.keeper_id);
+                        form.append("pet_name", _this.pet_name);
+                        form.append("business_ID", _this.business_ID);
+                        form.append("time", new Date(_this.Usetime).toLocaleString());
+                        form.append("service_name", _this.serviceName);
+                        form.append("created_at", new Date().toLocaleString());
+                        form.append("status", 1);
+                        //axios.put(uri, 參數, {物件參數}).then().catch()
+                        axios.post(`${_this.baseAddress}/api/SalonApi/ReserveCreate`, form, {//新增不需要id在uri
+                            headers: { "Content-Type": "multipart/form-data" }
+                        }).then(response => {
+                            alert(response.data);
+                            $(".Beauty_Step-5").hide();
+                            $(".Beauty_Step-1").fadeIn();
+                            $('.nav-link').removeClass('active');
+                            $('#stepbtn-1').addClass('active');
+                            _this.business_ID = 0;
+                            _this.pet_type = "";
+                            _this.serviceName = "";
+                            _this.Usetime = "";
+                            _this.mypeople = 0;
+                        }).catch(err => {
+                            alert(err);
+                        });
+                    } else {
+                        alert("請先登入在預約!");
+                    }
+                    this.AllTime = [];
+                },
+                initializeSelectedValue() {
+                    const selectElement = document.getElementById('pet_name');;
+                    if (selectElement) {
+                        this.pet_name = selectElement.value;
+                        // console.log("頁面加載時選中的值是: " + this.pet_name);
+                    }
+                },
+                handleChange(event) {
+                    // 獲取<select>元素的選中值
+                    const selectedValue = event.target.value;
+                    this.pet_name = selectedValue; // 更新 Vue 的數據
+                    console.log("選中的值是: " + selectedValue);
+                },
+                storePic: function (event,id) {
+                    $(".petimage-group").slideDown();
+                    let _this = this;
+                    const buttonValue = event.target.value;
+                    axios.get(`${_this.baseAddress}/api/SalonApi/GetSalonPicture`).then(response => {
+
+                        _this.SalonPicture = response.data.filter(picture => picture.fK_business_id === id && picture.name.includes(buttonValue));
+
+                    }).catch(err => {
+                        alert(err);
+                    });
+                },
+            },
+            computed: {
+                catServices(petType) {
+                    return this.services.filter(item => item.type === petType);
+                },
+
+            }
+        };
+        var app = Vue.createApp(vueApp).mount("#app");
+
+
+    </script>
+
+  
+
+
+    
+
+
+    
+    }

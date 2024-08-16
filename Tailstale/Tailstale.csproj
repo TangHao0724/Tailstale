@@ -7,6 +7,11 @@
     <UserSecretsId>aspnet-Tailstale-136df18a-bda1-4146-8ec6-27921fce6f5f</UserSecretsId>
   </PropertyGroup>
 
+
+  <ItemGroup>
+    <Compile Remove="Controllers\nursing_recordController.cs" />
+  </ItemGroup>
+
   <ItemGroup>
     <Content Remove="bundleconfig.json" />
   </ItemGroup>
@@ -28,7 +33,9 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="ECPay.Payment.Integration" Version="1.0.0.8" />
     <PackageReference Include="Konscious.Security.Cryptography.Argon2" Version="1.3.1" />
+    <PackageReference Include="MailKit" Version="4.7.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.5" />
@@ -49,6 +56,7 @@
 
   <ItemGroup>
     <Folder Include="MedViewModels\" />
+    <Folder Include="Views\Shared\Components\LoginUTag\" />
     <Folder Include="wwwroot\images\business\" />
     <Folder Include="wwwroot\images\room\" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
@@ -65,9 +73,17 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+    <Content Update="Views\Shared\Components\LUTag\_LoginUTagUn.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Folder Include="wwwroot\imgs\business_img\NewFolder\" />
+    <Content Update="wwwroot\lib\HospitalImages\Business\No_Image.png">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Folder Include="wwwroot\NewFolder\NewFolder\" />
     <Folder Include="partial\" />
-    <Folder Include="wwwroot\js\components\" />
   </ItemGroup>
 
 </Project>

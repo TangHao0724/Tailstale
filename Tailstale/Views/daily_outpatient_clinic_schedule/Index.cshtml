@@ -331,10 +331,10 @@
                 e.stopPropagation(); // 防止事件冒泡，避免其他處理器處理此事件
                 
                 Swal.fire({
-                    title: "確定刪除該筆門診嗎？",                    
+                    title: "確定要刪除該筆門診嗎？",                    
                     showCancelButton: true,
-                    confirmButtonText: "刪除",
-                    cancelButtonText:"返回門診表"
+                    confirmButtonText: "確認刪除",
+                    cancelButtonText:"取消刪除"
                 }).then((result) => {
                     if (result.isConfirmed) {
                         deleteOpcfromschedule(this);
@@ -360,8 +360,8 @@
                 Swal.fire({
                     title: "確定要變更門診狀態嗎？",
                     showCancelButton: true,
-                    confirmButtonText: "變更",
-                    cancelButtonText: "返回門診表"
+                    cancelButtonText: "取消變更",
+                    confirmButtonText: "確認變更"
                 }).then((result) => {
                     if (result.isConfirmed) {
                         docsStatusChange(this);

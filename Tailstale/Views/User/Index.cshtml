@@ -1,9 +1,187 @@
 ﻿
-<div id="App">
-    <header>
-        @await Component.InvokeAsync("NavBar")
-    </header>
+<div id="app">
+    <!--articleModal S-->
+    <div class="modal fade" id="articleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body ">
+                <div class="container-fluid">
+                    <!--主文章-->
+                    <div class="row">
+                        <div class="card mb-1 border-secondary rounded-3 mb-3">
+                            <div class="card-header bg-light text-nowrap">
+                                <img :src="imgurl(selectedArt?.uType, selectedArt?.imgurl)" alt="mdo" width="48" height="48" class="rounded-circle d-inline">
+                                <h6 class="d-inline">{{selectedArt?.kName ?? selectedArt?.bName}}</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <p class="card-text">{{selectedArt?.content}}</p>
+                                </div>
+                                <div class="row">
+                                        <!--圖片-->
+                                        <div class="row" v-if="selectedArt?.imgurllist.length > 0">
+                                        <div :id="`carousel${selectedArt?.id}`" class="carousel slide" data-bs-ride="carousel">
+                                            <div class="carousel-inner">
+                                                <div class="carousel-item active" >
+                                                    <img :src="bindimgurl(selectedArt?.imgurllist[0], selectedArt?.uType)" class="d-block w-100" alt="...">
+                                                </div>
+                                                    <div class="carousel-item" v-for="fileData in selectedArt?.imgurllist">
+                                                    <img :src="bindimgurl(fileData, selectedArt?.uType)" class="d-block w-100" alt="...">
+                                                </div>
+                                            </div>
+                                                <button class="carousel-control-prev" type="button" :data-bs-target="`#carousel${selectedArt?.id}`" data-bs-slide="prev">
+                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Previous</span>
+                                            </button>
+                                                <button class="carousel-control-next" type="button" :data-bs-target="`#carousel${selectedArt?.id}`" data-bs-slide="next">
+                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Next</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <h6 class="card-subtitle mb-2 text-muted d-inline" v-for="publicTag in selectedArt?.publicTaglist">{{publicTag}}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <!--貼文-->
+                        <div class="row overflow-auto " style="height:300px"  v-if=" parentArt !== null ">
+                        <div class="col-2">
+                                  
+                        </div>
+                        <div class="col-10">
+                            <div class="card mb-1 border-secondary rounded-3  " v-for="at in parentArt">
+                                <div class="card-header bg-light text-nowrap" @@click="openPost(at)">
+                                    <img :src="imgurl(at.uType,at.imgurl)" alt="mdo" width="32" height="32" class="rounded-circle d-inline mx-2">
+                                    <h6 class="d-inline">{{at.kName ?? at.bName}}</h6>
+                                        <i class="bi bi-people-fill"></i>
+                                        <div class="text-end">
+                                            <i class="bi bi-person-circle" v-if="!at.ispublic "></i>
+                                            <i class="bi bi-people-fill" v-if="at.ispublic "></i>
+                                        
+                                        </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row" @@click="openPost(at)">
+                                        <p class="card-text">{{at.content}}</p>
+                                    </div>
+                                    <div class="row" v-if="at.imgurllist.length > 0">
+                                        <div :id="`carousel${at.id}`" class="carousel  carousel-dark slide" data-bs-ride="carousel">
+                                            <div class="carousel-inner">
+                                                <div class="carousel-item active" data-bs-interval="5000">
+                                                    <img :src="bindimgurl(at.imgurllist[0], at.uType)" class="d-block w-100" alt="...">
+                                                </div>
+                                                <div class="carousel-item" data-bs-interval="5000" v-for="fileData in at.imgurllist">
+                                                    <img :src="bindimgurl(fileData, at.uType)" class="d-block w-100" alt="...">
+                                                </div>
+                                            </div>
+                                            <button class="carousel-control-prev" type="button" :data-bs-target="`#carousel${at.id}`" data-bs-slide="prev">
+                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Previous</span>
+                                            </button>
+                                            <button class="carousel-control-next" type="button" :data-bs-target="`#carousel${at.id}`" data-bs-slide="next">
+                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Next</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" @@click="openPost(at)">
+                                    <h6 class="card-subtitle mb-2 text-muted d-inline" v-for="publicTag in at.publicTaglist">{{publicTag}}</h6>
+                                </div>
+                            </div>
+                        </div>
+
+                     </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                    @await Component.InvokeAsync("RePost")
+            </div>
+        </div>
+    </div>
+</div>
+    <!--articleModal E-->
+    <div class="container-fluid" id="start" data-user-id="@ViewBag.loginID" data-user-type="@ViewBag.loginType">
+        <!--側攔-->
+        <div class="row mt-4">
+            <!--個人資訊欄&個人標籤-->
+            <div class="col-2 rounded-2 shadow-sm  bg-light">
+                <div class="row">
+                </div>
+                @await Component.InvokeAsync("LUTag")
+                <hr />
+                <div class="row mt-3">
+
+                </div>
+            </div>
+            <!--輸入框&文章框-->
+            <div class="col-7 mx-3">
+                <div class="row">
+                    <div class="col-12 ">
+                        <!--輸入框 S-->
+                        <div class="row rounded-2 shadow-sm  bg-light p-3  mb-3">
+                            @await Component.InvokeAsync("Post")
+                        </div>
+                        <!--輸入框 E-->
+                        <!--文章框 S-->
+                        <div class="row rounded-2 shadow-sm bg-light p-3">
+                            <div class="col-12  overflow-auto " style="height:360px" >
+                                <div class="card mb-1 border-secondary rounded-3  " v-for="at in articles">
+                                    <div class="card-header bg-light text-nowrap" @@click="openPost(at)">
+                                        <img :src="imgurl(at.uType,at.imgurl)" alt="mdo" width="48" height="48" class="rounded-circle d-inline">
+                                        <h6 class ="d-inline">{{at.kName ?? at.bName}}</h6>
+                                    </div>
+                                    <div class="card-body" >
+                                        <div class="row" @@click="openPost(at)">
+                                            <p class="card-text">{{at.content}}</p>
+                                        </div>
+                                        <div class="row" v-if="at.imgurllist.length > 0">
+                                            <div :id="`carousel${at.id}`" class="carousel  carousel-dark slide" data-bs-ride="carousel">
+                                                <div class="carousel-inner">
+                                                    <div class="carousel-item active" data-bs-interval="5000">
+                                                        <img :src="bindimgurl(at.imgurllist[0], at.uType)" class="d-block w-100" alt="...">
+                                                    </div>
+                                                    <div class="carousel-item" data-bs-interval="5000" v-for="fileData in at.imgurllist">
+                                                        <img :src="bindimgurl(fileData, at.uType)" class="d-block w-100" alt="...">
+                                                    </div>
+                                                </div>
+                                                <button class="carousel-control-prev" type="button" :data-bs-target="`#carousel${at.id}`" data-bs-slide="prev">
+                                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                    <span class="visually-hidden">Previous</span>
+                                                </button>
+                                                <button class="carousel-control-next" type="button" :data-bs-target="`#carousel${at.id}`" data-bs-slide="next">
+                                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                    <span class="visually-hidden">Next</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" @@click="openPost(at)">
+                                        <h6 class="card-subtitle mb-2 text-muted d-inline" v-for="publicTag in at.publicTaglist">{{publicTag}}</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                      <!--文章框 E-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--搜尋欄&熱門標籤-->
+        <div class="col-2">
+        </div>
+
+    </div>
 
 </div>
 
-<script src="~/js/keeper/IndexVue.js"></script>
+</div>
+
+@section scripts{
+
+    <script src="~/js/keeper/IndexVue.js"></script>
+}
+

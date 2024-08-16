@@ -7,33 +7,37 @@
     <link href="~/css/sshowdelete.css" rel="stylesheet" />
 }
 
-<h1>Delete</h1>
+<h1>刪除作品圖片</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>您確定是否刪除此筆作品圖片?</h3>
 <div>
     <h4>business_img</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.URL)
+            圖片
+           @*  @Html.DisplayNameFor(model => model.URL) *@
         </dt>
         <dd class = "col-sm-10">
-            <img src="~/Salon_img/@Html.DisplayFor(model => model.URL)" alt="Alternate Text" style="width:320px;height:500px" />
+            <img src="~/Salon_img/@Html.DisplayFor(model => model.URL)" alt="Alternate Text" style="width:360px;height:500px" />
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.name)
+            圖片名稱
+            @* @Html.DisplayNameFor(model => model.name) *@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.created_at)
+            建立日期
+           @*  @Html.DisplayNameFor(model => model.created_at) *@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.created_at)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.img_type)
+            類型名稱
+            @* @Html.DisplayNameFor(model => model.img_type) *@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.img_type.typename)
@@ -42,7 +46,27 @@
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="ID" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+            刪除
+        </button>|
+        <a class="btn btn-secondary" asp-action="Index">返回</a>
+
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">刪除作品圖片</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        請問確定是否要刪除此筆作品圖片
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <input type="submit" value="刪除" class="btn btn-danger" />
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
 </div>

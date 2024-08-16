@@ -1,89 +1,84 @@
-﻿
-
-
-@{
+﻿@{
     ViewData["Title"] = "Hospital_FrontDeskIndex";
 }
 
 @section Styles
 {
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
     <style>
 
-        form{
-         margin-top:50px;
+        form {
+            margin-top: 50px;
         }
 
-        #header{
-        margin-top:200px;
-        }        
-        
+        #header {
+            margin-top: 200px;
+        }
     </style>
 }
 <div class="text-center" id="header">
-    <h4>請依照需求輸入搜尋條件</h4>
+    <h3>請依照需求輸入搜尋條件</h3>
 </div>
 
-
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-12">            
-            <form class="d-flex flex-wrap justify-content-between align-items-center">
-                <div class="form-group mb-2 me-2 flex-grow-1">
-                    <select class="form-control" v-model="criteria.Address">
-                        <option value="" selected disabled>選擇地區</option>
-                        <option value="TPE" disabled>台北市</option>
-                        <option value="TPH" disabled>新北市</option>
-                        <option value="TYC" disabled>桃園市</option>
-                        <option value="TXG" disabled>台中市</option>
-                        <option value="TNN" disabled>台南市</option>
-                        <option value="KHH">高雄市</option>
-                    </select>
+<div id="app">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-10">
+                <form class="d-flex flex-wrap justify-content-between align-items-center">
+                    <div class="form-group mb-2 me-2 flex-grow-1">
+                        <select class="form-control" v-model="criteria.region_front">
+                            <option value="" selected disabled>選擇地區</option>
+                            <option value="TPE" disabled>台北市</option>
+                            <option value="TPH" disabled>新北市</option>
+                            <option value="TYC" disabled>桃園市</option>
+                            <option value="TXG" disabled>台中市</option>
+                            <option value="TNN" disabled>台南市</option>
+                            <option value="高雄市">高雄市</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-2 me-2 flex-grow-1">
+                        <input type="text" class="form-control" v-model="criteria.address_front" placeholder="請輸入地址" autocomplete="off" />
+                    </div>
+                    <div class="form-group mb-2 me-2 flex-grow-1">
+                        <input type="text" class="form-control" id="startDate" ref="startDate" placeholder="選擇開始日期" autocomplete="off" />
+                    </div>
+                    <div class="form-group mb-2 me-2 flex-grow-1">
+                        <input type="text" class="form-control" id="endDate" ref="endDate" placeholder="選擇結束日期" autocomplete="off" />
+                    </div>
+                    <div class="form-group mb-2 me-2 flex-grow-1">
+                        <select class="form-control" v-model="criteria.timeSlotName_front">
+                            <option value="" selected disabled>選擇時段</option>
+                            <option value="上午診">上午診</option>
+                            <option value="下午診">下午診</option>
+                            <option value="晚間診">晚間診</option>
+                            <option value="夜間診">夜間診</option>
+                        </select>
+                    </div>
+                    <div class="form-group mb-2 me-2 flex-grow-1">
+                        <input type="text" class="form-control" v-model="criteria.clinicName_front" placeholder="請輸入院所名稱" autocomplete="off" />
+                    </div>
+                    <div class="form-group mb-2 me-2 flex-grow-1">
+                        <input type="text" class="form-control" v-model="criteria.opcName_front" placeholder="請輸入門診名稱" autocomplete="off" />
+                    </div>
+                    <div class="form-group mb-2 me-2 flex-grow-1">
+                        <input type="text" class="form-control" v-model="criteria.vetName_front" placeholder="請輸入醫師姓名" autocomplete="off" />
+                    </div>
+                </form>
+                
+                <div class="text-center mt-3 mb-5 form-group mb-2 flex-grow-1">
+                    <button type="button" class="btn btn-outline-success me-3" id="search" v-on:click="handleSearch"><i class="bi bi-search"></i> 搜尋門診</button>
+                    <button type="button" class="btn btn-outline-secondary" id="resultClear" v-on:click="resultClear">清除搜尋結果</button>
                 </div>
-                @* <div class="form-group mb-2 me-2 flex-grow-1">
-                    <input type="text" id="dateRange" class="form-control" placeholder="選擇日期範圍" autocomplete="off" />
-                </div>                
- *@                <div class="form-group mb-2 me-2 flex-grow-1">
-                    <input type="text" class="form-control" id="startDate" value="" placeholder="選擇開始日期" autocomplete="off"/>
-                </div>
-                <div class="form-group mb-2 me-2 flex-grow-1">
-                    <input type="text" class="form-control" id="endDate" value="" placeholder="選擇結束日期" autocomplete="off"/>
-                </div>
-                <div class="form-group mb-2 me-2 flex-grow-1">
-                    <select class="form-control">
-                        <option value="" selected>選擇時段</option>
-                        <option value="上午診">上午診</option>
-                        <option value="下午診">下午診</option>
-                        <option value="晚間診">晚間診</option>
-                        <option value="夜間診">夜間診</option>
-                    </select>
-                </div>
-                <div class="form-group mb-2 me-2 flex-grow-1">
-                    <input type="text" class="form-control" name="clinicName" value="" placeholder="請輸入院所名稱" autocomplete="off" />
-                </div>
-                <div class="form-group mb-2 me-2 flex-grow-1">
-                    <input type="text" class="form-control" name="outpatientClinicName" value="" placeholder="請輸入門診名稱" autocomplete="off" />
-                </div>
-                <div class="form-group mb-2 me-2 flex-grow-1">
-                    <input type="text" class="form-control" name="vetName" value="" placeholder="請輸入醫師姓名" autocomplete="off" />
-                </div>
-            </form>
-            <div class="text-center mt-3 mb-5 form-group mb-2 flex-grow-1">
-                <button type="button" class="btn btn-outline-success" id="search"><i class="bi bi-search"></i> 搜尋門診</button>
             </div>
         </div>
-    </div>
-    
-        <!-- 搜尋結果 -->
-    <div id="app">
-            <div class="container">
-                <!-- 搜尋結果表格 -->
+
+        <div class="container mb-5">
+            <!-- 搜尋結果表格 -->
+            <div v-if="showResults">
                 <div v-if="searchingResult.length > 0" class="table-responsive">
-                    <table class="table table-striped table-bordered">                    
+                    <table class="table table-striped table-bordered">
                         <thead>
                             <tr>
                                 <th>日期</th>
@@ -101,19 +96,21 @@
                         </thead>
                         <tbody>
                             <tr v-for="result in searchingResult" :key="result.date + result.clinicName + result.vetName">
-                                <td>{{ result.date }}</td>
-                                <td>{{ result.clinicName }}</td>
-                                <td>{{ result.outpatientClinicName }}</td>
-                                <td>{{ result.timeslotName }}</td>
-                                <td>{{ result.vetName }}</td>
-                                <td>{{ result.startAt }}</td>
-                                <td>{{ result.endAt }}</td>
-                                <td>{{ result.clinicPhone }}</td>
-                                <td>{{ result.clincAddress }}</td>
-                                <td class="d-none">{{ result.businessId }}</td>
+                                <td class="Date">{{ result.date }}</td>
+                                <td class="ClinicName">{{ result.clinicName }}</td>
+                                <td class="OutpatientClinicName">{{ result.outpatientClinicName }}</td>
+                                <td class="TimeslotName">{{ result.timeslotName }}</td>
+                                <td class="VetName">{{ result.vetName }}</td>
+                                <td class="StartAt">{{ result.startAt }}</td>
+                                <td class="EndAt">{{ result.endAt }}</td>
+                                <td class="ClinicPhone">{{ result.clinicPhone }}</td>
+                                <td class="ClincAddress">{{ result.clincAddress }}</td>
+                                <td class="d-none BusinessId">{{ result.businessId }}</td>
                                 <td>
-                                    <button class="btn btn-outline-success" id="makeAppointment">預約看診</button>
-                                    <span id="blockAppointment" class="">已額滿</span>
+                                    <button v-if="result.maxPatients > result.appointmentCount" class="btn btn-outline-success" v-on:click="fetchAppointmentInfo(result.outpatientClinicScheduleId)" data-bs-toggle="modal" data-bs-target="#appointmentModal">
+                                        預約看診
+                                    </button>
+                                    <span v-else id="blockAppointment">已額滿</span>
                                 </td>
                             </tr>
                         </tbody>
@@ -122,23 +119,79 @@
 
                 <!-- 無結果提示 -->
                 <div v-else class="text-center">
-                    <p>沒有找到符合條件的結果，請重新輸入搜尋條件</p>
+                    <h4>沒有找到符合條件的結果，請重新輸入搜尋條件</h4>
                 </div>
             </div>
         </div>
+    </div>
 
+    <!-- hospitalCards start-->
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-md-4 mb-4" v-for="hospital in hospitals" :key="hospital.businessId">
+                <div class="card h-100" style="max-width: 540px;">
+                    <div class="row g-0">
+                        <div class="col-md-6">
+                            <img :src="hospital.photoURL" class="img-fluid rounded-start" alt="尚無圖片">
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card-body text-end">
+                                <h5 class="card-title">{{ hospital.hospitalName }}</h5>
+                                <h6 class="card-text">{{ hospital.hospitalPhone }}</h6>
+                                <p class="card-text">{{ hospital.hospitalAddress }}</p>
+                                <p class="card-text" hidden>{{ hospital.businessId }}</p>
+                            </div>
+                            <div class="text-end me-3">
+                                <a :href="`/Hospital_FrontDesk/HospitalIndex?businessID=${hospital.businessId}`" class="btn btn-outline-secondary">更多詳細資訊</a>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- hospitalCards end-->
+
+
+    <!--Modal start-->
+    <div class="modal fade" tabindex="-1" id="appointmentModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">確認預約資訊</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <p>飼主：{{appointmentInfo.keeperName}}</p>
+                        <select>
+                            <option selected>選擇要預約診療服務的寵物</option>
+                            <option v-for="petInfos.petName"></option>
+                        </select>
+
+                    </div>
+                    <p hidden>{{ appointmentInfo.businessId }}</p>
+                    <p>醫療院所：{{ appointmentInfo.clinicName }}</p>
+                    <p>預約門診：{{ appointmentInfo.outpatientClinicName }}</p>
+                    <p>預約日期：{{ appointmentInfo.date }}</p>
+                    <p>門診時間：{{ appointmentInfo.startAt }}~{{ appointmentInfo.endAt }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消預約</button>
+                    <button type="button" class="btn btn-primary" v-on:click="handleAppointment">送出預約</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Modal end-->
 
 </div>
-
-
-    
 
 
 
 @section Scripts
 {
-
-    
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <script>
@@ -172,47 +225,162 @@
                     }
                 });
             });
+        });
 
-            new Vue({
-                el: '#app',
-                data: {
-                    searchingResult: [] // 儲存從後端獲取的搜索結果
+        const vueApp = {
+            data() {
+                return {
+                    criteria: {
+                        region_front:'',
+                        address_front: '',
+                        startDate_front: null,
+                        endDate_front: null,
+                        timeSlotName_front: '',
+                        clinicName_front: '',
+                        opcName_front: '',
+                        vetName_front: ''
+                    },
+                    searchingResult: [], // 門診搜尋結果集合
+                    showResults: false, // 搜尋結果初始為隱藏
+                    appointmentRequest:{
+                        keeperID:'',
+                        dailyOutpatientClinicScheduleID:''
+                    },
+                    // keeperInfo: {
+                    //     keeperID: '',
+                    //     keeperName: ''
+                    // },
+                    petInfos:[],
+                    appointmentInfo: { // 初始化預約門診資料
+                        keeperName: '',
+                        clinicName: '',
+                        outpatientClinicName: '',
+                        date: '',
+                        startAt: '',
+                        endAt: '',
+                        keeperID: '',
+                        dailyOutpatientClinicScheduleID: ''
+                    },                  
+                    hospitals: [], // 院所資料集合
+                    showCards: true, // 院所資料卡片
+                    isModalVisible: false // 控制 Modal 顯示的狀態
+
+                }
+            },
+            methods: {
+                loadHospitalCards() {
+                    axios.post('/Hospital_FrontDesk/loadHospitalCards', this.criteria, {
+                        headers: {
+                        'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        this.hospitals = response.data;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching hospital cards:', error);
+                    });
                 },
-                methods: {
-                    fetchSearchingResult() {
-                        // 使用 Axios 發送 POST 請求
-                        axios.post('/api/showSearchingResult', {
-                            address: '台北市',
-                            startDate_front: '2024-08-10',
-                            endDate_front: '2024-08-20',
-                            timeSlotName_front: '上午診',
-                            opcName_front: '內科',
-                            vetName_front: '王醫師',
-                            clinicName_front: 'ABC診所'
-                        })
-                            .then(response => {
-                                this.searchingResult = response.data;
-                            })
-                            .catch(error => {
-                                console.error('Error fetching data:', error);
-                            });
+                handleSearch() {
+                    this.criteria.startDate_front = $('#startDate').val() == "" ? null : $('#startDate').val()
+                    this.criteria.endDate_front = $('#endDate').val() == "" ? null : $('#endDate').val()
+                    this.fetchSearchingResult();
+                },
+                fetchSearchingResult() {
+                    this.searchingResult = [];
+                    axios.post('Hospital_FrontDesk/showSearchingResult', this.criteria, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        this.searchingResult = response.data;
+                        this.showResults = true;
+                        console.log('Search Results:', this.searchingResult);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                    });
+                },                
+                resultClear() {
+                    this.showResults = false;
+                    this.searchingResult = [];
+                    this.criteria={
+                        region_front: '',
+                        address_front: '',
+                        startDate_front: null,
+                        endDate_front: null,
+                        timeSlotName_front: '',
+                        clinicName_front: '',
+                        opcName_front: '',
+                        vetName_front: ''
                     }
                 },
-                mounted() {
-                    this.fetchSearchingResult(); // 在組件掛載後自動加載搜索結果
-                }
-            });
+                // fetchPetInfo() {
+                //     axios.get(`Hospital_FrontDesk/fetchPetInfo`)
+                //         .then(response => {
+                //             this.petInfos = response.data;
+                //         })
+                //         .catch(error => {
+                //             console.error('Error fetching keeperInfo:', error);
+                //         });
+                // },
+                fetchAppointmentInfo(currentDOCSID) {
+                    console.log(currentDOCSID)
+                    axios.post('Hospital_FrontDesk/fetchAppointmentInfo',{
+                        "dailyOutpatientClinicScheduleID": currentDOCSID
+                    })
+                         // .then(response => {
+                         //    this.appointmentInfo: {
+                         //        keeperID: response.keeperID,
+                         //        keeperName: response.keeperName,
+                         //        clinicName: response.clinicName,
+                         //        outpatientClinicName: response.outpatientClinicName,
+                         //        date: response.data,
+                         //        startAt: response.startAt,
+                         //        endAt: response.endAt,
+                         //        dailyOutpatientClinicScheduleID: response.dailyOutpatientClinicScheduleID
+                         //    },
+                         //     this.petInfos: [{ 
+                         //      petID:'',petName:''
+                         //     }]
+                        //console.log(response.data)
+                        //})
+                        .catch(error => {
+                            console.error('Error fetching keeperInfo:', error);
+                        });
+                },
+                // 預約請求
+                makeAppointment() {
+                    const appointmentRequest = {
+                        keeperID: this.appointmentInfo.keeperID,
+                        dailyOutpatientClinicScheduleID: this.appointmentInfo.dailyOutpatientClinicScheduleID
+                    };
 
-    
-            
-            // function search() { 
-            //  let btnSearch=$('#search
-            //  const 
-            //     btnSearch.on('click', function () { 
-                 
-            //     })
-            // };
-        });
+                    axios.post('/Hospital_FrontDesk/makeAppointment', appointmentRequest, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(response => {
+                            console.log('Appointment confirmed:', response.data);
+                            // 可以在這裡顯示一個成功的訊息，或關閉模態框等
+                        })
+                        .catch(error => {
+                            console.error('Error making appointment:', error);
+                        });
+                },
+                // 處理預約按鈕的點擊事件
+                handleAppointment() {
+                    this.makeAppointment();
+                }
+            },
+            mounted() {
+                console.log("Component is mounted");
+                this.loadHospitalCards();
+            }
+        };
+        var app = Vue.createApp(vueApp).mount('#app');
     </script>
 
 }
