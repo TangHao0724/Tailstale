@@ -304,20 +304,22 @@
         <button class="mx-1 btn2" v-on:click="SelectStore()">查詢門市</button>
     </div>
     
-
-    <div class="container row StoreCard mt-3">
-        <div class="card col-4 mx-3 mb-3  divcheck py-2 cardcolor" style="width: 18rem;" v-for="Card in businessCard" v-on:click="showResvice(Card.id)">
-            <img :src="`/Salon_img/${Card.photo_url}`" class="card-img-top w-100 my-2" style="height:200px;" alt="">
-            <div class="card-body">
-                <h5 class="card-title text-center my-auto">{{Card.name}}</h5>
+    <div class="container">
+        <div class="row StoreCard mt-3">
+            <div class="card col-4 mx-3 mb-3  divcheck py-2 cardcolor" style="width: 18rem;" v-for="Card in businessCard" v-on:click="showResvice(Card.id)">
+                <img :src="`/Salon_img/${Card.photo_url}`" class="card-img-top w-100 my-2" style="height:200px;" alt="">
+                <div class="card-body">
+                    <h5 class="card-title text-center my-auto">{{Card.name}}</h5>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">信箱:{{Card.email}}</li>
+                    <li class="list-group-item">電話:{{Card.phone}}</li>
+                    <li class="list-group-item">地址:{{Card.address}}</li>
+                </ul>
             </div>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">信箱:{{Card.email}}</li>
-                <li class="list-group-item">電話:{{Card.phone}}</li>
-                <li class="list-group-item">地址:{{Card.address}}</li>
-            </ul>
         </div>
     </div>
+    
 
 
     <div class="showStroe">
