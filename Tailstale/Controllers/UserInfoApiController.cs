@@ -12,6 +12,7 @@ using Tailstale.UserInfoDTO;
 using System.Reflection.PortableExecutable;
 using MailKit.Search;
 using AutoMapper.Internal;
+using Org.BouncyCastle.Asn1.X509;
 
 namespace Tailstale.Controllers
 {
@@ -369,6 +370,70 @@ namespace Tailstale.Controllers
             var combinedResult = bookingResult.Concat(reserveResult).Concat(appointmentResult).ToList();
 
             return Ok(combinedResult);
+        }
+
+        //傳遞main的所有資料
+        //route api/UserInfoApi/PostPetInfo
+        [HttpGet("getmain")]
+        public async Task<IActionResult> getmain([FromQuery] int id)
+        {
+            var articles =await  _context.articles.ToListAsync();
+            var result = new
+            {
+
+            };
+            //各兩筆
+            //最新貼文
+            var newpost = articles.Where(n => n.FK_Keeper_ID == id)
+                                            .OrderByDescending(x => x.created_at)
+                                            .Take(3).ToList();
+
+            //文章的回覆。找到有自己文章的parentid，找到有這些parentid的文章，排序，take
+            List<article> allResponse = new List<article> { };
+            var allUserArt = articles.Where(n => n.FK_Keeper_ID == id).Select(s => s.ID);
+            foreach(int ID in allUserArt)
+            {
+                var response = articles.Where(n => n.parent_ID  == ID)
+                                        .OrderByDescending(x=>x.created_at)
+                                        .Take(3)
+                                        .ToList();
+                allResponse.AddRange(response);
+            }
+
+            //新增的預約
+            List<AppointmentResult> allallorderRe = new List<AppointmentResult>();
+           var allorder = await UsertOrder(id);
+            if (allorder is OkObjectResult combinedResult)
+            {
+                allallorderRe = combinedResult.Value as List<AppointmentResult>;
+            }
+            allallorderRe.OrderByDescending(x => x.OrderDate)
+               .Take(3).ToList();
+            
+            //新增的寵物
+            var newpet = await _context.pets.Where(n=>n.keeper_ID == id)
+                                      .OrderByDescending(x=>x.created_at)
+                                      .Take(3)
+                                      .ToListAsync();
+            var end = new
+            {
+                newpost,
+                allResponse,
+                allallorderRe,
+                newpet,
+
+            };
+            return Ok(end);
+        }
+        public class AppointmentResult
+        {
+            public int OrderID { get; set; }
+            public string OrderPet { get; set; }
+            public string OrderType { get; set; }
+            public string BusinessName { get; set; }
+            public string ServiceName { get; set; }
+            public string OrderDate { get; set; }
+            public string OrderStatus { get; set; }
         }
         private bool keeperExists(int id)
         {

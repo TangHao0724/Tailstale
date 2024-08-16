@@ -17,8 +17,9 @@
     },
     created() {
 
-        this.getarticle(15);
-        $('#articleModal').on('hidden.bs.modal', this.handleModalHidden);
+        this.getarticle(15,null,null,true);
+        $('#articleModal').on('hidden.bs.modal', this.onModalHide);
+        
 
     },
     methods: {
@@ -88,27 +89,27 @@
                 const response = await axios.post("api/social/PostArticle", formdata);
 
                 // 清空內容
-                this.content = "";
+                this.content = postPar
                 this.pcontent = "";
 
                 // 獲取文章
-                this.getarticle(10, null, null, null);
+                
             } catch (error) {
                 console.error('Error fetching user info:', error);
             }
         },
         openPost(input) {
             this.selectedArt = null;
-            this.parentArt = [];
+            this.parentArt = null;
             this.selectedArt = input;
-            this.getarticle(10, this.selectedArt.id,null);
+            this.getarticle(10, this.selectedArt.id, null, true);
             $("#articleModal").modal("show");
 
         },
         postPar(input) {
             this.parentArt = [];
             this.postarticle();
-            this.getarticle(10,null, input,null);
+            this.openPost(input);
         },
         bindimgurl(url, uType) {
             if (uType !== 0) {
@@ -156,7 +157,7 @@
                 , r = '(' + n + ')(' + o + ')(' + m + '*' + l + m + '*)';
             return r;
         },
-        async getarticle(count, parentid, userid, ispublicOnly) {
+        async getarticle(count, parentid, userid, publicOnly) {
             try {
 
                 const response = await axios.get('api/social/GetArticle', {
@@ -164,7 +165,7 @@
                         count: count,
                         id: userid,
                         parentid: parentid,
-                        publicOnly: ispublicOnly
+                        publicOnly: publicOnly
                     },
                 });
                 if (this.selectedArt !== null) {
@@ -174,7 +175,7 @@
                 }
                 
             } catch (err) {
-                console.error('Error fetching user info:', error);
+                console.error('Error fetching user info:', err);
             }
 
         },
@@ -200,8 +201,9 @@
                     break;
             }
         },
-        handleModalHidden() {
-            this.selectedArt = [];
+        onModalHide() {
+            this.selectedArt = null;
+            this.parentArt = null;
         }
     },
     computed: {
@@ -222,9 +224,6 @@
     mounted() {
         this.useridm = $("#start").data('user-id');
         this.usertype = $("#start").data("user-type");
-        if (this.usertype == 0) {
-            this.GetUserimgm(this.useridm); // 在掛載時調用方法
-        }
         this.editableDiv = this.$refs.editableDiv;
         
     }

@@ -58,7 +58,27 @@ app.component('tab-主頁', {
     template: `#tab-Main`,
     data() {
         return {
-
+            data: [],
+        }
+    },
+    created() {
+        this.getdata()
+    },
+    props: {
+        userid: Number,
+    },
+    methods: {
+        async getdata() {
+            try {
+                const response = await axios.get(`api/UserInfoApi/getmain`, {
+                    params: {
+                        id: this.userid,
+                    },
+                });
+                this.data = response.data;
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
         }
     }
 });

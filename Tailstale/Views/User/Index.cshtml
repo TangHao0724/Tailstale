@@ -12,6 +12,8 @@
                             <div class="card-header bg-light text-nowrap">
                                 <img :src="imgurl(selectedArt?.uType, selectedArt?.imgurl)" alt="mdo" width="48" height="48" class="rounded-circle d-inline">
                                 <h6 class="d-inline">{{selectedArt?.kName ?? selectedArt?.bName}}</h6>
+                                    <i class="bi bi-person-circle" v-if="!selectedArt?.ispublic "></i>
+                                    <i class="bi bi-people-fill" v-if="selectedArt?.ispublic "></i>
                             </div>
                             <div class="card-body">
                                 <div class="row">
@@ -130,6 +132,8 @@
                                     <div class="card-header bg-light text-nowrap" @@click="openPost(at)">
                                         <img :src="imgurl(at.uType,at.imgurl)" alt="mdo" width="48" height="48" class="rounded-circle d-inline">
                                         <h6 class ="d-inline">{{at.kName ?? at.bName}}</h6>
+                                        <i class="bi bi-person-circle" v-if="!at.ispublic "></i>
+                                        <i class="bi bi-people-fill" v-if="at.ispublic "></i>
                                     </div>
                                     <div class="card-body" >
                                         <div class="row" @@click="openPost(at)">
