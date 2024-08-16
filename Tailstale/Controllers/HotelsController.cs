@@ -743,7 +743,7 @@ namespace Tailstale.Controllers
                     reviewRating = r.reviewRating,
                     reviewText = r.reviewText,
                     reviewDate = DateTime.Now,
-                    //bookingID = r.bookingID,
+                    bookingID = r.bookingID,
                 };
                 _context.Reviews.Add(newreview);
             }
