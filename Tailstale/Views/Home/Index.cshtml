@@ -1,18 +1,61 @@
 ﻿@model IEnumerable<Tailstale.Models.keeper>
 
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "首頁";
 }
-@* <header>
-    <partial name="_NavBar" />
-</header>
- *@
-@* <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-   
+<div class="container-fluid col-xxl-8 px-4 py-5 bg-light bg-gradient   ">
+    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+        <div class="col-10 col-sm-8 col-lg-6 bg-secondary2">
+            <img src="/imgs/LNR_img/pexels-a-darmel-6643658.jpg" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="1400" height="1000" loading="lazy">
+        </div>
+        <div class="col-lg-6">
+            <h1 class="display-5 fw-bold lh-1 mb-3">記錄下所有美好！</h1>
+            <p class="lead">記錄與分享所有的預約經驗、服務紀錄以及愛寵的每一個時刻！並且向他人分享、共同討論所有問題！</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                <a asp-controller="LNR" asp-action="KRegister" class="btn btn-primary btn-lg">加入體驗更多！</a>
+                <button type="button" class="btn btn-outline-secondary btn-lg px-4">了解更多</button>
+            </div>
+        </div>
+    </div>
 </div>
- *@
+<hr />
+<div class="container my-3">
+    <div class="row p-2 mb-3">
+        <div class="col-lg-6 col-md-6 col-sm-12 mb-sm-2">
+            <img src="/imgs/LNR_img/pexels-mccutcheon-1909802.jpg" alt="" srcset="" class="w-100">
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12  ">
+            <h1 class="display-4 fw-bold lh-1">在紀錄的同時，與他人聯繫起關係</h1>
+            <p class="lead">記錄與分享所有的醫療經驗、服務紀錄以及愛寵的每一個時刻！並且向他人分享、共同討論照顧上的所有問題！</p>
+            <br>
+            <a href="#" class="btn btn-outline-primary">了解紀錄與社交</a>
+        </div>
+    </div>
+    <div class="row p-2 mb-3 shadow-lg">
+        <div class="col-lg-6   col-md-6 col-sm- 12  ">
+            <h1 class="display-4 fw-bold lh-1">詳細的病歷系統</h1>
+            <p class="lead">出示給獸醫過往的日常、醫療紀錄，讓獸醫快速理解病情並分析原因。</p>
+            <br>
+            <a href="#" class="btn btn-outline-primary">了解關於病例</a>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12 mb-sm-2">
+            <img src="imgs/LNR_img/med.png" alt="" srcset="" class="w-100" style="display:inline-block">
+        </div>
+    </div>
+    <div class="row p-2 mb-3">
+        <div class="col-lg-6 col-md-6 col-sm-12 mb-sm-2">
+            <img src="/imgs/LNR_img/pexels-japheth-569170.jpg" alt="" srcset="" class="w-100">
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12  ">
+            <h1 class="display-4 fw-bold lh-1">安全可靠又便捷的預約。</h1>
+            <p class="lead">我們會仔細審核所有加入的商業會員，以確保他們所提共的服務，安全無疑慮。搭配我們的服務搜索系統，快速找到你周遭的所有的服務！</p>
+            <br>
+            <a href="#" class="btn btn-outline-primary">了解關於預約</a>
+        </div>
+
+    </div>
+
+</div>
 @section Scripts{
     <script>
         $("#test").on("click",function(){

@@ -20,28 +20,8 @@
         this.getarticle(15);
         $('#articleModal').on('hidden.bs.modal', this.handleModalHidden);
 
-
-
     },
     methods: {
-        async GetUserimgm(userid) {
-            if (this.usertype != 0) {
-
-            }
-            try {
-                const formData = {
-                    'UserID': userid, // 使用傳遞的 userid
-                    'type_name': userid + '_head',
-                    "img_name": "head",
-                };
-
-                const response = await axios.post('api/KImg/GetSingleImg', formData);
-                console.log(JSON.stringify(response.data));
-                this.imgurlLu = `/imgs/keeper_img/${response.data.img_url}`;
-            } catch (error) {
-                console.error('Error fetching user info:', error);
-            }
-        },
         inputFile() {
             $("#updateImg").click();
         },
@@ -56,7 +36,6 @@
             this.pcontent = event.target.innerText;
         },
         handleFile(event) {
-            alert("aa");
             const files = event.target.files;
             this.fileDatas = [];
             for (const file of files) {
@@ -68,7 +47,6 @@
             }
         },
         handleResponseFileChange(event) {
-            alert("bb");
             const files = event.target.files;
             this.responseimg = [];
             for (const file of files) {
@@ -79,6 +57,7 @@
                 reader.readAsDataURL(file);
             }
         },
+       /* public async Task<IActionResult> GetArticle(int? count, int? userid, int? parentid, bool? publicOnly)*/
         async postarticle() {
             try {
                 let formdata = new FormData(this.$refs.postform);
@@ -129,7 +108,7 @@
         postPar(input) {
             this.parentArt = [];
             this.postarticle();
-            this.getarticle(10, input,null);
+            this.getarticle(10,null, input,null);
         },
         bindimgurl(url, uType) {
             if (uType !== 0) {

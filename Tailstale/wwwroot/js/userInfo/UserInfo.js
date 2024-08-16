@@ -232,7 +232,6 @@ app.component('tab-寵物資訊', {
                     }
                 });
                 this.fetchPet(this.userid);
-                alert(JSON.stringify(response.data));
                 $("#PDUpdateModal").modal("hide");
                 console.log(JSON.stringify(response.data));
             } catch (error) {
@@ -398,11 +397,9 @@ app.component('tab-歷史訂單', {
 
             }); 
             $('#orderTable tbody').on('click', 'button.btn-action', (event) => {
-                alert("aa");
                 const datas = table.row($(event.currentTarget).parents('tr')).data();
                 var oID = parseInt(datas.orderID);
                 var oT = datas.orderType;
-                alert(oID);
                 if (oT === "寵物美容") {
                     // 處理寵物美容的邏輯
                 } else if (oT === "寵物醫療") {
@@ -500,7 +497,6 @@ app.component('tab-相片集', {
                     }
                 });
                 $("#ITUpdateModal").modal("hide");
-                alert(JSON.stringify(response.data));
                 console.log(JSON.stringify(response.data));
                 this.fetchtype(this.userid);
             } catch (error) {
@@ -537,7 +533,7 @@ app.component('tab-相片集', {
             $("#ImgDetailModal").modal("show");
         },
         changeimgNane() {
-            alert("aa");
+
         },
         handleFileChange(event) {
             const files = event.target.files;

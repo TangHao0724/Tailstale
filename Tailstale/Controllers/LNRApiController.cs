@@ -191,11 +191,11 @@ namespace Tailstale.Controllers
 
         }
         //登出
-        [HttpDelete("Logout")]
+        [HttpGet("Logout")]
         public async Task<IActionResult> Logout()
         {
             HttpContext.Session.Clear();
-            return RedirectToAction("Index","User");
+            return RedirectToAction("Index","Home");
         }
 
         //驗證帳戶email
