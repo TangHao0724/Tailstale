@@ -18,7 +18,6 @@
     created() {
 
         this.getarticle(15,null,null,true);
-        $('#articleModal').on('hidden.bs.modal', this.onModalHide);
         
 
     },
@@ -58,6 +57,10 @@
                 reader.readAsDataURL(file);
             }
         },
+        postMain() {
+            this.postarticle();
+            this.getarticle(15, null, null, true);
+        },
        /* public async Task<IActionResult> GetArticle(int? count, int? userid, int? parentid, bool? publicOnly)*/
         async postarticle() {
             try {
@@ -67,8 +70,6 @@
                 const content = this.content || this.pcontent;
                 if (content) {
                     formdata.append("Content", content);
-                    this.content = '';
-                    this.pcontent = '';
                 }
 
                 // 合併 PublicTags 和 PrivateTags 的處理
@@ -89,8 +90,10 @@
                 const response = await axios.post("api/social/PostArticle", formdata);
 
                 // 清空內容
-                this.content = postPar
+                this.content = "";
                 this.pcontent = "";
+                this.responseimg = null;
+                this.fileDatas = null;
 
                 // 獲取文章
                 
@@ -209,23 +212,37 @@
     computed: {
         Publichashtags: function () {
             var regex = new RegExp(this.getPublichashtag(), 'ig');
-            if (regex.test(this.content)) {
-                return this.content.match(regex);
+            if (this.pcontent != "") {
+                if (regex.test(this.pcontent)) {
+                    return this.content.match(regex);
+                }
+            } else {
+                if (regex.test(this.content)) {
+                    return this.content.match(regex);
+                }
             }
         },
         Privatehashtags: function () {
             var regex = new RegExp(this.getPrivatehashtag(), 'ig');
-            if (regex.test(this.content)) {
-                return this.content.match(regex);
+            if (this.pcontent != "") {
+                if (regex.test(this.pcontent)) {
+                    return this.content.match(regex);
+                }
+            } else {
+                if (regex.test(this.content)) {
+                    return this.content.match(regex);
+                }
             }
-        },
 
+        },
+        
     },
     mounted() {
         this.useridm = $("#start").data('user-id');
         this.usertype = $("#start").data("user-type");
         this.editableDiv = this.$refs.editableDiv;
-        
-    }
+        $(this.$refs.articleModal).on('hidden.bs.modal', this.onModalHide);
+    },
+    
 });
 app.mount("#app");

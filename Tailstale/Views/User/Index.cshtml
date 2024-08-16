@@ -1,7 +1,7 @@
 ﻿
 <div id="app">
     <!--articleModal S-->
-    <div class="modal fade" id="articleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="articleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" ref="articleModal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body ">
@@ -49,12 +49,12 @@
                         </div>
                     </div>
                         <!--貼文-->
-                        <div class="row overflow-auto " style="height:300px"  v-if=" parentArt !== null ">
+                        <div class="row overflow-auto " style="height:300px">
                         <div class="col-2">
                                   
                         </div>
                         <div class="col-10">
-                            <div class="card mb-1 border-secondary rounded-3  " v-for="at in parentArt">
+                                <div class="card mb-1 border-secondary rounded-3  " v-for="at in parentArt" >
                                 <div class="card-header bg-light text-nowrap" @@click="openPost(at)">
                                     <img :src="imgurl(at.uType,at.imgurl)" alt="mdo" width="32" height="32" class="rounded-circle d-inline mx-2">
                                     <h6 class="d-inline">{{at.kName ?? at.bName}}</h6>
