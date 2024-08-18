@@ -900,7 +900,7 @@
                         form.append("time", new Date(_this.Usetime).toLocaleString());
                         form.append("service_name", _this.serviceName);
                         form.append("created_at", new Date().toLocaleString());
-                        form.append("status", 1);
+                        form.append("status", 5);
                         //axios.put(uri, 參數, {物件參數}).then().catch()
                         axios.post(`${_this.baseAddress}/api/SalonApi/ReserveCreate`, form, {//新增不需要id在uri
                             headers: { "Content-Type": "multipart/form-data" }
@@ -918,6 +918,8 @@
                         }).catch(err => {
                             alert(err);
                         });
+                    } else if (_this.pet_name == "") {
+                        alert("請到會員設定新增寵物資料!");
                     } else {
                         alert("請先登入在預約!");
                     }

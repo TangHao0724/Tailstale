@@ -122,7 +122,7 @@ namespace Tailstale.Controllers
                 // 檢查是否有足夠空位
                 var dateTimeToCheck = dayDate.ToDateTime(currentTime);
                 var reservationCount = await _context.Reserves
-                    .Where(r => r.business_ID == id)
+                    .Where(r => r.business_ID == id && (r.status == 5 || r.status == 6))
                     .CountAsync(r => r.time.Date == dateTimeToCheck.Date && r.time.TimeOfDay == dateTimeToCheck.TimeOfDay);
 
                 //.CountAsync(r => r.business_ID == id && r.time.Date == dateTimeToCheck.Date && r.time.TimeOfDay == dateTimeToCheck.TimeOfDay);
