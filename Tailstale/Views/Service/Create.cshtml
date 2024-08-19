@@ -6,6 +6,7 @@
 @section Styles {
     <link href="~/css/salonfrom.css" rel="stylesheet" />
 }
+<div class="container">
 <h1>新增服務項目</h1>
 
 @* <h4>Service</h4> *@
@@ -56,7 +57,7 @@
 <div>
     <a class="btn btn-secondary mt-3" asp-action="Index">返回</a>
 </div>
-
+</div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 

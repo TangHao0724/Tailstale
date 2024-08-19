@@ -1,5 +1,19 @@
-﻿<div class="container row text-center m-auto py-5">
-    <div class="list-group list-group-flush col-6 mx-auto py-5">
+﻿@section Styles{
+    <style>
+        .list-group a:hover {
+          background-color:#fa0;
+          color:#fff;
+          transition:1s;
+        }
+        .myborder{
+            border-bottom:3px solid #000;
+        }
+    </style>
+}
+
+<div class="container row text-center m-auto py-5">
+    <div class="list-group list-group-flush col-6 mx-auto py-3">
+        <h2 class="text-center myborder p-2">美容門市設定</h2>
         <a class="nav-link text-dark list-group-item p-3" asp-area="" asp-controller="Service" asp-action="Index">服務項目</a>
         <a class="nav-link text-dark list-group-item p-3" asp-area="" asp-controller="Beautician" asp-action="Index">美容師</a>
         <a class="nav-link text-dark list-group-item p-3" asp-area="" asp-controller="Business_hour" asp-action="Index">營業日</a>
@@ -8,14 +22,11 @@
         <a class="nav-link text-dark list-group-item p-3" asp-area="" asp-controller="Sbusiness_img" asp-action="Index">作品圖片</a>
         <a class="nav-link text-dark list-group-item p-3" asp-area="" asp-controller="Sbusiness_img_type" asp-action="Index">圖片分類</a>
         <a class="nav-link text-dark list-group-item p-3" asp-area="" asp-controller="Salon" asp-action="businessEdit">門市資料修改</a>
-        <a id="log" class="btn btn-primary" asp-controller="Home" asp-action="Privacy">帳號登出</a>
 
     </div>
-    <div class="col-9">
-   
-        </div>
+    
     </div>
-</div>
+
 
 
 @section scripts
