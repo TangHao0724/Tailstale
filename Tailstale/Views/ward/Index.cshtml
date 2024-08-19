@@ -14,11 +14,12 @@
     </style>
 }
 
-<h3>院內病房管理</h3>
-<hr>
 
-<div class="container">
+
+<div class="container mt-5">
     <div class="row">
+        <h3>院內病房管理</h3>
+        <hr>
         <div class="list-group col-2 text-start">
             <a asp-action="Index" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item">預約記錄管理</a>
             <a asp-action="Details" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item">過去預約記錄檢視</a>
@@ -41,9 +42,7 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.business)
-                        </th>
+                        
                         <th>
                             @Html.DisplayNameFor(model => model.ward_name)
                         </th>
@@ -53,15 +52,16 @@
                         <th>
                             @Html.DisplayNameFor(model => model.memo)
                         </th>
+                        <th>
+                            
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model)
                     {
                         <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.business.name)
-                            </td>
+                            
                             <td>
                                 @Html.DisplayFor(modelItem => item.ward_name)
                             </td>
