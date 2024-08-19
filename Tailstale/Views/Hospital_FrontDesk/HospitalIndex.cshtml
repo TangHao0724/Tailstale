@@ -25,7 +25,7 @@
         .nav-link {
             color: black;
         }
-
+        
         .calendar-day {
             position: relative; 
             border: 1px solid #ddd;
@@ -64,13 +64,18 @@
             border-color:dimgray;
             background-color: #FCFCFC;
         }
-        
+
+        .myCardContent
+        {
+            background-color:white;
+            z-index: 2;
+        }
     </style>
 }
 
 
 <div id="app">
-    <div class="container mb-5">
+    <div class="container my-4">
         <div class="row justify-content-center">
             <div class="col-10">
                 <div class="mt--3">
@@ -92,19 +97,20 @@
             </div>
         </div>
     </div>
-
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="vetCards-tab" data-bs-toggle="tab" data-bs-target="#vetCards" type="button" role="tab" aria-controls="home" aria-selected="true"><h6 class="my-2 mx-2 fw-bold">本院醫療團隊</h6></button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="hospitalSchedule-tab" data-bs-toggle="tab" data-bs-target="#hospitalSchedule" type="button" role="tab" aria-controls="profile" aria-selected="false"><h6 class="my-2 mx-2 fw-bold">當月及下月門診表</h6></button>
-        </li>
-    </ul>
+    <div class="mx-5 px-5">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="vetCards-tab" data-bs-toggle="tab" data-bs-target="#vetCards" type="button" role="tab" aria-controls="home" aria-selected="true"><h5 class="my-2 mx-2 fw-bold">本院醫療團隊</h5></button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="hospitalSchedule-tab" data-bs-toggle="tab" data-bs-target="#hospitalSchedule" type="button" role="tab" aria-controls="profile" aria-selected="false"><h5 class="my-2 mx-2 fw-bold">當月及下月門診表</h5></button>
+            </li>
+        </ul>
+    </div>   
 
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="vetCards" role="tabpanel" aria-labelledby="vetCards-tab">
-            <div class="container">
+            <div class="container" id="myCardContent">
                 <div class="row justify-content-center d-flex">
                     <div v-for="vetInfo in vetInfos" :key="vetInfo.vetName" class="card border-light my-4 mx-3" style="max-width: 30%">
                         <div class="row g-0">
@@ -127,13 +133,13 @@
         </div>
 
         <div class="tab-pane fade" id="hospitalSchedule" role="tabpanel" aria-labelledby="hospitalSchedule-tab">
-            <div class="container">
+            <div class="container mb-5">
                 <div class="row justify-content-center">
                     <div class="col-12">
                         <div class="calendar">
-                            <h4 class="text-center my-5"><button class="btn me-3" id="preMonth" v-on:click="previousMonth"><i class="fa-solid fa-chevron-left"></i></button> {{ currentYear }}年{{ monthName }}門診表 <button class="btn ms-3" v-on:click="nextMonth" id="nextMonth"><i class="fa-solid fa-chevron-right"></i></button></h4>
+                            <h4 class="text-center my-5" style="font-weight:bolder"><button class="btn me-3" id="preMonth" v-on:click="previousMonth"><i class="fa-solid fa-chevron-left"></i></button> {{ currentYear }}年{{ monthName }} 門診表 <button class="btn ms-3" v-on:click="nextMonth" id="nextMonth"><i class="fa-solid fa-chevron-right"></i></button></h4>
                             <div class="d-flex justify-content-between">
-                                <div class="text-center" style="width: 14.28%; font-weight:bolder" v-for="day in daysOfWeek">{{ day }}</div>
+                                <div class="text-center mb-3" style="width: 14.28%; font-weight:bolder" v-for="day in daysOfWeek">{{ day }}</div>
                             </div>
                             <div class="d-flex flex-wrap">
                                 <!-- 空白格子 -->
@@ -141,16 +147,21 @@
                                 <!-- 日期格子 -->
                                 <div class="text-center border py-2 calendar-day" v-for="day in daysInMonth" :key="day" style="width: 14.28%;">
                                     <div class="calendar-day-number">{{ day }}</div>
-                                    <div class="scheduleInfo py-2 my-2 mx-2" v-for="schedule in dailySchedules.filter(s => new Date(s.date).getDate() === day)">
+                                    <div class="scheduleInfo py-2 my-2 mx-2" v-for="schedule in dailySchedules.filter(s => new Date(s.date).getDate() == day)">
                                         <!-- 顯示門診資訊 -->
+                                        <div class="d-none">{{schedule.dailyOutpatientClinicScheduleID}}</div>
                                         <div>{{ schedule.outpatientClinicName }}</div>
                                         <div>{{ schedule.outpatientClinicTimeslotName}}</div>
                                         <div>{{ schedule.vetName }}</div>
                                         <div>{{ schedule.startAt }}~</div>
                                         <div>{{ schedule.endAt }}</div>
-                                        <div v-show="schedule.dailyOutpatientClinicScheduleStatus" style="color:tomato;font-weight:bolder">休診</div>
-                                        <div>
-                                            <button v-if="schedule.maxPatients > schedule.appointmentCount
+                                        <div v-if="schedule.dailyOutpatientClinicScheduleStatus" style="color:tomato;font-weight:bolder">休診</div>
+                                        <div v-else-if="schedule.maxPatients == schedule.appointmentCount && schedule.dailyOutpatientClinicScheduleStatus== false">
+                                            <span  style="color:#7B68EE;font-weight:bolder">已額滿</span>
+                                        </div>
+                                        <div v-if="schedule.dateAfterCurrentDate && !schedule.dailyOutpatientClinicScheduleStatus && schedule.maxPatients > schedule.appointmentCount">
+                                            @* <button v-if="schedule.maxPatients >
+                                                schedule.appointmentCount
                                                 && !schedule.dailyOutpatientClinicScheduleStatus
                                                 && new Date(schedule.date).setHours(0, 0, 0, 0) > new Date().setHours(0, 0, 0, 0)"
                                                 class="btn"
@@ -159,9 +170,15 @@
                                                 data-bs-target="#appointmentModal"
                                                 style="color:#228B22;font-weight:bolder"><i class="fa-regular fa-hand-pointer"></i>
                                                 預約看診
+                                            </button> *@
+                                            <button
+                                                class="btn"
+                                                    v-on:click="fetchAppointmentInfo(schedule.dailyOutpatientClinicScheduleID)"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#appointmentModal"
+                                                style="color:#228B22;font-weight:bolder"><i class="fa-regular fa-hand-pointer"></i>
+                                                預約看診
                                             </button>
-
-                                            <span v-if="schedule.maxPatients == schedule.appointmentCount && schedule.dailyOutpatientClinicScheduleStatus== false" style="color:#7B68EE;font-weight:bolder">已額滿</span>
                                         </div>
                                         
                                     </div>
@@ -210,7 +227,7 @@
                     <div>
                         <p>飼主：{{appointmentInfo.keeperName}}</p>
                         <select v-model="petSelectedID" class="form-select mb-2">
-                            <option value="0" selected>選擇要預約診療服務的寵物</option>
+                            <option value="0" disabled>請選擇要預約診療服務的寵物</option>
                             <option v-for="item in petInfos" v-bind:value="item.petID" v-text="item.petName"></option>
                         </select>
                     </div>
@@ -222,7 +239,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">取消預約</button>
-                    <button type="button" class="btn btn-outline-success" v-on:click="handleAppointment" data-bs-dismiss="modal">送出預約</button>
+                    <button type="button" class="btn btn-outline-dark" v-on:click="handleAppointment" data-bs-dismiss="modal">送出預約</button>
                 </div>
             </div>
         </div>
@@ -257,6 +274,7 @@
                         keeperID: '',
                         dailyOutpatientClinicScheduleID: ''
                     },
+                    petSelectedID: 0
                 }
             },
             computed: {
@@ -304,27 +322,32 @@
                 },
                 previousMonth() {
                     const now = new Date();
+                    //console.log(now)
                     const prevMonthDate = new Date(this.currentDate);
-                    prevMonthDate.setMonth(prevMonthDate.getMonth() - 1);
+                    //console.log(prevMonthDate)
+                    now.setMonth(now.getMonth());
+                    //console.log(prevMonthDate)
+                    this.currentDate = now;
 
-                    if (prevMonthDate >= new Date(now.getFullYear(), now.getMonth(), 1)) {
-                        this.currentDate = prevMonthDate;
-                        this.updateCalendar();
-                    }
+                    $('#preMonth').addClass('d-none');
+                    $('#nextMonth').removeClass('d-none');
 
-                    this.toggleMonthButtons();
+                    this.updateCalendarForThisMonth();
                 },
                 nextMonth() {
                     const nextMonthDate = new Date(this.currentDate);
+                    console.log(nextMonthDate)
                     nextMonthDate.setMonth(nextMonthDate.getMonth() + 1);
-
+                    console.log(nextMonthDate)
                     this.currentDate = nextMonthDate;
-                    this.updateCalendar();
 
-                    this.toggleMonthButtons();
+                    $('#nextMonth').addClass('d-none');
+                    $('#preMonth').removeClass('d-none');
+
+                    this.updateCalendarForNextMonth();
                 },
-                updateCalendar() {
-                    axios.get(`/Hospital_FrontDesk/getSchedules`, {
+                updateCalendarForThisMonth() {
+                    axios.get(`/Hospital_FrontDesk/getSchedulesForThisMonth`, {
                         params: { businessID: this.hospitalID }
                     })
                         .then(response => {
@@ -335,22 +358,37 @@
                             console.error('獲取日程安排時出錯:', error);
                         });
                 },
-                toggleMonthButtons() {
-                    const now = new Date();
-                    if (this.currentDate.getFullYear() === now.getFullYear() && this.currentDate.getMonth() === now.getMonth()) {
-                        $('#preMonth').addClass('d-none');
-                    } else {
-                        $('#preMonth').removeClass('d-none');
-                    }
-
-                    if (this.currentDate.getFullYear() === now.getFullYear() && this.currentDate.getMonth() === now.getMonth() + 1) {
-                        $('#nextMonth').addClass('d-none');
-                    } else {
-                        $('#nextMonth').removeClass('d-none');
-                    }
+                updateCalendarForNextMonth() {
+                    axios.get(`/Hospital_FrontDesk/getSchedulesForNextMonth`, {
+                        params: { businessID: this.hospitalID }
+                    })
+                        .then(response => {
+                            this.dailySchedules = response.data;
+                            console.log(this.dailySchedules);
+                        })
+                        .catch(error => {
+                            console.error('獲取日程安排時出錯:', error);
+                        });
                 },
+                // toggleMonthButtons() {
+                //     const now = new Date();
+                //     if (this.currentDate.getFullYear() === now.getFullYear() && this.currentDate.getMonth() === now.getMonth()) {
+                //         $('#preMonth').addClass('d-none');
+                //     } else {
+                //         $('#preMonth').removeClass('d-none');
+                //     }
+
+                //     if (this.currentDate.getFullYear() === now.getFullYear() && this.currentDate.getMonth() === now.getMonth() + 1) {
+                //         $('#nextMonth').addClass('d-none');
+                //     } else {
+                //         $('#nextMonth').removeClass('d-none');
+                //     }
+                // },
                 fetchAppointmentInfo(currentDOCSID) {
-                    axios.get(`Hospital_FrontDesk/fetchAppointmentInfo?dailyOutpatientClinicScheduleID=${currentDOCSID}`)
+                    // alert('button clicked')
+                    console.log(currentDOCSID)
+                    axios.get(`fetchAppointmentInfo?dailyOutpatientClinicScheduleID=${currentDOCSID}`)
+                    //axios.get(`fetchAppointmentInfo?dailyOutpatientClinicScheduleID=1099`)
                         .then(response => {
                             this.appointmentInfo = {
                                 keeperID: response.data.keeperID,
@@ -360,7 +398,7 @@
                                 date: response.data.date,
                                 startAt: response.data.startAt,
                                 endAt: response.data.endAt,
-                                dailyOutpatientClinicScheduleID: response.data.outpatientClinicScheduleId
+                                dailyOutpatientClinicScheduleID: response.data.dailyOutpatientClinicScheduleID
                             },
                                 this.petInfos = response.data.petInfos;
                             console.log(response.data)
@@ -385,9 +423,14 @@
                         }
                     })
                         .then(response => {
-                            alert('預約成功')
+                            
                             console.log('Appointment confirmed:', response.data);
-                            // 可以在這裡顯示一個成功的訊息，或關閉模態框等
+                            if (response) {
+                                Swal.fire("門診預約成功", "", "success");
+                            }
+                            else {
+                                Swal.fire("門診預約失敗", "", "error");
+                            }
                         })
                         .catch(error => {
                             console.error('Error making appointment:', error);
@@ -400,8 +443,9 @@
             },
             mounted() {
                 this.fetchVetInfos();
-                this.updateCalendar();
-                this.toggleMonthButtons(); // 初始時控制按鈕顯示
+                this.updateCalendarForThisMonth();
+                $('#preMonth').addClass('d-none');
+                //this.toggleMonthButtons(); // 初始時控制按鈕顯示
                 
             }
         };

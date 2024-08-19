@@ -1,6 +1,6 @@
 ﻿namespace Tailstale.Hospital_DTO
 {
-    
+
     public class frontDeskDailyOutPatientClinicSchedule_DTO
     {
         public int dailyOutpatientClinicScheduleID { get; set; }//from daily_outpatient_clinic_schedule
@@ -16,6 +16,7 @@
 
         public bool dailyOutpatientClinicScheduleStatus { get; set; }//from daily_outpatient_clinic_schedule
         public int maxPatients { get; set; }
-        public int appointmentCount { get; set; }
+        public int appointmentCount { get; set;}
+        public bool dateAfterCurrentDate { get; set; }
     }
 }

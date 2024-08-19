@@ -35,9 +35,9 @@
             border-color: black;
         }
 
-        .searchingResult{
+        /* .searchingResult{
             background-color: white;
-        }
+        } */
        
     </style>
 }
@@ -47,7 +47,7 @@
     <img src="~/lib/hospitalimages/工作區域 23.png" class="mb-4" />
     <h2>每條尾巴都值得更美好的故事</h2>
     <br>
-    <h5><i class="fa-regular fa-heart fa-bounce"></i> 立即預約各項醫療服務，給您的毛寶貝最全面的照護 <i class="fa-solid fa-arrow-right fa-sm"></i></h5>
+    <h5><i class="fa-regular fa-heart fa-bounce"></i> 立即預約各項醫療服務，給您的寶貝最全面的照護 <i class="fa-solid fa-arrow-right fa-sm"></i></h5>
 </div>
 
 <div id="app">
@@ -194,7 +194,7 @@
                     <div>
                         <p>飼主：{{appointmentInfo.keeperName}}</p>
                         <select v-model="petSelectedID" class="form-select mb-3">
-                            <option value="0" selected>選擇要預約診療服務的寵物</option>
+                            <option value="0" disabled>請選擇要預約診療服務的寵物</option>
                             <option v-for="item in petInfos" v-bind:value="item.petID" v-text="item.petName"></option>
                         </select>
                     </div>
@@ -427,9 +427,13 @@
                         }
                     })
                     .then(response => {
-                        alert('預約成功')
                         console.log('Appointment confirmed:', response.data);
-                        // 可以在這裡顯示一個成功的訊息，或關閉模態框等
+                            if (response) {
+                                Swal.fire("門診預約成功", "", "success");
+                            }
+                            else {
+                                Swal.fire("門診預約失敗", "", "error");
+                            }
                     })
                     .catch(error => {
                         console.error('Error making appointment:', error);
