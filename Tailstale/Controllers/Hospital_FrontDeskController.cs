@@ -80,7 +80,9 @@ namespace Tailstale.Controllers
                                              clinicPhone = b.phone,
                                              clincAddress = b.address,
                                              maxPatients = opc.max_patients,
-                                             appointmentCount = _context.Appointments.Where(a => a.daily_outpatient_clinic_schedule_ID == docs.daily_outpatient_clinic_schedule_ID).Count()
+                                             appointmentCount = _context.Appointments.Where(a => a.daily_outpatient_clinic_schedule_ID == docs.daily_outpatient_clinic_schedule_ID).Count(),
+                                             dateAfterCurrentDate = docs.date < DateOnly.FromDateTime(DateTime.Now) ? true : false
+
                                          }).ToListAsync();
 
                 if (startDate.HasValue && endDate.HasValue)
@@ -350,9 +352,51 @@ namespace Tailstale.Controllers
             return View();
         }
 
-        //GET:Hospital_FrontDesk/getSchedules/businessID
+        //GET:Hospital_FrontDesk/getSchedulesForThisMonth/businessID
         [HttpGet]//取得當月及下個月門診資訊
-        public async Task<IEnumerable<frontDeskDailyOutPatientClinicSchedule_DTO>> getSchedules(int businessID)
+        public async Task<IEnumerable<frontDeskDailyOutPatientClinicSchedule_DTO>> getSchedulesForThisMonth(int businessID)
+        {
+            int currentYear = DateTime.Now.Year;
+            int currentMonth = DateTime.Now.Month;
+            //// 計算下個月份值，如果當月份是12月，則下個月為1月
+            //int nextMonth = (currentMonth == 12) ? 1 : currentMonth + 1;
+            //// 計算下個月的年份值，如果當月份是12月，下個月為下一年的1月，否則為當年
+            //int nextMonthYear = (currentMonth == 12) ? currentYear + 1 : currentYear;
+
+            var schedules = await (from docs in _context.daily_outpatient_clinic_schedules
+                                   join opc in _context.outpatient_clinics
+                                   on docs.outpatient_clinic_ID equals opc.outpatient_clinic_ID
+                                   join opct in _context.outpatient_clinic_timeslots
+                                   on opc.outpatient_clinic_timeslot_ID equals opct.outpatient_clinic_timeslot_ID
+                                   join vInfo in _context.vet_informations
+                                   on opc.vet_ID equals vInfo.vet_ID
+                                   where vInfo.business_ID == businessID
+                                   && (docs.date.Value.Year == currentYear && docs.date.Value.Month == currentMonth)
+                                   orderby opct.startat
+                                   select new frontDeskDailyOutPatientClinicSchedule_DTO
+                                   {
+                                       dailyOutpatientClinicScheduleID = docs.daily_outpatient_clinic_schedule_ID,
+                                       date = (DateOnly)docs.date,
+                                       outpatientClinicName = opc.outpatient_clinic_name,
+                                       vetName = vInfo.vet_name,
+                                       outpatientClinicTimeslotName = opct.outpatient_clinic_timeslot_name,
+                                       startAt = (TimeOnly)opct.startat,
+                                       endAt = (TimeOnly)opct.endat,
+                                       dailyOutpatientClinicScheduleStatus = docs.daily_outpatient_clinic_schedule_status,
+                                       maxPatients = opc.max_patients,
+                                       appointmentCount = _context.Appointments.Where(a => a.daily_outpatient_clinic_schedule_ID == docs.daily_outpatient_clinic_schedule_ID).Count(),
+                                       dateAfterCurrentDate = docs.date > DateOnly.FromDateTime(DateTime.Now) ? true : false
+                                   }).ToListAsync();
+
+            if (schedules == null)
+            {
+                return null;
+            }
+            return schedules;
+        }
+
+        [HttpGet]//取得下個月門診資訊
+        public async Task<IEnumerable<frontDeskDailyOutPatientClinicSchedule_DTO>> getSchedulesForNextMonth(int businessID)
         {
             int currentYear = DateTime.Now.Year;
             int currentMonth = DateTime.Now.Month;
@@ -369,8 +413,7 @@ namespace Tailstale.Controllers
                                    join vInfo in _context.vet_informations
                                    on opc.vet_ID equals vInfo.vet_ID
                                    where vInfo.business_ID == businessID
-                                   && ((docs.date.Value.Year == currentYear && docs.date.Value.Month == currentMonth)
-                                   || (docs.date.Value.Year == nextMonthYear && docs.date.Value.Month == nextMonth))
+                                   && (docs.date.Value.Year == nextMonthYear && docs.date.Value.Month == nextMonth)
                                    orderby opct.startat
                                    select new frontDeskDailyOutPatientClinicSchedule_DTO
                                    {
@@ -383,7 +426,8 @@ namespace Tailstale.Controllers
                                        endAt = (TimeOnly)opct.endat,
                                        dailyOutpatientClinicScheduleStatus = docs.daily_outpatient_clinic_schedule_status,
                                        maxPatients = opc.max_patients,
-                                       appointmentCount = _context.Appointments.Where(a => a.daily_outpatient_clinic_schedule_ID == docs.daily_outpatient_clinic_schedule_ID).Count()
+                                       appointmentCount = _context.Appointments.Where(a => a.daily_outpatient_clinic_schedule_ID == docs.daily_outpatient_clinic_schedule_ID).Count(),
+                                       dateAfterCurrentDate = docs.date > DateOnly.FromDateTime(DateTime.Now) ? true : false
                                    }).ToListAsync();
 
             if (schedules == null)
@@ -399,8 +443,7 @@ namespace Tailstale.Controllers
         [HttpGet]//取得飼主及門診資訊顯示在預約確認表單
         public async Task<AppointmentComfrim_DTO> fetchAppointmentInfo(int dailyOutpatientClinicScheduleID)
         {
-            //int keeperID = (int)HttpContext.Session.GetInt32("loginID");
-            int keeperID = 1001;
+            int keeperID = (int)HttpContext.Session.GetInt32("loginID");
             var keeperInfo = await (from k in _context.keepers
                                     where k.ID == keeperID
                                     select new KeeperInfo_DTO

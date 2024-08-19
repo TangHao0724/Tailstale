@@ -58,18 +58,22 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("department_ID,business_ID,department_name")] department department)
-        {
-            
-            if (ModelState.IsValid)
-            {
-                _context.Add(department);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-
+        public async Task<IActionResult> Create([Bind("business_ID,department_name")] department department)
+        { 
+            int LoginID = (int)HttpContext.Session.GetInt32("loginID");
+            if (LoginID == 0)
+            { 
+             return NotFound();
             }
-            ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", department.business_ID);
-            return View(department);
+            if (ModelState.IsValid)
+                {
+                    department.business_ID = LoginID;    
+                    _context.Add(department);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                ViewData["business_ID"] = new SelectList(_context.businesses, "ID", "name", department.business_ID);
+                return View(department);
         }
 
         // GET: departments/Edit/5
