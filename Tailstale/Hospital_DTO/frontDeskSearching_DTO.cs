@@ -1,7 +1,11 @@
-﻿namespace Tailstale.Hospital_DTO
+﻿using Tailstale.Models;
+
+namespace Tailstale.Hospital_DTO
 {
     public class frontDeskSearching_DTO
     {
+        public IEnumerable<frontDeskSearchingResult_DTO> frontDeskSearchingResult;
+        public IEnumerable<business> hospitalCardSearchingResult;
     }
 
     public class frontDeskSearchingCriteria_DTO
@@ -33,5 +37,11 @@
 
         public string clincAddress { get; set; }//from business        
         public int appointmentCount { get; set; }
+        public int businessID { get; set; }
+    }
+
+    public class frontDeskSearchingResultID_DTO
+    { 
+        public int businessID { get; set; }
     }
 }

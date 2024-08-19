@@ -63,10 +63,12 @@ namespace Tailstale.Hospital_ViewModel
         public int department_ID { get; set; }
 
         [Display(Name = "醫師照片")]
-        public string URL { get; set; }   
+        public string? URL { get; set; }   
 
         [Display(Name = "狀態")]
         public bool employment_status { get; set; }
+
+        public int imgTypeID { get; set; }
 
 
     }
