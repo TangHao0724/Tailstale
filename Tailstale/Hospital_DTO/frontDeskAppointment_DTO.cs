@@ -42,7 +42,6 @@
         public int keeperID { get; set; }
         public int petID { get; set; }
         public int dailyOutpatientClinicScheduleID { get; set; }
-        public int appoointmentStatus { get; set; }
 
     }
 }

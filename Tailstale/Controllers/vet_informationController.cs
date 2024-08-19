@@ -103,7 +103,8 @@ namespace Tailstale.Controllers
         public IActionResult Create(int id)
         {
             int LoginID = (int)HttpContext.Session.GetInt32("loginID");
-            ViewData["business_ID"] = LoginID.ToString();
+            id = LoginID;
+            ViewData["business_ID"] = new SelectList(_context.businesses.Where(b => b.ID == LoginID), "ID", "name");
             ViewData["department_ID"] = new SelectList(_context.departments.Where(d=>d.business_ID==id), "department_ID", "department_name");
             return View();
         }
@@ -149,11 +150,19 @@ namespace Tailstale.Controllers
                     v_Infovm.URL = uniqueFileName;
                     //v_Infovm.name = uniqueFileName;
                 }
+                business_img_type business_Img_Type = new business_img_type
+                {
+                    FK_business_id= LoginID,
+                    typename="醫師個人照"
+                };
+                _context.Add(business_Img_Type);
+                await _context.SaveChangesAsync();
 
                 business_img business_Img = new business_img
                 {
                     URL = v_Infovm.URL,                    
                     name = v_Infovm.URL,
+                    img_type_id = business_Img_Type.ID,
                 };
                 _context.Add(business_Img);
                 await _context.SaveChangesAsync();
@@ -165,7 +174,7 @@ namespace Tailstale.Controllers
                     license_number = v_Infovm.license_number,
                     department_ID = v_Infovm.department_ID,
                     profile = v_Infovm.profile,
-                    business_img_ID = business_Img.ID,
+                    business_img_ID = business_Img.ID,                    
                     employment_status=v_Infovm.employment_status,
                 };
                 _context.Add(vet_Information);
