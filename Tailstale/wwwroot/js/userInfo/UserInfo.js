@@ -58,27 +58,85 @@ app.component('tab-主頁', {
     template: `#tab-Main`,
     data() {
         return {
-            data: [],
+            newpost: [],
+            newpets: [],
+            newresp: [],
+            neworder: [],
+            artcount:0,
         }
     },
     created() {
-        this.getdata()
+        this.getnewpost();
+        this.getnewpets();
+        this.getnewresp();
+        this.getneworder();
+        this.getartcount();
     },
     props: {
         userid: Number,
     },
     methods: {
-        async getdata() {
+        async getnewpost() {
             try {
-                const response = await axios.get(`api/UserInfoApi/getmain`, {
+                const response = await axios.get(`api/UserInfoApi/getLatestPosts`, {
                     params: {
                         id: this.userid,
                     },
                 });
-                this.data = response.data;
+                this.newpost = response.data;
             } catch (error) {
                 console.error('Error fetching user info:', error);
             }
+        },
+        async getnewpets() {
+            try {
+                const response = await axios.get(`api/UserInfoApi/GetNewpets`, {
+                    params: {
+                        id: this.userid,
+                    },
+                });
+                this.newpets = response.data;
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
+        },
+        async getnewresp() {
+            try {
+                const response = await axios.get(`api/UserInfoApi/getArticleReplies`, {
+                    params: {
+                        id: this.userid,
+                    },
+                });
+                this.newresp = response.data;
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
+        },
+        async getneworder() {
+            try {
+                const response = await axios.get(`api/UserInfoApi/getNewAppointments`, {
+                    params: {
+                        id: this.userid,
+                    },
+                });
+                this.neworder = response.data;
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
+        },
+        async getartcount() {
+            try {
+                const response = await axios.get(`api/UserInfoApi/getcount`, {
+                    params: {
+                        id: this.userid,
+                    },
+                });
+                this.artcount = response.data;
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
+        },
+        helloString() {
         }
     }
 });

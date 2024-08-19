@@ -1,5 +1,16 @@
 ﻿namespace Tailstale.UserInfoDTO
 {
+    public class GetMainPetDTO {
+        public string pets_type { get; set; }
+
+        public string name { get; set; }
+
+        public bool? gender { get; set; }
+
+        public DateOnly? birthday { get; set; }
+
+        public int? age { get; set; }
+    }
     public class PostPetDTO
     {
         public int? pet_type_ID { get; set; }
