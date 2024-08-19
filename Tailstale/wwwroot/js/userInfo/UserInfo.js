@@ -15,7 +15,7 @@ const app = Vue.createApp({
         }
     },
     computed: {
-        currentTabComponent() {
+        currentTabComponent: function () {
             return `tab-${this.currentTab}`;
         }
     },
@@ -64,6 +64,10 @@ app.component('tab-主頁', {
             neworder: [],
             artcount: 0,
             newPictures: null
+            postL: 0,
+            respL: 0,
+            petsL: 0,
+            orderL: 0,
         }
     },
     created() {
@@ -73,6 +77,7 @@ app.component('tab-主頁', {
         this.getneworder();
         this.getartcount();
         this.getnewPictures();
+        
     },
     props: {
         userid: Number,
@@ -86,6 +91,7 @@ app.component('tab-主頁', {
                     },
                 });
                 this.newpost = response.data;
+                this.postL = this.newpost.length;
             } catch (error) {
                 console.error('Error fetching user info:', error);
             }
@@ -110,6 +116,7 @@ app.component('tab-主頁', {
                     },
                 });
                 this.newresp = response.data;
+                this.respL = this.newresp.length;
             } catch (error) {
                 console.error('Error fetching user info:', error);
             }
@@ -122,6 +129,7 @@ app.component('tab-主頁', {
                     },
                 });
                 this.neworder = response.data;
+                this.orderL = this.neworder.length;
             } catch (error) {
                 console.error('Error fetching user info:', error);
             }

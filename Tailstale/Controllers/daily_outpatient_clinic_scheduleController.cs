@@ -85,12 +85,13 @@ namespace Tailstale.Controllers
         //GET:daily_outpatient_clinic_schedule/CreateOptions/id
         public async Task<IEnumerable> CreateOptions(string id)
         {
+            Console.WriteLine(HttpContext.Session.GetInt32("loginID")) ;
             var options = await(from opc in _context.outpatient_clinics
                           join vetInfo in _context.vet_informations
                           on opc.vet_ID equals vetInfo.vet_ID
                           join opct in _context.outpatient_clinic_timeslots
                           on opc.outpatient_clinic_timeslot_ID equals opct.outpatient_clinic_timeslot_ID
-                          where vetInfo.business_ID == 1003
+                          where vetInfo.business_ID == HttpContext.Session.GetInt32("loginID")
                           && opc.dayofweek == $"{id}"
                           && opc.status==false
                           orderby opct.startat
