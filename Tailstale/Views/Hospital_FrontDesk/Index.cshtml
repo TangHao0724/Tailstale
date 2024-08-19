@@ -6,20 +6,48 @@
 {
 
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-
+    <link href="https://cdn.datatables.net/2.1.3/css/dataTables.bootstrap5.css" rel="stylesheet" />
     <style>
+        body {
+            background-image: url('../lib/hospitalimages/bgimage.png');
+            background-size: 100% auto;
+            /* background-position: center; */ /* 將背景圖片置中 */
+            /* background-repeat: no-repeat; */ /* 防止背景圖片重複 */
+            /* background-color: #FBF6F1; */
+        }
 
         form {
             margin-top: 50px;
         }
 
         #header {
-            margin-top: 200px;
+            margin-top: 55px;
         }
+
+        .page-link {
+            color: black !important;
+        }
+
+        
+        .page-item.active .page-link {
+            background-color: #FBF6F1;
+            color: white;
+            border-color: black;
+        }
+
+        .searchingResult{
+            background-color: white;
+        }
+       
     </style>
 }
+
 <div class="text-center" id="header">
-    <h3>請依照需求輸入搜尋條件</h3>
+    @* <img src="~/lib/hospitalimages/工作區域 21.png" class="col-4 mb-2"/> *@
+    <img src="~/lib/hospitalimages/工作區域 23.png" class="mb-4" />
+    <h2>每條尾巴都值得更美好的故事</h2>
+    <br>
+    <h5><i class="fa-regular fa-heart fa-bounce"></i> 立即預約各項醫療服務，給您的毛寶貝最全面的照護 <i class="fa-solid fa-arrow-right fa-sm"></i></h5>
 </div>
 
 <div id="app">
@@ -49,7 +77,7 @@
                     </div>
                     <div class="form-group mb-2 me-2 flex-grow-1">
                         <select class="form-control" v-model="criteria.timeSlotName_front">
-                            <option value="" selected disabled>選擇時段</option>
+                            <option value="" selected>選擇時段</option>
                             <option value="上午診">上午診</option>
                             <option value="下午診">下午診</option>
                             <option value="晚間診">晚間診</option>
@@ -68,24 +96,24 @@
                 </form>
                 
                 <div class="text-center mt-3 mb-5 form-group mb-2 flex-grow-1">
-                    <button type="button" class="btn btn-outline-success me-3" id="search" v-on:click="handleSearch"><i class="bi bi-search"></i> 搜尋門診</button>
-                    <button type="button" class="btn btn-outline-secondary" id="resultClear" v-on:click="resultClear">清除搜尋結果</button>
+                    <button type="button" class=" btn btn-outline-dark me-3" id="resultClear" v-on:click="resultClear"><i class="fa-solid fa-broom"></i> 清除搜尋條件</button>
+                    <button type="button" class="btn btn-outline-dark" id="search" v-on:click="handleSearch"><i class="bi bi-search"></i> 搜尋門診</button>
                 </div>
             </div>
         </div>
 
-        <div class="container mb-5">
+        <div class="container mb-5 searchingResult pb-3 mt-0">
             <!-- 搜尋結果表格 -->
-            <div v-if="showResults">
+            <div v-if="showResults"> 
                 <div v-if="searchingResult.length > 0" class="table-responsive">
-                    <table class="table table-striped table-bordered">
+                    <table class="table table-striped table-bordered" id="searchingResult">
                         <thead>
                             <tr>
                                 <th>日期</th>
-                                <th>院所名稱</th>
-                                <th>門診名稱</th>
-                                <th>時段名稱</th>
-                                <th>醫師姓名</th>
+                                <th>院所</th>
+                                <th>門診</th>
+                                <th>醫師</th>
+                                <th>時段</th>                                
                                 <th>開始時間</th>
                                 <th>結束時間</th>
                                 <th>院所電話</th>
@@ -99,18 +127,18 @@
                                 <td class="Date">{{ result.date }}</td>
                                 <td class="ClinicName">{{ result.clinicName }}</td>
                                 <td class="OutpatientClinicName">{{ result.outpatientClinicName }}</td>
-                                <td class="TimeslotName">{{ result.timeslotName }}</td>
                                 <td class="VetName">{{ result.vetName }}</td>
+                                <td class="TimeslotName">{{ result.timeslotName }}</td>                                
                                 <td class="StartAt">{{ result.startAt }}</td>
                                 <td class="EndAt">{{ result.endAt }}</td>
                                 <td class="ClinicPhone">{{ result.clinicPhone }}</td>
                                 <td class="ClincAddress">{{ result.clincAddress }}</td>
                                 <td class="d-none BusinessId">{{ result.businessId }}</td>
-                                <td>
-                                    <button v-if="result.maxPatients > result.appointmentCount" class="btn btn-outline-success" v-on:click="fetchAppointmentInfo(result.outpatientClinicScheduleId)" data-bs-toggle="modal" data-bs-target="#appointmentModal">
+                                <td class="text-center align-items-center">
+                                    <button v-if="result.maxPatients > result.appointmentCount" class="btn btn-outline-dark" style="font-weight:bolder" v-on:click="fetchAppointmentInfo(result.outpatientClinicScheduleId)" data-bs-toggle="modal" data-bs-target="#appointmentModal">
                                         預約看診
                                     </button>
-                                    <span v-else id="blockAppointment">已額滿</span>
+                                    <p v-else id="blockAppointment" style="color:#7B68EE;font-weight:bolder" class="mb-0">已額滿</p>
                                 </td>
                             </tr>
                         </tbody>
@@ -119,7 +147,7 @@
 
                 <!-- 無結果提示 -->
                 <div v-else class="text-center">
-                    <h4>沒有找到符合條件的結果，請重新輸入搜尋條件</h4>
+                    <h4>沒有找到符合條件的結果，請重新輸入搜尋條件，或參考下方院所資訊</h4>
                 </div>
             </div>
         </div>
@@ -132,18 +160,18 @@
                 <div class="card h-100" style="max-width: 540px;">
                     <div class="row g-0">
                         <div class="col-md-6">
-                            <img :src="hospital.photoURL" class="img-fluid rounded-start" alt="尚無圖片">
+                            <img :src="hospital.photoURL" class="img-fluid rounded-start" style="height:100%; overflow:hidden" alt="尚無圖片">
                         </div>
                         <div class="col-md-6">
                             <div class="card-body text-end">
                                 <h5 class="card-title">{{ hospital.hospitalName }}</h5>
+                                <hr>
                                 <h6 class="card-text">{{ hospital.hospitalPhone }}</h6>
                                 <p class="card-text">{{ hospital.hospitalAddress }}</p>
                                 <p class="card-text" hidden>{{ hospital.businessId }}</p>
                             </div>
-                            <div class="text-end me-3">
-                                <a :href="`/Hospital_FrontDesk/HospitalIndex?businessID=${hospital.businessId}`" class="btn btn-outline-secondary">更多詳細資訊</a>
-                                
+                            <div class="text-end me-3 mb-2">
+                                <a :href="`/Hospital_FrontDesk/HospitalIndex?businessID=${hospital.businessId}`" class="btn btn-outline-secondary">更多詳細資訊</a>                                
                             </div>
                         </div>
                     </div>
@@ -154,7 +182,7 @@
     <!-- hospitalCards end-->
 
 
-    <!--Modal start-->
+    <!--Appointment Modal start-->
     <div class="modal fade" tabindex="-1" id="appointmentModal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -165,11 +193,10 @@
                 <div class="modal-body">
                     <div>
                         <p>飼主：{{appointmentInfo.keeperName}}</p>
-                        <select>
-                            <option selected>選擇要預約診療服務的寵物</option>
-                            <option v-for="petInfos.petName"></option>
+                        <select v-model="petSelectedID" class="form-select mb-3">
+                            <option value="0" selected>選擇要預約診療服務的寵物</option>
+                            <option v-for="item in petInfos" v-bind:value="item.petID" v-text="item.petName"></option>
                         </select>
-
                     </div>
                     <p hidden>{{ appointmentInfo.businessId }}</p>
                     <p>醫療院所：{{ appointmentInfo.clinicName }}</p>
@@ -178,8 +205,8 @@
                     <p>門診時間：{{ appointmentInfo.startAt }}~{{ appointmentInfo.endAt }}</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消預約</button>
-                    <button type="button" class="btn btn-primary" v-on:click="handleAppointment">送出預約</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">取消預約</button>
+                    <button type="button" class="btn btn-outline-dark" v-on:click="handleAppointment" data-bs-dismiss="modal">送出預約</button>
                 </div>
             </div>
         </div>
@@ -189,11 +216,14 @@
 </div>
 
 
-
 @section Scripts
 {
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
+    @* <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> *@
+    <script src="https://cdn.datatables.net/2.1.3/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.1.3/js/dataTables.bootstrap5.js"></script>
+   <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/fixedheader/3.2.1/js/dataTables.fixedHeader.js"></script>
+    
     <script>
         $(document).ready(function () {
             $(function () {
@@ -224,6 +254,26 @@
                         return [date >= today && date <= oneMonthLater, ''];
                     }
                 });
+                $('#searchingResult').DataTable({
+                    paging: true,
+                    pageLength: 10, // 每頁顯示的資料筆數
+                    lengthChange: false, // 隱藏 "顯示多少筆資料" 選項
+                    searching: true, // 啟用搜尋欄位
+                    ordering: true, // 啟用排序功能
+                    info: false, // 隱藏 "顯示第幾頁到第幾頁的資料" 資訊
+                    autoWidth: false, // 自動調整寬度
+                    language: {
+                        search: "搜尋:",
+                        paginate: {
+                            first: "第一頁",
+                            last: "最後一頁",
+                            next: "下一頁",
+                            previous: "上一頁"
+                        },
+                        zeroRecords: "沒有找到符合條件的資料",
+                        emptyTable: "表格中沒有數據"
+                    }
+                });
             });
         });
 
@@ -245,11 +295,7 @@
                     appointmentRequest:{
                         keeperID:'',
                         dailyOutpatientClinicScheduleID:''
-                    },
-                    // keeperInfo: {
-                    //     keeperID: '',
-                    //     keeperName: ''
-                    // },
+                    },                    
                     petInfos:[],
                     appointmentInfo: { // 初始化預約門診資料
                         keeperName: '',
@@ -263,8 +309,8 @@
                     },                  
                     hospitals: [], // 院所資料集合
                     showCards: true, // 院所資料卡片
-                    isModalVisible: false // 控制 Modal 顯示的狀態
-
+                    isModalVisible: false, 
+                    petSelectedID:0
                 }
             },
             methods: {
@@ -285,6 +331,7 @@
                     this.criteria.startDate_front = $('#startDate').val() == "" ? null : $('#startDate').val()
                     this.criteria.endDate_front = $('#endDate').val() == "" ? null : $('#endDate').val()
                     this.fetchSearchingResult();
+                    this.loadHospitalCards();
                 },
                 fetchSearchingResult() {
                     this.searchingResult = [];
@@ -294,58 +341,74 @@
                         }
                     })
                     .then(response => {
+                        const data = response.data; 
+                        console.log(response.data)
                         this.searchingResult = response.data;
-                        this.showResults = true;
-                        console.log('Search Results:', this.searchingResult);
+                        //this.hospitals = data.hospitalCardSearchingResult;
+                        this.showResults = true;                         
+                        // console.log('Search Results:', this.searchingResult);
+                        // console.log('Hospital Cards:', this.hospitals);
+                        this.$nextTick(() => {
+                            $('#searchingResult').DataTable({
+                                paging: true,
+                                pageLength:5,
+                                lengthChange: false,
+                                searching: true,
+                                    ordering: false,
+                                info: false,
+                                autoWidth: false,
+                                destroy: true,
+                                language: {
+                                    search: "搜尋:",
+                                    paginate: {
+                                        first: "第一頁",
+                                        last: "最後一頁",
+                                        next: "下一頁",
+                                        previous: "上一頁"
+                                    },
+                                    zeroRecords: "沒有找到符合條件的資料",
+                                    emptyTable: "表格中沒有數據"
+                                }
+                            });
+                        });
                     })
                     .catch(error => {
                         console.error('Error fetching data:', error);
                     });
-                },                
+                },
                 resultClear() {
-                    this.showResults = false;
-                    this.searchingResult = [];
-                    this.criteria={
+                    //this.showResults = false;
+                    //this.searchingResult = [];
+                    this.criteria = {
                         region_front: '',
                         address_front: '',
-                        startDate_front: null,
+                        startDate_front:null,
                         endDate_front: null,
                         timeSlotName_front: '',
                         clinicName_front: '',
                         opcName_front: '',
                         vetName_front: ''
-                    }
+                    };
+                    this.loadHospitalCards();
                 },
-                // fetchPetInfo() {
-                //     axios.get(`Hospital_FrontDesk/fetchPetInfo`)
-                //         .then(response => {
-                //             this.petInfos = response.data;
-                //         })
-                //         .catch(error => {
-                //             console.error('Error fetching keeperInfo:', error);
-                //         });
-                // },
                 fetchAppointmentInfo(currentDOCSID) {
-                    console.log(currentDOCSID)
-                    axios.post('Hospital_FrontDesk/fetchAppointmentInfo',{
-                        "dailyOutpatientClinicScheduleID": currentDOCSID
-                    })
-                         // .then(response => {
-                         //    this.appointmentInfo: {
-                         //        keeperID: response.keeperID,
-                         //        keeperName: response.keeperName,
-                         //        clinicName: response.clinicName,
-                         //        outpatientClinicName: response.outpatientClinicName,
-                         //        date: response.data,
-                         //        startAt: response.startAt,
-                         //        endAt: response.endAt,
-                         //        dailyOutpatientClinicScheduleID: response.dailyOutpatientClinicScheduleID
-                         //    },
-                         //     this.petInfos: [{ 
-                         //      petID:'',petName:''
-                         //     }]
-                        //console.log(response.data)
-                        //})
+                    axios.get(`Hospital_FrontDesk/fetchAppointmentInfo?dailyOutpatientClinicScheduleID=${currentDOCSID}`)
+                         .then(response => {
+                            this.appointmentInfo = {
+                                keeperID: response.data.keeperID,
+                                keeperName: response.data.keeperName,
+                                clinicName: response.data.clinicName,
+                                outpatientClinicName: response.data.outpatientClinicName,
+                                date: response.data.date,
+                                startAt: response.data.startAt,
+                                endAt: response.data.endAt,
+                                dailyOutpatientClinicScheduleID: response.data.dailyOutpatientClinicScheduleID
+                            },
+                            this.petInfos = response.data.petInfos;
+                            console.log(response.data)
+                            console.log(this.appointmentInfo)
+                            console.log(this.petInfos)
+                        })
                         .catch(error => {
                             console.error('Error fetching keeperInfo:', error);
                         });
@@ -353,22 +416,24 @@
                 // 預約請求
                 makeAppointment() {
                     const appointmentRequest = {
-                        keeperID: this.appointmentInfo.keeperID,
-                        dailyOutpatientClinicScheduleID: this.appointmentInfo.dailyOutpatientClinicScheduleID
+                        keeperID: this.appointmentInfo.keeperID,                        
+                        dailyOutpatientClinicScheduleID: this.appointmentInfo.dailyOutpatientClinicScheduleID,
+                        petID : this.petSelectedID,
                     };
-
-                    axios.post('/Hospital_FrontDesk/makeAppointment', appointmentRequest, {
+                    console.log(appointmentRequest)
+                    axios.post('/Hospital_FrontDesk/newAppointment', appointmentRequest, {
                         headers: {
                             'Content-Type': 'application/json'
                         }
                     })
-                        .then(response => {
-                            console.log('Appointment confirmed:', response.data);
-                            // 可以在這裡顯示一個成功的訊息，或關閉模態框等
-                        })
-                        .catch(error => {
-                            console.error('Error making appointment:', error);
-                        });
+                    .then(response => {
+                        alert('預約成功')
+                        console.log('Appointment confirmed:', response.data);
+                        // 可以在這裡顯示一個成功的訊息，或關閉模態框等
+                    })
+                    .catch(error => {
+                        console.error('Error making appointment:', error);
+                    });
                 },
                 // 處理預約按鈕的點擊事件
                 handleAppointment() {
@@ -376,8 +441,31 @@
                 }
             },
             mounted() {
-                console.log("Component is mounted");
+                //console.log("Component is mounted");
                 this.loadHospitalCards();
+                this.$nextTick(() => {
+                $('#searchingResult').DataTable({
+                    paging: true,
+                    pageLength:5,
+                    lengthChange: false,
+                    searching: true,
+                    ordering: false,
+                    info: false,
+                    autoWidth: false,
+                    destroy: true,
+                    language: {
+                        search: "搜尋:",
+                        paginate: {
+                            first: "第一頁",
+                            last: "最後一頁",
+                            next: "下一頁",
+                            previous: "上一頁"
+                        },
+                        zeroRecords: "沒有找到符合條件的資料",
+                        emptyTable: "表格中沒有數據"
+                    }
+                });
+    });
             }
         };
         var app = Vue.createApp(vueApp).mount('#app');
