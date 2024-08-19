@@ -62,7 +62,8 @@ app.component('tab-主頁', {
             newpets: [],
             newresp: [],
             neworder: [],
-            artcount:0,
+            artcount: 0,
+            newPictures: null
         }
     },
     created() {
@@ -71,6 +72,7 @@ app.component('tab-主頁', {
         this.getnewresp();
         this.getneworder();
         this.getartcount();
+        this.getnewPictures();
     },
     props: {
         userid: Number,
@@ -132,6 +134,18 @@ app.component('tab-主頁', {
                     },
                 });
                 this.artcount = response.data;
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
+        },
+        async getnewPictures() {
+            try {
+                const response = await axios.get(`api/UserInfoApi/newPictures`, {
+                    params: {
+                        id: this.userid,
+                    },
+                });
+                this.newPictures = response.data;
             } catch (error) {
                 console.error('Error fetching user info:', error);
             }

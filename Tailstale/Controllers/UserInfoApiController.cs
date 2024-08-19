@@ -349,14 +349,47 @@ namespace Tailstale.Controllers
             {
                 int ordercount = newallorderRe.Count < 3 ? newallorderRe.Count : 3;
                 newallorderRe = newallorderRe
-                    .Where(x=>x.OrderDate > weektime)
+                    .Where(x=> DateTime.Parse(x.OrderDate) > weektime)
                     .OrderByDescending(x => x.OrderDate)
                                              .Take(ordercount)
                                              .ToList();
             }
             return Ok(newallorderRe);
         }
+        [HttpGet("newPictures")]
+        public async Task<IActionResult> GetNewPictures([FromQuery] int id)
+        {
+            try
+            {
+                // 查詢所有相片類型
+                var imgTypeIds = await _context.keeper_img_types
+                    .Where(n => n.FK_Keeper_id == id)
+                    .Select(s => s.ID)
+                    .ToListAsync();
+
+                // 查詢最新的相片URL
+                var latestImage = await _context.keeper_imgs
+                    .Where(n => imgTypeIds.Contains((int)n.img_type_id))
+                    .OrderByDescending(n => n.created_at)
+                    .Select(s => new
+                    {
+                        s.URL,
+                        s.img_type.typename,
+                        s.created_at,
+                    })
+                    .FirstOrDefaultAsync();
+
+                return Ok(latestImage ?? null);
+            }
+            catch (Exception ex)
+            {
+                // 處理異常
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpGet("GetNewpets")]
+
         public async Task<IActionResult> GetNewPets([FromQuery] int id)
         {
             var pets = await _context.pets.Where(n => n.keeper_ID == id).ToListAsync();
@@ -400,7 +433,7 @@ namespace Tailstale.Controllers
                 orderType = "寵物旅館",
                 businessName = s.hotel.name,
                 serviceName = "旅館住宿",
-                orderDate = s.bookingDate.Value,
+                orderDate = s.bookingDate,
                 orderStatus = status.FirstOrDefault(n=>n.ID == s.bookingStatus).status_name,
             }).ToList();
 
@@ -411,7 +444,7 @@ namespace Tailstale.Controllers
                 orderType = "寵物美容",
                 businessName = s.business.name,
                 serviceName = s.service_name,
-                orderDate = s.created_at.Value,
+                orderDate = s.created_at,
                 orderStatus = status.FirstOrDefault(n => n.ID == s.status).status_name,
             }).ToList();
 
@@ -422,7 +455,7 @@ namespace Tailstale.Controllers
                 orderType = "寵物醫療",
                 businessName = businesses.FirstOrDefault(b => b.ID == s.daily_outpatient_clinic_schedule.outpatient_clinic.vet.business_ID)?.name,
                 serviceName = $"看診：{s.daily_outpatient_clinic_schedule.outpatient_clinic.outpatient_clinic_name}",
-                orderDate = s.registration_time.Value,
+                orderDate = s.registration_time,
                 orderStatus = status.FirstOrDefault(n => n.ID == s.Appointment_status).status_name,
             }).ToList();
 
