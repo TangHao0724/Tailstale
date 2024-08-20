@@ -106,7 +106,9 @@ app.component('tab-主頁', {
                         id:this.userid,
                     }
                 })
-                this.newpost = response.data;
+                var a = response.data;
+                a.splice(3)
+                this.newpost = a;
                 this.name = this.newpost[0].kName;
             } catch (error) {
                 console.error('Error fetching user info:', error);
@@ -136,23 +138,24 @@ app.component('tab-主頁', {
                 for (const item of this.newresp) {
                     const response = await axios.get(`api/social/GetArticle`, {
                         params: {
-                            count: 100,
-                            parentid: item.parent_ID,
-                            publicOnly: true,
+                            artID: item.id,
                         }
                     })
                     allrespde.push(response.data);
                     this.newallresp = allrespde.flat();
-                    const responses = await axios.get(`api/social/GetArticle`, {
+                    console.log(this.newallresp);
+                }
+                var templist = [];
+                for (const item of this.newallresp) {
+                    const response = await axios.get(`api/social/GetArticle`, {
                         params: {
-                            count: 100,
-                            artID: this.newallresp[0].parent_ID,
+                            artID: item.parent_ID,
                         }
                     })
-                    this.mainart = responses.data;
+                    templist.push(response.data);
+                    this.mainart = templist.flat();
+                    console.log(this.newallresp);
                 }
-
-                
                 this.respL = this.newresp.length;
             }catch (error) {
                 console.error('Error fetching user info:', error);
@@ -224,6 +227,14 @@ app.component('tab-主頁', {
                 this.pet_types = response.data;
             } catch (error) {
                 console.error('Error fetching pet types:', error);
+            }
+        },
+        bindimgurl(url, uType) {
+            if (uType !== 0) {
+                return `imgs/business_img/${url}`;
+
+            } else {
+                return `imgs/keeper_img/${url}`;
             }
         },
     }

@@ -136,68 +136,6 @@ namespace Tailstale.Controllers
             }
         }
 
-        //[HttpGet("GetAllpost")]
-        //public async Task<IActionResult> GetAllpost()
-        //{
-        //    //獲得最新十筆貼文，
-
-        //    //content、userID、 HEAD_url、name、Ptag、Tag
-        //}
-        //讀取全部貼文 ori
-        //[HttpGet("GetArticle")]
-        //public async Task<IActionResult> GetArticle(int count)
-        //{
-        //    //如果要求數比文章多
-        //    count = await GetSet(count);
-        //    //先抓指定數量文章
-        //    var article =  await _context.articles.Take(count).ToListAsync();
-
-        //    //抓取指定文章圖片ID，並合併到一起
-        //    var articleImg = await _context.article_imgs.ToListAsync();
-
-        //    var  with_img  =article.Select(n =>
-        //    {
-        //        //圖片陣列
-        //        List<string> imgurllist = new List<string>();
-        //        //如果商業照片為空，將所有的照片URL以list存入欄位
-        //        if (articleImg.Where(a=> a.FK_Business_img_ID == null && a.FK_article_ID == n.ID) == null)
-        //        {
-        //            var addkimg = articleImg.Where(a => a.FK_article_ID == n.ID).Select(s=>s.FK_Keeper_img_ID).ToList();
-        //            foreach(int imgID in addkimg)
-        //            {
-        //                var url = _context.keeper_imgs.Where(n => n.ID == imgID).Select(s=>s.URL).ToList();
-        //                imgurllist.AddRange(url);
-        //            }
-
-        //        }else if(articleImg.Where(a => a.FK_Keeper_img_ID == null && a.FK_article_ID == n.ID) == null)
-        //        {
-        //           var addbimg = articleImg.Where(a => a.FK_article_ID == n.ID).Select(s => s.FK_Business_img_ID).ToList();
-
-        //            foreach (int imgID in addbimg)
-        //            {
-        //                var url = _context.business_imgs.Where(n => n.ID == imgID).Select(s => s.URL).ToList();
-        //                imgurllist.AddRange(url);
-        //            }
-        //        }
-        //        //user的ID
-        //        return new
-        //        {
-        //            n.FK_Business_ID,
-        //            n.FK_Keeper_ID,
-        //            n.created_at,
-        //            n.parent_ID,
-        //            n.ID,
-        //            n.content,
-        //            imgurllist,
-
-        //        };
-        //    }
-
-        //    ).ToList();
-        //    //抓TAG
-        //    return new JsonResult(with_img);
-        //}GetArticle
-        
         //從parentID查 父文章
         [HttpGet("GetArticle")]
         public async Task<IActionResult> GetArticle(int? count,int? id,int? parentid,bool? publicOnly,int? artID)
@@ -215,10 +153,20 @@ namespace Tailstale.Controllers
 
                 // 先抓指定數量文章
                 articles = await _context.articles
-                                         .Where(n => n.parent_ID == (parentid.HasValue ? parentid.Value : null))
                                          .OrderByDescending(x => x.created_at)
                                          .Take(count ?? int.MaxValue) // 取指定數量或全部（如果count為null）
                                          .ToListAsync();
+                if (parentid.HasValue)
+                {
+                    if (parentid == 0)
+                    {
+                        articles = articles.Where(n => n.parent_ID == null).ToList();
+                    }
+                    else
+                    {
+                        articles = articles.Where(n => n.parent_ID == parentid).ToList();
+                    }
+                }
                 if (artID.HasValue)
                 {
                     articles = articles.Where(n=>n.ID == artID).ToList();
@@ -234,8 +182,13 @@ namespace Tailstale.Controllers
                 {
                     articles = articles.Where(n => n.FK_Keeper_ID == id.Value).ToList();
                 }
+                
                 // 如果count超過文章數量，則調整count
                 if (count.HasValue && count.Value < articles.Count)
+                {
+                    count = articles.Count;
+                }
+                if (count.HasValue) 
                 {
                     articles = articles.Take(count.Value).ToList();
                 }
@@ -350,7 +303,56 @@ namespace Tailstale.Controllers
             }
         }
 
+        //列出個人TAG
+        [HttpGet("GetPriTagList")]
+        public async Task<IActionResult> GetPriTagList(int id)
+        {
+            var tagCounts = _context.using_person_tags
+                                    .Where(ut =>  ut.FK_Keeper_ID == id)
+                                    .GroupBy(ut => new {ut.FK_person_tags_ID,ut.FK_person_tags.name})
+                                    .Select(g => new
+                                    {
+                                        TagName = g.Key.name,
+                                        Count = g.Count()
+                                    })
+                                    .OrderByDescending(c => c.Count)
+                                    .ToList();
+            if (!tagCounts.Any())
+            {
+                return NoContent(); // 或者返回其他適當的訊息
+            }
+            return Ok(tagCounts);
+        }
+        //輸入個人TAG、查詢包含個人TAG的文章
+        [HttpGet("GetPriTagArt")]
+        //列出主流TAG
+        [HttpGet("GetPubTagList")]
+        public async Task<IActionResult> GetPubTagList()
+        {
 
+            //統計最近一周內所有TAG_ID產生各自的數量，
+            //排序使用次數
+            //由上到下排序數量
+            //如果為空，則停止使用
+            var WeekDate = DateTime.Now.AddDays(-7);
+            var tagCounts = await _context.using_tags
+                                          .Where(ut => ut.created_at >= WeekDate)
+                                          .GroupBy(ut => new { ut.FK_tags_ID, ut.FK_tags.name })
+                                          .Select(g => new
+                                          {
+                                              TagName = g.Key.name,
+                                              Count = g.Count()
+                                          })
+                                          .OrderByDescending(c => c.Count)
+                                          .ToListAsync();
+            if (!tagCounts.Any())
+            {
+                return NoContent(); // 或者返回其他適當的訊息
+            }
+            return Ok(tagCounts);
+        }
+        //輸入TAG字串，查詢包含TAG的文章
+        [HttpGet("GetPubTagArt")]
 
 
         private async Task save_Kimg_intype(int userid, int typeid, List<IFormFile> imgs)

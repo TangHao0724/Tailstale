@@ -298,6 +298,7 @@ namespace Tailstale.Controllers
         public async Task<IActionResult> GetArticleReplies([FromQuery] int id)
         {
             var articles = await _context.articles.ToListAsync();
+            var weektime = DateTime.Now.AddDays(-7);
             if (articles == null || !articles.Any())
             {
                 return Ok((object)null);
@@ -305,11 +306,9 @@ namespace Tailstale.Controllers
 
             var allUserArt = articles.Where(n => n.FK_Keeper_ID == id).Select(s => s.ID).ToList();
             var allresp = articles.Count(n => n.parent_ID.HasValue && allUserArt.Contains(n.parent_ID.Value));
-            int allrespCount = allresp < 3 ? allresp : 3;
 
-            var newallrespResult = articles.Where(n => n.parent_ID.HasValue && allUserArt.Contains(n.parent_ID.Value))
+            var newallrespResult = articles.Where(n => n.parent_ID.HasValue && allUserArt.Contains(n.parent_ID.Value) && n.created_at >weektime)
                                            .OrderByDescending(x => x.created_at)
-                                           .Take(allrespCount)
                                             .Select(s => new
                                             {
                                                 s.ID,

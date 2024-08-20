@@ -22,7 +22,7 @@
     methods: {
         async start() {
             try {
-                this.articles = await this.getarticle(15, null, null, true);
+                this.articles = await this.getarticle(15, 0, null, true);
             } catch (err) {
                 console.error('Error during created hook:', err);
             }
@@ -213,26 +213,28 @@
     computed: {
         Publichashtags: function () {
             var regex = new RegExp(this.getPublichashtag(), 'ig');
-            if (this.pcontent != "") {
-                if (regex.test(this.pcontent)) {
-                    return this.pcontent.match(regex);
-                }
-            } else {
-
+            if (regex.test(this.content)) {
+                return this.content.match(regex);
             }
         },
         Privatehashtags: function () {
             var regex = new RegExp(this.getPrivatehashtag(), 'ig');
-            if (this.pcontent != "") {
-                if (regex.test(this.pcontent)) {
-                    return this.pcontent.match(regex);
-                }
-            } else {
                 if (regex.test(this.content)) {
                     return this.content.match(regex);
                 }
-            }
 
+        },
+        respPublichashtags: function () {
+            var regex = new RegExp(this.getPublichashtag(), 'ig');
+                if (regex.test(this.pcontent)) {
+                    return this.pcontent.match(regex);
+                }
+        },
+        respPrivatehashtags: function () {
+            var regex = new RegExp(this.getPrivatehashtag(), 'ig');
+                if (regex.test(this.pcontent)) {
+                    return this.pcontent.match(regex);
+                }
         },
         
     },

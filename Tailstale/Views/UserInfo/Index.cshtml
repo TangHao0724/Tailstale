@@ -98,7 +98,7 @@
                                     <div class="row" @@click="openPost(at)">
                                         <p class="card-text">{{at.content}}</p>
                                     </div>
-                                    <div class="row" v-if="at.imgurllist.length > 0">
+                                    <div class="row" v-if="at.imgurllist?.length > 0">
                                         <div :id="`carousel${at.id}`" class="carousel  carousel-dark slide" data-bs-ride="carousel">
                                             <div class="carousel-inner">
                                                 <div class="carousel-item active" data-bs-interval="5000">
@@ -155,13 +155,13 @@
                       </thead>
                       <tbody>
                         <tr>
-                                <th scope="row">{{ neworder[orderL]?.orderID}}</th>
-                                     <td>{{  neworder[orderL]?.orderPet}}</td>
-                                     <td>{{ neworder[orderL]?.orderType}}</td>
-                                     <td>{{  neworder[orderL]?.businessName}}</td>
-                                     <td>{{ neworder[orderL]?.serviceName}}</td>
-                                     <td>{{ neworder[orderL]?.orderDate}}</td>
-                                     <td>{{ neworder[orderL]?.orderStatus}}</td>
+                            <th scope="row">{{ neworder[orderL]?.orderID}}</th>
+                            <td>{{  neworder[orderL]?.orderPet}}</td>
+                            <td>{{ neworder[orderL]?.orderType}}</td>
+                            <td>{{  neworder[orderL]?.businessName}}</td>
+                            <td>{{ neworder[orderL]?.serviceName}}</td>
+                            <td>{{ neworder[orderL]?.orderDate}}</td>
+                            <td>{{ neworder[orderL]?.orderStatus}}</td>
 
                         </tr>
                       </tbody>
@@ -174,7 +174,7 @@
                <div class="col-5 me-3">
                    <div class="row">
                        <h5>最新貼文</h5>
-                         <div class="overflow-auto">
+                            <div class="overflow-auto" style="height:13rem">
                                     <div class="card mb-1 border-secondary rounded-3  " v-for="at in newpost">
                                <div class="card-header bg-light text-nowrap" >
                                    <img :src="imgurl(at.uType,at.imgurl)" alt="mdo" width="48" height="48" class="rounded-circle d-inline">
@@ -216,7 +216,7 @@
                    <div class="row">
                        <h5>最新回應</h5>
                           <p>點擊回應查看原文章</p>
-                          <div class="overflow-auto">
+                            <div class="overflow-auto" style="height:16rem">
                                   <div class="card mb-1 border-secondary rounded-3  " v-for="at in newallresp">
                                <div class="card-header bg-light text-nowrap" @@click="openPost(at)">
                                    <img :src="imgurl(at.uType,at.imgurl)" alt="mdo" width="48" height="48" class="rounded-circle d-inline">
@@ -256,17 +256,13 @@
 
                           </div>
                    </div>
-                     <div class="row">
-                        <h5>最新增加的照片</h5>
-                        <p>相片存放在{{ newPictures?.typename }}</p>
-                        <img :src=" `/imgs/keeper_img/${newPictures?.url}` " class="w-50 img-thumbnail">
-                    </div>
+
                 </div>
                 <div class="col-6">
                        <div class="row">
                            <h5>最新增加的寵物</h5>
-                                  <div class="overflow-scroll row row-cols-2">
-                                        <div class="card mx-1 my-1 col" style="width: 12rem;" v-for = "pet in newpets" >
+                                          <div class="overflow-auto row flex-nowrap  row-cols-1 p-2" style="height:18rem">
+                                           <div class="card mx-1 my-1 col" style="width: 10rem;" v-for = "pet in newpets" >
                                         <div  class="card-body">
                                             <img :src=" `/imgs/keeper_img/${pet.imgurl}` " class="card-img-top" alt="cat-head">
                                         <h5 class="card-title">{{pet.name}}</h5>
@@ -277,6 +273,11 @@
                                         </div>
                                    </div>
                             </div>
+                       </div>
+                                               <div class="row">
+                           <h5>最新增加的照片</h5>
+                           <p>相片存放在{{ newPictures?.typename }}</p>
+                           <img :src=" `/imgs/keeper_img/${newPictures?.url}` " class="w-100 img-thumbnail">
                        </div>
                   </div>
              </div>
@@ -780,7 +781,7 @@
     <div class="row shadow rounded-2 align-content-center mb-4">
         <div class="col-12">
             <div>
-                <table class="display table table-striped table-bordered dt-responsive nowrap" id="orderTable">
+                <table class="display table table-striped table-bordered dt-responsive " id="orderTable">
                     
                 </table>
             </div>
