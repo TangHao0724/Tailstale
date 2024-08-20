@@ -70,6 +70,16 @@
             background-color:white;
             z-index: 2;
         }
+
+        #myQAContent
+        {
+         background-color:white;
+        }
+
+        .QAQ{
+            color: #228B22;
+            font-weight: bolder;
+        }
     </style>
 }
 
@@ -104,6 +114,9 @@
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="hospitalSchedule-tab" data-bs-toggle="tab" data-bs-target="#hospitalSchedule" type="button" role="tab" aria-controls="profile" aria-selected="false"><h5 class="my-2 mx-2 fw-bold">當月及下月門診表</h5></button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="QA-tab" data-bs-toggle="tab" data-bs-target="#QA" type="button" role="tab" aria-controls="profile" aria-selected="false"><h5 class="my-2 mx-2 fw-bold">常見問題Q&A</h5></button>
             </li>
         </ul>
     </div>   
@@ -159,18 +172,7 @@
                                         <div v-else-if="schedule.maxPatients == schedule.appointmentCount && schedule.dailyOutpatientClinicScheduleStatus== false">
                                             <span  style="color:#7B68EE;font-weight:bolder">已額滿</span>
                                         </div>
-                                        <div v-if="schedule.dateAfterCurrentDate && !schedule.dailyOutpatientClinicScheduleStatus && schedule.maxPatients > schedule.appointmentCount">
-                                            @* <button v-if="schedule.maxPatients >
-                                                schedule.appointmentCount
-                                                && !schedule.dailyOutpatientClinicScheduleStatus
-                                                && new Date(schedule.date).setHours(0, 0, 0, 0) > new Date().setHours(0, 0, 0, 0)"
-                                                class="btn"
-                                                v-on:click="fetchAppointmentInfo(schedule.outpatientClinicScheduleId)"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#appointmentModal"
-                                                style="color:#228B22;font-weight:bolder"><i class="fa-regular fa-hand-pointer"></i>
-                                                預約看診
-                                            </button> *@
+                                        <div v-if="schedule.dateAfterCurrentDate && !schedule.dailyOutpatientClinicScheduleStatus && schedule.maxPatients > schedule.appointmentCount">                                            
                                             <button
                                                 class="btn"
                                                     v-on:click="fetchAppointmentInfo(schedule.dailyOutpatientClinicScheduleID)"
@@ -188,6 +190,62 @@
 
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="QA" role="tabpanel" aria-labelledby="QA-tab">
+            <div class="container rounded">
+                <div class="row col-8 offset-2 px-5" id="myQAContent">
+                    <div class="QA my-3 mt-5">
+                        <div class="QAQ mb-4">
+                            <h5>Q:寵物的日常飲食應該注意哪些事項？</h5>
+                        </div>
+                        <div class="QAA">
+                            <h6>A:寵物的飲食應該均衡，避免給予過多的高熱量或高脂肪食物。應選擇優質的寵物飼料，並根據寵物的年齡、體型、活動量等調整食量。此外，避免給予人類的食物，如巧克力、葡萄和洋蔥，這些對寵物有害。</h6>
+                        </div>
+                    </div>
+                    <div class="QA my-3">
+                        <div class="QAQ mb-4">
+                            <h5>Q:如何幫助寵物保持牙齒健康？</h5>
+                        </div>
+                        <div class="QAA">
+                            <h6>A:定期為寵物刷牙是保持牙齒健康的關鍵，可以使用專用的寵物牙膏和牙刷。給予牙齒健康零食或玩具，如潔牙骨，有助於減少牙垢的積聚。定期帶寵物進行牙科檢查，及早發現和處理口腔問題。</h6>
+                        </div>
+                    </div>
+                    <div class="QA my-3">
+                        <div class="QAQ mb-4">
+                            <h5>Q:寵物應該多久洗一次澡？</h5>
+                        </div>
+                        <div class="QAA">
+                            <h6>A:洗澡的頻率取決於寵物的品種、生活環境和健康狀況。一般來說，狗每1-3個月洗一次澡即可，而貓則可以更長時間洗一次。洗澡過頻可能會破壞寵物皮膚的天然油脂，導致皮膚乾燥和刺激。</h6>
+                        </div>
+                    </div>
+                    <div class="QA my-3">
+                        <div class="QAQ mb-4">
+                            <h5>Q:寵物定期進行健康檢查的重要性是什麼？</h5>
+                        </div>
+                        <div class="QAA">
+                            <h6>A:定期的健康檢查有助於及早發現潛在的健康問題，如心臟病、腎病或糖尿病。檢查還包括疫苗接種、體重監控和牙齒檢查，這些都是保持寵物健康的重要環節。</h6>
+                        </div>
+                    </div>
+                    <div class="QA my-3">
+                        <div class="QAQ mb-4">
+                            <h5>Q:如何幫助寵物適應新環境？</h5>
+                        </div>
+                        <div class="QAA">
+                            <h6>A:帶寵物進入新環境時，應該逐步進行，給予足夠的時間適應。保持日常習慣，如餵食時間和散步路線不變，可以讓寵物感到安全和舒適。給予寵物熟悉的玩具或床鋪也有助於減少焦慮感。</h>
+                        </div>
+                    </div>
+                    <div class="QA my-3 mb-5">
+                        <div class="QAQ mb-4">
+                            <h5>Q:寵物的疫苗接種為何如此重要？</h5>
+                        </div>
+                        <div class="QAA">
+                            <h6>A:疫苗接種能夠有效預防多種嚴重的疾病，如狂犬病、犬瘟熱和貓白血病。遵循獸醫的建議，按時進行疫苗接種，能夠保護寵物的健康，並降低疾病傳播的風險。</h6>
+                        </div>
+                    </div>
+                </div>           
+                
             </div>
         </div>
     </div>
