@@ -30,6 +30,14 @@ builder.Services.AddSession(option =>
     option.Cookie.IsEssential = true;
     option.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder => builder.WithOrigins("https://payment-stage.ecpay.com.tw/")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials()); // ¤¹³\Äâ±a Cookie
+});
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Services.AddDbContext<TailstaleContext>(options =>
@@ -39,6 +47,7 @@ builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailS
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+builder.Services.Configure<ConfigurationJWT>(builder.Configuration.GetSection("JwtConfig"));
 
 builder.Services.AddSession(options =>
 {
@@ -94,6 +103,7 @@ app.UseSession();
 
 app.UseAuthorization();
 app.UseCors();
+app.UseCors("AllowSpecificOrigin");
 
 app.MapControllerRoute(
     name: "default",
