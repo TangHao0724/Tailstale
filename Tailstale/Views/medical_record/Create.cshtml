@@ -60,7 +60,6 @@
                     <div class="form-group">
                         <label asp-for="outpatient_clinic_id" class="control-label"></label>
                         <select asp-for="outpatient_clinic_id" asp-items="ViewBag.selectOPC" class="form-control">
-                            <option value="">選擇科別</option>
                         </select>
                         <span asp-validation-for="outpatient_clinic_id" class="text-danger"></span>
                     </div>
@@ -74,6 +73,17 @@
                         <input asp-for="complain" class="form-control" />
                         <span asp-validation-for="complain" class="text-danger"></span>
                     </div>
+                    <div id="vsrecord">
+                        <div class="d-flex align-items-center">
+                            <select asp-for="@Model.vital_sign_record" class="form-control m-1">
+                                <option value="心跳">心跳</option>
+                                <option value="體溫">體溫</option>
+                                <option value="血氧">血氧</option>
+                            </select>
+                            <input asp-for="@Model.vital_sign_record" class="form-control" />
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-outline-secondary mb-3" id="addVS">新增生命徵象</button>
                     <div class="form-group">
                         <label asp-for="diagnosis" class="control-label"></label>
                         <input asp-for="diagnosis" class="form-control" />
@@ -84,7 +94,7 @@
                         <input asp-for="memo" class="form-control" />
                         <span asp-validation-for="memo" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display:none;">
                         <label asp-for="fee" class="control-label"></label>
                         <input asp-for="fee" class="form-control" />
                         <span asp-validation-for="fee" class="text-danger"></span>
@@ -103,5 +113,52 @@
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+            document.getElementById('addVS').addEventListener('click', function () {
+                var fieldCount = document.querySelectorAll('#productFormats .product-format').length;
+                var newFieldHtml = `
+                                        <div class="form-group product-format d-flex align-items-center">
+                                        <label for="ProductFormats_${fieldCount}__FormatType" class="control-label m-1">規格</label>
+                                        <select name="ProductFormats[${fieldCount}].FormatType" class="form-control m-1">
+                                                                                                            <option value="心跳">心跳</option>
+                                                                                                            <option value="收縮壓">收縮壓</option>
+                                                                                                            <option value="舒張壓">舒張壓</option>
+                                                                                                            <option value="體溫">體溫</option>
+                                                                                                            <option value="呼吸次數">呼吸次數</option>
+                                                                                                            <option value="血氧">血氧</option>
+                                                                                                            <option value="排尿">排尿</option>
+                                                                                                            <option value="備註">備註</option></select>
+                                        <input type="text" name="ProductFormats[${fieldCount}].FormatName" class="form-control" />
+                                        <button type="button" class="btn btn-outline-danger m-1" onclick="removeField(this)">-</button></div>`;
+                document.getElementById('productFormats').insertAdjacentHTML('beforeend', newFieldHtml);
+            });
+            function removeField(button) {
+                const fieldToRemove = button.closest('.form-group');
+                fieldToRemove.remove();
+            }
+                        })
+        </script>
     }
+}
+@section Scripts {
+    <script>
+        //動態加入規格
+        document.getElementById('addFormat').addEventListener('click', function () {
+            var fieldCount = document.querySelectorAll('#productFormats .product-format').length;
+            var newFieldHtml = `
+                        <div class="form-group product-format d-flex align-items-center">
+                        <label for="ProductFormats_${fieldCount}__FormatType" class="control-label m-1">規格</label>
+                        <select name="ProductFormats[${fieldCount}].FormatType" class="form-control m-1">
+                                                                    <option value="尺寸">尺寸</option>
+                                                                    <option value="顏色">顏色</option>
+                                                                    <option value="其他">其他</option></select>
+                        <input type="text" name="ProductFormats[${fieldCount}].FormatName" class="form-control" />
+                        <button type="button" class="btn btn-outline-danger m-1" onclick="removeField(this)">-</button></div>`;
+            document.getElementById('productFormats').insertAdjacentHTML('beforeend', newFieldHtml);
+        });
+        function removeField(button) {
+            const fieldToRemove = button.closest('.form-group');
+            fieldToRemove.remove();
+        }
+    </script>
 }
