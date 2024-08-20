@@ -27,7 +27,7 @@
     <div class="col-10">
         <div class="row">
             <form id="postarticle" ref="postform" V-on:submit.prevent="postPar(selectedArt.id)">
-                <div id="editableDiv" ref="editableDiv" contenteditable="true" style="border:1px solid #ccc; padding:5px;" data-placeholder="請輸入內容" @@input="bindpcontent">{{ pcontent }}</div>
+                <div id="editableDiv" ref="editableDiv" contenteditable="true" style="border:1px solid #ccc; padding:5px;" data-placeholder="請輸入內容" @@input="bindpcontent"> </div>
                 <div class="mb-3 input-group">
                     <button class="btn btn-outline-secondary" type="button" id="button-addon2" @@click="inputFileR">添加相片</button>
                     <input type="file" id="updateImgR" name="imgs" accept="image/png, image/jpeg, image/jpg" style="display: none;" @@change="handleResponseFileChange" multiple>

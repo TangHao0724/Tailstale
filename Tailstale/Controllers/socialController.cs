@@ -325,6 +325,10 @@ namespace Tailstale.Controllers
         }
         //輸入個人TAG、查詢包含個人TAG的文章
         [HttpGet("GetPriTagArt")]
+        public async Task<IActionResult> GetPriTagArt(string priTag)
+        {
+
+        }
         //列出主流TAG
         [HttpGet("GetPubTagList")]
         public async Task<IActionResult> GetPubTagList()

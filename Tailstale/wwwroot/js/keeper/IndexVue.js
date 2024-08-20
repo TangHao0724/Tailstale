@@ -13,13 +13,30 @@
             count: 10,
             selectedArt: null,
             responseimg: [],
+            pubTaglist: [],
+            priTaglist:[],
         }
     },
     created() {
         this.start();
 
+
     },
     methods: {
+        async gettag() {
+            try {
+                const pubtag = await axios.get("api/social/GetPubTagList");
+                this.pubTaglist = pubtag.data;
+                const priTag = await axios.get("api/social/GetPriTagList", {
+                    params: {
+                        id: this.useridm,
+                    }
+                });
+                this.priTaglist = priTag.data;
+            } catch (err) {
+                console.error('Error during created hook:', err);
+            }
+        },
         async start() {
             try {
                 this.articles = await this.getarticle(15, 0, null, true);
@@ -72,20 +89,31 @@
                 let formdata = new FormData(this.$refs.postform);
 
                 // 合併 content 和 pcontent 的處理
-                const content = this.content || this.pcontent;
-                if (content) {
-                    formdata.append("Content", content);
-                }
-
                 // 合併 PublicTags 和 PrivateTags 的處理
-                const hashtags = this.Publichashtags || this.Privatehashtags;
-                if (hashtags) {
-                    formdata.append("PublicTags", hashtags);
+                if (this.selectedArt?.id === undefined) {
+                    if (this.content) {
+                        formdata.append("Content", this.content);
+                    }
+                    if (this.Publichashtags) {
+                        formdata.append("PublicTags", this.Publichashtags);
+                    }
+                    if (this.Privatehashtags) {
+                        formdata.append("PrivateTags", this.Privatehashtags);
+                    }
                 }
 
                 // 處理 selectedArt.id
                 if (this.selectedArt?.id !== undefined) {
+                    if (this.pcontent) {
+                        formdata.append("Content", this.pcontent);
+                    }
                     formdata.append("parent_ID", this.selectedArt.id);
+                    if (this.respPublichashtags) {
+                        formdata.append("PublicTags", this.respPublichashtags);
+                    }
+                    if (this.respPrivatehashtags) {
+                        formdata.append("PrivateTags", this.respPrivatehashtags);
+                    }   
                 }
 
                 // 根據 usertype 添加相應的 ID
@@ -243,6 +271,7 @@
         this.usertype = $("#start").data("user-type");
         this.editableDiv = this.$refs.editableDiv;
         $(this.$refs.articleModal).on('hidden.bs.modal', this.onModalHide);
+        this.gettag();
     },
     
 });
