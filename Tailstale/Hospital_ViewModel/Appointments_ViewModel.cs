@@ -4,10 +4,10 @@ namespace Tailstale.Hospital_ViewModel
 {
     public class Appointments_ViewModel
     {
-        [Display(Name = "預約編號")]
+        [Display(Name = "編號")]
         public int AppointmentID { get; set; } //from Appointment
 
-        [Display(Name = "預約日期")]
+        [Display(Name = "看診日期")]
         public DateOnly Date { get; set; } //from daily_outpatient_clinic_schedule
 
         [Display(Name = "預約狀態")]
