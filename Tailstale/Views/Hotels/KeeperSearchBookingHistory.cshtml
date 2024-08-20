@@ -45,15 +45,7 @@
                         <form hidden id="BackToAllBooking" asp-controller="UserInfo" asp-action="Index">
                         </form>
                         <a class="btn text-light border form-control btn-sm" href="#" onclick="document.getElementById('BackToAllBooking').submit(); return false;">回訂單清單</a>
-     @*    <form hidden id="BackToAllBooking" asp-controller="Hotels" asp-action="ShowAllBooking" asp-route-id="@ViewBag.HotelID">Index
-            </form>
-                        <a class="btn text-light border form-control btn-sm" href="#" onclick="document.getElementById('BackToAllBooking').submit(); return false;">回訂單清單</a> *@
-
-                        
-        @*  <a class="btn text-light border form-control btn-sm" controller="UserInfo" action="Index" href="#" >回訂單清單</a> *@
-        </div>
-        <div class="">
-           
+    
         </div>
     </div>
        
@@ -148,12 +140,18 @@
         }
         else
         {
-            @if (ViewBag.bookingstatus.Contains("預約"))
+            @if (ViewBag.bookingstatus.Contains("未付款"))
             {
-               
-                <button class="btn btn-outline-danger fs-4" id="cancelbtn">取消訂單</button>
-            }
-        }
+                            <button class="btn btn-outline-success fs-4" id="paybtn">直接付款</button>
+                            <button class="btn btn-outline-danger fs-4" id="cancelbtn">取消訂單</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-outline-danger fs-4" id="cancelbtn">取消訂單</button>
+                        }
+
+                    }
+                    
         
        
     </div>
@@ -170,6 +168,7 @@ else
 }
 
 </div>
+    <div id="divContent"></div>
 </div>
 
 
@@ -181,7 +180,12 @@ else
             var cancelBtn = document.querySelector("#cancelbtn");
             var reviewBtn = document.querySelector("#reviewBtn");
             var bookingID = parseInt(@Model.booking.bookingID);
-
+            var paybtn = document.querySelector("#paybtn");
+            var TradeDesc = "HotellID: @Model.booking.hotelID" + "預訂費用";
+            var ItemName = "@Model.booking.hotel.name" + "旅館預訂";
+            var TotalAmount =parseInt(@Model.booking.bookingAmountTotal);
+            var bookingID = "@Model.booking.bookingID";
+            var sendinfo = { "TotalAmount": TotalAmount, "TradeDesc": TradeDesc, "ItemName": ItemName, "bookingID": bookingID };
             // var bookingID = parseInt();
             // cancelBtn.addEventListener('click', function () {
             //     axios.put(`${baseAddress}/UpdateBookingStatus`, {
@@ -193,6 +197,23 @@ else
             //         })
             //         .catch(err => { alert(err) })
             // });
+            if(paybtn){
+                paybtn.addEventListener('click', function () {
+                    axios.post(`https://localhost:7112/ECPay/GotoECPay`, sendinfo)
+                        .then(response => {
+                            // 將返回的表單插入到頁面中
+                            $("#divContent").html(response.data);
+
+                            // 提交表單
+                            $("#payForm").submit();
+                            //  alert("123");
+                        })
+                        .catch(err => {
+                            alert(err);
+                        });
+
+                });
+            }
 
             if (cancelBtn) {
                 cancelBtn.addEventListener('click', function () {
@@ -207,17 +228,13 @@ else
                             alert(err);
                         });
                 });
-            } else {
-                console.error('Cancel button not found');
-            }
+            } 
 
             if (reviewBtn) {
                 $(reviewBtn).on("click", function () {
                     window.location.href = `/Hotels/PostReview?bookingID=${bookingID}`;
                 });
-            } else {
-                console.error('Review button not found');
-            }
+            } 
             // ("#reviewBtn").on("click", function () {
             //     window.location.href = `/Hotels/PostReview?bookingID=${bookingID}`;
             // });

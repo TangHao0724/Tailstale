@@ -164,7 +164,7 @@
 
                             <span asp-validation-for="petName" class="text-danger"></span>
                         </li>
-                        <li class="list-group-item canclear">
+                        <li class="list-group-item ">
                             <label asp-for="petType" class="control-label"></label>
                             @if (item.RoomName.Contains("貓"))
                             {
@@ -220,6 +220,7 @@
                         const inputs = container.querySelectorAll('.canclear input');
                         inputs.forEach(input => {
                             input.value = "";
+                            input.readOnly=false;
                         });
                     }
                 }

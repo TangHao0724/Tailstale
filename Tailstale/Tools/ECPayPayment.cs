@@ -1,4 +1,4 @@
-﻿namespace Tailstale.Controllers
+﻿namespace Tailstale.Tools
 {
     internal class ECPayPayment
     {
