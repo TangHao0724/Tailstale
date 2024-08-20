@@ -38,6 +38,7 @@ namespace Tailstale.Controllers
                    join order_status in _context.order_statuses on A.Appointment_status equals order_status.ID
                    join b in _context.businesses on vInfo.business_ID equals b.ID
                    where docs.date >= today && b.ID== LoginID
+                   orderby docs.date
                    select new Appointments_ViewModel
                    {
                        AppointmentID = A.Appointment_ID,
