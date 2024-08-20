@@ -14,6 +14,8 @@ using MailKit.Search;
 using AutoMapper.Internal;
 using Org.BouncyCastle.Asn1.X509;
 
+using Newtonsoft.Json;
+
 namespace Tailstale.Controllers
 {
     public class ApiInputID
@@ -26,7 +28,8 @@ namespace Tailstale.Controllers
     {
         private readonly TailstaleContext _context;
 
-        public UserInfoApiController(TailstaleContext context)
+
+        public UserInfoApiController(TailstaleContext context )
         {
             _context = context;
         }
@@ -60,6 +63,7 @@ namespace Tailstale.Controllers
         }
 
 
+        //傳送pet
         //傳送pet
         //route api/UserInfoApi/GetPet
         [HttpGet("GetPet")]
@@ -246,12 +250,6 @@ namespace Tailstale.Controllers
             return Ok(new { Message = "更新成功！" });
         }
 
-        // GET: api/UserInfoApi
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<keeper>>> Getkeepers()
-        {
-            return await _context.keepers.ToListAsync();
-        }
         //最近一周內貼文
         [HttpGet("getcount")]
         public async Task<IActionResult> GetCount([FromQuery] int id)
@@ -271,7 +269,6 @@ namespace Tailstale.Controllers
             {
                 return Ok((object)null);
             }
-
             int idart = articles.Count(n => n.FK_Keeper_ID == id);
             int takeCount = idart < 3 ? idart : 3;
 
@@ -282,6 +279,7 @@ namespace Tailstale.Controllers
                                   {
                                       s.ID,
                                       s.FK_Keeper_ID,
+                                      s.FK_Keeper.name,
                                       s.parent_ID,
                                       s.content,
                                       s.article_imgs,
@@ -333,28 +331,37 @@ namespace Tailstale.Controllers
         [HttpGet("getNewAppointments")]
         public async Task<IActionResult> GetNewAppointmentsAndPets([FromQuery] int id)
         {
-            var weektime = DateTime.Now.AddDays(-7);
-            // 新增的預約
-            List<AppointmentResult> newallorderRe = new List<AppointmentResult>();
-            var allorder = await UsertOrder(id);
-            if (allorder is OkObjectResult combinedResult)
+            try
             {
-                newallorderRe = combinedResult.Value as List<AppointmentResult>;
-            }
-            if (newallorderRe == null || !newallorderRe.Any())
-            {
-                newallorderRe = null;
-            }
-            else
-            {
-                int ordercount = newallorderRe.Count < 3 ? newallorderRe.Count : 3;
-                newallorderRe = newallorderRe
-                    .Where(x=> DateTime.Parse(x.OrderDate) > weektime)
+                var weektime = DateTime.Now.AddDays(-7);
+                // 新增的預約
+                List<AppointmentResult> newAppointments = new List<AppointmentResult>();
+                var allorder = await UsertOrder(id);
+
+                if (allorder is OkObjectResult combinedResult)
+                {
+                    newAppointments = combinedResult.Value as List<AppointmentResult>;
+                }
+
+                if (newAppointments == null || !newAppointments.Any())
+                {
+                    return Ok((object)null);
+                }
+
+                int orderCount = Math.Min(newAppointments.Count, 3);
+                newAppointments = newAppointments
+                    .Where(x => DateTime.Parse(x.OrderDate) > weektime)
                     .OrderByDescending(x => x.OrderDate)
-                                             .Take(ordercount)
-                                             .ToList();
+                    .Take(orderCount)
+                    .ToList();
+
+                return Ok(newAppointments);
             }
-            return Ok(newallorderRe);
+            catch (Exception ex)
+            {
+                // 處理異常
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
         [HttpGet("newPictures")]
         public async Task<IActionResult> GetNewPictures([FromQuery] int id)

@@ -198,8 +198,9 @@ namespace Tailstale.Controllers
         //    return new JsonResult(with_img);
         //}GetArticle
         
+        //從parentID查 父文章
         [HttpGet("GetArticle")]
-        public async Task<IActionResult> GetArticle(int? count,int? id,int? parentid,bool? publicOnly)
+        public async Task<IActionResult> GetArticle(int? count,int? id,int? parentid,bool? publicOnly,int? artID)
         {
             
             try
@@ -218,7 +219,10 @@ namespace Tailstale.Controllers
                                          .OrderByDescending(x => x.created_at)
                                          .Take(count ?? int.MaxValue) // 取指定數量或全部（如果count為null）
                                          .ToListAsync();
-
+                if (artID.HasValue)
+                {
+                    articles = articles.Where(n=>n.ID == artID).ToList();
+                }
                 // 根據publicOnly標誌過濾
                 if (publicOnly.HasValue)
                 {
@@ -230,12 +234,12 @@ namespace Tailstale.Controllers
                 {
                     articles = articles.Where(n => n.FK_Keeper_ID == id.Value).ToList();
                 }
-
                 // 如果count超過文章數量，則調整count
                 if (count.HasValue && count.Value < articles.Count)
                 {
                     articles = articles.Take(count.Value).ToList();
-                }   
+                }
+
 
                 // 抓取所有相關資料
                 var articleImgs = await _context.article_imgs.ToListAsync();

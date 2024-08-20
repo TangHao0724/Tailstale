@@ -31,14 +31,257 @@
 
 
 <script type="text/x-template" id="tab-Main">
+        <!--articleModal S-->
+ <div class="modal fade" id="articleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" ref="articleModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body ">
+                <div class="container-fluid">
+                    <h4>原文</h4>
+                    <!--主文章-->
+                    <div class="row">
+                        <div class="card mb-1 border-secondary rounded-3 mb-3">
+                            <div class="card-header bg-light text-nowrap">
+                                <img :src="imgurl(selectedArt?.uType, selectedArt?.imgurl)" alt="mdo" width="48" height="48" class="rounded-circle d-inline">
+                                <h6 class="d-inline">{{selectedArt?.kName ?? selectedArt?.bName}}</h6>
+                                    <i class="bi bi-person-circle" v-if="!selectedArt?.ispublic "></i>
+                                    <i class="bi bi-people-fill" v-if="selectedArt?.ispublic "></i>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <p class="card-text">{{selectedArt?.content}}</p>
+                                </div>
+                                <div class="row">
+                                        <!--圖片-->
+                                        <div class="row" v-if="selectedArt?.imgurllist.length > 0">
+                                        <div :id="`carousel${selectedArt?.id}`" class="carousel slide" data-bs-ride="carousel">
+                                            <div class="carousel-inner">
+                                                <div class="carousel-item active" >
+                                                    <img :src="bindimgurl(selectedArt?.imgurllist[0], selectedArt?.uType)" class="d-block w-100" alt="...">
+                                                </div>
+                                                    <div class="carousel-item" v-for="fileData in selectedArt?.imgurllist">
+                                                    <img :src="bindimgurl(fileData, selectedArt?.uType)" class="d-block w-100" alt="...">
+                                                </div>
+                                            </div>
+                                                <button class="carousel-control-prev" type="button" :data-bs-target="`#carousel${selectedArt?.id}`" data-bs-slide="prev">
+                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Previous</span>
+                                            </button>
+                                                <button class="carousel-control-next" type="button" :data-bs-target="`#carousel${selectedArt?.id}`" data-bs-slide="next">
+                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Next</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <h6 class="card-subtitle mb-2 text-muted d-inline" v-for="publicTag in selectedArt?.publicTaglist">{{publicTag}}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <!--貼文-->
+                        <div class="row overflow-auto " style="height:300px">
+                        <div class="col-2">
+
+                        </div>
+                        <div class="col-10">
+                                <div class="card mb-1 border-secondary rounded-3  " v-for="at in parentArt" >
+                                <div class="card-header bg-light text-nowrap" @@click="openPost(at)">
+                                    <img :src="imgurl(at.uType,at.imgurl)" alt="mdo" width="32" height="32" class="rounded-circle d-inline mx-2">
+                                    <h6 class="d-inline">{{at.kName ?? at.bName}}</h6>
+                                        <i class="bi bi-person-circle" v-if="!at.ispublic "></i>
+                                        <i class="bi bi-people-fill" v-if="at.ispublic "></i>
+
+                                </div>
+                                <div class="card-body">
+                                    <div class="row" @@click="openPost(at)">
+                                        <p class="card-text">{{at.content}}</p>
+                                    </div>
+                                    <div class="row" v-if="at.imgurllist.length > 0">
+                                        <div :id="`carousel${at.id}`" class="carousel  carousel-dark slide" data-bs-ride="carousel">
+                                            <div class="carousel-inner">
+                                                <div class="carousel-item active" data-bs-interval="5000">
+                                                    <img :src="bindimgurl(at.imgurllist[0], at.uType)" class="d-block w-100" alt="...">
+                                                </div>
+                                                <div class="carousel-item" data-bs-interval="5000" v-for="fileData in at.imgurllist">
+                                                    <img :src="bindimgurl(fileData, at.uType)" class="d-block w-100" alt="...">
+                                                </div>
+                                            </div>
+                                            <button class="carousel-control-prev" type="button" :data-bs-target="`#carousel${at.id}`" data-bs-slide="prev">
+                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Previous</span>
+                                            </button>
+                                            <button class="carousel-control-next" type="button" :data-bs-target="`#carousel${at.id}`" data-bs-slide="next">
+                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Next</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" @@click="openPost(at)">
+                                    <h6 class="card-subtitle mb-2 text-muted d-inline" v-for="publicTag in at.publicTaglist">{{publicTag}}</h6>
+                                </div>
+                            </div>
+                        </div>
+
+                     </div>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+        <!--articleModal E-->
     <div class="container-fluid">
         <div class="row shadow rounded-2 align-content-center mb-4">
-            <h2>使用者資訊</h2>
+            <h2>最近發生什麼</h2>
         </div>
         <div class="row shadow rounded-2 align-content-center mb-4">
+            <h5>您好！{{name}}，最近一周發了{{artcount}}篇貼文   ，您的文章最近獲得了{{respL}}回復，新增了{{orderL}}個預約！</h5>
+        </div>
+         <div class="row shadow rounded-2 align-content-center mb-4 p-4">
+                  <h5>最新一筆新的預約</h5>
+                <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">編號</th>
+                          <th scope="col">寵物名稱</th>
+                          <th scope="col">服務種類</th>
+                          <th scope="col">店家名稱</th>
+                          <th scope="col">服務名稱</th>
+                          <th scope="col">預約時間</th>
+                          <th scope="col">預約狀態</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                                <th scope="row">{{ neworder[orderL]?.orderID}}</th>
+                                     <td>{{  neworder[orderL]?.orderPet}}</td>
+                                     <td>{{ neworder[orderL]?.orderType}}</td>
+                                     <td>{{  neworder[orderL]?.businessName}}</td>
+                                     <td>{{ neworder[orderL]?.serviceName}}</td>
+                                     <td>{{ neworder[orderL]?.orderDate}}</td>
+                                     <td>{{ neworder[orderL]?.orderStatus}}</td>
 
-        </div>
-        <div class="row shadow rounded-2 align-content-center mb-4">
+                        </tr>
+                      </tbody>
+                </table>
+               <!--最近預約-->
+           </div>
+        <div class="row shadow rounded-2 align-content-center mb-4 p-4">
+            <!--左上文章、左下回復、右上最新寵物、右下圖片-->
+           <div class="row">
+               <div class="col-5 me-3">
+                   <div class="row">
+                       <h5>最新貼文</h5>
+                         <div class="overflow-auto">
+                                    <div class="card mb-1 border-secondary rounded-3  " v-for="at in newpost">
+                               <div class="card-header bg-light text-nowrap" >
+                                   <img :src="imgurl(at.uType,at.imgurl)" alt="mdo" width="48" height="48" class="rounded-circle d-inline">
+                                   <h6 class ="d-inline">{{at.kName ?? at.bName}}</h6>
+                                   <i class="bi bi-person-circle" v-if="!at.ispublic "></i>
+                                   <i class="bi bi-people-fill" v-if="at.ispublic "></i>
+                               </div>
+                               <div class="card-body" >
+                                   <div class="row" >
+                                       <p class="card-text">{{at.content}}</p>
+                                   </div>
+                                   <div class="row" v-if="at && at.imgurllist && at.imgurllist.length > 0">
+                                       <div :id="`carousel${at.id}`" class="carousel  carousel-dark slide" data-bs-ride="carousel">
+                                           <div class="carousel-inner">
+                                               <div class="carousel-item active" data-bs-interval="5000">
+                                                   <img :src="bindimgurl(at.imgurllist[0], at.uType)" class="d-block w-100" alt="...">
+                                               </div>
+                                               <div class="carousel-item" data-bs-interval="5000" v-for="fileData in at.imgurllist">
+                                                   <img :src="bindimgurl(fileData, at.uType)" class="d-block w-100" alt="...">
+                                               </div>
+                                           </div>
+                                           <button class="carousel-control-prev" type="button" :data-bs-target="`#carousel${at.id}`" data-bs-slide="prev">
+                                               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                               <span class="visually-hidden">Previous</span>
+                                           </button>
+                                           <button class="carousel-control-next" type="button" :data-bs-target="`#carousel${at.id}`" data-bs-slide="next">
+                                               <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                               <span class="visually-hidden">Next</span>
+                                           </button>
+                                       </div>
+                                   </div>
+                               </div>
+                               <div class="row" >
+                                   <h6 class="card-subtitle mb-2 text-muted d-inline" v-for="publicTag in at.publicTaglist">{{publicTag}}</h6>
+                               </div>
+                           </div>
+                             </div>
+                   </div>
+                   <div class="row">
+                       <h5>最新回應</h5>
+                          <p>點擊回應查看原文章</p>
+                          <div class="overflow-auto">
+                                  <div class="card mb-1 border-secondary rounded-3  " v-for="at in newallresp">
+                               <div class="card-header bg-light text-nowrap" @@click="openPost(at)">
+                                   <img :src="imgurl(at.uType,at.imgurl)" alt="mdo" width="48" height="48" class="rounded-circle d-inline">
+                                   <h6 class ="d-inline">{{at.kName ?? at.bName}}</h6>
+                                   <i class="bi bi-person-circle" v-if="!at.ispublic "></i>
+                                   <i class="bi bi-people-fill" v-if="at.ispublic "></i>
+                               </div>
+                               <div class="card-body" >
+                                   <div class="row" @@click="openPost(at)">
+                                       <p class="card-text">{{at.content}}</p>
+                                   </div>
+                                       <div class="row"  v-if="at && at.imgurllist && at.imgurllist.length > 0">
+                                       <div :id="`carousel${at.id}`" class="carousel  carousel-dark slide" data-bs-ride="carousel">
+                                           <div class="carousel-inner">
+                                               <div class="carousel-item active" data-bs-interval="5000">
+                                                   <img :src="bindimgurl(at.imgurllist[0], at.uType)" class="d-block w-100" alt="...">
+                                               </div>
+                                               <div class="carousel-item" data-bs-interval="5000" v-for="fileData in at.imgurllist">
+                                                   <img :src="bindimgurl(fileData, at.uType)" class="d-block w-100" alt="...">
+                                               </div>
+                                           </div>
+                                           <button class="carousel-control-prev" type="button" :data-bs-target="`#carousel${at.id}`" data-bs-slide="prev">
+                                               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                               <span class="visually-hidden">Previous</span>
+                                           </button>
+                                           <button class="carousel-control-next" type="button" :data-bs-target="`#carousel${at.id}`" data-bs-slide="next">
+                                               <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                               <span class="visually-hidden">Next</span>
+                                           </button>
+                                       </div>
+                                   </div>
+                               </div>
+                               <div class="row" @@click="openPost(at)">
+                                   <h6 class="card-subtitle mb-2 text-muted d-inline" v-for="publicTag in at.publicTaglist">{{publicTag}}</h6>
+                               </div>
+                           </div>
+
+                          </div>
+                   </div>
+                     <div class="row">
+                        <h5>最新增加的照片</h5>
+                        <p>相片存放在{{ newPictures?.typename }}</p>
+                        <img :src=" `/imgs/keeper_img/${newPictures?.url}` " class="w-50 img-thumbnail">
+                    </div>
+                </div>
+                <div class="col-6">
+                       <div class="row">
+                           <h5>最新增加的寵物</h5>
+                                  <div class="overflow-scroll row row-cols-2">
+                                        <div class="card mx-1 my-1 col" style="width: 12rem;" v-for = "pet in newpets" >
+                                        <div  class="card-body">
+                                            <img :src=" `/imgs/keeper_img/${pet.imgurl}` " class="card-img-top" alt="cat-head">
+                                        <h5 class="card-title">{{pet.name}}</h5>
+                                               <h6 class="card-subtitle mb-2 text-muted">{{this.getPetType(pet) +','+pet.age+"歲"}}</h6>
+                                        <p class="card-text">
+
+                                        </p>
+                                        </div>
+                                   </div>
+                            </div>
+                       </div>
+                  </div>
+             </div>
+
+           </div>
            
         </div>
     </div>
@@ -507,7 +750,7 @@
         </div>
         <!--使用V-for重複載入寵物的卡片-->
         <div class="row shadow rounded-2 align-content-center mb-4 p-2">
-            <component :is="currentTabComponent" :userID="@ViewBag.loginID" @@data-updated="GetUserimgm"></component>
+            <component :is="currentTabComponent" :userID="@ViewBag.loginID" @@data-updated="    "></component>
             <div class="card mx-1 my-1" style="width: 12rem;" v-for = "pet in pets">
               <div  class="card-body">
                 <img :src="getPetimg(pet)" class="card-img-top" alt="cat-head">
@@ -532,7 +775,7 @@
 
 <div class="container-fluid">
     <div class="row shadow rounded-2 align-content-center mb-4">
-        <h1>tab-HisOrder</h1>
+        <h1>歷史訂單</h1>
     </div>
     <div class="row shadow rounded-2 align-content-center mb-4">
         <div class="col-12">

@@ -43,7 +43,7 @@
         </div>
         <div class="row">
             <span>圖片預覽：</span>
-            <div class="card-container-cas-articale" v-if="responseimg.length > 0">
+            <div class="card-container-cas-articale" v-if="responseimg?.length > 0">
                 <img v-for="fileData in responseimg" :src="fileData" alt="File Preview" class="card-cas img-thumbnail w-25" />
             </div>
         </div>

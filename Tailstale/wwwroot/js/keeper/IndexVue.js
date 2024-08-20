@@ -16,15 +16,20 @@
         }
     },
     created() {
-
-        this.getarticle(15,null,null,true);
-        
+        this.start();
 
     },
     methods: {
+        async start() {
+            try {
+                this.articles = await this.getarticle(15, null, null, true);
+            } catch (err) {
+                console.error('Error during created hook:', err);
+            }
+        },
         inputFile() {
             $("#updateImg").click();
-        },
+        },  
         inputFileR() {
             $("#updateImgR").click();
         },
@@ -57,9 +62,9 @@
                 reader.readAsDataURL(file);
             }
         },
-        postMain() {
-            this.postarticle();
-            this.getarticle(15, null, null, true);
+        async postMain() {
+            await this.postarticle();
+            this.articles = await this.getarticle(15, null, null, true);
         },
        /* public async Task<IActionResult> GetArticle(int? count, int? userid, int? parentid, bool? publicOnly)*/
         async postarticle() {
@@ -101,18 +106,18 @@
                 console.error('Error fetching user info:', error);
             }
         },
-        openPost(input) {
+        async openPost(input) {
             this.selectedArt = null;
             this.parentArt = null;
             this.selectedArt = input;
-            this.getarticle(10, this.selectedArt.id, null, true);
+            this.parentArt = await this.getarticle(10, this.selectedArt.id, null, true);
             $("#articleModal").modal("show");
 
         },
-        postPar(input) {
+        async postPar(input) {
             this.parentArt = [];
-            this.postarticle();
-            this.openPost(input);
+            await this.postarticle();
+            this.parentArt = await this.getarticle(10, this.selectedArt.id, null, true);
         },
         bindimgurl(url, uType) {
             if (uType !== 0) {
@@ -171,11 +176,7 @@
                         publicOnly: publicOnly
                     },
                 });
-                if (this.selectedArt !== null) {
-                    this.parentArt = response.data;
-                } else {
-                    this.articles = response.data;
-                }
+                return response.data;
                 
             } catch (err) {
                 console.error('Error fetching user info:', err);
@@ -214,19 +215,17 @@
             var regex = new RegExp(this.getPublichashtag(), 'ig');
             if (this.pcontent != "") {
                 if (regex.test(this.pcontent)) {
-                    return this.content.match(regex);
+                    return this.pcontent.match(regex);
                 }
             } else {
-                if (regex.test(this.content)) {
-                    return this.content.match(regex);
-                }
+
             }
         },
         Privatehashtags: function () {
             var regex = new RegExp(this.getPrivatehashtag(), 'ig');
             if (this.pcontent != "") {
                 if (regex.test(this.pcontent)) {
-                    return this.content.match(regex);
+                    return this.pcontent.match(regex);
                 }
             } else {
                 if (regex.test(this.content)) {
