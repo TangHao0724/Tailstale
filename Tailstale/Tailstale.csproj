@@ -58,7 +58,6 @@
   <ItemGroup>
     <Folder Include="MedViewModels\" />
     <Folder Include="Views\Shared\Components\LoginUTag\" />
-    <Folder Include="wwwroot\images\business\" />
     <Folder Include="wwwroot\images\room\" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
     <PackageReference Include="Moq" Version="4.20.70" />
@@ -78,6 +77,7 @@
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+    <Folder Include="wwwroot\imgs\business_img\NewFolder1\" />
     <Folder Include="wwwroot\imgs\business_img\NewFolder\" />
     <Content Update="wwwroot\lib\HospitalImages\Business\No_Image.png">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>

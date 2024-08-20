@@ -267,7 +267,7 @@
             btnGotoECPAy.addEventListener('click', function () {
                 var TotalAmount = @ViewBag.BookingTotal;
                 var TradeDesc = "HotellID: @ViewBag.HotelInfo.ID" +"預訂費用";
-                var ItemName = "@ViewBag.HotelInfo.name" + "旅館預訂";
+                var ItemName = "旅館預訂";
                 var sendinfo = { "TotalAmount": TotalAmount, "TradeDesc": TradeDesc, "ItemName": ItemName };
 
                 gotoECPay(sendinfo);
