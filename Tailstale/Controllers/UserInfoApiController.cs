@@ -348,11 +348,11 @@ namespace Tailstale.Controllers
             else
             {
                 int ordercount = newallorderRe.Count < 3 ? newallorderRe.Count : 3;
-                newallorderRe = newallorderRe
-                    .Where(x=>x.OrderDate > weektime)
-                    .OrderByDescending(x => x.OrderDate)
-                                             .Take(ordercount)
-                                             .ToList();
+                //newallorderRe = newallorderRe
+                //    .Where(x=>x.OrderDate > weektime)
+                //    .OrderByDescending(x => x.OrderDate)
+                //                             .Take(ordercount)
+                //                             .ToList();
             }
             return Ok(newallorderRe);
         }
