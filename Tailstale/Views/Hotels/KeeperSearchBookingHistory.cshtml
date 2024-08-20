@@ -23,6 +23,9 @@
             
             --bs-gutter-x: 0;
         
+        }w
+        #reviewBtn{
+            border: 1px dotted #005757;
         }
 
        
@@ -42,9 +45,10 @@
              &nbsp; 檢視預訂資料
         </div>
         <div class="col-12 col-md-4 offset-md-2 text-right p-0">
-            <form hidden id="BackToAllBooking" asp-controller="Hotels" asp-action="ShowAllBooking" asp-route-id="@ViewBag.HotelID">
-            </form>
-            <a class="btn btn-outline-info form-control btn-sm" href="#" onclick="document.getElementById('BackToAllBooking').submit(); return false;">回訂單清單</a>
+                        <form hidden id="BackToAllBooking" asp-controller="UserInfo" asp-action="Index">
+                        </form>
+                        <a class="btn text-light border form-control btn-sm" href="#" onclick="document.getElementById('BackToAllBooking').submit(); return false;">回訂單清單</a>
+
         </div>
         <div class="">
            
@@ -135,7 +139,7 @@
         {
             if (!ViewBag.isReView)
             {
-                <button class="btn btn-outline-info fs-4" id="reviewBtn">撰寫評論</button>
+                            <a class="btn btn-info fs-4 border-4" id="reviewBtn" style:"border:solid 2px #005757; backgorund-color:#000">撰寫評論</a>
             }
            
           

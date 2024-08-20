@@ -3,7 +3,7 @@
     public class ReViewCheckinDetail
     {
         public int roomId {  get; set; }
-        public int petID { get; set; }
+        public int? petID { get; set; }
         public string  petName { get; set; }
         public string petType{ get; set; }
         public string petChipID{ get; set; }

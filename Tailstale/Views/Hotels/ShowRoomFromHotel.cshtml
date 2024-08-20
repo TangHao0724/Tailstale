@@ -1,5 +1,5 @@
 ﻿@using Tailstale;
-@model IEnumerable<Tailstale.Models.Room>
+@model IEnumerable<Tailstale.Hotel_DTO.RoomDTO>
 @section Styles {
     <style>
         body {
@@ -38,7 +38,7 @@
                         @Html.DisplayNameFor(model => model.roomSpecies)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.FK_roomType.roomType1)
+                        房間類型
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.roomPrice)
@@ -66,7 +66,7 @@
                             @Html.DisplayFor(modelItem => item.roomSpecies)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.FK_roomType.roomType1)
+                            @Html.DisplayFor(modelItem => item.roomType.roomType1)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.roomPrice)
@@ -104,7 +104,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="modalTitleId">
-                                Modal title
+                                房間類型
                             </h5>
                             <button type="button"
                                     class="btn-close"
@@ -116,11 +116,17 @@
                             <div id="app">
                                 @* 篩選 *@
                                 <div class="container">
-                                    <div class="row">
-                                        <input type="text" v-model="filter" v-on:keyup="filterBu" />
-                                        <button class="btn btn-primary" v-on:click="ShowModal">
-                                            查詢
-                                        </button>
+                                    <div class="row"> 
+                                        <div class="col-5">
+                                            <input type="text" class="form-control" placeholder="搜尋房間" v-model="filter" v-on:keyup="filterBu" />
+                                        </div>
+                                        <div class="col-4">
+                                            <button class="btn btn-primary" v-on:click="ShowModal">
+                                                <i class="fa-solid fa-circle-plus"></i> 新增
+                                            </button>
+                                        </div>
+                                        
+                                       
                                     </div>
                                     <div class="row">
                                         <div class="card">
@@ -173,7 +179,7 @@
 
 
                                 </div>
-                                123
+                                
                                 @* 結果 *@
 
                             </div>

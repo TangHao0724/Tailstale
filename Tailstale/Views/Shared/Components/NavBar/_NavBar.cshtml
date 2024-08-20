@@ -1,46 +1,43 @@
 ﻿
 <div class="container-fluid">
     <div class="navbar navbar-expand-lg navbar-light sticky-top  ">
-        <div class="col-4 nav-item  ">
+        <div class="col-4 nav-item  "><!--asd-->
             <a asp-controller="Home" asp-action="Index"><img src="/imgs/LNR_img/logo2.png" width="160" height="44"></a>
         </div>
         <a class="col nav-item nav-link" asp-controller="User" asp-action="Index">紀錄&社交 </a>
         <a class=" col nav-item nav-link" asp-controller="Salon" asp-action="SalonHome">寵物美容</a>
         <a class=" col nav-item nav-link" asp-controller="Hospital_FrontDesk" asp-action="Index">寵物醫療</a>
         <a class=" col nav-item nav-link" asp-controller="Hotels" asp-action="postdatetosearch">寵物旅館</a>
-        <div class="col-2 nav-item align-self-end ">
             @switch (@ViewBag.UType)
             {
                 case 0:
-                    <div class="dropdown text-end" id="UserTag">
-                        <a class="d-block link-dark text-decoration-none " id="dropdownUser1" asp-area="" asp-controller="UserInfo" asp-action="Index">
-                            <img src="@ViewBag.Keeper_imgurl" alt="mdo" width="32" height="32" class="rounded-circle" id="user-id" data-user-id="@ViewBag.UserID" data-user-type="0">
-                        </a>
-                    </div>
+                    <a class="d-block link-dark text-decoration-none mx-3" id="dropdownUser1" asp-area="" asp-controller="UserInfo" asp-action="Index">
+                        <img src="@ViewBag.Keeper_imgurl" alt="mdo" width="32" height="32" class="rounded-circle" id="user-id" data-user-id="@ViewBag.UserID" data-user-type="0">
+                    </a>
+                    <a class="btn btn-outline-secondary btn-sm" asp-area="" asp-controller="LNRApi" asp-action="Logout">登出</a>
                     break;
                 case 1:
-                    <a class="d-block link-dark text-decoration-none " id="dropdownUser1" asp-area="" asp-controller="Hotels" asp-action="businesslogin">
+                <a class="d-block link-dark text-decoration-none mx-3" id="dropdownUser1" asp-area="" asp-controller="Hotels" asp-action="businesslogin">
                         <img src="@ViewBag.hotel_imgurl" alt="mdo" width="32" height="32" class="rounded-circle"
-                             id="user-id" data-user-id="@ViewBag.UserID" data-user-type="@ViewBag.UType">
+                         id="user-id" data-user-id="@ViewBag.UserID" data-user-type="@ViewBag.UType">
                     </a>
+                 <a class="btn btn-outline-secondary btn-sm" asp-area="" asp-controller="LNRApi" asp-action="Logout">登出</a>
                     break;
                 case 2:
-                    <div class="dropdown text-end" id="UserTag">
-                        <a class="d-block link-dark text-decoration-none " id="dropdownUser1" asp-area="" asp-controller="Salon" asp-action="Settings">
-                            <img src="@ViewBag.salon_imgurl" alt="mdo" width="32" height="32" class="rounded-circle"
-                                 id="user-id" data-user-id="@ViewBag.UserID" data-user-type="@ViewBag.UType">
-                        </a>
-                    </div>
+                <a class="d-block link-dark text-decoration-none mx-3" id="dropdownUser1" asp-area="" asp-controller="Salon" asp-action="Settings">
+                        <img src="@ViewBag.salon_imgurl" alt="mdo" width="32" height="32" class="rounded-circle"
+                        id="user-id" data-user-id="@ViewBag.UserID" data-user-type="@ViewBag.UType">
+                    </a>
+                <a class="btn btn-outline-secondary btn-sm" asp-area="" asp-controller="LNRApi" asp-action="Logout">登出</a>
                     break;
                 case 3:
-                    <div class="dropdown text-end" id="UserTag">
-                                <a class="d-block link-dark text-decoration-none " id="dropdownUser1" asp-area="" asp-controller="Appointments">
+                <a class="d-block link-dark text-decoration-none mx-3" id="dropdownUser1" asp-area="" asp-controller="Appointments">
                             <img src="@ViewBag.hospital_imgurl" alt="mdo" width="32" height="32" class="rounded-circle">
                         </a>
-                    </div>
+                <a class="btn btn-outline-secondary btn-sm" asp-area="" asp-controller="LNRApi" asp-action="Logout">登出</a>
                     break;
                 default:
-                    <a class="btn btn-warning btn-sm" asp-area="" asp-controller="LNR" asp-action="Index">登入</a>
+                    <a class="btn btn-warning btn-sm mx-3" asp-area="" asp-controller="LNR" asp-action="Index">登入</a>
                     <a class="text-decoration-none link-secondary" asp-area="" asp-controller="LNR" asp-action="KRegister">註冊</a>
 
                     break;

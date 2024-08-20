@@ -11,8 +11,7 @@
     </style>
 }
 
-<h1>Details</h1>
-<h4>Room</h4>
+<h1>房間詳細資訊</h1>
 <hr />
 <div class="container">
     <div class="row">
@@ -59,7 +58,7 @@
             </div>
             <div class="row d-flex">
                 <dt class="col-4">
-                    @Html.DisplayNameFor(model => model.roomType.roomType1)
+                   房間類型
                 </dt>
                 <dd class="col-8">
                     @Html.DisplayFor(model => model.roomType.roomType1)
@@ -68,21 +67,28 @@
           
         </div>
         <div class="col">
-           
             <partial name="_RoomPicturePartials" model="@Model"></partial>
-           
-            照片放這裡
+      
         </div>
 
     </div>
 </div>
     
 
-<div>
-    <a asp-action="RoomAddOrEdit" asp-route-id="@Model?.roomID">編輯</a> |
+<div class="d-flex">
+    <a class="btn btn-outline-success" asp-action="RoomAddOrEdit" asp-route-id="@Model?.roomID">編輯</a>
     <form asp-action="ShowRoomFromHotel" asp-route-id="@Model.hotelID" method="post">
         <button class="btn btn-primary">返回到房間列表</button>
+
+    </form>
+    <div class="row">
+
         
-         </form>
+    </div>
+   
     
 </div>
+@section Scripts{
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+
+}

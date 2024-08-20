@@ -16,17 +16,20 @@
         }
     </style>
 }
-
-<div id="app">
-    <h2>撰寫評論</h2>
-    <div v-for="room in roomList" :key="room.roomID">
-        <h3>{{ room.roomName }}</h3>
-        <div>
-            <span v-for="star in 5" :key="star" @@click="setRating(star)" class="star" :class="{ active: star <= reviewRating }">★</span>
+<div class="container">
+    <div id="app">
+        <h2>撰寫評論</h2>
+        <div v-for="room in roomList" :key="room.roomID">
+            <h3>{{ room.roomName }}</h3>
+            <div>
+                <span v-for="star in 5" :key="star" @@click="setRating(star)" class="star" :class="{ active: star <= reviewRating }">★</span>
+            </div>
+            <textarea v-model="reviewText" placeholder="撰寫你的評論..."></textarea>
         </div>
-        <textarea v-model="reviewText" placeholder="撰寫你的評論..."></textarea>
+        <button class="btn btn-info" @@click="submitReview">提交評論</button>
     </div>
-    <button @@click="submitReview">提交評論</button>
+
+
 </div>
 
 
@@ -80,10 +83,8 @@
                             reviewText: this.reviewText,
                         };
                     });
-                    alert(JSON.stringify(review));
                     axios.post(`${this.baseAddress}CreateReview`, review)
                         .then(response => {
-                            alert("123");
                             //alert(JSON.stringify(response.data));
                            // this.roomList = response.data;
 

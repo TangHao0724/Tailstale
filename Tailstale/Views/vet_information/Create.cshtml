@@ -29,10 +29,10 @@
                 <div class="col-12">
                     <form asp-action="Create" enctype="multipart/form-data">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <div class="form-group mb-2">
+                        @* <div class="form-group mb-2">
                             <label asp-for="business_ID" class="control-label"></label>
-                            <input asp-for="business_ID" class="form-control" asp-items="ViewBag.business_ID" readonly ></input>
-                        </div>
+                            <input asp-for="business_ID" class="form-control" asp-items="ViewBag.business_ID" readonly >
+                        </div> *@
                         <div class="form-group mb-2">
                             <label asp-for="vet_name" class="control-label"></label>
                             <input asp-for="vet_name" class="form-control" autocomplete="off"/>

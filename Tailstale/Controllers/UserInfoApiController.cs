@@ -12,6 +12,7 @@ using Tailstale.UserInfoDTO;
 using System.Reflection.PortableExecutable;
 using MailKit.Search;
 using AutoMapper.Internal;
+using Org.BouncyCastle.Asn1.X509;
 
 namespace Tailstale.Controllers
 {
@@ -29,6 +30,7 @@ namespace Tailstale.Controllers
         {
             _context = context;
         }
+
         //傳送Index頁面上詳細內容
         //route api/UserInfoApi/userInfoDetail
         [HttpGet("userInfoDetail")]
@@ -42,7 +44,7 @@ namespace Tailstale.Controllers
             if (keeper == null)
                 return NotFound();
 
-            
+
             UserDetailDTO result = new UserDetailDTO
             {
                 ID = keeper.ID,
@@ -68,7 +70,7 @@ namespace Tailstale.Controllers
 
             //抓寵物資料
             var pets = await _context.pets.Where(n => n.keeper_ID == input.ID)
-                                          .Select( pt => new 
+                                          .Select(pt => new
                                           {
                                               ID = pt.pet_ID,
                                               name = pt.name,
@@ -91,8 +93,8 @@ namespace Tailstale.Controllers
 
             var result = pets.Select(pet =>
             {
-                int? matchingType = keeperImgTypes.Where(kit => kit.FK_Keeper_id== input.ID && kit.typename == "pet_"+pet.ID+"_"+pet.name+"_head")?.Select(s=>s.ID).FirstOrDefault();
-                var imgurl = keeperImgs.Where(n => n.img_type_id == matchingType && n.name.Contains("head") )
+                int? matchingType = keeperImgTypes.Where(kit => kit.FK_Keeper_id == input.ID && kit.typename == "pet_" + pet.ID + "_" + pet.name + "_head")?.Select(s => s.ID).FirstOrDefault();
+                var imgurl = keeperImgs.Where(n => n.img_type_id == matchingType && n.name.Contains("head"))
                                         .OrderByDescending(x => x.created_at)
                                         .Select(s => s.URL)
                                         .FirstOrDefault();
@@ -162,7 +164,7 @@ namespace Tailstale.Controllers
                 };
                 _context.pets.Add(pet);
                 await _context.SaveChangesAsync();
-                return Ok(new { message = $"新增成功 pet_ID = {pet.pet_ID}"  });
+                return Ok(new { message = $"新增成功 pet_ID = {pet.pet_ID}" });
             }
             catch (Exception ex)
             {
@@ -217,7 +219,7 @@ namespace Tailstale.Controllers
             pet.pet_type_ID = DTO.pet_type_ID;
             pet.chip_ID = DTO.chip_ID;
             pet.gender = DTO.gender;
-            pet.birthday  =DTO.birthday;
+            pet.birthday = DTO.birthday;
             pet.age = DTO.age;
             pet.pet_weight = DTO.pet_weight;
             pet.vaccine = DTO.vaccine;
@@ -250,79 +252,137 @@ namespace Tailstale.Controllers
         {
             return await _context.keepers.ToListAsync();
         }
-
-        // GET: api/UserInfoApi/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<keeper>> Getkeeper(int id)
+        //最近一周內貼文
+        [HttpGet("getcount")]
+        public async Task<IActionResult> GetCount([FromQuery] int id)
         {
-            var keeper = await _context.keepers.FindAsync(id);
-
-            if (keeper == null)
-            {
-                return NotFound();
-            }
-
-            return keeper;
+            var article = await _context.articles.Where(a => a.FK_Keeper_ID == id).ToListAsync();
+            var weektime = DateTime.Now.AddDays(-7);
+            //抓到一周以內的時間
+            var count = article.Where(n => n.created_at >= weektime).Count();
+            return Ok(count);
         }
-
-        // PUT: api/UserInfoApi/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Putkeeper(int id, keeper keeper)
+        //最新貼文
+        [HttpGet("getLatestPosts")]
+        public async Task<IActionResult> GetLatestPosts([FromQuery] int id)
         {
-            if (id != keeper.ID)
+            var articles = await _context.articles.ToListAsync();
+            if (articles == null || !articles.Any())
             {
-                return BadRequest();
+                return Ok((object)null);
             }
 
-            _context.Entry(keeper).State = EntityState.Modified;
+            int idart = articles.Count(n => n.FK_Keeper_ID == id);
+            int takeCount = idart < 3 ? idart : 3;
 
-            try
+            var newpost = articles.Where(n => n.FK_Keeper_ID == id)
+                                  .OrderByDescending(x => x.created_at)
+                                  .Take(takeCount)
+                                  .Select(s => new
+                                  {
+                                      s.ID,
+                                      s.FK_Keeper_ID,
+                                      s.parent_ID,
+                                      s.content,
+                                      s.article_imgs,
+                                      s.created_at
+                                  })
+                                  .ToList();
+            if (newpost == null || !newpost.Any())
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!keeperExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                newpost = null;
             }
 
-            return NoContent();
+            return Ok(newpost);
         }
-
-        // POST: api/UserInfoApi
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<keeper>> Postkeeper(keeper keeper)
+        //最新得到的回覆
+        [HttpGet("getArticleReplies")]
+        public async Task<IActionResult> GetArticleReplies([FromQuery] int id)
         {
-            _context.keepers.Add(keeper);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("Getkeeper", new { id = keeper.ID }, keeper);
-        }
-
-        // DELETE: api/UserInfoApi/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Deletekeeper(int id)
-        {
-            var keeper = await _context.keepers.FindAsync(id);
-            if (keeper == null)
+            var articles = await _context.articles.ToListAsync();
+            if (articles == null || !articles.Any())
             {
-                return NotFound();
+                return Ok((object)null);
             }
 
-            _context.keepers.Remove(keeper);
-            await _context.SaveChangesAsync();
+            var allUserArt = articles.Where(n => n.FK_Keeper_ID == id).Select(s => s.ID).ToList();
+            var allresp = articles.Count(n => n.parent_ID.HasValue && allUserArt.Contains(n.parent_ID.Value));
+            int allrespCount = allresp < 3 ? allresp : 3;
 
-            return NoContent();
+            var newallrespResult = articles.Where(n => n.parent_ID.HasValue && allUserArt.Contains(n.parent_ID.Value))
+                                           .OrderByDescending(x => x.created_at)
+                                           .Take(allrespCount)
+                                            .Select(s => new
+                                            {
+                                                s.ID,
+                                                s.FK_Keeper_ID,
+                                                s.parent_ID,
+                                                s.content,
+                                                s.article_imgs,
+                                                s.created_at
+                                            })
+                                           .ToList();
+            if (newallrespResult == null || !newallrespResult.Any())
+            {
+                newallrespResult = null;
+            }
+
+            return Ok(newallrespResult);
         }
-
-        [HttpGet("UserOrder/{id}")]
+        //新增一周內預約
+        [HttpGet("getNewAppointments")]
+        public async Task<IActionResult> GetNewAppointmentsAndPets([FromQuery] int id)
+        {
+            var weektime = DateTime.Now.AddDays(-7);
+            // 新增的預約
+            List<AppointmentResult> newallorderRe = new List<AppointmentResult>();
+            var allorder = await UsertOrder(id);
+            if (allorder is OkObjectResult combinedResult)
+            {
+                newallorderRe = combinedResult.Value as List<AppointmentResult>;
+            }
+            if (newallorderRe == null || !newallorderRe.Any())
+            {
+                newallorderRe = null;
+            }
+            else
+            {
+                int ordercount = newallorderRe.Count < 3 ? newallorderRe.Count : 3;
+                newallorderRe = newallorderRe
+                    .Where(x=>x.OrderDate > weektime)
+                    .OrderByDescending(x => x.OrderDate)
+                                             .Take(ordercount)
+                                             .ToList();
+            }
+            return Ok(newallorderRe);
+        }
+        [HttpGet("GetNewpets")]
+        public async Task<IActionResult> GetNewPets([FromQuery] int id)
+        {
+            var pets = await _context.pets.Where(n => n.keeper_ID == id).ToListAsync();
+            List<GetMainPetDTO> petDTOs = new List<GetMainPetDTO>();
+            if (pets == null || !pets.Any())
+            {
+                petDTOs = null;
+            }
+            else
+            {
+                int petsCount = pets.Count < 3 ? pets.Count : 3;
+                petDTOs = pets.OrderByDescending(x => x.created_at)
+                              .Take(petsCount)
+                              .Select(s => new GetMainPetDTO
+                              {
+                                  pets_type = $"{s.pet_type.species},{s.pet_type.breed}",
+                                  name = s.name,
+                                  age = s.age,
+                                  gender = s.gender,
+                                  birthday = s.birthday,
+                              })
+                              .ToList();
+            }
+            return Ok(petDTOs);
+        }
+            [HttpGet("UserOrder/{id}")]
         public async Task<IActionResult> UsertOrder(int id)
         {
             var bookings = await _context.Bookings.ToListAsync();
@@ -332,6 +392,7 @@ namespace Tailstale.Controllers
             var businesses = await _context.businesses.ToListAsync();
             var status = await _context.order_statuses.ToListAsync();
 
+
             var bookingResult = bookings.Where(n => n.keeper_ID == id).Select(s => new
             {
                 orderID = s.bookingID,
@@ -339,7 +400,7 @@ namespace Tailstale.Controllers
                 orderType = "寵物旅館",
                 businessName = s.hotel.name,
                 serviceName = "旅館住宿",
-                orderDate = s.bookingDate.Value.ToLongDateString(),
+                orderDate = s.bookingDate.Value,
                 orderStatus = status.FirstOrDefault(n=>n.ID == s.bookingStatus).status_name,
             }).ToList();
 
@@ -350,7 +411,7 @@ namespace Tailstale.Controllers
                 orderType = "寵物美容",
                 businessName = s.business.name,
                 serviceName = s.service_name,
-                orderDate = s.created_at.Value.ToLongDateString(),
+                orderDate = s.created_at.Value,
                 orderStatus = status.FirstOrDefault(n => n.ID == s.status).status_name,
             }).ToList();
 
@@ -361,13 +422,116 @@ namespace Tailstale.Controllers
                 orderType = "寵物醫療",
                 businessName = businesses.FirstOrDefault(b => b.ID == s.daily_outpatient_clinic_schedule.outpatient_clinic.vet.business_ID)?.name,
                 serviceName = $"看診：{s.daily_outpatient_clinic_schedule.outpatient_clinic.outpatient_clinic_name}",
-                orderDate = s.registration_time.Value.ToLongDateString(),
+                orderDate = s.registration_time.Value,
                 orderStatus = status.FirstOrDefault(n => n.ID == s.Appointment_status).status_name,
             }).ToList();
 
             var combinedResult = bookingResult.Concat(reserveResult).Concat(appointmentResult).ToList();
 
             return Ok(combinedResult);
+        }
+
+        //傳遞main的所有資料   
+        //route api/UserInfoApi/PostPetInfo
+        //[HttpGet("getmain")]
+        //public async Task<IActionResult> getmain([FromQuery] int id)
+        //{
+        //    List<article> newpost = new List<article>();
+        //    var articles = await _context.articles.ToListAsync();
+        //    if (articles == null || !articles.Any())
+        //    {
+        //        newpost = null;
+        //    }
+
+        //    int idart = articles.Count(n => n.FK_Keeper_ID == id);
+        //    int takeCount = idart < 3 ? idart : 3;
+
+        //    // 最新貼文
+        //     newpost = articles.Where(n => n.FK_Keeper_ID == id)
+        //                          .OrderByDescending(x => x.created_at)
+        //                          .Take(takeCount)
+        //                          .ToList();
+        //    if (newpost == null || !newpost.Any())
+        //    {
+        //        newpost = null;
+        //    }
+
+        //    // 文章的回覆
+        //    var allUserArt = articles.Where(n => n.FK_Keeper_ID == id).Select(s => s.ID).ToList();
+        //    var allresp = articles.Count(n => allUserArt.Contains((int)n.parent_ID));
+        //    int allrespCount = allresp >0 ? allresp < 3 ? allresp : 3 : 0;
+
+        //    var newallrespResult = articles.Where(n => allUserArt.Contains((int)n.parent_ID))
+        //                                   .OrderByDescending(x => x.created_at)
+        //                                   .Take(allrespCount)
+        //                                   .ToList();
+        //    if (newallrespResult == null || !newallrespResult.Any())
+        //    {
+        //        newallrespResult = null;
+        //    }
+
+        //    // 新增的預約
+        //    List<AppointmentResult> newallorderRe = new List<AppointmentResult>();
+        //    var allorder = await UsertOrder(id);
+        //    if (allorder is OkObjectResult combinedResult)
+        //    {
+        //        newallorderRe = combinedResult.Value as List<AppointmentResult>;
+        //    }
+        //    if (newallorderRe == null || !newallorderRe.Any())
+        //    {
+        //        newallorderRe = null;
+        //    }
+        //    else
+        //    {
+        //        int ordercount = newallorderRe.Count < 3 ? newallorderRe.Count : 3;
+        //        newallorderRe = newallorderRe.OrderByDescending(x => x.OrderDate)
+        //                                     .Take(ordercount)
+        //                                     .ToList();
+        //    }
+
+        //    // 新增的寵物
+        //    var pets = await _context.pets.Where(n => n.keeper_ID == id).ToListAsync();
+        //    List< GetMainPetDTO > petDTOs = new List< GetMainPetDTO >();
+        //    if (pets == null || !pets.Any())
+        //    {
+        //        petDTOs = null;
+        //    }
+        //    else
+        //    {
+        //        int petsCount = pets.Count < 3 ? pets.Count : 3;
+        //        petDTOs = pets.OrderByDescending(x => x.created_at)
+        //                          .Take(petsCount)
+        //                          .Select(s => new GetMainPetDTO
+        //                          {
+        //                              pets_type = $"{s.pet_type.specimen},{s.pet_type.breed}",
+        //                              name = s.name,
+        //                              age = s.age,
+        //                              gender = s.gender,
+        //                              birthday = s.birthday,
+        //                          })
+        //                          .ToList();
+
+        //    }
+
+        //    var end = new
+        //    {
+        //        newpost,
+        //        newallrespResult,
+        //        newallorderRe,
+        //        newpet = petDTOs,
+        //    };
+        //    return Ok(end);
+        //}
+        
+        public class AppointmentResult
+        {
+            public int OrderID { get; set; }
+            public string OrderPet { get; set; }
+            public string OrderType { get; set; }
+            public string BusinessName { get; set; }
+            public string ServiceName { get; set; }
+            public string OrderDate { get; set; }
+            public string OrderStatus { get; set; }
         }
         private bool keeperExists(int id)
         {

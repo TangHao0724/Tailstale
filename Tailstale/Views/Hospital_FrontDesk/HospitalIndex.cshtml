@@ -10,35 +10,82 @@
     @* <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> *@
 
     <style>
+        body {
+            background-image: url('../lib/hospitalimages/bgimage2.png');
+            background-size: 100% auto;
+            /* background-position: center; */ /* 將背景圖片置中 */
+            /* background-repeat: no-repeat; */ /* 防止背景圖片重複 */
+            /* background-color: #FBF6F1; */
+        }
 
+        pre {
+            white-space: pre-wrap;
+        }
+
+        .nav-link {
+            color: black;
+        }
+
+        .calendar-day {
+            position: relative; 
+            border: 1px solid #ddd;
+            width: 14.28%;
+            height: 200px;
+            box-sizing: border-box;
+            display: inline-block;
+            vertical-align: top;
+            text-align: center;
+            overflow-y: scroll;
+            padding-top: 20px;
+        }
+
+        .calendar-day-number {
+            position: absolute;
+            top: 5px; 
+            left: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            z-index: 1;
+            /* background-color: white;*/
+            padding: 2px; 
+            border-radius:50%;
+            background-color: #dba493;
+            width:30px;
+            height:30px;
+        }
+        
+        .text-center.border.p-2 {
+            position: relative;
+        }
+
+        .scheduleInfo{
+            border:dotted 1px;
+            border-radius:5px;
+            border-color:dimgray;
+            background-color: #FCFCFC;
+        }
         
     </style>
 }
-<div class="" id="header">
-    @* <h3>@Model.hospitalName</h3> *@
-</div>
+
 
 <div id="app">
-    <div class="container">
+    <div class="container mb-5">
         <div class="row justify-content-center">
             <div class="col-10">
-                <div class="card border-dark mb-3" style="max-width: 100%">
-                    <div class="row g-0">
-                        <div class="col-md-6">
-                            <img src="@Model.photoURL" class="img-fluid rounded-start" alt="尚無圖片">
+                <div class="mt--3">
+                    <h3 class="card-title fw-bold my-3">@Model.hospitalName</h3>
+                    <h5 class="card-text">@Model.hospitalAddress</h5>
+                    <h5 class="card-text">@Model.hospitalPhone</h5>
+                    <p class="card-text" hidden>@Model.businessId</p>
+                </div>
+                <div class="card border-light my-3" style="max-width: 100%">
+                    <div class="row g-0">                        
+                        <div class="col-12 col-md-6">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2922.978937395178!2d120.32489387294109!3d22.62684728287046!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x346e049783205c61%3A0xebaf934b04f62525!2zODAy6auY6ZuE5biC6IuT6ZuF5Y2A!5e0!3m2!1szh-TW!2stw!4v1723961872027!5m2!1szh-TW!2stw" width="530" height="100%" style="border:0; overflow:hidden;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                         </div>
-                        <div class="col-md-6 d-flex align-items-center justify-content-center">
-                            <div>
-                                <div class="card-body text-center">
-                                    <h4 class="card-title">@Model.hospitalName</h4>                                    
-                                    <h5 class="card-text"><i class="fa-solid fa-location-dot"></i> @Model.hospitalAddress</h5>
-                                    <h5 class="card-text"> <i class="fa-solid fa-phone"></i> @Model.hospitalPhone</h5>
-                                    <p class="card-text" hidden>@Model.businessId</p>
-                                </div>
-                                <div class="text-center me-3 mb-4">                                    
-                                    <a :href="`/Hospital_FrontDesk/HospitalSchedule?businessID=${hospitalID}`" class="btn btn-outline-secondary">查看門診表</a>
-                                </div>
-                            </div>                            
+                        <div class="col-12 col-md-6">
+                            <img src="@Model.photoURL" class="img-fluid rounded-start" alt="尚無圖片">
                         </div>
                     </div>
                 </div>
@@ -46,61 +93,318 @@
         </div>
     </div>
 
-    <div class="container">
-        <div class="row justify-content-center d-flex">
-            <div class="text-center my-5">
-                <h4>本院醫療團隊</h4>
-                <hr>
-            </div>
-            <div v-for="vet in vetInfos" :key="vet.vetName" class="card border-light my-4 mx-3" style="max-width: 45%">
-                <div class="row g-0">
-                    <div class="col-12 col-md-5">
-                        <img :src="vet.vetImageURL" class="img-fluid rounded-start" alt="尚無圖片">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="vetCards-tab" data-bs-toggle="tab" data-bs-target="#vetCards" type="button" role="tab" aria-controls="home" aria-selected="true"><h6 class="my-2 mx-2 fw-bold">本院醫療團隊</h6></button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="hospitalSchedule-tab" data-bs-toggle="tab" data-bs-target="#hospitalSchedule" type="button" role="tab" aria-controls="profile" aria-selected="false"><h6 class="my-2 mx-2 fw-bold">當月及下月門診表</h6></button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="vetCards" role="tabpanel" aria-labelledby="vetCards-tab">
+            <div class="container">
+                <div class="row justify-content-center d-flex">
+                    <div v-for="vetInfo in vetInfos" :key="vetInfo.vetName" class="card border-light my-4 mx-3" style="max-width: 30%">
+                        <div class="row g-0">
+                            <div class="col-12 col-md-5">
+                                <img :src="vetInfo.vetImageURL" class="img-fluid ms-2" alt="尚無圖片">
+                            </div>
+                            <div class="col-12 col-md-7">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ vetInfo.vetName }} 醫師</h5>
+                                    <h6 class="card-text" readonly>{{ vetInfo.departmentName }}</h6>
+                                </div>
+                                <div class="text-end me-1 mt-3 mb-1">
+                                    <a class="btn btn-outline-secondary me-1" data-bs-target="#vetDetail" data-bs-toggle="modal" v-on:click="showVetInfos(vetInfo)">詳細資訊 <i class="fa-solid fa-arrow-right fa-sm"></i></a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-12 col-md-7">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ vet.vetName }}</h5>
-                            <p class="card-text" style="height100px; overflow:scroll" readonly>{{ vet.profile }}</p>
-                            <p class="card-text"><small class="text-muted">Last updated just now</small></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="hospitalSchedule" role="tabpanel" aria-labelledby="hospitalSchedule-tab">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-12">
+                        <div class="calendar">
+                            <h4 class="text-center my-5"><button class="btn me-3" id="preMonth" v-on:click="previousMonth"><i class="fa-solid fa-chevron-left"></i></button> {{ currentYear }}年{{ monthName }}門診表 <button class="btn ms-3" v-on:click="nextMonth" id="nextMonth"><i class="fa-solid fa-chevron-right"></i></button></h4>
+                            <div class="d-flex justify-content-between">
+                                <div class="text-center" style="width: 14.28%; font-weight:bolder" v-for="day in daysOfWeek">{{ day }}</div>
+                            </div>
+                            <div class="d-flex flex-wrap">
+                                <!-- 空白格子 -->
+                                <div v-for="blank in firstDayBlankSpaces" :key="blank" style="width: 14.28%;"></div>
+                                <!-- 日期格子 -->
+                                <div class="text-center border py-2 calendar-day" v-for="day in daysInMonth" :key="day" style="width: 14.28%;">
+                                    <div class="calendar-day-number">{{ day }}</div>
+                                    <div class="scheduleInfo py-2 my-2 mx-2" v-for="schedule in dailySchedules.filter(s => new Date(s.date).getDate() === day)">
+                                        <!-- 顯示門診資訊 -->
+                                        <div>{{ schedule.outpatientClinicName }}</div>
+                                        <div>{{ schedule.outpatientClinicTimeslotName}}</div>
+                                        <div>{{ schedule.vetName }}</div>
+                                        <div>{{ schedule.startAt }}~</div>
+                                        <div>{{ schedule.endAt }}</div>
+                                        <div v-show="schedule.dailyOutpatientClinicScheduleStatus" style="color:tomato;font-weight:bolder">休診</div>
+                                        <div>
+                                            <button v-if="schedule.maxPatients > schedule.appointmentCount
+                                                && !schedule.dailyOutpatientClinicScheduleStatus
+                                                && new Date(schedule.date).setHours(0, 0, 0, 0) > new Date().setHours(0, 0, 0, 0)"
+                                                class="btn"
+                                                v-on:click="fetchAppointmentInfo(schedule.outpatientClinicScheduleId)"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#appointmentModal"
+                                                style="color:#228B22;font-weight:bolder"><i class="fa-regular fa-hand-pointer"></i>
+                                                預約看診
+                                            </button>
+
+                                            <span v-if="schedule.maxPatients == schedule.appointmentCount && schedule.dailyOutpatientClinicScheduleStatus== false" style="color:#7B68EE;font-weight:bolder">已額滿</span>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- vetInfo_Modal Start-->
+    <div class="modal fade" id="vetDetail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <img :src="vetInfo.vetImageURL" alt="Alternate Text" class="img-fluid" />
+                        </div>
+                        <div class="col-6">
+                            <h4>{{ vetInfo.vetName }} 醫師</h4>
+                            <h5>{{ vetInfo.departmentName }}</h5>
+                            <pre style="width:100%; height:500px; overflow-y:scroll; font-size:16px">{{ vetInfo.profile }}</pre>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <!-- vetInfo_Modal End-->
+    <!--Appointment Modal start-->
+    <div class="modal fade" tabindex="-1" id="appointmentModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">確認預約資訊</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <p>飼主：{{appointmentInfo.keeperName}}</p>
+                        <select v-model="petSelectedID" class="form-select mb-2">
+                            <option value="0" selected>選擇要預約診療服務的寵物</option>
+                            <option v-for="item in petInfos" v-bind:value="item.petID" v-text="item.petName"></option>
+                        </select>
+                    </div>
+                    <p hidden>{{ appointmentInfo.businessId }}</p>
+                    <p>醫療院所：{{ appointmentInfo.clinicName }}</p>
+                    <p>預約門診：{{ appointmentInfo.outpatientClinicName }}</p>
+                    <p>預約日期：{{ appointmentInfo.date }}</p>
+                    <p>門診時間：{{ appointmentInfo.startAt }}~{{ appointmentInfo.endAt }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">取消預約</button>
+                    <button type="button" class="btn btn-outline-success" v-on:click="handleAppointment" data-bs-dismiss="modal">送出預約</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Appointment Modal end-->
 </div>
 
 @section Scripts
 {
     <script>
+        $(document).ready(function () { 
+        
+        })
+
         const vueApp = {
             data() {
                 return {
-                    vetInfos: [], //醫生資訊集合
-                    hospitalID:0
+                    vetInfos: [], // 醫生資訊集合
+                    hospitalID: @Model.businessId, // 從模型中獲取的商業ID
+                    vetInfo: {}, // 當前選擇的醫生資訊
+                    currentDate: new Date(), // 當前日期
+                    daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'], // 修改為繁體中文
+                    dailySchedules: [], // 日程安排陣列
+                    petInfos: [],
+                    appointmentInfo: { // 初始化預約門診資料
+                        keeperName: '',
+                        clinicName: '',
+                        outpatientClinicName: '',
+                        date: '',
+                        startAt: '',
+                        endAt: '',
+                        keeperID: '',
+                        dailyOutpatientClinicScheduleID: ''
+                    },
                 }
             },
-            methods: {                
+            computed: {
+                currentYear() {
+                    return this.currentDate.getFullYear(); // 取得當前年份
+                },
+                currentMonth() {
+                    return this.currentDate.getMonth(); // 取得當前月份
+                },
+                monthName() {
+                    const monthNames = [
+                        '1月', '2月', '3月', '4月', '5月', '6月',
+                        '7月', '8月', '9月', '10月', '11月', '12月'
+                    ];
+                    return monthNames[this.currentMonth]; // 取得當前月份名稱（繁體中文）
+                },
+                daysInMonth() {
+                    const days = new Date(this.currentYear, this.currentMonth + 1, 0).getDate();
+                    return Array.from({ length: days }, (_, i) => i + 1); // 取得當月的所有天數
+                },
+                firstDayBlankSpaces() {
+                    const firstDay = new Date(this.currentYear, this.currentMonth, 1).getDay();
+                    return Array.from({ length: firstDay }); // 取得當月第一天之前的空白格數
+                },
+                maxAllowedMonth() {
+                    const nextMonthDate = new Date(this.currentYear, this.currentMonth + 2, 1);
+                    return new Date(nextMonthDate.getFullYear(), nextMonthDate.getMonth(), 0); // 下個月的最後一天
+                },
+            },
+            methods: {
                 fetchVetInfos() {
-                    const selectedBusinessID = @Model.businessId;
-                    console.log(selectedBusinessID)
                     axios.get(`/Hospital_FrontDesk/showVetInfos`, {
-                        params: { businessID: selectedBusinessID }
+                        params: { businessID: this.hospitalID }
+                    })
+                    .then(response => {
+                        this.vetInfos = response.data; // 更新醫生資訊集合
+                    })
+                    .catch(error => {
+                        console.error("獲取醫生資訊時出現錯誤!", error); // 處理錯誤
+                    });
+                },
+                showVetInfos(vetInfo) {
+                    this.vetInfo = { ...vetInfo }; // 顯示選中的醫生詳細資訊
+                    console.log(this.vetInfo);
+                },
+                previousMonth() {
+                    const now = new Date();
+                    const prevMonthDate = new Date(this.currentDate);
+                    prevMonthDate.setMonth(prevMonthDate.getMonth() - 1);
+
+                    if (prevMonthDate >= new Date(now.getFullYear(), now.getMonth(), 1)) {
+                        this.currentDate = prevMonthDate;
+                        this.updateCalendar();
+                    }
+
+                    this.toggleMonthButtons();
+                },
+                nextMonth() {
+                    const nextMonthDate = new Date(this.currentDate);
+                    nextMonthDate.setMonth(nextMonthDate.getMonth() + 1);
+
+                    this.currentDate = nextMonthDate;
+                    this.updateCalendar();
+
+                    this.toggleMonthButtons();
+                },
+                updateCalendar() {
+                    axios.get(`/Hospital_FrontDesk/getSchedules`, {
+                        params: { businessID: this.hospitalID }
                     })
                         .then(response => {
-                            this.vetInfos = response.data;
+                            this.dailySchedules = response.data;
+                            console.log(this.dailySchedules);
                         })
                         .catch(error => {
-                            console.error("There was an error fetching the vet info!", error);
+                            console.error('獲取日程安排時出錯:', error);
                         });
+                },
+                toggleMonthButtons() {
+                    const now = new Date();
+                    if (this.currentDate.getFullYear() === now.getFullYear() && this.currentDate.getMonth() === now.getMonth()) {
+                        $('#preMonth').addClass('d-none');
+                    } else {
+                        $('#preMonth').removeClass('d-none');
+                    }
+
+                    if (this.currentDate.getFullYear() === now.getFullYear() && this.currentDate.getMonth() === now.getMonth() + 1) {
+                        $('#nextMonth').addClass('d-none');
+                    } else {
+                        $('#nextMonth').removeClass('d-none');
+                    }
+                },
+                fetchAppointmentInfo(currentDOCSID) {
+                    axios.get(`Hospital_FrontDesk/fetchAppointmentInfo?dailyOutpatientClinicScheduleID=${currentDOCSID}`)
+                        .then(response => {
+                            this.appointmentInfo = {
+                                keeperID: response.data.keeperID,
+                                keeperName: response.data.keeperName,
+                                clinicName: response.data.clinicName,
+                                outpatientClinicName: response.data.outpatientClinicName,
+                                date: response.data.date,
+                                startAt: response.data.startAt,
+                                endAt: response.data.endAt,
+                                dailyOutpatientClinicScheduleID: response.data.outpatientClinicScheduleId
+                            },
+                                this.petInfos = response.data.petInfos;
+                            console.log(response.data)
+                            console.log(this.appointmentInfo)
+                            console.log(this.petInfos)
+                        })
+                        .catch(error => {
+                            console.error('Error fetching keeperInfo:', error);
+                        });
+                },
+                // 預約請求
+                makeAppointment() {
+                    const appointmentRequest = {
+                        keeperID: this.appointmentInfo.keeperID,
+                        dailyOutpatientClinicScheduleID: this.appointmentInfo.dailyOutpatientClinicScheduleID,
+                        petID: this.petSelectedID,
+                    };
+                    console.log(appointmentRequest)
+                    axios.post('/Hospital_FrontDesk/newAppointment', appointmentRequest, {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(response => {
+                            alert('預約成功')
+                            console.log('Appointment confirmed:', response.data);
+                            // 可以在這裡顯示一個成功的訊息，或關閉模態框等
+                        })
+                        .catch(error => {
+                            console.error('Error making appointment:', error);
+                        });
+                },
+                // 處理預約按鈕的點擊事件
+                handleAppointment() {
+                    this.makeAppointment();
                 }
             },
             mounted() {
                 this.fetchVetInfos();
-                this.hospitalID = @Model.businessId;
+                this.updateCalendar();
+                this.toggleMonthButtons(); // 初始時控制按鈕顯示
+                
             }
         };
         var app = Vue.createApp(vueApp).mount('#app');
     </script>
-
 }

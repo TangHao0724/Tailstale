@@ -58,7 +58,85 @@ app.component('tab-主頁', {
     template: `#tab-Main`,
     data() {
         return {
-
+            newpost: [],
+            newpets: [],
+            newresp: [],
+            neworder: [],
+            artcount:0,
+        }
+    },
+    created() {
+        this.getnewpost();
+        this.getnewpets();
+        this.getnewresp();
+        this.getneworder();
+        this.getartcount();
+    },
+    props: {
+        userid: Number,
+    },
+    methods: {
+        async getnewpost() {
+            try {
+                const response = await axios.get(`api/UserInfoApi/getLatestPosts`, {
+                    params: {
+                        id: this.userid,
+                    },
+                });
+                this.newpost = response.data;
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
+        },
+        async getnewpets() {
+            try {
+                const response = await axios.get(`api/UserInfoApi/GetNewpets`, {
+                    params: {
+                        id: this.userid,
+                    },
+                });
+                this.newpets = response.data;
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
+        },
+        async getnewresp() {
+            try {
+                const response = await axios.get(`api/UserInfoApi/getArticleReplies`, {
+                    params: {
+                        id: this.userid,
+                    },
+                });
+                this.newresp = response.data;
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
+        },
+        async getneworder() {
+            try {
+                const response = await axios.get(`api/UserInfoApi/getNewAppointments`, {
+                    params: {
+                        id: this.userid,
+                    },
+                });
+                this.neworder = response.data;
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
+        },
+        async getartcount() {
+            try {
+                const response = await axios.get(`api/UserInfoApi/getcount`, {
+                    params: {
+                        id: this.userid,
+                    },
+                });
+                this.artcount = response.data;
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
+        },
+        helloString() {
         }
     }
 });
@@ -232,7 +310,6 @@ app.component('tab-寵物資訊', {
                     }
                 });
                 this.fetchPet(this.userid);
-                alert(JSON.stringify(response.data));
                 $("#PDUpdateModal").modal("hide");
                 console.log(JSON.stringify(response.data));
             } catch (error) {
@@ -398,11 +475,9 @@ app.component('tab-歷史訂單', {
 
             }); 
             $('#orderTable tbody').on('click', 'button.btn-action', (event) => {
-                alert("aa");
                 const datas = table.row($(event.currentTarget).parents('tr')).data();
                 var oID = parseInt(datas.orderID);
                 var oT = datas.orderType;
-                alert(oID);
                 if (oT === "寵物美容") {
                     // 處理寵物美容的邏輯
                 } else if (oT === "寵物醫療") {
@@ -500,7 +575,6 @@ app.component('tab-相片集', {
                     }
                 });
                 $("#ITUpdateModal").modal("hide");
-                alert(JSON.stringify(response.data));
                 console.log(JSON.stringify(response.data));
                 this.fetchtype(this.userid);
             } catch (error) {
@@ -537,7 +611,7 @@ app.component('tab-相片集', {
             $("#ImgDetailModal").modal("show");
         },
         changeimgNane() {
-            alert("aa");
+
         },
         handleFileChange(event) {
             const files = event.target.files;

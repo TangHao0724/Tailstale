@@ -19,7 +19,7 @@
                        @@click="currentTab = tab">
                         {{ tab }}
                     </a>
-                    <a class="nav-link link-dark-hover" @@click="logout()">登出</a>
+                    @* <a class="nav-link link-dark-hover" @@click="logout()">登出</a> *@
                 </div>
             </div>
 
@@ -35,7 +35,17 @@
 
 
 <script type="text/x-template" id="tab-Main">
-    <h1>Tab-main</h1>
+    <div class="container-fluid">
+        <div class="row shadow rounded-2 align-content-center mb-4">
+            <h2>使用者資訊</h2>
+        </div>
+        <div class="row shadow rounded-2 align-content-center mb-4">
+            您好，keeper！最近新推了篇文，收到，預約了1項服務！
+        </div>
+        <div class="row shadow rounded-2 align-content-center mb-4">
+            放最新新增兩項的寵物，貼文，TAG，服務細項，最新的一張圖片
+        </div>
+    </div>
 </script>
 
 <script type="text/x-template" id="tab-UInfo">

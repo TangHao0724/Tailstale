@@ -17,31 +17,11 @@
     },
     created() {
 
-        this.getarticle(15);
-        $('#articleModal').on('hidden.bs.modal', this.handleModalHidden);
-
-
+        this.getarticle(15,null,null,true);
+        
 
     },
     methods: {
-        async GetUserimgm(userid) {
-            if (this.usertype != 0) {
-
-            }
-            try {
-                const formData = {
-                    'UserID': userid, // 使用傳遞的 userid
-                    'type_name': userid + '_head',
-                    "img_name": "head",
-                };
-
-                const response = await axios.post('api/KImg/GetSingleImg', formData);
-                console.log(JSON.stringify(response.data));
-                this.imgurlLu = `/imgs/keeper_img/${response.data.img_url}`;
-            } catch (error) {
-                console.error('Error fetching user info:', error);
-            }
-        },
         inputFile() {
             $("#updateImg").click();
         },
@@ -56,7 +36,6 @@
             this.pcontent = event.target.innerText;
         },
         handleFile(event) {
-            alert("aa");
             const files = event.target.files;
             this.fileDatas = [];
             for (const file of files) {
@@ -68,7 +47,6 @@
             }
         },
         handleResponseFileChange(event) {
-            alert("bb");
             const files = event.target.files;
             this.responseimg = [];
             for (const file of files) {
@@ -79,6 +57,11 @@
                 reader.readAsDataURL(file);
             }
         },
+        postMain() {
+            this.postarticle();
+            this.getarticle(15, null, null, true);
+        },
+       /* public async Task<IActionResult> GetArticle(int? count, int? userid, int? parentid, bool? publicOnly)*/
         async postarticle() {
             try {
                 let formdata = new FormData(this.$refs.postform);
@@ -87,8 +70,6 @@
                 const content = this.content || this.pcontent;
                 if (content) {
                     formdata.append("Content", content);
-                    this.content = '';
-                    this.pcontent = '';
                 }
 
                 // 合併 PublicTags 和 PrivateTags 的處理
@@ -111,25 +92,27 @@
                 // 清空內容
                 this.content = "";
                 this.pcontent = "";
+                this.responseimg = null;
+                this.fileDatas = null;
 
                 // 獲取文章
-                this.getarticle(10, null, null, null);
+                
             } catch (error) {
                 console.error('Error fetching user info:', error);
             }
         },
         openPost(input) {
             this.selectedArt = null;
-            this.parentArt = [];
+            this.parentArt = null;
             this.selectedArt = input;
-            this.getarticle(10, this.selectedArt.id,null);
+            this.getarticle(10, this.selectedArt.id, null, true);
             $("#articleModal").modal("show");
 
         },
         postPar(input) {
             this.parentArt = [];
             this.postarticle();
-            this.getarticle(10, input,null);
+            this.openPost(input);
         },
         bindimgurl(url, uType) {
             if (uType !== 0) {
@@ -177,7 +160,7 @@
                 , r = '(' + n + ')(' + o + ')(' + m + '*' + l + m + '*)';
             return r;
         },
-        async getarticle(count, parentid, userid, ispublicOnly) {
+        async getarticle(count, parentid, userid, publicOnly) {
             try {
 
                 const response = await axios.get('api/social/GetArticle', {
@@ -185,7 +168,7 @@
                         count: count,
                         id: userid,
                         parentid: parentid,
-                        publicOnly: ispublicOnly
+                        publicOnly: publicOnly
                     },
                 });
                 if (this.selectedArt !== null) {
@@ -195,7 +178,7 @@
                 }
                 
             } catch (err) {
-                console.error('Error fetching user info:', error);
+                console.error('Error fetching user info:', err);
             }
 
         },
@@ -221,33 +204,45 @@
                     break;
             }
         },
-        handleModalHidden() {
-            this.selectedArt = [];
+        onModalHide() {
+            this.selectedArt = null;
+            this.parentArt = null;
         }
     },
     computed: {
         Publichashtags: function () {
             var regex = new RegExp(this.getPublichashtag(), 'ig');
-            if (regex.test(this.content)) {
-                return this.content.match(regex);
+            if (this.pcontent != "") {
+                if (regex.test(this.pcontent)) {
+                    return this.content.match(regex);
+                }
+            } else {
+                if (regex.test(this.content)) {
+                    return this.content.match(regex);
+                }
             }
         },
         Privatehashtags: function () {
             var regex = new RegExp(this.getPrivatehashtag(), 'ig');
-            if (regex.test(this.content)) {
-                return this.content.match(regex);
+            if (this.pcontent != "") {
+                if (regex.test(this.pcontent)) {
+                    return this.content.match(regex);
+                }
+            } else {
+                if (regex.test(this.content)) {
+                    return this.content.match(regex);
+                }
             }
-        },
 
+        },
+        
     },
     mounted() {
         this.useridm = $("#start").data('user-id');
         this.usertype = $("#start").data("user-type");
-        if (this.usertype == 0) {
-            this.GetUserimgm(this.useridm); // 在掛載時調用方法
-        }
         this.editableDiv = this.$refs.editableDiv;
-        
-    }
+        $(this.$refs.articleModal).on('hidden.bs.modal', this.onModalHide);
+    },
+    
 });
 app.mount("#app");

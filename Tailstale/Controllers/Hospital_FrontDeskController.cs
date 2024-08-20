@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.Linq;
 using Tailstale.Filter;
 using Tailstale.Hospital_DTO;
 using Tailstale.Models;
@@ -9,7 +10,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Tailstale.Controllers
 {
-    //[IsKeeperFilter]
+    //[IsKeeperFilter]dsa
     public class Hospital_FrontDeskController : Controller
     {
         private readonly TailstaleContext _context;
@@ -67,6 +68,7 @@ namespace Tailstale.Controllers
                                              && b.name.Contains(clinicName)
                                          select new frontDeskSearchingResult_DTO
                                          {
+                                             businessID=b.ID,
                                              date = (DateOnly)docs.date,
                                              clinicName = b.name,
                                              outpatientClinicName = opc.outpatient_clinic_name,
@@ -91,37 +93,152 @@ namespace Tailstale.Controllers
                 {
                     searchingResult = searchingResult;
                 }
-                return searchingResult;
+
+                //var hospitalID = searchingResult.Select(s=>s.businessID).Distinct().ToList();
+                //var hospitals = await (from b in _context.businesses
+                //                            where b.type_ID==3
+                //                            && hospitalID.Contains(b.ID)
+                //                            select new business
+                //                            { 
+                //                             ID = b.ID,
+                //                             name=b.name,
+                //                             address=b.address,
+                //                             phone=b.phone,
+                //                             photo_url=b.photo_url,
+                //                            }).ToListAsync();
+
+
+                //frontDeskSearching_DTO frontDeskSearching = new frontDeskSearching_DTO
+                //{
+                //    frontDeskSearchingResult = searchingResult.Select(s => s).ToList(),
+                //    hospitalCardSearchingResult = hospitals.Select(s => s).ToList()
+                //};
+                return searchingResult;                
             }
         }
 
         //GET:Hospital_FrontDesk/loadHospitalCards
         [HttpPost]
         public async Task<IEnumerable<frontDeskHospitalCard_DTO>> loadHospitalCards([FromBody] frontDeskSearchingCriteria_DTO criteria)//首頁院所資料卡片
+        
         {
-            string region = criteria.region_front;
-            string address = criteria.address_front;
             var imageURL = $"{_configuration["BaseAddress"]}/lib/HospitalImages";
-            var hospitals = await (from b in _context.businesses
-                                   where b.type_ID == 3
-                                   select new frontDeskHospitalCard_DTO
-                                   {
-                                       businessId = b.ID,
-                                       hospitalName = b.name,
-                                       hospitalAddress = b.address,
-                                       hospitalPhone = b.phone,
-                                       photoURL = b.photo_url
-                                   }).ToListAsync();
-            if (region != null || address != null)//判斷搜尋欄篩選條件
+            if (criteria.region_front == "" && criteria.address_front == "" && criteria.startDate_front == null && criteria.endDate_front == null && criteria.timeSlotName_front == "" && criteria.opcName_front == "" && criteria.vetName_front == "" && criteria.clinicName_front == "")
             {
-                hospitals = hospitals.Where(h => h.hospitalAddress.Contains(region) || h.hospitalAddress.Contains(address)).ToList();
-            }
-            if (hospitals == null)
-            {
-                return null;
+                var hospitals = await (from b in _context.businesses
+                                       where b.type_ID == 3
+                                       select new frontDeskHospitalCard_DTO
+                                       {
+                                           businessId = b.ID,
+                                           hospitalName = b.name,
+                                           hospitalAddress = b.address,
+                                           hospitalPhone = b.phone,
+                                           photoURL = b.photo_url
+                                       }).ToListAsync();
+                if (hospitals == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    foreach (var h in hospitals)
+                    {
+                        if (checkImage(h.photoURL))
+                        {
+                            h.photoURL = $"{imageURL}/{h.photoURL}";
+                        }
+                        else
+                        {
+                            h.photoURL = $"{imageURL}/No_Image.jpg";
+                        }
+                    }
+                }
+                return hospitals;
             }
             else
             {
+                string region = criteria.region_front;
+                string address = criteria.address_front;
+                DateOnly today = DateOnly.FromDateTime(DateTime.Now);
+                DateOnly oneMonthLater = today.AddMonths(1);
+                DateOnly? startDate = criteria.startDate_front;
+                DateOnly? endDate = criteria.endDate_front;
+                string timeSlotName = criteria.timeSlotName_front;
+                string opcNameSearch = criteria.opcName_front;
+                string vetName = criteria.vetName_front;
+                string clinicName = criteria.clinicName_front;                
+
+                 var searchingResult = await (from docs in _context.daily_outpatient_clinic_schedules
+                                         join opc in _context.outpatient_clinics on docs.outpatient_clinic_ID equals opc.outpatient_clinic_ID
+                                         join opct in _context.outpatient_clinic_timeslots on opc.outpatient_clinic_timeslot_ID equals opct.outpatient_clinic_timeslot_ID
+                                         join vInfo in _context.vet_informations on opc.vet_ID equals vInfo.vet_ID
+                                         join b in _context.businesses on vInfo.business_ID equals b.ID
+                                         join a in _context.Appointments on docs.outpatient_clinic_ID equals a.Appointment_ID
+                                         where docs.date >= today
+                                             && docs.date <= oneMonthLater
+                                             && b.address.Contains(region)
+                                             && b.address.Contains(address)
+                                             && opct.outpatient_clinic_timeslot_name.Contains(timeSlotName)
+                                             && opc.outpatient_clinic_name.Contains(opcNameSearch)
+                                             && vInfo.vet_name.Contains(vetName)
+                                             && b.name.Contains(clinicName)
+                                         select new frontDeskSearchingResult_DTO
+                                         {
+                                             businessID = b.ID,
+                                             date = (DateOnly)docs.date,
+                                             clinicName = b.name,
+                                             outpatientClinicName = opc.outpatient_clinic_name,
+                                             timeslotName = opct.outpatient_clinic_timeslot_name,
+                                             vetName = vInfo.vet_name,
+                                             startAt = (TimeOnly)opct.startat,
+                                             endAt = (TimeOnly)opct.endat,
+                                             outpatientClinicScheduleId = docs.daily_outpatient_clinic_schedule_ID,
+                                             clinicPhone = b.phone,
+                                             clincAddress = b.address,
+                                             maxPatients = opc.max_patients,
+                                             appointmentCount = _context.Appointments.Where(a => a.daily_outpatient_clinic_schedule_ID == docs.daily_outpatient_clinic_schedule_ID).Count()
+                                         }).ToListAsync();
+
+                if (startDate.HasValue && endDate.HasValue)
+                {
+                    searchingResult = searchingResult
+                        .Where(s => s.date >= startDate.Value && s.date <= endDate.Value)
+                        .ToList();
+                }
+                else
+                {
+                    searchingResult = searchingResult;
+                }
+
+                var hospitalID = searchingResult.Select(s=>s.businessID).Distinct().ToList();
+                IEnumerable<frontDeskHospitalCard_DTO> hospitals;
+                if (hospitalID.Count()== 0)
+                {
+                   hospitals = await (from b in _context.businesses
+                                       where b.type_ID == 3
+                                       select new frontDeskHospitalCard_DTO
+                                       {
+                                           businessId = b.ID,
+                                           hospitalName = b.name,
+                                           hospitalAddress = b.address,
+                                           hospitalPhone = b.phone,
+                                           photoURL = b.photo_url
+                                       }).ToListAsync();
+                }
+                else 
+                {
+                    hospitals = await (from b in _context.businesses
+                                           where b.type_ID == 3 && hospitalID.Contains(b.ID)
+                                           select new frontDeskHospitalCard_DTO
+                                           {
+                                               businessId = b.ID,
+                                               hospitalName = b.name,
+                                               hospitalAddress = b.address,
+                                               hospitalPhone = b.phone,
+                                               photoURL = b.photo_url
+                                           }).ToListAsync();
+                }
+                
                 foreach (var h in hospitals)
                 {
                     if (checkImage(h.photoURL))
@@ -130,12 +247,12 @@ namespace Tailstale.Controllers
                     }
                     else
                     {
-                        h.photoURL = $"{imageURL}/No_Image.jpg";
+                        h.photoURL = $"{imageURL}/No_Image.png";
                     }
                 }
+                
+                return hospitals;
             }
-
-            return hospitals;
         }
 
         public async Task<IActionResult> HospitalIndex(int businessID)//院所主頁
@@ -181,10 +298,14 @@ namespace Tailstale.Controllers
             var vetInfos = await (from v in _context.vet_informations
                                   join b in _context.business_imgs
                                   on v.business_img_ID equals b.ID
+                                  join d in _context.departments
+                                  on v.department_ID equals d.department_ID
                                   where v.business_ID == businessID
                                   select new frontDeskVetInfo_DTO
                                   {
+                                      vetID=v.vet_ID,
                                       vetName = v.vet_name,
+                                      departmentName=d.department_name,
                                       profile = v.profile,
                                       vetImageURL = b.URL,
                                   }).ToListAsync();
@@ -250,16 +371,19 @@ namespace Tailstale.Controllers
                                    where vInfo.business_ID == businessID
                                    && ((docs.date.Value.Year == currentYear && docs.date.Value.Month == currentMonth)
                                    || (docs.date.Value.Year == nextMonthYear && docs.date.Value.Month == nextMonth))
+                                   orderby opct.startat
                                    select new frontDeskDailyOutPatientClinicSchedule_DTO
                                    {
                                        dailyOutpatientClinicScheduleID = docs.daily_outpatient_clinic_schedule_ID,
                                        date = (DateOnly)docs.date,
-                                       OutpatientClinicName = opc.outpatient_clinic_name,
+                                       outpatientClinicName = opc.outpatient_clinic_name,
                                        vetName = vInfo.vet_name,
                                        outpatientClinicTimeslotName = opct.outpatient_clinic_timeslot_name,
                                        startAt = (TimeOnly)opct.startat,
                                        endAt = (TimeOnly)opct.endat,
                                        dailyOutpatientClinicScheduleStatus = docs.daily_outpatient_clinic_schedule_status,
+                                       maxPatients = opc.max_patients,
+                                       appointmentCount = _context.Appointments.Where(a => a.daily_outpatient_clinic_schedule_ID == docs.daily_outpatient_clinic_schedule_ID).Count()
                                    }).ToListAsync();
 
             if (schedules == null)
@@ -272,8 +396,8 @@ namespace Tailstale.Controllers
 
         //Post:Hospital_FrontDesk/fetchAppointmentInfo
 
-        [HttpPost]//取得飼主及門診資訊顯示在預約確認表單
-        public async Task<AppointmentComfrim_DTO> fetchAppointmentInfo([FromBody] int dailyOutpatientClinicScheduleID)
+        [HttpGet]//取得飼主及門診資訊顯示在預約確認表單
+        public async Task<AppointmentComfrim_DTO> fetchAppointmentInfo(int dailyOutpatientClinicScheduleID)
         {
             //int keeperID = (int)HttpContext.Session.GetInt32("loginID");
             int keeperID = 1001;
