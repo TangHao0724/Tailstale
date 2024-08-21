@@ -10,7 +10,7 @@ const app = Vue.createApp({
         return {
             currentTab: '主頁',
             imgurlLu: "",
-            tabs: ['主頁', '使用者資訊', '寵物資訊', '歷史訂單', '歷史貼文', '相片集',],
+            tabs: ['主頁', '使用者資訊', '寵物資訊', '歷史訂單','相片集'],
             useridm:""
         }
     },
@@ -48,7 +48,7 @@ app.component('tab-主頁', {
             newresp: [],
             mainart:[],
             neworder: [],
-            newallresp:[],
+            n ewallresp:[],
             artcount: 0,
             newPictures: null,
             postL: 0,

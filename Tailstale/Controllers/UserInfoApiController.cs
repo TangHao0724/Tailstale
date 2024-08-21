@@ -464,8 +464,8 @@ namespace Tailstale.Controllers
                 orderDate = s.registration_time,
                 orderStatus = status.FirstOrDefault(n => n.ID == s.Appointment_status).status_name,
             }).ToList();
-
-            var combinedResult = bookingResult.Concat(reserveResult).Concat(appointmentResult).ToList();
+            DateTime now = DateTime.Now;
+            var combinedResult = bookingResult.Concat(reserveResult).Concat(appointmentResult).OrderByDescending(dt => dt.orderDate).ToList();
 
             return Ok(combinedResult);
         }
