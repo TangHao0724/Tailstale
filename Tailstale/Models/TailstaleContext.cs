@@ -1070,6 +1070,10 @@ public partial class TailstaleContext : DbContext
         {
             entity.HasKey(e => e.ID).HasName("PK__using_pe__3214EC27AC4BFD9B");
 
+            entity.Property(e => e.created_at)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
             entity.HasOne(d => d.FK_Business).WithMany(p => p.using_person_tags)
                 .HasForeignKey(d => d.FK_Business_ID)
                 .HasConstraintName("FK__using_per__FK_Bu__12FDD1B2");
@@ -1092,6 +1096,10 @@ public partial class TailstaleContext : DbContext
         modelBuilder.Entity<using_tag>(entity =>
         {
             entity.HasKey(e => e.ID).HasName("PK__using_ta__3214EC270BC0AE16");
+
+            entity.Property(e => e.created_at)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
 
             entity.HasOne(d => d.FK_article).WithMany(p => p.using_tags)
                 .HasForeignKey(d => d.FK_article_ID)
