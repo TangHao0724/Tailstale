@@ -150,7 +150,7 @@ namespace Tailstale.Controllers
                 //判斷從屬文章
                 //判斷數量
 
-
+                //選擇自己的私人文章+
                 // 先抓指定數量文章
                 articles = await _context.articles
                                          .OrderByDescending(x => x.created_at)
@@ -174,7 +174,15 @@ namespace Tailstale.Controllers
                 // 根據publicOnly標誌過濾
                 if (publicOnly.HasValue)
                 {
-                    articles = articles.Where(n => n.ispublic == publicOnly.Value).ToList();
+                    if (publicOnly == true)
+                    {
+                        articles = articles.Where(n => n.ispublic == true).ToList();
+                    }
+                    else if(publicOnly == false)
+                    {
+                        articles = articles.Where(n => n.ispublic == false).ToList();
+                    }
+
                 }
 
                 // 如果提供了用戶ID，則過濾
@@ -305,26 +313,158 @@ namespace Tailstale.Controllers
 
         //列出個人TAG
         [HttpGet("GetPriTagList")]
-        public async Task<IActionResult> GetPriTagList(int id)
+        public async Task<IActionResult> GetPriTagList(int id ,int UType)
         {
+
+            if(UType == 0)
+            {
+                var tagKCounts = _context.using_person_tags
+                        .Where(ut => ut.FK_Keeper_ID == id)
+                        .GroupBy(ut => new { ut.FK_person_tags_ID, ut.FK_person_tags.name })
+                        .Select(g => new
+                        {
+                            TagName = g.Key.name,
+                            Count = g.Count()
+                        })
+                        .OrderByDescending(c => c.Count)
+                        .ToList();
+                if (!tagKCounts.Any())
+                {
+                    return NoContent(); // 或者返回其他適當的訊息
+                }
+                return Ok(tagKCounts);
+            }
             var tagCounts = _context.using_person_tags
-                                    .Where(ut =>  ut.FK_Keeper_ID == id)
-                                    .GroupBy(ut => new {ut.FK_person_tags_ID,ut.FK_person_tags.name})
-                                    .Select(g => new
-                                    {
-                                        TagName = g.Key.name,
-                                        Count = g.Count()
-                                    })
-                                    .OrderByDescending(c => c.Count)
-                                    .ToList();
+                    .Where(ut => ut.FK_Business_ID == id)
+                    .GroupBy(ut => new { ut.FK_Business_ID, ut.FK_person_tags.name })
+                    .Select(g => new
+                    {
+                        TagName = g.Key.name,
+                        Count = g.Count()
+                    })
+                    .OrderByDescending(c => c.Count)
+                    .ToList();
             if (!tagCounts.Any())
             {
                 return NoContent(); // 或者返回其他適當的訊息
             }
             return Ok(tagCounts);
+
+
+
         }
         //輸入個人TAG、查詢包含個人TAG的文章
         [HttpGet("GetPriTagArt")]
+        public async Task<IActionResult> GetPriTagArt(string priTag,int userID , int UType)
+        {
+            //以tagID、以及使用者ID去搜尋含有tagID 的using_tag 
+            //再用article去搜尋 文章using_tag的FKID
+            var personTagQuery = _context.person_tags
+                                         .Where(m => m.name == priTag &&
+                                                     (UType == 0 ? m.FK_Keeper_ID == userID : m.FK_Business_ID == userID))
+                                         .Select(s => s.ID)
+                                         .FirstOrDefault();
+
+            var articles = await (from a in _context.articles
+                                  join ut in _context.using_person_tags
+                                  on a.ID equals ut.FK_article_ID
+                                  where ut.FK_person_tags_ID == personTagQuery
+                                  select a).ToListAsync();
+            // 抓取所有相關資料
+            var articleImgs = await _context.article_imgs.ToListAsync();
+            var keeperImgs = await _context.keeper_imgs.ToListAsync();
+            var businessImgs = await _context.business_imgs.ToListAsync();
+            var business = await _context.businesses.ToListAsync();
+            var keeper = await _context.keepers.ToListAsync();
+            var publictag = await _context.tags.ToListAsync();
+            var using_pubtag = await _context.using_tags.ToListAsync();
+            var pritag = await _context.person_tags.ToListAsync();
+            var using_pritag = await _context.using_person_tags.ToListAsync();
+            var imgType = await _context.keeper_img_types.ToListAsync();
+            var img = await _context.keeper_imgs.ToListAsync();
+
+            var withImg = articles.Select(n =>
+            {
+                // 圖片陣列
+                var imgurllist = articleImgs
+                    .Where(a => a.FK_article_ID == n.ID)
+                    .SelectMany(a =>
+                        a.FK_Business_img_ID != null
+                        ? businessImgs.Where(b => b.ID == a.FK_Business_img_ID).Select(b => b.URL)
+                        : keeperImgs.Where(k => k.ID == a.FK_Keeper_img_ID).Select(k => k.URL)
+                    ).ToList();
+
+                var BName = business.Where(a => a.ID == n.FK_Business_ID).Select(s => s.name).FirstOrDefault();
+                var KName = keeper.Where(a => a.ID == n.FK_Keeper_ID).Select(s => s.name).FirstOrDefault();
+
+                // 公開TAG
+                var using_publicTaglist = using_pubtag.Where(a => a.FK_article_ID == n.ID).Select(s => s.FK_tags_ID).ToList();
+                List<string?> publicTaglist = new List<string?>();
+
+                foreach (int id in using_publicTaglist)
+                {
+                    string? tagn = publictag.Where(a => a.ID == id).Select(s => s.name).FirstOrDefault();
+                    publicTaglist.Add(tagn);
+                }
+
+                // 私人TAG
+                var usingk_privateTaglist = using_pritag.Where(a => a.FK_article_ID == n.ID && a.FK_Keeper_ID == n.FK_Keeper_ID).Select(s => s.FK_person_tags_ID).ToList();
+                var usingb_privateTaglist = using_pritag.Where(a => a.FK_article_ID == n.ID && a.FK_Business_ID == n.FK_Business_ID).Select(s => s.FK_person_tags_ID).ToList();
+                List<string?> privateTaglist = new List<string?>();
+
+                if (usingk_privateTaglist.Any())
+                {
+                    foreach (int id in usingk_privateTaglist)
+                    {
+                        string? tagn = pritag.Where(a => a.ID == id && a.FK_Keeper_ID == n.FK_Keeper_ID).Select(s => s.name).FirstOrDefault();
+                        privateTaglist.Add(tagn);
+                    }
+                }
+                else if (usingb_privateTaglist.Any())
+                {
+                    foreach (int id in usingb_privateTaglist)
+                    {
+                        string? tagn = pritag.Where(a => a.ID == id && a.FK_Business_ID == n.FK_Business_ID).Select(s => s.name).FirstOrDefault();
+                        privateTaglist.Add(tagn);
+                    }
+                }
+                //抓取使用者頭貼
+                string imgurl = "no_head.png";
+                int uType = 0;
+                if (n.FK_Keeper_ID != null)
+                {
+                    //只會有顯示目前USER的HEADURL
+                    int imgtypeld = imgType.Where(a => a.FK_Keeper_id == n.FK_Keeper_ID && a.typename == $"{n.FK_Keeper_ID}_head").Select(s => s.ID).FirstOrDefault();
+                    imgurl = img.Where(a => a.img_type_id == imgtypeld && a.name.Contains("head"))
+                                .OrderByDescending(x => x.created_at)
+                                .Select(s => s.URL)
+                                .FirstOrDefault() ?? "no_head.png";
+                }
+                else
+                {
+                    imgurl = business.Find(a => a.ID == n.FK_Business_ID).photo_url ?? "no_head.png";
+                    uType = business.Find(a => a.ID == n.FK_Business_ID).type_ID ?? 0;
+                }
+
+                // 返回結果
+                return new
+                {
+                    BName,
+                    KName,
+                    privateTaglist,
+                    uType,
+                    imgurl,
+                    n.ispublic,
+                    n.created_at,
+                    n.parent_ID,
+                    n.ID,
+                    n.content,
+                    imgurllist,
+                    publicTaglist
+                };
+            }).ToList();
+
+            return  Ok(withImg);
 
         //列出主流TAG
         [HttpGet("GetPubTagList")]
@@ -354,7 +494,116 @@ namespace Tailstale.Controllers
         }
         //輸入TAG字串，查詢包含TAG的文章
         [HttpGet("GetPubTagArt")]
+        public async Task<IActionResult> GetPubTagArt(string Tag)
+        {
+            var TagQuery = _context.tags
+                             .Where(m => m.name == Tag)
+                             .Select(s => s.ID)
+                             .FirstOrDefault();
 
+            var articles = await (from a in _context.articles
+                                  join ut in _context.using_tags
+                                  on a.ID equals ut.FK_article_ID
+                                  where ut.FK_tags_ID == TagQuery
+                                  select a).ToListAsync();
+
+            // 抓取所有相關資料
+            var articleImgs = await _context.article_imgs.ToListAsync();
+            var keeperImgs = await _context.keeper_imgs.ToListAsync();
+            var businessImgs = await _context.business_imgs.ToListAsync();
+            var business = await _context.businesses.ToListAsync();
+            var keeper = await _context.keepers.ToListAsync();
+            var publictag = await _context.tags.ToListAsync();
+            var using_pubtag = await _context.using_tags.ToListAsync();
+            var pritag = await _context.person_tags.ToListAsync();
+            var using_pritag = await _context.using_person_tags.ToListAsync();
+            var imgType = await _context.keeper_img_types.ToListAsync();
+            var img = await _context.keeper_imgs.ToListAsync();
+
+            var withImg = articles.Select(n =>
+            {
+                // 圖片陣列
+                var imgurllist = articleImgs
+                    .Where(a => a.FK_article_ID == n.ID)
+                    .SelectMany(a =>
+                        a.FK_Business_img_ID != null
+                        ? businessImgs.Where(b => b.ID == a.FK_Business_img_ID).Select(b => b.URL)
+                        : keeperImgs.Where(k => k.ID == a.FK_Keeper_img_ID).Select(k => k.URL)
+                    ).ToList();
+
+                var BName = business.Where(a => a.ID == n.FK_Business_ID).Select(s => s.name).FirstOrDefault();
+                var KName = keeper.Where(a => a.ID == n.FK_Keeper_ID).Select(s => s.name).FirstOrDefault();
+
+                // 公開TAG
+                var using_publicTaglist = using_pubtag.Where(a => a.FK_article_ID == n.ID).Select(s => s.FK_tags_ID).ToList();
+                List<string?> publicTaglist = new List<string?>();
+
+                foreach (int id in using_publicTaglist)
+                {
+                    string? tagn = publictag.Where(a => a.ID == id).Select(s => s.name).FirstOrDefault();
+                    publicTaglist.Add(tagn);
+                }
+
+                // 私人TAG
+                var usingk_privateTaglist = using_pritag.Where(a => a.FK_article_ID == n.ID && a.FK_Keeper_ID == n.FK_Keeper_ID).Select(s => s.FK_person_tags_ID).ToList();
+                var usingb_privateTaglist = using_pritag.Where(a => a.FK_article_ID == n.ID && a.FK_Business_ID == n.FK_Business_ID).Select(s => s.FK_person_tags_ID).ToList();
+                List<string?> privateTaglist = new List<string?>();
+
+                if (usingk_privateTaglist.Any())
+                {
+                    foreach (int id in usingk_privateTaglist)
+                    {
+                        string? tagn = pritag.Where(a => a.ID == id && a.FK_Keeper_ID == n.FK_Keeper_ID).Select(s => s.name).FirstOrDefault();
+                        privateTaglist.Add(tagn);
+                    }
+                }
+                else if (usingb_privateTaglist.Any())
+                {
+                    foreach (int id in usingb_privateTaglist)
+                    {
+                        string? tagn = pritag.Where(a => a.ID == id && a.FK_Business_ID == n.FK_Business_ID).Select(s => s.name).FirstOrDefault();
+                        privateTaglist.Add(tagn);
+                    }
+                }
+                //抓取使用者頭貼
+                string imgurl = "no_head.png";
+                int uType = 0;
+                if (n.FK_Keeper_ID != null)
+                {
+                    //只會有顯示目前USER的HEADURL
+                    int imgtypeld = imgType.Where(a => a.FK_Keeper_id == n.FK_Keeper_ID && a.typename == $"{n.FK_Keeper_ID}_head").Select(s => s.ID).FirstOrDefault();
+                    imgurl = img.Where(a => a.img_type_id == imgtypeld && a.name.Contains("head"))
+                                .OrderByDescending(x => x.created_at)
+                                .Select(s => s.URL)
+                                .FirstOrDefault() ?? "no_head.png";
+                }
+                else
+                {
+                    imgurl = business.Find(a => a.ID == n.FK_Business_ID).photo_url ?? "no_head.png";
+                    uType = business.Find(a => a.ID == n.FK_Business_ID).type_ID ?? 0;
+                }
+
+                // 返回結果
+                return new
+                {
+                    BName,
+                    KName,
+                    privateTaglist,
+                    uType,
+                    imgurl,
+                    n.ispublic,
+                    n.created_at,
+                    n.parent_ID,
+                    n.ID,
+                    n.content,
+                    imgurllist,
+                    publicTaglist
+                };
+            }).ToList();
+
+            return Ok(withImg);
+
+        }
 
         private async Task save_Kimg_intype(int userid, int typeid, List<IFormFile> imgs)
         {

@@ -2,8 +2,8 @@
     data() {
         return {
             imgurlLu: "",
-            useridm: "",
-            usertype: "",
+            useridm: null,
+            usertype: null,
             fileDatas: [],
             content: '',
             pcontent: '',
@@ -14,15 +14,72 @@
             selectedArt: null,
             responseimg: [],
             pubTaglist: [],
-            priTaglist:[],
+            priTaglist: [],
+            cardstyle: '',
+            tagsearch: [],
+            ischoosed: false,
+            isChecked: false,
         }
     },
     created() {
         this.start();
-
-
+        this.setstytle();
     },
     methods: {
+        async handleChange() {
+            if (this.isChecked) {
+                this.articles = await this.getarticle(1000, null, this.useridm, false);
+                this.ischoosed = true;
+            } else if (!this.isChecked) {
+                this.start();
+            }
+
+        },
+        async gopirtag(input) {
+            try {
+                const pri = await axios.get('api/social/GetPriTagArt', {
+                    params: {
+                        priTag: input,
+                        userID: this.useridm,
+                        UType: this.usertype,
+                    }
+                })
+                console.log(pri.data);
+                this.articles = pri.data;
+                this.ischoosed = true;
+            } catch (err) {
+                console.error(err);
+            }   
+        },
+        async gotag(input) {
+            try {
+                const pub = await axios.get('api/social/GetPubTagArt', {
+                    params: {
+                        Tag: input,
+                    }
+                })
+                console.log(pub.data);
+                this.articles = pub.data;
+                this.ischoosed = true;
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        setstytle(input) {
+            
+            switch (input?.uType)
+            {
+                case 1:
+                    return 'card mb-1 rounded-3 text-dark border-success'
+                case 2:
+                    return'card mb-1 rounded-3 text-dark border-warning '
+                case 3:
+                    return 'card mb-1 rounded-3 text-dark border-danger'
+                default:
+                    return 'card mb-1 rounded-3 text-dark border-dark';     
+            }
+            return this.cardstyle;
+        },
         async gettag() {
             try {
                 const pubtag = await axios.get("api/social/GetPubTagList");
@@ -39,7 +96,9 @@
         },
         async start() {
             try {
-                this.articles = await this.getarticle(15, 0, null, true);
+                this.articles = await this.getarticle(20, 0, null, true);
+                this.ischoosed = false;
+                this.isChecked = false;
             } catch (err) {
                 console.error('Error during created hook:', err);
             }
@@ -81,7 +140,8 @@
         },
         async postMain() {
             await this.postarticle();
-            this.articles = await this.getarticle(15, null, null, true);
+            this.articles = await this.getarticle(20, null, null, true);
+            this.gettag();
         },
        /* public async Task<IActionResult> GetArticle(int? count, int? userid, int? parentid, bool? publicOnly)*/
         async postarticle() {
@@ -138,7 +198,7 @@
             this.selectedArt = null;
             this.parentArt = null;
             this.selectedArt = input;
-            this.parentArt = await this.getarticle(10, this.selectedArt.id, null, true);
+            this.parentArt = await this.getarticle(null, this.selectedArt.id, null, true);
             $("#articleModal").modal("show");
 
         },
@@ -146,6 +206,7 @@
             this.parentArt = [];
             await this.postarticle();
             this.parentArt = await this.getarticle(10, this.selectedArt.id, null, true);
+            this.gettag();
         },
         bindimgurl(url, uType) {
             if (uType !== 0) {
