@@ -14,7 +14,7 @@
             /* background-position: center; */ /* 將背景圖片置中 */
             /* background-repeat: no-repeat; */ /* 防止背景圖片重複 */
             /* background-color: #FBF6F1; */
-        }
+        } 
 
         form {
             margin-top: 50px;
@@ -40,7 +40,52 @@
             height: 1024px;
             object-fit: cover; /* 保持图片比例裁剪 */
         }
-       
+
+        .searchingBtn {
+            background-color: white;
+            color: black;
+            border-radius: 5em;
+            font-size: 17px;
+            font-weight: 600;
+            padding: 0.5em 1em;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            border: 1px solid black;
+            box-shadow: 0 0 0 0 black;
+        }
+
+        .searchingBtn:hover {
+            transform: translateY(-4px) translateX(-2px);
+            box-shadow: 2px 5px 0 0 black;
+        }
+
+        .searchingBtn:active {
+            transform: translateY(2px) translateX(1px);
+            box-shadow: 0 0 0 0 black;
+        }
+
+        .hospitalCardBtn {
+            background-color: white;
+            color: gray;
+            border-radius: 5em;
+            font-size: 17px;
+            font-weight: 600;
+            padding: 0.5em 1em;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            border: 1px solid gray;
+            box-shadow: 0 0 0 0 gray;
+        }
+
+        .hospitalCardBtn:hover {
+            transform: translateY(-4px) translateX(-2px);
+                box-shadow: 2px 5px 0 0 #6C6C6C;
+        }
+
+        .hospitalCardBtn:active {
+            transform: translateY(2px) translateX(1px);
+                box-shadow: 0 0 0 0 #6C6C6C;
+        }
     </style>
 }
 <div class="container" style="width:100%">    
@@ -88,7 +133,7 @@
     </div>
 </div>
 
-<div class="text-center" id="header">  
+<div class="text-center mb-5" id="header">  
     
     <h2>每條尾巴都值得更美好的故事</h2>
     <br>
@@ -141,13 +186,13 @@
                 </form>
                 
                 <div class="text-center mt-3 mb-5 form-group mb-2 flex-grow-1">
-                    <button type="button" class=" btn btn-outline-dark me-3" id="resultClear" v-on:click="resultClear"><i class="fa-solid fa-broom"></i> 清除搜尋條件</button>
-                    <button type="button" class="btn btn-outline-dark" id="search" v-on:click="handleSearch"><i class="bi bi-search"></i> 搜尋門診</button>
+                    <button type="button" class="me-3 searchingBtn" id="resultClear" v-on:click="resultClear"><i class="fa-solid fa-broom"></i> 清除搜尋條件</button>
+                    <button type="button" class="searchingBtn" id="search" v-on:click="handleSearch"><i class="bi bi-search"></i> 搜尋門診</button>
                 </div>
             </div>
         </div>
 
-        <div class="container mb-5 searchingResult pb-3 mt-0">
+        <div class="container mb-3 searchingResult pb-3 mt-0" style="background-color:white">
             <!-- 搜尋結果表格 -->
             <div v-if="showResults"> 
                 <div v-if="searchingResult.length > 0" class="table-responsive">
@@ -215,8 +260,8 @@
                                 <p class="card-text">{{ hospital.hospitalAddress }}</p>
                                 <p class="card-text" hidden>{{ hospital.businessId }}</p>
                             </div>
-                            <div class="text-end me-3 mb-2">
-                                <a :href="`/Hospital_FrontDesk/HospitalIndex?businessID=${hospital.businessId}`" class="btn btn-outline-secondary">更多詳細資訊</a>                                
+                            <div class="text-end me-1 mb-2">
+                                <a :href="`/Hospital_FrontDesk/HospitalIndex?businessID=${hospital.businessId}`" class="btn hospitalCardBtn">更多詳細資訊</a>
                             </div>
                         </div>
                     </div>
