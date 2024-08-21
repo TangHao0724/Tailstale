@@ -452,11 +452,13 @@ namespace Tailstale.Controllers
                                         keeperName = k.name,
                                     }).SingleOrDefaultAsync();
             var petInfo = await (from p in _context.pets
+                                 join pt in _context.pet_types
+                                 on p.pet_type_ID equals pt.ID
                                  where p.keeper_ID==keeperID
                                  select new PetInfo_DTO
                                  { 
                                   petID=p.pet_ID,
-                                  petName = p.name,
+                                  petName = $"{p.name}：{pt.species}/{pt.breed}",
                                  }).ToListAsync();
 
             var newAppointment = await (from docs in _context.daily_outpatient_clinic_schedules
