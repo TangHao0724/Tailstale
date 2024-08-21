@@ -36,6 +36,7 @@ namespace Tailstale.Controllers
         [HttpGet]
         public async Task<IEnumerable<daily_outpatient_clinic_schedule_DTO>> GetSchedule(DateOnly id)
         {
+            int LoginID = (int)HttpContext.Session.GetInt32("loginID");
             var targetYear = id.Year;
             var targetMonth = id.Month;
 
@@ -47,7 +48,8 @@ namespace Tailstale.Controllers
                            join opct in _context.outpatient_clinic_timeslots
                            on opc.outpatient_clinic_timeslot_ID equals opct.outpatient_clinic_timeslot_ID
                            where docs.date.HasValue && docs.date.Value.Year == targetYear && docs.date.Value.Month == targetMonth
-                           orderby opct.startat
+                           && vet_Info.business_ID== LoginID
+                                 orderby opct.startat
                            select new daily_outpatient_clinic_schedule_DTO
                            {
                                daily_outpatient_clinic_schedule_ID=docs.daily_outpatient_clinic_schedule_ID,
@@ -85,13 +87,13 @@ namespace Tailstale.Controllers
         //GET:daily_outpatient_clinic_schedule/CreateOptions/id
         public async Task<IEnumerable> CreateOptions(string id)
         {
-            Console.WriteLine(HttpContext.Session.GetInt32("loginID")) ;
+            int LoginID = (int)HttpContext.Session.GetInt32("loginID");
             var options = await(from opc in _context.outpatient_clinics
                           join vetInfo in _context.vet_informations
                           on opc.vet_ID equals vetInfo.vet_ID
                           join opct in _context.outpatient_clinic_timeslots
                           on opc.outpatient_clinic_timeslot_ID equals opct.outpatient_clinic_timeslot_ID
-                          where vetInfo.business_ID == HttpContext.Session.GetInt32("loginID")
+                          where vetInfo.business_ID == LoginID
                           && opc.dayofweek == $"{id}"
                           && opc.status==false
                           orderby opct.startat
