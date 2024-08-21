@@ -45,6 +45,7 @@ namespace Tailstale.Controllers
                             pet_age = p.age,
                             Datetime = m.Datetime,
                             outpatient_clinic_id = o.outpatient_clinic_ID,
+                            diagnosis = m.diagnosis,
                             weight = m.weight,
                             memo = m.memo,
                         };
@@ -75,9 +76,21 @@ namespace Tailstale.Controllers
         [HttpGet]
         public async Task<IActionResult> Create(int pet_id, int AppointmentID)
         {
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            var OPC = await _context.Appointments
+                    .Where(n => n.Appointment_ID == AppointmentID)
+                    .Select(s => new
+                    {
+                        s.Appointment_ID,
+                        s.daily_outpatient_clinic_schedule.outpatient_clinic.outpatient_clinic_name,
+                        s.daily_outpatient_clinic_schedule.outpatient_clinic_ID
+                    }).FirstOrDefaultAsync();
+            ViewBag.selectOPC = new SelectList(new[] { OPC }, "Appointment_ID", "outpatient_clinic_name");
+            ViewBag.outpatient_clinic_id = OPC?.outpatient_clinic_ID;
+
             var model = new MedicalRecordDTO
             {
-                pet_id = pet_id,
+                pet_id = pet_id
             };
 
             var basicInfo = _context.pets
@@ -92,16 +105,6 @@ namespace Tailstale.Controllers
 
                         }).FirstOrDefault();
             ViewBag.basicInfo = basicInfo;
-
-            int? loginID = HttpContext.Session.GetInt32("loginID");
-            var OPC = await _context.Appointments
-                    .Where(n => n.Appointment_ID == AppointmentID)
-                    .Select(s => new
-                    {
-                        s.Appointment_ID,
-                        s.daily_outpatient_clinic_schedule.outpatient_clinic.outpatient_clinic_name,
-                    }).ToListAsync();
-            ViewBag.selectOPC = new SelectList(OPC, "Appointment_ID", "outpatient_clinic_name");
 
             return View(model);
         }
@@ -118,63 +121,49 @@ namespace Tailstale.Controllers
                 var a = new medical_record
                 {
                     pet_id = medicalRecordDTO.pet_id,
-                    Datetime = medicalRecordDTO.Datetime,
+                    Datetime = DateTime.Now,
                     weight = medicalRecordDTO.weight,
                     outpatient_clinic_id = medicalRecordDTO.outpatient_clinic_id,
                     complain = medicalRecordDTO.complain,
                     diagnosis = medicalRecordDTO.diagnosis,
                     memo = medicalRecordDTO.memo,
-                    fee = medicalRecordDTO.fee
+                    fee = 0
                 };
                 _context.Add(a);
                 await _context.SaveChangesAsync();
-
                 var mrID = a.id;
-                //var petID = a.pet_id; ???這啥？
 
-                if (medicalRecordDTO.vital_sign_record != null)
+                if (medicalRecordDTO.vital_sign_record != null && medicalRecordDTO.vital_sign_record.Any())
                 {
-                    foreach (var vsr in medicalRecordDTO.vital_sign_record)
+                    foreach (var vsrDTO in medicalRecordDTO.vital_sign_record)
                     {
-                        var vsrecord = new vital_sign_record
+                        if (vsrDTO != null)
                         {
-                            medical_records_id = mrID,
-                            taketime = vsr.taketime,
-                            HR = vsr.HR,
-                            SBP = vsr.SBP,
-                            DBP = vsr.DBP,
-                            BT = vsr.BT,
-                            RR = vsr.RR,
-                            SpO2 = vsr.SpO2,
-                            UO = vsr.UO,
-                            memo = vsr.vs_memo
-                        };
-                        _context.Add(vsrecord);
+                            var vsrecord = new vital_sign_record
+                            {
+                                medical_records_id = mrID,
+                                taketime = vsrDTO.taketime ?? DateTime.Now,
+                                HR = vsrDTO.HR,
+                                SBP = vsrDTO.SBP,
+                                DBP = vsrDTO.DBP,
+                                BT = vsrDTO.BT,
+                                RR = vsrDTO.RR,
+                                SpO2 = vsrDTO.SpO2,
+                                UO = vsrDTO.UO,
+                                memo = vsrDTO.vs_memo
+                            };
+                            _context.vital_sign_records.Add(vsrecord);
+                        }
                     }
                     await _context.SaveChangesAsync();
                 }
+                return Redirect($"https://localhost:7112/medical_record?pet_id={a.pet_id}");
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", "發生錯誤: " + ex.Message);
                 return View(medicalRecordDTO);
             }
-
-            //var a = new medical_record
-            //{
-            //    pet_id = medicalRecordDTO.pet_id,
-            //    Datetime = medicalRecordDTO.Datetime,
-            //    weight = medicalRecordDTO.weight,
-            //    outpatient_clinic_id = medicalRecordDTO.outpatient_clinic_id,
-            //    complain = medicalRecordDTO.complain,
-            //    diagnosis = medicalRecordDTO.diagnosis,
-            //    memo = medicalRecordDTO.memo,
-            //    fee = medicalRecordDTO.fee
-            //};
-            //_context.Add(a);
-            //await _context.SaveChangesAsync();
-
-            return Redirect($"https://localhost:7112/medical_record?pet_id=1001");
         }
 
 

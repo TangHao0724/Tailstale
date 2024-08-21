@@ -4,10 +4,12 @@
     ViewData["Title"] = "Index";
 }
 
-<h4>門診記錄</h4>
-<hr>
-<div class="container">
+
+<div class="container mt-5">
     <div class="row">
+        <h4>門診記錄</h4>
+        <hr>
+        @*list group*@
         <div class="list-group col-2 text-start">
             <a asp-action="Index" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item active">預約記錄管理</a>
             <a asp-action="Details" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item">過去預約記錄檢視</a>
@@ -20,6 +22,7 @@
             <a asp-action="Index" asp-controller="Hosp" class="list-group-item list-group-item-action sidebar-item">住院診療</a>
         </div>
         <div class="col-10">
+            @*basicInfo*@
             <div id="basic_info" style="border: 2px solid #003366; padding: 10px; width: 100%; font-family: Arial, sans-serif; display: flex; justify-content: space-between; align-items: center; color: #003366;">
                 <div style="font-weight: bold;">
                     飼主: <span style="font-weight: normal;">@ViewBag.basicInfo.keeper_name</span>
@@ -52,8 +55,8 @@
                 <a asp-controller="Hosp" asp-action="Index" asp-route-id="@ViewBag.pet_id" style="text-decoration: none; color: #003366;">
                     <i class="fa-solid fa-circle-radiation"></i> 醫學影像
                 </a>
-            </div>
-
+            </div><br>
+            @*Index context*@
             @if (Model.Any())
             {
                 <table class="table">
@@ -92,9 +95,7 @@
             {
                 @if (ViewBag.pet_id != null)
                 {
-                    <p>
-                        沒有門診記錄
-                    </p>
+                    <p>沒有門診記錄</p>
                 }
                 else
                 {
