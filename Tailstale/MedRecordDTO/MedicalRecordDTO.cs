@@ -95,30 +95,22 @@ namespace Tailstale.MedRecordDTO
         public int? fee { get; set; }
 
 
-
         //vital_sign_record
-
+        [Display(Name = "生命徵象")]
+        public List<VSrecordDTO>? vital_sign_record { get; set; }
 
 
         //medical_orders
-
-
 
         //medicine_orders
 
         //medicine
 
-
-
-
         //biological test order
-
 
         //biological test
 
-
         //medical imaging order
-
 
         //medical imaging
 

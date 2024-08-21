@@ -3,11 +3,22 @@
 @{
     ViewData["Title"] = "Create";
 }
+@section Styles {
+    <style>
+        #vsrecordContainer {
+            border: 2px solid #E39847; /* 邊框粗細、樣式和顏色 */
+            padding: 10px; /* 內邊距 */
+            border-radius: 10px; /* 圓角邊框 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 陰影效果 */
+        }
+    </style>
+}
 
-<h4>新增門診記錄</h4>
-<hr>
-<div class="container">
+<div class="container mt-5">
     <div class="row">
+        <h4>新增門診記錄</h4>
+        <hr>
+        @*list group*@
         <div class="list-group col-2 text-start">
             <a asp-action="Index" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item active">預約記錄管理</a>
             <a asp-action="Details" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item">過去預約記錄檢視</a>
@@ -20,19 +31,20 @@
             <a asp-action="Index" asp-controller="Hosp" class="list-group-item list-group-item-action sidebar-item">住院診療</a>
         </div>
         <div class="col-10">
-            <div id="basic_info" style="border: 2px solid #003366; padding: 10px; width: 100%; font-family: Arial, sans-serif; display: flex; justify-content: space-between; align-items: center; color: #003366;">
+            @*basicInfo*@
+            <div id="basicInfo" style="border: 2px solid #003366; padding: 10px; width: 100%; font-family: Arial, sans-serif; display: flex; justify-content: space-between; align-items: center; color: #003366;">
                 <div style="font-weight: bold;">
-                    飼主: <span style="font-weight: normal;">@Model.keeper_name</span>
+                    飼主: <span style="font-weight: normal;">@ViewBag.basicInfo.keeper_name</span>
                 </div>
                 <div style="font-weight: bold;">
-                    寵物: <span style="font-weight: normal;">@Model.pet_name</span>
+                    寵物: <span style="font-weight: normal;">@ViewBag.basicInfo.pet_name</span>
                 </div>
                 <div style="font-weight: bold;">
-                    <span style="font-weight: normal;">@Model.species</span>
-                    <span style="font-weight: normal;">@Model.pet_breed</span>
+                    <span style="font-weight: normal;">@ViewBag.basicInfo.species</span>
+                    <span style="font-weight: normal;">@ViewBag.basicInfo.pet_breed</span>
                 </div>
                 <div style="font-weight: bold;">
-                    年紀: <span style="font-weight: normal;">@Model.pet_age 歲</span>
+                    年紀: <span style="font-weight: normal;">@ViewBag.basicInfo.pet_age 歲</span>
                 </div>
                 <a asp-controller="medical_record" asp-action="Index" asp-route-pet_id="@Model.pet_id" style="text-decoration: none; color: #003366;">
                     <i class="fa-regular fa-clipboard"></i> 門診記錄
@@ -53,14 +65,15 @@
                     <i class="fa-solid fa-circle-radiation"></i> 醫學影像
                 </a>
             </div><br>
+            @*Create context*@
             <div class="col-md-3">
                 <form asp-action="Create">
                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                     <input type="hidden" asp-for="pet_id" />
+                    <input type="hidden" asp-for="outpatient_clinic_id" value="@ViewBag.outpatient_clinic_id" />
                     <div class="form-group">
                         <label asp-for="outpatient_clinic_id" class="control-label"></label>
                         <select asp-for="outpatient_clinic_id" asp-items="ViewBag.selectOPC" class="form-control">
-                            <option value="">選擇科別</option>
                         </select>
                         <span asp-validation-for="outpatient_clinic_id" class="text-danger"></span>
                     </div>
@@ -73,7 +86,11 @@
                         <label asp-for="complain" class="control-label"></label>
                         <input asp-for="complain" class="form-control" />
                         <span asp-validation-for="complain" class="text-danger"></span>
+                    </div><br>
+                    <div id="vsrecordContainer">
+                        <button type="button" class="btn btn-outline-info mb-3 p-1" id="addVS">+ 生命徵象</button>
                     </div>
+                    <br>
                     <div class="form-group">
                         <label asp-for="diagnosis" class="control-label"></label>
                         <input asp-for="diagnosis" class="form-control" />
@@ -81,10 +98,10 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="memo" class="control-label"></label>
-                        <input asp-for="memo" class="form-control" />
+                        <textarea asp-for="memo" class="form-control"></textarea>
                         <span asp-validation-for="memo" class="text-danger"></span>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" style="display:none;">
                         <label asp-for="fee" class="control-label"></label>
                         <input asp-for="fee" class="form-control" />
                         <span asp-validation-for="fee" class="text-danger"></span>
@@ -96,7 +113,6 @@
                 </form>
             </div>
         </div>
-
     </div>
 </div>
 
@@ -104,4 +120,78 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        // document.getElementById('addVS').addEventListener('click', function () {
+        //     var fieldCount = document.querySelectorAll('#vsrecord').length;
+        //     var newFieldHtml = `<div class="form-group d-flex align-items-center vsrecord">
+        //                                 <label class="control-label m-1"></label>
+        //                                 <select name="addVS[${fieldCount}].FormatType" class="form-control m-1">
+        //                                     <option value="心跳">心跳</option>
+        //                                     <option value="收縮壓">收縮壓</option>
+        //                                     <option value="舒張壓">舒張壓</option>
+        //                                     <option value="體溫">體溫</option>
+        //                                     <option value="呼吸次數">呼吸次數</option>
+        //                                     <option value="血氧">血氧</option>
+        //                                     <option value="排尿">排尿</option>
+        //                                     <option value="備註">備註</option></select>
+        //                                     <input type="text" name="addVS[${fieldCount}].FormatName" class="form-control" />
+        //                         <button type="button" class="btn btn-outline-danger m-1" onclick="removeOption(this)">-</button></div>`;
+        //     document.getElementById('vsrecord').insertAdjacentHTML('beforeend', newFieldHtml);
+        // });
+        // function removeOption(button) {
+        //     const OptionToRemove = button.closest('.vsrecord');
+        //     OptionToRemove.remove();
+        // };
+        function removeVSRecord(button) {
+            const OptionToRemove = $(button).closest('.vs-record');
+            OptionToRemove.remove();
+        }
+        $(document).ready(function () {
+            let vsIndex = 0;
+
+            $("#addVS").click(function () {
+                const newVSRecord = `
+                            <div class="vs-record">
+                                <input type="hidden" name="vital_sign_record[${vsIndex}].taketime" value="${new Date().toISOString()}" />
+                                <div class="form-group">
+                                    <label>HR:</label>
+                                    <input type="number" name="vital_sign_record[${vsIndex}].HR" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label>SBP:</label>
+                                    <input type="number" name="vital_sign_record[${vsIndex}].SBP" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label>DBP:</label>
+                                    <input type="number" name="vital_sign_record[${vsIndex}].DBP" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label>BT:</label>
+                                    <input type="number" step="0.1" name="vital_sign_record[${vsIndex}].BT" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label>RR:</label>
+                                    <input type="number" name="vital_sign_record[${vsIndex}].RR" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label>SpO2:</label>
+                                    <input type="number" name="vital_sign_record[${vsIndex}].SpO2" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label>UO:</label>
+                                    <input type="number" name="vital_sign_record[${vsIndex}].UO" class="form-control" />
+                                </div>
+                                <div class="form-group">
+                                    <label>備註:</label>
+                                    <input type="text" name="vital_sign_record[${vsIndex}].memo" class="form-control" />
+                                </div>
+                                <button type="button" class="btn btn-outline-danger m-1" onclick="removeVSRecord(this)">取消</button></div>
+                            </div>
+                        `;
+                $("#vsrecordContainer").append(newVSRecord);
+                vsIndex++;
+            });
+
+        });
+    </script>
 }
