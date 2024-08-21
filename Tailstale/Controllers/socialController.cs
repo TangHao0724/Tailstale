@@ -355,7 +355,7 @@ namespace Tailstale.Controllers
         }
         //輸入個人TAG、查詢包含個人TAG的文章
         [HttpGet("GetPriTagArt")]
-        public async Task<IActionResult> GetPriTagArt(string priTag,int userID , int UType)
+        public async Task<IActionResult> GetPriTagArt(string priTag, int userID, int UType)
         {
             //以tagID、以及使用者ID去搜尋含有tagID 的using_tag 
             //再用article去搜尋 文章using_tag的FKID
@@ -464,8 +464,8 @@ namespace Tailstale.Controllers
                 };
             }).ToList();
 
-            return  Ok(withImg);
-
+            return Ok(withImg);
+        }
         //列出主流TAG
         [HttpGet("GetPubTagList")]
         public async Task<IActionResult> GetPubTagList()
