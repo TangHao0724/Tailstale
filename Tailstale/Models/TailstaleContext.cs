@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
 namespace Tailstale.Models;
-
+//cxz
 public partial class TailstaleContext : DbContext
 {
     public TailstaleContext(DbContextOptions<TailstaleContext> options)
