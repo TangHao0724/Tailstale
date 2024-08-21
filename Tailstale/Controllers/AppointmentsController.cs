@@ -97,6 +97,7 @@ namespace Tailstale.Controllers
                                           join keeper in _context.keepers on A.keeper_ID equals keeper.ID
                                           join order_status in _context.order_statuses on A.Appointment_status equals order_status.ID
                                           join b in _context.businesses on vInfo.business_ID equals b.ID
+                                          join pt in _context.pet_types on pet.pet_type_ID equals pt.ID
                                           where docs.date < today && b.ID== LoginID
                                           orderby docs.date descending
                                           select new Appointments_ViewModel
@@ -107,7 +108,7 @@ namespace Tailstale.Controllers
                                               OutpatientClinicTimeslotName = opct.outpatient_clinic_timeslot_name,
                                               VetName = vInfo.vet_name,
                                               KeeperName = keeper.name,
-                                              PetName = pet.name,
+                                              PetName = $"{pet.name}：{pt.species}/{pt.breed}",
                                               AppointmentStatus = order_status.status_name
                                           }).ToListAsync();           
 
