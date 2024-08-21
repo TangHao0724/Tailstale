@@ -25,7 +25,7 @@ namespace Tailstale.Controllers
         }
 
         // GET: medical_record
-public async Task<IActionResult> Index(int? pet_id)
+        public async Task<IActionResult> Index(int? pet_id)
         { //渲染
             var query = from m in _context.medical_records
                         join o in _context.outpatient_clinics on m.outpatient_clinic_id equals o.outpatient_clinic_ID
@@ -45,6 +45,7 @@ public async Task<IActionResult> Index(int? pet_id)
                             pet_age = p.age,
                             Datetime = m.Datetime,
                             outpatient_clinic_id = o.outpatient_clinic_ID,
+                            diagnosis = m.diagnosis,
                             weight = m.weight,
                             memo = m.memo,
                         };
@@ -62,7 +63,6 @@ public async Task<IActionResult> Index(int? pet_id)
                             species = p.pet_type.species,
                             pet_breed = p.pet_type.breed,
                             pet_age = p.age,
-                            
                         }).FirstOrDefaultAsync();
                 ViewBag.basicInfo = basicInfo;
             }
@@ -74,19 +74,23 @@ public async Task<IActionResult> Index(int? pet_id)
 
         // GET: medical_record/Create
         [HttpGet]
-        public async Task<IActionResult> Create(int pet_id)
+        public async Task<IActionResult> Create(int pet_id, int AppointmentID)
         {
-            var p = _context.pets
-                    .Where(p => p.pet_ID == pet_id).FirstOrDefault();
-                        
-            var model = new MedicalRecordDTO()
+            int? loginID = HttpContext.Session.GetInt32("loginID");
+            var OPC = await _context.Appointments
+                    .Where(n => n.Appointment_ID == AppointmentID)
+                    .Select(s => new
+                    {
+                        s.Appointment_ID,
+                        s.daily_outpatient_clinic_schedule.outpatient_clinic.outpatient_clinic_name,
+                        s.daily_outpatient_clinic_schedule.outpatient_clinic_ID
+                    }).FirstOrDefaultAsync();
+            ViewBag.selectOPC = new SelectList(new[] { OPC }, "Appointment_ID", "outpatient_clinic_name");
+            ViewBag.outpatient_clinic_id = OPC?.outpatient_clinic_ID;
+
+            var model = new MedicalRecordDTO
             {
-                keeper_name = p.keeper.name,
-                pet_name = p.name,
-                pet_id = p.pet_ID,
-                species = p.pet_type.species,
-                pet_breed = p.pet_type.breed,
-                pet_age = p.age
+                pet_id = pet_id
             };
 
             var basicInfo = _context.pets
@@ -101,13 +105,7 @@ public async Task<IActionResult> Index(int? pet_id)
 
                         }).FirstOrDefault();
             ViewBag.basicInfo = basicInfo;
-            int? loginID = HttpContext.Session.GetInt32("loginID");
-            var selectOPC = await _context.outpatient_clinics.Where(s => s.vet.business_ID == loginID).Select(s => new {
-                            s.outpatient_clinic_timeslot_ID,
-                             CombinedName = s.outpatient_clinic_name + " - " + s.vet.vet_name + " - " + s.outpatient_clinic_timeslot.outpatient_clinic_timeslot_name
-                            }).ToListAsync();
 
-            ViewBag.selectOPC = new SelectList(selectOPC, "outpatient_clinic_timeslot_ID", "CombinedName");
             return View(model);
         }
 
@@ -118,21 +116,54 @@ public async Task<IActionResult> Index(int? pet_id)
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(int pet_id, [FromForm] MedicalRecordDTO medicalRecordDTO)
         {
-            var a = new medical_record
+            try
             {
-                pet_id = medicalRecordDTO.pet_id,
-                Datetime = medicalRecordDTO.Datetime,
-                weight = medicalRecordDTO.weight,
-                outpatient_clinic_id = medicalRecordDTO.outpatient_clinic_id,
-                complain = medicalRecordDTO.complain,
-                diagnosis = medicalRecordDTO.diagnosis,
-                memo = medicalRecordDTO.memo,
-                fee = medicalRecordDTO.fee
-            };
+                var a = new medical_record
+                {
+                    pet_id = medicalRecordDTO.pet_id,
+                    Datetime = DateTime.Now,
+                    weight = medicalRecordDTO.weight,
+                    outpatient_clinic_id = medicalRecordDTO.outpatient_clinic_id,
+                    complain = medicalRecordDTO.complain,
+                    diagnosis = medicalRecordDTO.diagnosis,
+                    memo = medicalRecordDTO.memo,
+                    fee = 0
+                };
+                _context.Add(a);
+                await _context.SaveChangesAsync();
+                var mrID = a.id;
 
-            _context.Add(a);
-            await _context.SaveChangesAsync();
-            return Redirect($"https://localhost:7112/medical_record?pet_id={a.pet_id}");
+                if (medicalRecordDTO.vital_sign_record != null && medicalRecordDTO.vital_sign_record.Any())
+                {
+                    foreach (var vsrDTO in medicalRecordDTO.vital_sign_record)
+                    {
+                        if (vsrDTO != null)
+                        {
+                            var vsrecord = new vital_sign_record
+                            {
+                                medical_records_id = mrID,
+                                taketime = vsrDTO.taketime ?? DateTime.Now,
+                                HR = vsrDTO.HR,
+                                SBP = vsrDTO.SBP,
+                                DBP = vsrDTO.DBP,
+                                BT = vsrDTO.BT,
+                                RR = vsrDTO.RR,
+                                SpO2 = vsrDTO.SpO2,
+                                UO = vsrDTO.UO,
+                                memo = vsrDTO.vs_memo
+                            };
+                            _context.vital_sign_records.Add(vsrecord);
+                        }
+                    }
+                    await _context.SaveChangesAsync();
+                }
+                return Redirect($"https://localhost:7112/medical_record?pet_id={a.pet_id}");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "發生錯誤: " + ex.Message);
+                return View(medicalRecordDTO);
+            }
         }
 
 
@@ -153,6 +184,7 @@ public async Task<IActionResult> Index(int? pet_id)
                                       pet_name = p.name,
                                       Datetime = r.Datetime,
                                       outpatient_clinic_id = o.outpatient_clinic_ID,
+                                      outpatient_clinic_name = o.outpatient_clinic_name,
                                       weight = r.weight,
                                       complain = r.complain,
                                       diagnosis = r.diagnosis,
