@@ -57,7 +57,7 @@
                         <div class='ctrl'>
                             <div class='ctrl__button ctrl__button--decrement'>&ndash;</div>
                             <div class='ctrl__counter'>
-                                <input class='ctrl__counter-input' id="Cat" maxlength='2' type='text' value='@ViewBag.Cookie.cat' max="5">
+                                <input class='ctrl__counter-input' id="Cat" maxlength='2' type='text' value='@ViewBag.Cookie.cat'>
                                 <div class='ctrl__counter-num'>@ViewBag.Cookie.cat</div>
                             </div>
                             <div class='ctrl__button ctrl__button--increment'>+</div>
@@ -99,10 +99,20 @@
             {
                 <div class="card mb-3 p-0 col-11">
                     <div class="row">
-                        <div class="col-3">
-                            <div class="p-2">
-                                <img src="~/images/noimg.jpg" class="hotimg" />
-                            </div>
+                        <div class="col-3 ms-2">
+                            @if (hotel.businesse.photo_url != null)
+                            {
+                                <div class="p-2">
+                                    <img src="~/images/business/@hotel.businesse.photo_url" class="hotimg img-fluid" style="max-width: 100%; height: auto;" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="p-2">
+                                    <img src="~/images/noimg.jpg" class="hotimg img-fluid" style="max-width: 95%; height: auto;" />
+                                </div>
+                            }
+                           
                             
                         </div>
                         <div class="col-8">
@@ -129,10 +139,22 @@
             {
                 <div class="card mb-3 p-0 col-11">
                     <div class="row">
-                        <div class="col-3">
-                            <img src="~/images/noimg.jpg" class="hotimg" />
+                        <div class="col-3 ms-2">
+                            @if (hotel.businesse.photo_url != null)
+                            {
+                                <div class="p-2" style="overflow: hidden; padding: 0;">
+                                    <img src="~/images/business/@hotel.businesse.photo_url" class="hotimg img-fluid" style="max-width: 100%; height: auto;" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="p-2">
+                                    <img src="~/images/noimg.jpg" class="hotimg img-fluid" style="max-width: 95%; height: auto;" />
+                                </div>
+                            }
+
                         </div>
-                        <div class="col-9">
+                        <div class="col-8">
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-10"> <h5 class="card-title">@hotel.businesse.name</h5></div>

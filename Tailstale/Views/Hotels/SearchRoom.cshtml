@@ -117,12 +117,18 @@
 
     <!--飯店資料-->
     <div class="row m-4 p-0" style="font-size:30px;line-height:auto;">
-        <div class="col-10">
+        <div class="col-9">
             <div><i class="fa-regular fa-thumbs-up fa-lg" style="color: #64aa70;"></i></i></div>
             <div>@ViewBag.SelectedHotel.hotelname</div>
             <div style="font-size:18px;"><i class="fa-solid fa-location-dot"></i>@ViewBag.SelectedHotel.hotelAddress</div>
         </div>
-        <div class="col-2 d-flex justify-content-center align-items-center" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample"><div class="rate ">@ViewBag.thisHotelRate</div></div>
+        <div class="col-1 d-flex justify-content-end align-items-center data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+            <div>飯店評分</div>
+        </div>
+        <div class="col-2 d-flex justify-content-center align-items-center" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+            <div class="rate">@ViewBag.thisHotelRate</div>
+            
+            </div>
         
     </div>
 
@@ -244,7 +250,7 @@
                                                 <div class="roomPrice">@String.Format("{0:N0}", room.roomPrice)</div>
                                             </div>
                                             <div class="col-2 border-end d-flex justify-content-center align-items-center">
-                                                <div  class="roomA">
+                                                @* <div  class="roomA">
                                                     <div class="w-100 bg-danger getQuantity" style="max-width:150px;">
                                                         <div class='ctrl'>
                                                             <div class='ctrl__button ctrl__button--decrement'>&ndash;</div>
@@ -255,7 +261,21 @@
                                                             <div class='ctrl__button ctrl__button--increment'>+</div>
                                                         </div>
                                                     </div>
+                                                </div> *@
+
+                                                <div class="roomA" data-max-count="@room.roomReserve">
+                                                    <div class="w-100 bg-danger getQuantity" style="max-width:150px;">
+                                                        <div class='ctrl'>
+                                                            <div class='ctrl__button ctrl__button--decrement'>&ndash;</div>
+                                                            <div class='ctrl__counter'>
+                                                                <input class='ctrl__counter-input myQuantity' maxlength='10' type='text' value='0'>
+                                                                <div class='ctrl__counter-num'>0</div>
+                                                            </div>
+                                                            <div class='ctrl__button ctrl__button--increment'>+</div>
+                                                        </div>
+                                                    </div>
                                                 </div>
+
                                             </div>
                                             <div class="col-3 d-flex justify-content-center align-items-center">
                                                 <div>
@@ -315,7 +335,7 @@
     <div class="offcanvas-body">
         @foreach(var review in ViewBag.reviewList)
         {
-            <div class="card" style="width: 100%;">
+            <div class="card mb-3" style="width: 100%;">
                 <div class="card-body">
                     <div class="row mb-3">
                         <div class="col-9">
@@ -340,42 +360,13 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script src="~/js/numberspinner.js"></script>
+   @*  <script src="~/js/numberspinner.js"></script> *@
+    <script src="~/js/newnumberspinner.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="~/js/searchbar.min.js"></script>
-    <script>
-        // $(document).ready(function () {
-        //     // 從 ViewBag 中獲取資料
-        //     var startDate = "@ViewBag.GetCookie.startdate"; // 取得開始日期
-        //     var endDate = "@ViewBag.GetCookie.enddate"; // 取得結束日期
-
-        //     // 檢查是否有有效的日期範圍
-        //     if (startDate && endDate) {
-        //         $(".dateRange").val(startDate + " ~ " + endDate);
-        //     } else {
-        //         var today = moment().format("YYYY-MM-DD");
-        //         $(".dateRange").val(today + " ~ " + today);
-        //     }
-
-        //     // 初始化日期範圍選擇器
-        //     $("input.dateRange").daterangepicker({
-        //         opens: "left",
-        //         showDropdowns: true,
-        //         startDate: startDate ? moment(startDate) : moment(),
-        //         endDate: endDate ? moment(endDate) : moment(),
-        //         autoApply: true,
-        //         locale: {
-        //             format: "YYYY-MM-DD",
-        //             separator: " ~ ",
-        //             daysOfWeek: ["日", "一", "二", "三", "四", "五", "六"],
-        //             monthNames: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
-        //             firstDay: 1
-        //         }
-        //     });
-        // });
-    </script>
+   
     <script>
         $(document).ready(function () {
             var baseAddress = "https://localhost:7112/";
@@ -609,7 +600,7 @@
                         headers: { 'Content-Type': 'application/json' }
                     })
                         .then(function (response) {
-                            window.location.href = `/Hotels/CreateCheckinDeTailShow`;
+                            window.location.href = response.data.redirectUrl;;
                             //window.local.href = `/Hotels/CreateCheckinDeTailShow`
                         })
                         .catch(err => {

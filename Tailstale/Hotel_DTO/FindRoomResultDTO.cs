@@ -13,7 +13,7 @@ namespace Tailstale.Hotel_DTO
         public string roomSpecies { get; set; }
         public business business { get; set; }
         public int? priceTotal { get; set; }
-        public virtual roomType FK_roomType { get; set; }
+       // public virtual roomType FK_roomType { get; set; }
 
 
     }
