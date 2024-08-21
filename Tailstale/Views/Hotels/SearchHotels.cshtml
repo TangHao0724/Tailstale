@@ -102,7 +102,7 @@
                             @if (hotel.businesse.photo_url != null)
                             {
                                 <div class="p-2">
-                                    <img src="~/images/business/@hotel.businesse.photo_url" class="hotimg img-fluid" style="max-width: 100%; height: auto;" />
+                                    <img src="~/images/business/@hotel.businesse.photo_url" class="hotimg img-fluid" style="max-width: 90%; height: auto;" />
                                 </div>
                             }
                             else
@@ -122,7 +122,7 @@
 
                                 </div>
                                
-                                <h6>每晚房價:@hotel.onedatePrice X @hotel.date 天</h6>
+                                <h6>每晚最低房價:@hotel.onedatePrice X @hotel.date 天</h6>
 
                                 <h5 class="card-title">@String.Format("{0:N0}", hotel.roomPrice) 元</h5>
                                 <form asp-controller="Hotels" asp-action="SearchRoom" method="get">
