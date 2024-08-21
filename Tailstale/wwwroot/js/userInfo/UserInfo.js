@@ -48,7 +48,7 @@ app.component('tab-主頁', {
             newresp: [],
             mainart:[],
             neworder: [],
-            n ewallresp:[],
+            ewallresp:[],
             artcount: 0,
             newPictures: null,
             postL: 0,
