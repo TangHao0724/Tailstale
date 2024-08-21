@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using Tailstale.Filter;
 using Tailstale.Hospital_ViewModel;
 using Tailstale.Models;
@@ -24,12 +25,15 @@ namespace Tailstale.Controllers
         // GET: outpatient_clinic
         public async Task<IActionResult> Index()
         {
-            //var tailstaleContext = _context.outpatient_clinics.Include(o => o.outpatient_clinic_timeslot).Include(o => o.vet);
+            int LoginID = (int)HttpContext.Session.GetInt32("loginID");
             var outpatientClinics = from opc in _context.outpatient_clinics
                                     join vInfo in _context.vet_informations
                                     on opc.vet_ID equals vInfo.vet_ID
                                    join opct in _context.outpatient_clinic_timeslots
                                    on opc.outpatient_clinic_timeslot_ID equals opct.outpatient_clinic_timeslot_ID
+                                   join b in _context.businesses
+                                   on vInfo.business_ID equals b.ID
+                                   where b.ID== LoginID
                                    orderby opc.status, opc.dayofweek, opct.startat                               
                                    select new outpatient_clinic_ViewModel
                                    {
@@ -73,8 +77,9 @@ namespace Tailstale.Controllers
         // GET: outpatient_clinic/Create
         public IActionResult Create()
         {
+            int LoginID = (int)HttpContext.Session.GetInt32("loginID");
             //ViewData["outpatient_clinic_timeslot_ID"] = new SelectList(_context.outpatient_clinic_timeslots, "outpatient_clinic_timeslot_ID", "outpatient_clinic_timeslot_name");
-            ViewData["vet_ID"] = new SelectList(_context.vet_informations.Where(v => v.employment_status == true), "vet_ID", "vet_name");
+            ViewData["vet_ID"] = new SelectList(_context.vet_informations.Where(v => v.employment_status == true && v.business_ID== LoginID), "vet_ID", "vet_name");
             return View();
         }
 
@@ -85,6 +90,7 @@ namespace Tailstale.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("outpatient_clinic_timeslot_name,startat,endat,dayofweek,outpatient_clinic_name,vet_ID,dayofweek,max_patients,status")] outpatient_clinic_ViewModel outpatientClinic)
         {
+            int LoginID = (int)HttpContext.Session.GetInt32("loginID");
             if (ModelState.IsValid)
             {
                 outpatient_clinic_timeslot opct = new outpatient_clinic_timeslot
@@ -109,8 +115,8 @@ namespace Tailstale.Controllers
                 await _context.SaveChangesAsync();
             }
             else
-            {                
-                ViewData["vet_ID"] = new SelectList(_context.vet_informations.Where(v=>v.employment_status==true), "vet_ID", "vet_name", outpatientClinic.vet_ID);
+            {
+                ViewData["vet_ID"] = new SelectList(_context.vet_informations.Where(v => v.employment_status == true && v.business_ID == LoginID), "vet_ID", "vet_name");
                 return View(outpatientClinic);
 
             }

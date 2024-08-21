@@ -15,7 +15,7 @@
 
 <div class="container mt-5">
     <div class="row">
-        <h4>預約紀錄管理</h4>
+        <h3>預約紀錄管理</h3>
         <hr>
         <div class="list-group col-2 text-start">
             <a asp-action="Index" asp-controller="Appointments" class="list-group-item list-group-item-action sidebar-item active">預約記錄管理</a>    
@@ -29,14 +29,12 @@
             <a asp-action="Index" asp-controller="Hosp" class="list-group-item list-group-item-action sidebar-item">住院診療</a>
         </div>
 
-        <div class="col-10">
+        <div class="col-10 mb-5">
             
             <table class="table">
                 <thead>
                     <tr>
-                        <th>
-                            @Html.DisplayNameFor(model => model.AppointmentID)
-                        </th>
+                        
                         <th>
                             @Html.DisplayNameFor(model => model.Date)
                         </th>
@@ -66,9 +64,7 @@
                     @foreach (var item in Model)
                     {
                         <tr>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.AppointmentID)
-                            </td>
+                            
                             <td>
                                 @Html.DisplayFor(modelItem => item.Date)
                             </td>

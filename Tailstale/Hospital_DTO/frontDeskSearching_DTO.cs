@@ -37,7 +37,8 @@ namespace Tailstale.Hospital_DTO
 
         public string clincAddress { get; set; }//from business        
         public int appointmentCount { get; set; }
-        public int businessID { get; set; }
+        public int businessID { get; set; }    
+        public bool dateAfterCurrentDate { get; set; }
     }
 
     public class frontDeskSearchingResultID_DTO
