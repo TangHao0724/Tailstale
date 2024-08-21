@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Tailstale.Models.keeper>
+﻿
 
 @{
     ViewData["Title"] = "首頁";
@@ -56,20 +56,3 @@
     </div>
 
 </div>
-@section Scripts{
-    <script>
-        $("#test").on("click",function(){
-            var booking = {
-                bookingID:0,
-                keeper_ID:1001,
-                hotelID:2003,
-                checkinDate:"2024/7/7",
-                checkoutDate:"2024/7/12",
-                bookingAmountTotal:1111,
-            };
-            
-            alert(booking)
-        })
-
-    </script>
-}
