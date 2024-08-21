@@ -150,7 +150,7 @@ namespace Tailstale.Controllers
                 //判斷從屬文章
                 //判斷數量
 
-
+                //選擇自己的私人文章+
                 // 先抓指定數量文章
                 articles = await _context.articles
                                          .OrderByDescending(x => x.created_at)
@@ -182,7 +182,11 @@ namespace Tailstale.Controllers
                     {
                         articles = articles.Where(n => n.ispublic == false).ToList();
                     }
-                    
+
+                }
+                else
+                {
+                    articles = articles.Where(n => n.ispublic == null && false).ToList();
                 }
 
                 // 如果提供了用戶ID，則過濾
