@@ -184,10 +184,6 @@ namespace Tailstale.Controllers
                     }
 
                 }
-                else
-                {
-                    articles = articles.Where(n => n.ispublic == null && false).ToList();
-                }
 
                 // 如果提供了用戶ID，則過濾
                 if (id.HasValue)
