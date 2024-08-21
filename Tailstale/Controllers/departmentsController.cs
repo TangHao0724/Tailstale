@@ -23,7 +23,8 @@ namespace Tailstale.Controllers
         // GET: departments
         public async Task<IActionResult> Index()
         {
-            var tailstaleContext = _context.departments.Include(d => d.business);
+            int LoginID = (int)HttpContext.Session.GetInt32("loginID");
+            var tailstaleContext = _context.departments.Where(d=>d.business_ID==LoginID);
             return View(await tailstaleContext.ToListAsync());
         }
 
