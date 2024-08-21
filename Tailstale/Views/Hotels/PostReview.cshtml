@@ -16,20 +16,17 @@
         }
     </style>
 }
-<div class="container">
-    <div id="app">
-        <h2>撰寫評論</h2>
-        <div v-for="room in roomList" :key="room.roomID">
-            <h3>{{ room.roomName }}</h3>
-            <div>
-                <span v-for="star in 5" :key="star" @@click="setRating(star)" class="star" :class="{ active: star <= reviewRating }">★</span>
-            </div>
-            <textarea v-model="reviewText" placeholder="撰寫你的評論..."></textarea>
+
+<div id="app">
+    <h2>撰寫評論</h2>
+    <div v-for="room in roomList" :key="room.roomID">
+        <h3>{{ room.roomName }}</h3>
+        <div>
+            <span v-for="star in 5" :key="star" @@click="setRating(room.roomID,star)" class="star" :class="{ active: star <= room.rating }">★</span>
         </div>
-        <button class="btn btn-info" @@click="submitReview">提交評論</button>
+        <textarea class="form-control" v-model="room.reviewText" placeholder="撰寫你的評論..."></textarea>
     </div>
-
-
+    <button @@click="submitReview" class="btn btn-primary">提交評論</button>
 </div>
 
 
@@ -44,6 +41,7 @@
                     reviewRating: 0,
                     reviewText: '',
                     bookingID: 0, // 初始值設為 0
+                    newstar:0,
                 };
             },
             mounted() {
@@ -71,48 +69,57 @@
                         alert(err);
                     }
                 },
-                setRating(star) {
-                    this.reviewRating = star;
+                setRating(roomID, star) {
+                    const room = this.roomList.find(r => r.roomID === roomID);
+                    if (room) {
+                        room.rating = star; // 設定該房間的評分
+                    }
                 },
+               
                 submitReview() {
                     const review = this.roomList.map(room => {
                         return {
                             roomID: room.roomID,
                             bookingID:this.bookingID,
-                            reviewRating: this.reviewRating,
-                            reviewText: this.reviewText,
+                            reviewRating: room.rating,
+                            reviewText: room.reviewText,
                         };
                     });
+                   // alert(JSON.stringify(review));
                     axios.post(`${this.baseAddress}CreateReview`, review)
                         .then(response => {
-                            //alert(JSON.stringify(response.data));
-                           // this.roomList = response.data;
 
+                            Swal.fire({
+                                
+                                text: "評論已送出",
+                                confirmButtonText: "回到使用者首頁",
+                               
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    const form = document.createElement('form');
+                                    form.method = 'POST';
+                                    form.action = `
+                                            https://localhost:7112/UserInfo/Index`; // 目標 URI
+
+                                    // 將 payment 陣列轉換為 JSON 字串
+                                    // const ConvertID = JSON.stringify(bookingID);
+
+                                    // 創建一個隱藏的輸入元素來存放 JSON 字串
+                                    const input = document.createElement('input');
+                                    input.type = 'hidden';
+
+                                    // 將輸入元素添加到表單中
+                                    form.appendChild(input);
+
+                                    // 將表單添加到文檔中並提交
+                                    document.body.appendChild(form);
+                                    form.submit(); // 提交表單;
+                                }
+                            });
 
                         })
                         .catch(err => { alert(err) })
-                    // fetch(`${this.baseAddress}CreateReview`, {
-                    //     method: 'POST',
-                    //     headers: {
-                    //         'Content-Type': 'application/json',
-                    //     },
-                    //     body: JSON.stringify(review), // 將所有評論一起發送
-                    // })
-                    //     .then(response => {
-                    //         if (!response.ok) {
-                    //             throw new Error('提交評論失敗: ' + response.statusText);
-                    //         }
-                    //         return response.json();
-                    //     })
-                    //     .then(data => {
-                    //         // 成功處理
-                    //         this.reviewRating = 0;
-                    //         this.reviewText = '';
-                    //         console.log('評論提交成功:', data);
-                    //     })
-                    //     .catch(err => {
-                    //         console.error('發生錯誤:', err);
-                    //     });
+                   
                 },
 
             },

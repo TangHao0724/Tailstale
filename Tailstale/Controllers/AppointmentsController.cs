@@ -24,6 +24,7 @@ namespace Tailstale.Controllers
         // GET: Appointments
         public async Task<IActionResult> Index()//只顯示今天以後(包含今天)的查詢結果
         {
+            int LoginID = (int)HttpContext.Session.GetInt32("loginID");
             ViewBag.HideElement = true;
             var today = DateOnly.FromDateTime(DateTime.Today);//當天日期
             var Appointments = await (
@@ -35,7 +36,10 @@ namespace Tailstale.Controllers
                    join pet in _context.pets on A.pet_ID equals pet.pet_ID
                    join keeper in _context.keepers on A.keeper_ID equals keeper.ID
                    join order_status in _context.order_statuses on A.Appointment_status equals order_status.ID
-                   where docs.date >= today
+                   join b in _context.businesses on vInfo.business_ID equals b.ID
+                   join pt in _context.pet_types on pet.pet_type_ID equals pt.ID
+                   where docs.date >= today && b.ID== LoginID
+                   orderby docs.date
                    select new Appointments_ViewModel
                    {
                        AppointmentID = A.Appointment_ID,
@@ -44,7 +48,7 @@ namespace Tailstale.Controllers
                        OutpatientClinicTimeslotName = opct.outpatient_clinic_timeslot_name,
                        VetName = vInfo.vet_name,
                        KeeperName = keeper.name,
-                       PetName = pet.name,
+                       PetName = $"{pet.name}：{pt.species}/{pt.breed}",
                        PetID = pet.pet_ID, // 連到病歷用
                        AppointmentStatus = order_status.status_name
                    }
@@ -82,6 +86,7 @@ namespace Tailstale.Controllers
 
         public async Task<IActionResult> Details()//只顯示今天以前的查詢結果
         {
+            int LoginID = (int)HttpContext.Session.GetInt32("loginID");
             var today = DateOnly.FromDateTime(DateTime.Today);//當天日期
             var tailstaleContext = await (from A in _context.Appointments
                                           join docs in _context.daily_outpatient_clinic_schedules on A.daily_outpatient_clinic_schedule_ID equals docs.daily_outpatient_clinic_schedule_ID
@@ -91,7 +96,8 @@ namespace Tailstale.Controllers
                                           join pet in _context.pets on A.pet_ID equals pet.pet_ID
                                           join keeper in _context.keepers on A.keeper_ID equals keeper.ID
                                           join order_status in _context.order_statuses on A.Appointment_status equals order_status.ID
-                                          where docs.date < today
+                                          join b in _context.businesses on vInfo.business_ID equals b.ID
+                                          where docs.date < today && b.ID== LoginID
                                           orderby docs.date descending
                                           select new Appointments_ViewModel
                                           {

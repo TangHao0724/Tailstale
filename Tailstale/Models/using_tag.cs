@@ -13,6 +13,8 @@ public partial class using_tag
 
     public int FK_tags_ID { get; set; }
 
+    public DateTime? created_at { get; set; }
+
     public virtual article FK_article { get; set; }
 
     public virtual tag FK_tags { get; set; }

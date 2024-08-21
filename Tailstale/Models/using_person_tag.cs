@@ -17,6 +17,8 @@ public partial class using_person_tag
 
     public int? FK_Business_ID { get; set; }
 
+    public DateTime? created_at { get; set; }
+
     public virtual business FK_Business { get; set; }
 
     public virtual keeper FK_Keeper { get; set; }

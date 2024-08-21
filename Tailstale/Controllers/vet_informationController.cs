@@ -115,7 +115,7 @@ namespace Tailstale.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(insert_vet_information_ViewModel v_Infovm/*, IFormFile? file*/)
+        public async Task<IActionResult> Create(insert_vet_information_ViewModel v_Infovm)
         {
             int LoginID = (int)HttpContext.Session.GetInt32("loginID");
             if (ModelState.IsValid)

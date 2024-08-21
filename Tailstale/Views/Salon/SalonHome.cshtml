@@ -152,6 +152,11 @@
             text-decoration: none;
         }
 
+        .page-item.active .page-link {
+            background-color: #fa0;
+            border:3px solid #fa0;
+
+        }
         /* 以下是pic */
         .petimage-group {
             position: relative;
@@ -369,13 +374,30 @@
                     <button class="btn btn-primary TypePetPic col-5" value="貓" v-on:click="storePic($event,business.id)">貓</button><button class="btn btn-primary TypePetPic col-5" value="狗" v-on:click="storePic($event,business.id)">狗</button><button class="btn btn-primary col-2" v-on:click="hidepic()">關閉</button>
                 <div class="container petimage-group px-5">
                     <div class="row imagerow">
-                            <div v-for="item in SalonPicture" class="col-12 col-md-4 col-lg-3 mb-3 my-4">
+                            <div v-for="item in paginatedPictures" class="col-12 col-md-4 col-lg-3 mb-3 my-4">
                             <div v-if="item.url" class="imghover d-flex justify-content-center">
                                 <img class="w-100 petimg" :src="`/Salon_img/${item.url}`" v-on:click="showImageClick(item.url)">
                             </div>
                         </div>
+                            <div class="d-flex justify-content-center">
+                                <nav aria-label="Page navigation ">
+                                    <ul class="pagination mt-4">
+                                        <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                                            <a class="page-link" href="#" v-on:click.prevent="changePage(currentPage - 1)">前一頁</a>
+                                        </li>
+                                        <li v-for="page in totalPages" :key="page" class="page-item" :class="{ active: page === currentPage }">
+                                            <a class="page-link" href="#" v-on:click.prevent="changePage(page)">{{ page }}</a>
+                                        </li>
+                                        <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                                            <a class="page-link" href="#" v-on:click.prevent="changePage(currentPage + 1)">下一頁</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                        </div>
+                          
                     </div>
                 </div>
+                    
             </div>
           </div>
         </div>
@@ -551,6 +573,8 @@
                     people:0,
                     AllTime: [],
                     mypeople: 0,
+                    currentPage: 1,
+                    perPage: 4,
                 };
             },
             mounted: function () {//初始化,發生呼叫函式,他需要用callback,
@@ -595,6 +619,15 @@
 
             },
             methods: {
+                changePage(page) {
+                    if (page >= 1 && page <= this.totalPages) {
+                        this.currentPage = page;
+                    }
+                },
+                showImageClick(url) {
+                    // Your image click handler here
+                    console.log('Image clicked:', url);
+                },
                 ifLogin: function () {
                     if (this.keeper_id != 0) {
 
@@ -955,6 +988,14 @@
                 catServices(petType) {
                     return this.services.filter(item => item.type === petType);
                 },
+                totalPages() {
+                    return Math.ceil(this.SalonPicture.length / this.perPage);
+                },
+                paginatedPictures() {
+                    const start = (this.currentPage - 1) * this.perPage;
+                    const end = start + this.perPage;
+                    return this.SalonPicture.slice(start, end);
+                }
 
             }
         };

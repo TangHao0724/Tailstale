@@ -10,31 +10,16 @@ const app = Vue.createApp({
         return {
             currentTab: '主頁',
             imgurlLu: "",
-            tabs: ['主頁', '使用者資訊', '寵物資訊', '歷史訂單', '歷史貼文', '相片集',],
+            tabs: ['主頁', '使用者資訊', '寵物資訊', '歷史訂單','相片集'],
             useridm:""
         }
     },
     computed: {
-        currentTabComponent() {
+        currentTabComponent: function () {
             return `tab-${this.currentTab}`;
         }
     },
     methods: {
-        async GetUserimgm(userid) {
-            try {
-                const formData = {
-                    'UserID': this.useridm,
-                    'type_name': this.useridm + '_head',
-                    "img_name": "head",
-                };
-
-                const response = await axios.post('api/KImg/GetSingleImg', formData);
-                console.log(JSON.stringify(response.data));
-                this.imgurlLu = `/imgs/keeper_img/${response.data.img_url}`;
-            } catch (error) {
-                console.error('Error fetching user info:', error);
-            }
-        },
         logout() {
             axios.delete('api/LNRApi/Logout')
                 .then(response => {
@@ -49,7 +34,7 @@ const app = Vue.createApp({
     },
     mounted() {
         this.useridm = $("#user-id").data('user-id');
-        this.GetUserimgm(this.useridm);
+
     }
 });
 
@@ -61,36 +46,77 @@ app.component('tab-主頁', {
             newpost: [],
             newpets: [],
             newresp: [],
+            mainart:[],
             neworder: [],
-            artcount:0,
+            n ewallresp:[],
+            artcount: 0,
+            newPictures: null,
+            postL: 0,
+            respL: 0,
+            petsL: 0,
+            orderL: 0,
+            name: '',
+            selectedArt: null,
+            parentArt: [],
+            pet_types: [],
+            order:null
         }
     },
     created() {
+        this.getnewPictures();
         this.getnewpost();
         this.getnewpets();
         this.getnewresp();
         this.getneworder();
         this.getartcount();
+        this.fetchPetTypes();
+        
     },
     props: {
         userid: Number,
     },
     methods: {
-        async getnewpost() {
+        imgurl(uType, imgurl) {
+            const salonurl = "";
+            const hoturl = "";
+            const hosurl = "";
+            if (imgurl === 'no_head.png') {
+                return `imgs/keeper_img/${imgurl}`;
+            }
+            switch (uType) {
+                case 0:
+                    return `imgs/keeper_img/${imgurl}`;
+                    break;
+                case 1:
+                    return `${salonurl}${imgurl}`;
+                    break;
+                case 2:
+                    return `${hoturl}${imgurl}`;
+                    break;
+                case 3:
+                    return `${hosurl}${imgurl}`;
+                    break;
+            }
+        },
+        async getnewpost() { 
+            this.newpost = [];
             try {
-                const response = await axios.get(`api/UserInfoApi/getLatestPosts`, {
+                const response = await axios.get(`api/social/GetArticle`, {
                     params: {
-                        id: this.userid,
-                    },
-                });
-                this.newpost = response.data;
+                        id:this.userid,
+                    }
+                })
+                var a = response.data;
+                a.splice(3)
+                this.newpost = a;
+                this.name = this.newpost[0].kName;
             } catch (error) {
                 console.error('Error fetching user info:', error);
             }
         },
         async getnewpets() {
             try {
-                const response = await axios.get(`api/UserInfoApi/GetNewpets`, {
+                const response = await axios.get(`api/UserInfoApi/GetPet`, {
                     params: {
                         id: this.userid,
                     },
@@ -108,21 +134,42 @@ app.component('tab-主頁', {
                     },
                 });
                 this.newresp = response.data;
-            } catch (error) {
+                var allrespde = [];
+                for (const item of this.newresp) {
+                    const response = await axios.get(`api/social/GetArticle`, {
+                        params: {
+                            artID: item.id,
+                        }
+                    })
+                    allrespde.push(response.data);
+                    this.newallresp = allrespde.flat();
+                    console.log(this.newallresp);
+                }
+                var templist = [];
+                for (const item of this.newallresp) {
+                    const response = await axios.get(`api/social/GetArticle`, {
+                        params: {
+                            artID: item.parent_ID,
+                        }
+                    })
+                    templist.push(response.data);
+                    this.mainart = templist.flat();
+                    console.log(this.newallresp);
+                }
+                this.respL = this.newresp.length;
+            }catch (error) {
                 console.error('Error fetching user info:', error);
             }
         },
         async getneworder() {
             try {
-                const response = await axios.get(`api/UserInfoApi/getNewAppointments`, {
-                    params: {
-                        id: this.userid,
-                    },
-                });
+                const response = await axios.get(`api/UserInfoApi/UserOrder/${this.userid}`);
                 this.neworder = response.data;
+                this.orderL = this.neworder.length - 1;
             } catch (error) {
                 console.error('Error fetching user info:', error);
             }
+
         },
         async getartcount() {
             try {
@@ -136,8 +183,60 @@ app.component('tab-主頁', {
                 console.error('Error fetching user info:', error);
             }
         },
-        helloString() {
-        }
+        async getnewPictures() {
+            try {
+                const response = await axios.get(`api/UserInfoApi/newPictures`, {
+                    params: {
+                        id: this.userid,
+                    },
+                });
+                this.newPictures = response.data;
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
+        },
+        async openPost(input) {
+
+            this.selectedArt = null;
+            this.parentArt = null;
+            this.selectedArt = this.mainart.find(x => x.id === input.parent_ID);
+            try {
+                const response = await axios.get(`api/social/GetArticle`, {
+                    params: {
+                        parentid: this.selectedArt.id,
+                    }
+                })
+                this.parentArt = response.data;
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
+            $("#articleModal").modal("show");
+        },
+
+        getPetType(pet) {
+            const pets = this.pet_types.find(p => p.id === pet.pet_type_ID);
+            if (pets) {
+                return `${pets.species}, ${pets.breed}`;
+            } else {
+                return "找不到該ID的寵物種類";
+            }
+        },
+        async fetchPetTypes(userid) {
+            try {
+                const response = await axios.get('api/UserInfoApi/GetPetTypes');
+                this.pet_types = response.data;
+            } catch (error) {
+                console.error('Error fetching pet types:', error);
+            }
+        },
+        bindimgurl(url, uType) {
+            if (uType !== 0) {
+                return `imgs/business_img/${url}`;
+
+            } else {
+                return `imgs/keeper_img/${url}`;
+            }
+        },
     }
 });
 

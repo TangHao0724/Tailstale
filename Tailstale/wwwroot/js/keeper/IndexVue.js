@@ -2,8 +2,8 @@
     data() {
         return {
             imgurlLu: "",
-            useridm: "",
-            usertype: "",
+            useridm: null,
+            usertype: null,
             fileDatas: [],
             content: '',
             pcontent: '',
@@ -13,18 +13,99 @@
             count: 10,
             selectedArt: null,
             responseimg: [],
+            pubTaglist: [],
+            priTaglist: [],
+            cardstyle: '',
+            tagsearch: [],
+            ischoosed: false,
+            isChecked: false,
         }
     },
     created() {
-
-        this.getarticle(15,null,null,true);
-        
-
+        this.start();
+        this.setstytle();
     },
     methods: {
+        async handleChange() {
+            if (this.isChecked) {
+                this.articles = await this.getarticle(1000, null, this.useridm, false);
+                this.ischoosed = true;
+            } else if (!this.isChecked) {
+                this.start();
+            }
+
+        },
+        async gopirtag(input) {
+            try {
+                const pri = await axios.get('api/social/GetPriTagArt', {
+                    params: {
+                        priTag: input,
+                        userID: this.useridm,
+                        UType: this.usertype,
+                    }
+                })
+                console.log(pri.data);
+                this.articles = pri.data;
+                this.ischoosed = true;
+            } catch (err) {
+                console.error(err);
+            }   
+        },
+        async gotag(input) {
+            try {
+                const pub = await axios.get('api/social/GetPubTagArt', {
+                    params: {
+                        Tag: input,
+                    }
+                })
+                console.log(pub.data);
+                this.articles = pub.data;
+                this.ischoosed = true;
+            } catch (err) {
+                console.error(err);
+            }
+        },
+        setstytle(input) {
+            
+            switch (input?.uType)
+            {
+                case 1:
+                    return 'card mb-1 rounded-3 text-dark border-success'
+                case 2:
+                    return'card mb-1 rounded-3 text-dark border-warning '
+                case 3:
+                    return 'card mb-1 rounded-3 text-dark border-danger'
+                default:
+                    return 'card mb-1 rounded-3 text-dark border-dark';     
+            }
+            return this.cardstyle;
+        },
+        async gettag() {
+            try {
+                const pubtag = await axios.get("api/social/GetPubTagList");
+                this.pubTaglist = pubtag.data;
+                const priTag = await axios.get("api/social/GetPriTagList", {
+                    params: {
+                        id: this.useridm,
+                    }
+                });
+                this.priTaglist = priTag.data;
+            } catch (err) {
+                console.error('Error during created hook:', err);
+            }
+        },
+        async start() {
+            try {
+                this.articles = await this.getarticle(20, 0, null, true);
+                this.ischoosed = false;
+                this.isChecked = false;
+            } catch (err) {
+                console.error('Error during created hook:', err);
+            }
+        },
         inputFile() {
             $("#updateImg").click();
-        },
+        },  
         inputFileR() {
             $("#updateImgR").click();
         },
@@ -57,9 +138,10 @@
                 reader.readAsDataURL(file);
             }
         },
-        postMain() {
-            this.postarticle();
-            this.getarticle(15, null, null, true);
+        async postMain() {
+            await this.postarticle();
+            this.articles = await this.getarticle(20, null, null, true);
+            this.gettag();
         },
        /* public async Task<IActionResult> GetArticle(int? count, int? userid, int? parentid, bool? publicOnly)*/
         async postarticle() {
@@ -67,20 +149,31 @@
                 let formdata = new FormData(this.$refs.postform);
 
                 // 合併 content 和 pcontent 的處理
-                const content = this.content || this.pcontent;
-                if (content) {
-                    formdata.append("Content", content);
-                }
-
                 // 合併 PublicTags 和 PrivateTags 的處理
-                const hashtags = this.Publichashtags || this.Privatehashtags;
-                if (hashtags) {
-                    formdata.append("PublicTags", hashtags);
+                if (this.selectedArt?.id === undefined) {
+                    if (this.content) {
+                        formdata.append("Content", this.content);
+                    }
+                    if (this.Publichashtags) {
+                        formdata.append("PublicTags", this.Publichashtags);
+                    }
+                    if (this.Privatehashtags) {
+                        formdata.append("PrivateTags", this.Privatehashtags);
+                    }
                 }
 
                 // 處理 selectedArt.id
                 if (this.selectedArt?.id !== undefined) {
+                    if (this.pcontent) {
+                        formdata.append("Content", this.pcontent);
+                    }
                     formdata.append("parent_ID", this.selectedArt.id);
+                    if (this.respPublichashtags) {
+                        formdata.append("PublicTags", this.respPublichashtags);
+                    }
+                    if (this.respPrivatehashtags) {
+                        formdata.append("PrivateTags", this.respPrivatehashtags);
+                    }   
                 }
 
                 // 根據 usertype 添加相應的 ID
@@ -101,18 +194,19 @@
                 console.error('Error fetching user info:', error);
             }
         },
-        openPost(input) {
+        async openPost(input) {
             this.selectedArt = null;
             this.parentArt = null;
             this.selectedArt = input;
-            this.getarticle(10, this.selectedArt.id, null, true);
+            this.parentArt = await this.getarticle(null, this.selectedArt.id, null, true);
             $("#articleModal").modal("show");
 
         },
-        postPar(input) {
+        async postPar(input) {
             this.parentArt = [];
-            this.postarticle();
-            this.openPost(input);
+            await this.postarticle();
+            this.parentArt = await this.getarticle(10, this.selectedArt.id, null, true);
+            this.gettag();
         },
         bindimgurl(url, uType) {
             if (uType !== 0) {
@@ -171,11 +265,7 @@
                         publicOnly: publicOnly
                     },
                 });
-                if (this.selectedArt !== null) {
-                    this.parentArt = response.data;
-                } else {
-                    this.articles = response.data;
-                }
+                return response.data;
                 
             } catch (err) {
                 console.error('Error fetching user info:', err);
@@ -212,28 +302,28 @@
     computed: {
         Publichashtags: function () {
             var regex = new RegExp(this.getPublichashtag(), 'ig');
-            if (this.pcontent != "") {
-                if (regex.test(this.pcontent)) {
-                    return this.content.match(regex);
-                }
-            } else {
-                if (regex.test(this.content)) {
-                    return this.content.match(regex);
-                }
+            if (regex.test(this.content)) {
+                return this.content.match(regex);
             }
         },
         Privatehashtags: function () {
             var regex = new RegExp(this.getPrivatehashtag(), 'ig');
-            if (this.pcontent != "") {
-                if (regex.test(this.pcontent)) {
-                    return this.content.match(regex);
-                }
-            } else {
                 if (regex.test(this.content)) {
                     return this.content.match(regex);
                 }
-            }
 
+        },
+        respPublichashtags: function () {
+            var regex = new RegExp(this.getPublichashtag(), 'ig');
+                if (regex.test(this.pcontent)) {
+                    return this.pcontent.match(regex);
+                }
+        },
+        respPrivatehashtags: function () {
+            var regex = new RegExp(this.getPrivatehashtag(), 'ig');
+                if (regex.test(this.pcontent)) {
+                    return this.pcontent.match(regex);
+                }
         },
         
     },
@@ -242,6 +332,7 @@
         this.usertype = $("#start").data("user-type");
         this.editableDiv = this.$refs.editableDiv;
         $(this.$refs.articleModal).on('hidden.bs.modal', this.onModalHide);
+        this.gettag();
     },
     
 });

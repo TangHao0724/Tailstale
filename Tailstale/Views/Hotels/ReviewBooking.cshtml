@@ -2,22 +2,10 @@
 
 @section Styles{
     <style>
-       /*  .accordion-item {
-            background-color: bisque; /* 收起時的背景色 
-            border-color: blue;
-           
-            transition: background-color 1s ease;
-        }
-
-        
-        
-
-        .accordion-button {
-            color: #FF5809;
-        }
-          */
+      
         body {
             background-color: #f5f7fd;
+            padding:0;
         }
 
 
@@ -35,7 +23,18 @@
 
             
         }
+        .centerrow{
+            width:90%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
+        .context{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         
 
        
@@ -44,7 +43,7 @@
 
 @{
     int sumCatDog = ViewBag.Selected.cat + ViewBag.Selected.dog;
-    
+    DateTime bookingdate = DateTime.Now;
 }
 
 <div class="container">
@@ -102,95 +101,153 @@
 
                 </ul>
             </div>
-            <!--房價明細-->
-            <div class="card mb-3" style="width: 100%;">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <div class="row">
-                            <h5 class="card-title"><strong>房價明細</strong></h5>
-                            <div class="col">總金額</div>
-                            <div class="col"> <p class="card-text"><strong>TWD @ViewBag.BookingTotal.ToString("N0")</strong></p></div>
+           
+        </div>
+
+        <div class="col-8">
+            <div class="w-75">
+                <ul class="list-group list-group-flush mb-3">
+                    <li class="list-group-item context">
+                        
+                        <div class="d-flex align-items-center justify-content-center">
+                            
+                            <div class="row centerrow">
+                                <div style="display: flex;align-items: center;justify-content: center;"><h4>預訂資料</h4></div>
+                                <h5 class="card-title" style="display: flex;align-items: center;justify-content: center;"><strong>旅館名稱:@ViewBag.HotelInfo.name</strong></h5>
+                                <div class="col-6" style="width: 50%;padding-left: 5%;">
+                                    <div>訂購人姓名: @ViewBag.keeperName</div>
+                                    <div>總價格:TWD @ViewBag.BookingTotal.ToString("N0")</div>
+
+                                    <div>入住日期</div>
+                                    <div>@ViewBag.Selected.startdate</div>
+                                </div>
+                                <div class="col-6" style="width: 50%;padding:0;">
+                                    <div>下單日期:@bookingdate.ToString("yyyy-MM-dd")</div>
+                                    <div>總共入住： @ViewBag.totalDays 晚</div>
+                                    <div>退房日期</div>
+                                    <div>@ViewBag.Selected.enddate</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+
+                    </li>
+                    <li class="list-group-item context">
+                        <div>
+                            <div style="display: flex;align-items: center;justify-content: center;"><h4>詳細預訂資訊</h4></div>
+                            <div class="d-flex align-items-center justify-content-center">
+                            <div class="row centerrow">
+                               
+                                @foreach (var bd in ViewBag.roomInfo)
+                                {
+                                    <div class="row">
+                                        <div class="col-6"> @bd.roomName x @bd.roomQuantity 間 </div>
+                                        <div class="col-6">TWD @bd.roomPriceTotal.ToString("N0") 元</div>
+                                    </div>
+                                }
+                               
+                            </div>
+                           
+                            </div>
                         </div>
                     </li>
-                    <li class="list-group-item">
-                        <p>價格資訊</p>
-                        @foreach (var room in ViewBag.roomInfo)
-                        {
-                            int a = room.roomPriceTotal;
-                            <div class="row">
-                                <div class="col">
-                                    <p>@room.roomName - @room.roomSpecies x @room.roomQuantity</p>
-                                </div>
-                                <div class="col">TWD @a.ToString("N0")  </div>
-                            </div>
+                    <li class="list-group-item context">
 
-                        }
+                        <div class="row centerrow">
+                            <div style="display: flex;align-items: center;justify-content: center;"><h4>入住資訊</h4></div>
+                            <div class="d-flex align-items-center justify-content-center">
+                                <div class="row centerrow">
+                            @foreach (var room in Model)
+                            {
+
+                                <div class="row mb-2">
+                                            <div class="col-6"><div> @room.roomInfo.roomSpecies - @room.roomInfo.roomName</div></div>
+                                    <div class="col-6">
+                                    
+                                    @foreach (var pet in room.myReviewBooking)
+                                    {
+                                        <strong>@pet.petType - @pet.petName </strong>
+                                        <br />
+                                    }
+                                    </div>
+                                </div>
+                            }
+                                </div>
+                            </div>
+                        </div>
+
+                    </li>
+                    <li class="list-group-item d-flex flex-row-reverse">
+                        <button class="btn btn-outline-primary me-5 p-2 fs-4 gotoECPay">送出訂單</button>
                     </li>
                 </ul>
             </div>
+            
+        </div>
+     
+      
+    </div>
+    <div>
+            @*  <!--房價明細-->
+            <div class="card mb-3" style="width: 100%;">
+            <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+            <div class="row">
+            <h5 class="card-title"><strong>房價明細</strong></h5>
+            <div class="col">總金額</div>
+            <div class="col"> <p class="card-text"><strong>TWD @ViewBag.BookingTotal.ToString("N0")</strong></p></div>
+            </div>
+            </li>
+            <li class="list-group-item">
+            <p>價格資訊</p>
+            @foreach (var room in ViewBag.roomInfo)
+            {
+            int a = room.roomPriceTotal;
+            <div class="row">
+            <div class="col">
+            <p>@room.roomName - @room.roomSpecies x @room.roomQuantity</p>
+            </div>
+            <div class="col">TWD @a.ToString("N0")  </div>
+            </div>
+
+            }
+            </li>
+            </ul>
+            </div>
             <!--寵物資訊手風琴-->
             <div class="accordion" id="accordionPanelsStayOpenExample">
-                @{
-                    int i = 0;
-                }
-                @foreach (var room in Model)
-                {
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="panelsStayOpen-heading-@i">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-@i" aria-expanded="false" aria-controls="panelsStayOpen-collapse-@i">
-                                @room.roomInfo.roomName @room.roomInfo.roomSpecies
-                            </button>
-                        </h2>
-                        <div id="panelsStayOpen-collapse-@i" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-@i">
+            @{
+            int i = 0;
+            }
+            @foreach (var room in Model)
+            {
+            <div class="accordion-item">
+            <h2 class="accordion-header" id="panelsStayOpen-heading-@i">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse-@i" aria-expanded="false" aria-controls="panelsStayOpen-collapse-@i">
+            @room.roomInfo.roomName @room.roomInfo.roomSpecies
+            </button>
+            </h2>
+            <div id="panelsStayOpen-collapse-@i" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading-@i">
 
-                            <div class="accordion-body ms-2">
-                                @foreach (var pet in room.myReviewBooking)
-                                {
-                                    <strong>@pet.petType - @pet.petName </strong>
+            <div class="accordion-body ms-2">
+            @foreach (var pet in room.myReviewBooking)
+            {
+            <strong>@pet.petType - @pet.petName </strong>
 
-                                    <br />
-                                }
-                            </div>
-
-                        </div>
-                    </div>
-                    i++;
-                }
+            <br />
+            }
             </div>
 
-
-        </div>
-        
-     
-        <div class="col-8">
-            <div class="card" style="width: 80%;">
-                <div class="card-body paymentInfo">
-                    <h5 class="card-title"><strong>輸入個人資料</strong></h5>
-                    <label class="form-control">
-                        快好了！只要在標有*的欄位填入資訊
-                        請以中文或英文輸入您的資料
-                    </label>
-                    付款價格:<input type="number" value="ViewBag.BookingTotal" class="form-control" id="total" readonly>
-                    @if (ViewBag.IsCard >0)
-                    {
-
-                        <select class="form-control getCard" asp-items="ViewBag.myCardList">
-                            信用卡資訊:
-                                <option>請選擇卡片</option>
-                            </select>
-                        
-                    }
-                    
-                    訂購人姓名:<input type="text" value="@ViewBag.KeeperName" class="form-control" readonly>
-                    持卡人姓名（以英文填寫）:<input type="text" id="cardholdername" class="form-control" >
-                        卡號:<input type="text" id="credit-card" class="form-control" name="credit-card" required>
-                        有效年月:<input type="month" class="form-control" id="month" name="month" required>
-                        CVV:<input type="password" maxlength="3" id="cvv" class="form-control">
-                        <button id="sendInfoBtn" type="submit" class="btn btn-primary">送出入住資料</button>
-                </div>
             </div>
-        </div>
+            </div>
+            i++;
+            }
+            </div> *@
+
     </div>
+
+    <div id="divContent"></div>
     
 </div>
 
@@ -198,15 +255,50 @@
     <script>
         $(document).ready(function () {
             var baseAddress = "https://localhost:7112/";
-            var bt = document.querySelector('#sendInfoBtn');
-            bt.addEventListener('click', function () {
-                sendPaymentInfo();
-            });
-            var cardList = document.querySelector('.getCard');
-            cardList.addEventListener('change', function () {
-                updateOptions(cardList);
+            // var bt = document.querySelector('#sendInfoBtn');
+            // bt.addEventListener('click', function () {
+            //     sendPaymentInfo();
+            // });
+            // var cardList = document.querySelector('.getCard');
+            // cardList.addEventListener('change', function () {
+            //     updateOptions(cardList);
+            // });
+            var btnGotoECPAy = document.querySelector('.gotoECPay');
+            btnGotoECPAy.addEventListener('click', function () {
+                var TotalAmount = @ViewBag.BookingTotal;
+                var TradeDesc = "HotellID: @ViewBag.HotelInfo.ID" +"預訂費用";
+                var ItemName = "旅館預訂";
+                var sendinfo = { "TotalAmount": TotalAmount, "TradeDesc": TradeDesc, "ItemName": ItemName };
+
+                gotoECPay(sendinfo);
             });
 
+            function gotoECPay(sendinfo) {
+
+                axios.post(`${baseAddress}Hotels/CreateANewBooking`)
+                    .then(response=>{
+                      //  alert(response.data);
+                        sendinfo.BookingID = response.data.toString();
+                        console.log(sendinfo);
+                        axios.post(`${baseAddress}ECPay/GotoECPay`, sendinfo)
+                            .then(response => {
+                                // 將返回的表單插入到頁面中
+                                $("#divContent").html(response.data);
+
+                                // 提交表單
+                                $("#payForm").submit();
+                                //  alert("123");
+                            })
+                            .catch(err => {
+                                alert(err);
+                            });
+                    })
+                .catch(err=>{
+                    alert(err);
+                })
+
+                
+            };
 
             function sendPaymentInfo() {
                 var payment = [];

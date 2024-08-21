@@ -14,6 +14,8 @@ using MailKit.Search;
 using AutoMapper.Internal;
 using Org.BouncyCastle.Asn1.X509;
 
+using Newtonsoft.Json;
+
 namespace Tailstale.Controllers
 {
     public class ApiInputID
@@ -26,7 +28,8 @@ namespace Tailstale.Controllers
     {
         private readonly TailstaleContext _context;
 
-        public UserInfoApiController(TailstaleContext context)
+
+        public UserInfoApiController(TailstaleContext context )
         {
             _context = context;
         }
@@ -60,6 +63,7 @@ namespace Tailstale.Controllers
         }
 
 
+        //傳送pet
         //傳送pet
         //route api/UserInfoApi/GetPet
         [HttpGet("GetPet")]
@@ -246,12 +250,6 @@ namespace Tailstale.Controllers
             return Ok(new { Message = "更新成功！" });
         }
 
-        // GET: api/UserInfoApi
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<keeper>>> Getkeepers()
-        {
-            return await _context.keepers.ToListAsync();
-        }
         //最近一周內貼文
         [HttpGet("getcount")]
         public async Task<IActionResult> GetCount([FromQuery] int id)
@@ -271,7 +269,6 @@ namespace Tailstale.Controllers
             {
                 return Ok((object)null);
             }
-
             int idart = articles.Count(n => n.FK_Keeper_ID == id);
             int takeCount = idart < 3 ? idart : 3;
 
@@ -282,6 +279,7 @@ namespace Tailstale.Controllers
                                   {
                                       s.ID,
                                       s.FK_Keeper_ID,
+                                      s.FK_Keeper.name,
                                       s.parent_ID,
                                       s.content,
                                       s.article_imgs,
@@ -300,6 +298,7 @@ namespace Tailstale.Controllers
         public async Task<IActionResult> GetArticleReplies([FromQuery] int id)
         {
             var articles = await _context.articles.ToListAsync();
+            var weektime = DateTime.Now.AddDays(-7);
             if (articles == null || !articles.Any())
             {
                 return Ok((object)null);
@@ -307,11 +306,9 @@ namespace Tailstale.Controllers
 
             var allUserArt = articles.Where(n => n.FK_Keeper_ID == id).Select(s => s.ID).ToList();
             var allresp = articles.Count(n => n.parent_ID.HasValue && allUserArt.Contains(n.parent_ID.Value));
-            int allrespCount = allresp < 3 ? allresp : 3;
 
-            var newallrespResult = articles.Where(n => n.parent_ID.HasValue && allUserArt.Contains(n.parent_ID.Value))
+            var newallrespResult = articles.Where(n => n.parent_ID.HasValue && allUserArt.Contains(n.parent_ID.Value) && n.created_at >weektime)
                                            .OrderByDescending(x => x.created_at)
-                                           .Take(allrespCount)
                                             .Select(s => new
                                             {
                                                 s.ID,
@@ -333,30 +330,72 @@ namespace Tailstale.Controllers
         [HttpGet("getNewAppointments")]
         public async Task<IActionResult> GetNewAppointmentsAndPets([FromQuery] int id)
         {
-            var weektime = DateTime.Now.AddDays(-7);
-            // 新增的預約
-            List<AppointmentResult> newallorderRe = new List<AppointmentResult>();
-            var allorder = await UsertOrder(id);
-            if (allorder is OkObjectResult combinedResult)
+            try
             {
-                newallorderRe = combinedResult.Value as List<AppointmentResult>;
+                var weektime = DateTime.Now.AddDays(-7);
+                // 新增的預約
+                List<AppointmentResult> newAppointments = new List<AppointmentResult>();
+                var allorder = await UsertOrder(id);
+
+                if (allorder is OkObjectResult combinedResult)
+                {
+                    newAppointments = combinedResult.Value as List<AppointmentResult>;
+                }
+
+                if (newAppointments == null || !newAppointments.Any())
+                {
+                    return Ok((object)null);
+                }
+
+                int orderCount = Math.Min(newAppointments.Count, 3);
+                newAppointments = newAppointments
+                    .Where(x => DateTime.Parse(x.OrderDate) > weektime)
+                    .OrderByDescending(x => x.OrderDate)
+                    .Take(orderCount)
+                    .ToList();
+
+                return Ok(newAppointments);
             }
-            if (newallorderRe == null || !newallorderRe.Any())
+            catch (Exception ex)
             {
-                newallorderRe = null;
+                // 處理異常
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
-            else
-            {
-                int ordercount = newallorderRe.Count < 3 ? newallorderRe.Count : 3;
-                //newallorderRe = newallorderRe
-                //    .Where(x=>x.OrderDate > weektime)
-                //    .OrderByDescending(x => x.OrderDate)
-                //                             .Take(ordercount)
-                //                             .ToList();
-            }
-            return Ok(newallorderRe);
         }
+        [HttpGet("newPictures")]
+        public async Task<IActionResult> GetNewPictures([FromQuery] int id)
+        {
+            try
+            {
+                // 查詢所有相片類型
+                var imgTypeIds = await _context.keeper_img_types
+                    .Where(n => n.FK_Keeper_id == id)
+                    .Select(s => s.ID)
+                    .ToListAsync();
+
+                // 查詢最新的相片URL
+                var latestImage = await _context.keeper_imgs
+                    .Where(n => imgTypeIds.Contains((int)n.img_type_id))
+                    .OrderByDescending(n => n.created_at)
+                    .Select(s => new
+                    {
+                        s.URL,
+                        s.img_type.typename,
+                        s.created_at,
+                    })
+                    .FirstOrDefaultAsync();
+
+                return Ok(latestImage ?? null);
+            }
+            catch (Exception ex)
+            {
+                // 處理異常
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpGet("GetNewpets")]
+
         public async Task<IActionResult> GetNewPets([FromQuery] int id)
         {
             var pets = await _context.pets.Where(n => n.keeper_ID == id).ToListAsync();
@@ -400,7 +439,7 @@ namespace Tailstale.Controllers
                 orderType = "寵物旅館",
                 businessName = s.hotel.name,
                 serviceName = "旅館住宿",
-                orderDate = s.bookingDate.Value,
+                orderDate = s.bookingDate,
                 orderStatus = status.FirstOrDefault(n=>n.ID == s.bookingStatus).status_name,
             }).ToList();
 
@@ -411,7 +450,7 @@ namespace Tailstale.Controllers
                 orderType = "寵物美容",
                 businessName = s.business.name,
                 serviceName = s.service_name,
-                orderDate = s.created_at.Value,
+                orderDate = s.created_at,
                 orderStatus = status.FirstOrDefault(n => n.ID == s.status).status_name,
             }).ToList();
 
@@ -422,11 +461,11 @@ namespace Tailstale.Controllers
                 orderType = "寵物醫療",
                 businessName = businesses.FirstOrDefault(b => b.ID == s.daily_outpatient_clinic_schedule.outpatient_clinic.vet.business_ID)?.name,
                 serviceName = $"看診：{s.daily_outpatient_clinic_schedule.outpatient_clinic.outpatient_clinic_name}",
-                orderDate = s.registration_time.Value,
+                orderDate = s.registration_time,
                 orderStatus = status.FirstOrDefault(n => n.ID == s.Appointment_status).status_name,
             }).ToList();
-
-            var combinedResult = bookingResult.Concat(reserveResult).Concat(appointmentResult).ToList();
+            DateTime now = DateTime.Now;
+            var combinedResult = bookingResult.Concat(reserveResult).Concat(appointmentResult).OrderByDescending(dt => dt.orderDate).ToList();
 
             return Ok(combinedResult);
         }

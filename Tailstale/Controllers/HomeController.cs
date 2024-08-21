@@ -22,8 +22,7 @@ namespace Tailstale.Controllers
 
         public IActionResult Index()
         {
-            var r = _context.keepers.Select(k => k).ToList();
-            return View(r);
+            return View();
         }
 
         public IActionResult Privacy()

@@ -23,7 +23,8 @@ namespace Tailstale.Controllers
         // GET: ward
         public async Task<IActionResult> Index()
         {
-            var tailstaleContext = _context.wards.Include(w => w.business).OrderBy(w=>w.ward_status);
+            int LoginID = (int)HttpContext.Session.GetInt32("loginID");
+            var tailstaleContext = _context.wards.Where(w=>w.business_ID== LoginID).OrderBy(w=>w.ward_status);
             return View(tailstaleContext);
         }
 
@@ -49,7 +50,8 @@ namespace Tailstale.Controllers
         // GET: ward/Create
         public IActionResult Create()
         {
-            ViewData["business_ID"] = new SelectList(_context.businesses.Where(b=>b.type_ID==3), "ID", "name");
+            int LoginID = (int)HttpContext.Session.GetInt32("loginID");
+            ViewData["business_ID"] = new SelectList(_context.businesses.Where(b=>b.ID== LoginID), "ID", "name");
             return View();
         }
 
