@@ -66,6 +66,7 @@ namespace Tailstale.Controllers
                                              && opc.outpatient_clinic_name.Contains(opcNameSearch)
                                              && vInfo.vet_name.Contains(vetName)
                                              && b.name.Contains(clinicName)
+                                         where b.type_ID == 3
                                          select new frontDeskSearchingResult_DTO
                                          {
                                              businessID=b.ID,
@@ -81,7 +82,7 @@ namespace Tailstale.Controllers
                                              clincAddress = b.address,
                                              maxPatients = opc.max_patients,
                                              appointmentCount = _context.Appointments.Where(a => a.daily_outpatient_clinic_schedule_ID == docs.daily_outpatient_clinic_schedule_ID).Count(),
-                                             dateAfterCurrentDate = docs.date < DateOnly.FromDateTime(DateTime.Now) ? true : false
+                                             //dateAfterCurrentDate = docs.date < DateOnly.FromDateTime(DateTime.Now) ? true : false
 
                                          }).ToListAsync();
 
@@ -129,6 +130,7 @@ namespace Tailstale.Controllers
             {
                 var hospitals = await (from b in _context.businesses
                                        where b.type_ID == 3
+                                       orderby b.ID descending
                                        select new frontDeskHospitalCard_DTO
                                        {
                                            businessId = b.ID,
