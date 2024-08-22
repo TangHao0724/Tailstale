@@ -44,8 +44,8 @@ namespace Tailstale.Controllers
         {
 
 
-           
 
+            int? loginID = HttpContext.Session.GetInt32("loginID");
 
             var business2 = await _context.Consumption_Records
         .FirstOrDefaultAsync(b => b.keeper_id == uid);
@@ -60,7 +60,7 @@ namespace Tailstale.Controllers
             
             
                 var beauticians2 = _context.Consumption_Records
-               .Where(bh => bh.keeper_id == business2.keeper_id)
+               .Where(bh => bh.keeper_id == business2.keeper_id && bh.business_ID == loginID)
                .Include(bh => bh.business)
                .Include(bh => bh.beautician)
                 .Include(bh => bh.keeper)
