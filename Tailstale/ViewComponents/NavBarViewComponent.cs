@@ -42,7 +42,7 @@ namespace Tailstale.ViewComponents
                     ViewBag.Keeper_imgurl = url != null ? $"/imgs/keeper_img/{url}" : "/imgs/keeper_img/no_head.png";
                     break;
                 case 1://旅館
-                    string hotel_imgurl = "images/business/";
+                    string hotel_imgurl = "https://localhost:7112/images/business/";
                     ViewBag.hotel_imgurl = url != null ?hotel_imgurl+url : "/imgs/keeper_img/no_head.png";
                     break;
                 case 2://美容

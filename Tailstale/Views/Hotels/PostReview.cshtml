@@ -18,15 +18,19 @@
 }
 
 <div id="app">
-    <h2>撰寫評論</h2>
-    <div v-for="room in roomList" :key="room.roomID">
-        <h3>{{ room.roomName }}</h3>
-        <div>
-            <span v-for="star in 5" :key="star" @@click="setRating(room.roomID,star)" class="star" :class="{ active: star <= room.rating }">★</span>
+    <div class="container my-3">
+        <h2>撰寫評論</h2>
+        <div  v-for="room in roomList" :key="room.roomID" class="mt-2">
+            <h3>{{ room.roomName }}</h3>
+            <div>
+                <span v-for="star in 5" :key="star" @@click="setRating(room.roomID,star)" class="star" :class="{ active: star <= room.rating }">★</span>
+            </div>
+            <textarea class="form-control" v-model="room.reviewText" placeholder="撰寫你的評論..."></textarea>
         </div>
-        <textarea class="form-control" v-model="room.reviewText" placeholder="撰寫你的評論..."></textarea>
+        <button @@click="submitReview" class="btn btn-primary mt-2">提交評論</button>
+
     </div>
-    <button @@click="submitReview" class="btn btn-primary">提交評論</button>
+    
 </div>
 
 

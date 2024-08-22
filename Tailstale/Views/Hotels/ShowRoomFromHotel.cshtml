@@ -18,19 +18,20 @@
 <h1 id="hotelNameDisplay"></h1>
 
 
-<div>
-    <button type="button"
-            class="btn btn-primary btn-lg"
-            data-bs-toggle="modal"
-            data-bs-target="#modalId">
-        管理房間類型
-    </button>
-   @*  <a id="create" class="btn btn-primary" asp-controller="roomTypes" asp-action="Index">管理房間類型</a> *@
-</div>
+
 
 
 <div class="container">
     <div class="mb-3 mx-1 mx-md-3">
+        <div>
+            <button type="button"
+                    class="btn btn-primary btn-lg"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalId">
+                管理房間類型
+            </button>
+            @*  <a id="create" class="btn btn-primary" asp-controller="roomTypes" asp-action="Index">管理房間類型</a> *@
+        </div>
         <table class="table">
             <thead>
                 <tr>
@@ -115,9 +116,9 @@
                             @* vue部分開始 *@
                             <div id="app">
                                 @* 篩選 *@
-                                <div class="container">
+                                <div class="container mb-3">
                                     <div class="row"> 
-                                        <div class="col-5">
+                                        <div class="col-5 mb-3">
                                             <input type="text" class="form-control" placeholder="搜尋房間" v-model="filter" v-on:keyup="filterBu" />
                                         </div>
                                         <div class="col-4">
