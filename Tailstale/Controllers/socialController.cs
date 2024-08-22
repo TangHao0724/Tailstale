@@ -688,9 +688,9 @@ namespace Tailstale.Controllers
 
                 // 檢索tag.name的ID，將其與usingtag相連
                 var tagname = await _context.person_tags
-                    .Where(n => (keeperId.HasValue && n.FK_Keeper_ID == keeperId.Value) || 
-                                (businessId.HasValue && n.FK_Business_ID == businessId.Value) && 
-                                n.name == trimmedItem)
+                    .Where(n => ((keeperId.HasValue && n.FK_Keeper_ID == keeperId.Value) ||
+                     (businessId.HasValue && n.FK_Business_ID == businessId.Value)) &&
+                     n.name == trimmedItem)
                     .Select(s => s.ID)
                     .FirstOrDefaultAsync();
 

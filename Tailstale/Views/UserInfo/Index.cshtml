@@ -274,7 +274,7 @@
                                    </div>
                             </div>
                        </div>
-                                               <div class="row">
+                            <div class="row" v-if ="newPictures?.typename">
                            <h5>最新增加的照片</h5>
                            <p>相片存放在{{ newPictures?.typename }}</p>
                            <img :src=" `/imgs/keeper_img/${newPictures?.url}` " class="w-100 img-thumbnail">

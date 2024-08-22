@@ -70,13 +70,13 @@
             switch (input?.uType)
             {
                 case 1:
-                    return 'card mb-1 rounded-3 text-dark border-success'
+                    return 'card mb-1 rounded-3 text-dark  border-2 border-success '
                 case 2:
-                    return'card mb-1 rounded-3 text-dark border-warning '
+                    return'card mb-1 rounded-3 text-dark border-2 border-warning '
                 case 3:
-                    return 'card mb-1 rounded-3 text-dark border-danger'
+                    return 'card mb-1 rounded-3 text-dark border-2 border-danger'
                 default:
-                    return 'card mb-1 rounded-3 text-dark border-dark';     
+                    return 'card mb-1 rounded-3 text-dark border-2 border-dark';     
             }
             return this.cardstyle;
         },
