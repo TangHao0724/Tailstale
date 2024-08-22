@@ -284,13 +284,13 @@
                     return `imgs/keeper_img/${imgurl}`;
                     break;
                 case 1:
-                    return `${salonurl}${imgurl}`;
+                    return `images/business/${imgurl}`;
                     break;
                 case 2:
-                    return `${hoturl}${imgurl}`;
+                    return '/Salon_img/' + `${imgurl}`;
                     break;
                 case 3:
-                    return `${hosurl}${imgurl}`;
+                    return 'lib/HospitalImages/' + `${imgurl}`;
                     break;
             }
         },

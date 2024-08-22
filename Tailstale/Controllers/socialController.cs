@@ -317,40 +317,58 @@ namespace Tailstale.Controllers
         {
 
             if(UType == 0)
-            {
-                var tagKCounts = _context.using_person_tags
-                        .Where(ut => ut.FK_Keeper_ID == id)
-                        .GroupBy(ut => new { ut.FK_person_tags_ID, ut.FK_person_tags.name })
-                        .Select(g => new
-                        {
-                            TagName = g.Key.name,
-                            Count = g.Count()
-                        })
-                        .OrderByDescending(c => c.Count)
-                        .ToList();
+            { 
+              var tagKCounts = _context.using_person_tags
+                                        .Where(ut => ut.FK_Keeper_ID == id)
+                                        .Select(ut => new
+                                        {
+                                            TagName = ut.FK_person_tags.name,
+                                            Count = 1
+                                        })
+                                        .ToList();
+
                 if (!tagKCounts.Any())
                 {
                     return NoContent(); // 或者返回其他適當的訊息
                 }
-                return Ok(tagKCounts);
+
+                var result = tagKCounts
+                            .GroupBy(t => t.TagName)
+                            .Select(g => new
+                            {
+                                TagName = g.Key,
+                                Count = g.Count()
+                            })
+                            .OrderByDescending(c => c.Count)
+                            .ToList();
+
+            return Ok(result);  
             }
-            var tagCounts = _context.using_person_tags
-                    .Where(ut => ut.FK_Business_ID == id)
-                    .GroupBy(ut => new { ut.FK_Business_ID, ut.FK_person_tags.name })
-                    .Select(g => new
-                    {
-                        TagName = g.Key.name,
-                        Count = g.Count()
-                    })
-                    .OrderByDescending(c => c.Count)
-                    .ToList();
-            if (!tagCounts.Any())
+            var tagKCountsa = _context.using_person_tags
+                                      .Where(ut => ut.FK_Business_ID == id)
+                                      .Select(ut => new
+                                      {
+                                          TagName = ut.FK_Business_ID,
+                                          Count = 10
+                                      })
+                                      .ToList();
+
+            if (!tagKCountsa.Any())
             {
                 return NoContent(); // 或者返回其他適當的訊息
             }
-            return Ok(tagCounts);
 
+            var resulta = tagKCountsa
+                        .GroupBy(t => t.TagName)
+                        .Select(g => new
+                        {
+                            TagName = g.Key,
+                            Count = g.Count()
+                        })
+                        .OrderByDescending(c => c.Count)
+                        .ToList();
 
+            return Ok(resulta);
 
         }
         //輸入個人TAG、查詢包含個人TAG的文章

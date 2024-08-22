@@ -77,9 +77,6 @@ app.component('tab-主頁', {
     },
     methods: {
         imgurl(uType, imgurl) {
-            const salonurl = "";
-            const hoturl = "";
-            const hosurl = "";
             if (imgurl === 'no_head.png') {
                 return `imgs/keeper_img/${imgurl}`;
             }
@@ -88,13 +85,13 @@ app.component('tab-主頁', {
                     return `imgs/keeper_img/${imgurl}`;
                     break;
                 case 1:
-                    return `${salonurl}${imgurl}`;
+                    return `images/business/${imgurl}`;
                     break;
                 case 2:
-                    return `${hoturl}${imgurl}`;
+                    return '/Salon_img/'+`${imgurl}`;
                     break;
                 case 3:
-                    return `${hosurl}${imgurl}`;
+                    return 'lib/HospitalImages/'+`${imgurl}`;
                     break;
             }
         },

@@ -42,7 +42,7 @@ namespace Tailstale.ViewComponents
                     ViewBag.salon_imgurl = url != null ? salon_imgurl + url : "imgs/keeper_img/no_head.png";
                     break;
                 case 3://醫院
-                    string hospital_imgurl = "";
+                    string hospital_imgurl = "lib/HospitalImages/";
                     ViewBag.hospital_imgurl = url != null ? hospital_imgurl + url : "imgs/keeper_img/no_head.png";
                     break;
                 default:
