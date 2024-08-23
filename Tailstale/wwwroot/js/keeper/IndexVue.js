@@ -66,18 +66,34 @@
             }
         },
         setstytle(input) {
-            
-            switch (input?.uType)
-            {
-                case 1:
-                    return 'card mb-1 rounded-3 text-dark  border-2 border-success '
-                case 2:
-                    return'card mb-1 rounded-3 text-dark border-2 border-warning '
-                case 3:
-                    return 'card mb-1 rounded-3 text-dark border-2 border-danger'
-                default:
-                    return 'card mb-1 rounded-3 text-dark border-2 border-dark';     
+            var base = "card mb-1 rounded-3 text-dark  border-3"
+
+            if (input?.parent_ID) {
+                base = base + " bg-warning bg-opacity-10 "
+                switch (input?.uType) {
+                    case 1:
+                        return base + ' border-success';
+                    case 2:
+                        return base + 'border-warning '
+                    case 3:
+                        return base +  ' border-danger'
+                    default:
+                        return base +'cborder-dark';
+                }
+            } else {
+                base = base + " bg-light "
+                switch (input?.uType) {
+                    case 1:
+                        return base + ' border-success';
+                    case 2:
+                        return base + 'border-warning '
+                    case 3:
+                        return base + ' border-danger'
+                    default:
+                        return base + 'cborder-dark';
+                }
             }
+
             return this.cardstyle;
         },
         async gettag() {
@@ -96,7 +112,7 @@
         },
         async start() {
             try {
-                this.articles = await this.getarticle(20, 0, null, true);
+                this.articles = await this.getarticle(50, 0, null, true);
                 this.ischoosed = false;
                 this.isChecked = false;
             } catch (err) {
@@ -140,7 +156,7 @@
         },
         async postMain() {
             await this.postarticle();
-            this.articles = await this.getarticle(20, null, null, true);
+            this.articles = await this.getarticle(50, 0, null, true);
             this.gettag();
         },
        /* public async Task<IActionResult> GetArticle(int? count, int? userid, int? parentid, bool? publicOnly)*/
@@ -198,8 +214,14 @@
             this.selectedArt = null;
             this.parentArt = null;
             this.selectedArt = input;
-            this.parentArt = await this.getarticle(null, this.selectedArt.id, null, true);
-            $("#articleModal").modal("show");
+            if (input?.ispublic === true) {
+                this.parentArt = await this.getarticle(null, this.selectedArt.id, null, true);
+                $("#articleModal").modal("show");
+            } else if (input?.ispublic === false){
+                this.parentArt = await this.getarticle(null, this.selectedArt.id, null, null);
+                $("#articleModal").modal("show");
+            }
+
 
         },
         async postPar(input) {
